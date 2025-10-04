@@ -1,3 +1,3 @@
 # Development Environment
 
-This is a placeholder README for the development environment.
+This directory contains configuration for the development environment.

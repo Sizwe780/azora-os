@@ -1,3 +1,3 @@
-# Terraform Modules
+# Modules
 
-This directory contains Terraform modules for the infrastructure.
+This directory contains Terraform modules.

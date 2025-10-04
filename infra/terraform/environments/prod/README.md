@@ -1,3 +1,3 @@
 # Production Environment
 
-This folder contains the Terraform configuration for the production environment.
+This directory contains configuration for the production environment.

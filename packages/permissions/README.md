@@ -1,3 +1,3 @@
-# Permissions Package
+# Permissions
 
-This folder contains the permissions-related code and configuration. 
+This package handles permissions.

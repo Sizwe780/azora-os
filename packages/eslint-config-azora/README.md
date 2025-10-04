@@ -1,3 +1,3 @@
-# ESLint Config for Azora
+# ESLint Config Azora
 
-This is a placeholder README for the ESLint configuration package for Azora.
+This package contains the ESLint configuration for Azora.

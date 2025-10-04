@@ -1,3 +1,3 @@
 # Logger
 
-This is the logger package.
+This package contains a logging utility.
