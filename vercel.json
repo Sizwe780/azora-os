@@ -1,7 +1,5 @@
 {
-  "name": "azora-os",
-  "version": "1.0.0",
-  "private": true,
-  "scripts": {},
-  "dependencies": {}
+  "routes": [
+    { "src": "/(.*)", "dest": "/index.html" }
+  ]
 }
