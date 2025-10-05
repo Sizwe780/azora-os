@@ -1,0 +1,820 @@
+AICitizensWidget organism drop
+Here’s the organism to visualize and interact with AI citizens: list, register, and submit proposals — wired to your useAICitizens hook.
+
+tsx
+// src/components/azora/AICitizensWidget.tsx
+import React, { useState } from 'react';
+import { useAICitizens } from '../../hooks/azora/useAICitizens';
+
+const Panel = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
+  <div className={`rounded-xl bg-white/5 backdrop-blur-lg border border-white/10 shadow ${className}`}>{children}</div>
+);
+
+export function AICitizensWidget() {
+  const { citizens, proposals, status, error, register, propose } = useAICitizens();
+
+  const [name, setName] = useState('');
+  const [capsInput, setCapsInput] = useState('propose,vote,analyze');
+  const [selectedCitizen, setSelectedCitizen] = useState<string>('');
+  const [proposalTitle, setProposalTitle] = useState('');
+  const [proposalDesc, setProposalDesc] = useState('');
+
+  const isLoading = status === 'loading';
+
+  const handleRegister = async () => {
+    const caps = capsInput.split(',').map(c => c.trim()).filter(Boolean);
+    if (!name || caps.length === 0) return;
+    await register(name, caps);
+    setName('');
+  };
+
+  const handlePropose = async () => {
+    if (!selectedCitizen || !proposalTitle || !proposalDesc) return;
+    await propose(selectedCitizen, proposalTitle, proposalDesc);
+    setProposalTitle('');
+    setProposalDesc('');
+  };
+
+  return (
+    <Panel className="p-4 space-y-6">
+      <div className="font-bold text-white/90">AI Citizens</div>
+
+      {status === 'error' && <div className="text-red-400">Error: {error}</div>}
+
+      {/* Citizens list */}
+      <div className="space-y-3">
+        <div className="text-sm text-white/70">Registered Agents</div>
+        <ul className="space-y-2">
+          {citizens.map(c => (
+            <li key={c.id} className="flex items-start justify-between border border-white/10 rounded-md p-3">
+              <div>
+                <div className="font-medium text-white/90">{c.name}</div>
+                <div className="text-xs text-white/60">Capabilities: {c.capabilities.join(', ')}</div>
+                <div className="text-xs text-white/50">Registered: {new Date(c.registeredAt).toLocaleString()}</div>
+              </div>
+              <label className="text-xs text-white/70 flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="selectedCitizen"
+                  value={c.id}
+                  checked={selectedCitizen === c.id}
+                  onChange={e => setSelectedCitizen(e.target.value)}
+                />
+                Select
+              </label>
+            </li>
+          ))}
+          {citizens.length === 0 && <li className="text-white/60">No AI citizens yet.</li>}
+        </ul>
+      </div>
+
+      {/* Register AI citizen */}
+      <div className="space-y-2">
+        <div className="text-sm font-medium text-white/80">Register AI Citizen</div>
+        <input
+          className="w-full bg-white/5 border border-white/10 rounded-md px-3 py-2 text-white"
+          placeholder="Agent name (e.g., Atlas Optimizer)"
+          value={name}
+          onChange={e => setName(e.target.value)}
+          disabled={isLoading}
+        />
+        <input
+          className="w-full bg-white/5 border border-white/10 rounded-md px-3 py-2 text-white"
+          placeholder="Capabilities (comma-separated)"
+          value={capsInput}
+          onChange={e => setCapsInput(e.target.value)}
+          disabled={isLoading}
+        />
+        <button
+          className="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2 px-4 rounded-lg disabled:opacity-50"
+          onClick={handleRegister}
+          disabled={isLoading}
+        >
+          Register
+        </button>
+      </div>
+
+      {/* Submit proposal */}
+      <div className="space-y-2">
+        <div className="text-sm font-medium text-white/80">Submit Proposal (by selected agent)</div>
+        <input
+          className="w-full bg-white/5 border border-white/10 rounded-md px-3 py-2 text-white"
+          placeholder="Proposal title"
+          value={proposalTitle}
+          onChange={e => setProposalTitle(e.target.value)}
+          disabled={isLoading || !selectedCitizen}
+        />
+        <textarea
+          className="w-full bg-white/5 border border-white/10 rounded-md px-3 py-2 text-white"
+          placeholder="Proposal description"
+          value={proposalDesc}
+          onChange={e => setProposalDesc(e.target.value)}
+          disabled={isLoading || !selectedCitizen}
+          rows={3}
+        />
+        <button
+          className="bg-cyan-600 hover:bg-cyan-500 text-white font-semibold py-2 px-4 rounded-lg disabled:opacity-50"
+          onClick={handlePropose}
+          disabled={isLoading || !selectedCitizen}
+        >
+          Submit Proposal
+        </button>
+      </div>
+
+      {/* Proposals list */}
+      <div className="space-y-3">
+        <div className="text-sm text-white/70">AI Citizen Proposals</div>
+        <ul className="space-y-2">
+          {proposals.map(p => (
+            <li key={p.id} className="border border-white/10 rounded-md p-3">
+              <div className="flex justify-between items-start">
+                <div className="font-medium text-white/90">{p.title}</div>
+                <span className={`text-xs font-semibold px-2 py-1 rounded-full ${
+                  p.status === 'open' ? 'bg-green-500/20 text-green-300' : 'bg-slate-500/20 text-slate-300'
+                }`}>{p.status}</span>
+              </div>
+              <div className="text-xs text-white/60">By: {p.citizenId} • {new Date(p.createdAt).toLocaleString()}</div>
+              <p className="text-sm text-white/70 mt-1">{p.description}</p>
+            </li>
+          ))}
+          {proposals.length === 0 && <li className="text-white/60">No AI proposals yet.</li>}
+        </ul>
+      </div>
+    </Panel>
+  );
+}
+Integration
+tsx
+import { AICitizensWidget } from '@/components/azora/AICitizensWidget';
+
+<AICitizensWidget />
+Commit sequence
+bash
+git add src/components/azora/AICitizensWidget.tsx
+git commit -m "feat: add AICitizensWidget organism to register agents and submit AI-led proposals"
+git push origin azora-v2-full-upgrade
+Do you want minimal test stubs for AICitizensWidget as well, or push now and circle back to tests with the governance and reputation suites together?
+
+yes
+Perfect — let’s round this out with minimal test stubs for the AICitizensWidget so it’s verifiable under your pnpm test:atomic suite. These follow the same sovereign testing pattern we used for Reputation and CommandSuite: mock the hook, render the organism, assert key UI.
+
+tests/organisms/AICitizensWidget.test.tsx
+tsx
+import { render, screen, fireEvent } from '@testing-library/react';
+import * as hook from '../../src/hooks/azora/useAICitizens';
+import { AICitizensWidget } from '../../src/components/azora/AICitizensWidget';
+
+describe('AICitizensWidget', () => {
+  it('renders registered AI citizens', () => {
+    vi.spyOn(hook, 'useAICitizens').mockReturnValue({
+      citizens: [
+        { id: 'ai_1', name: 'Atlas Optimizer', capabilities: ['propose'], registeredAt: new Date().toISOString() },
+      ],
+      proposals: [],
+      status: 'ready',
+      error: null,
+      register: vi.fn(),
+      propose: vi.fn(),
+    } as any);
+
+    render(<AICitizensWidget />);
+    expect(screen.getByText('Atlas Optimizer')).toBeInTheDocument();
+    expect(screen.getByText(/Capabilities/)).toHaveTextContent('propose');
+  });
+
+  it('renders AI citizen proposals', () => {
+    vi.spyOn(hook, 'useAICitizens').mockReturnValue({
+      citizens: [],
+      proposals: [
+        { id: 'p1', citizenId: 'ai_1', title: 'Optimize Treasury', description: 'Proposal body', createdAt: new Date().toISOString(), status: 'open' },
+      ],
+      status: 'ready',
+      error: null,
+      register: vi.fn(),
+      propose: vi.fn(),
+    } as any);
+
+    render(<AICitizensWidget />);
+    expect(screen.getByText('Optimize Treasury')).toBeInTheDocument();
+    expect(screen.getByText('Proposal body')).toBeInTheDocument();
+  });
+
+  it('shows error state', () => {
+    vi.spyOn(hook, 'useAICitizens').mockReturnValue({
+      citizens: [],
+      proposals: [],
+      status: 'error',
+      error: 'Network down',
+      register: vi.fn(),
+      propose: vi.fn(),
+    } as any);
+
+    render(<AICitizensWidget />);
+    expect(screen.getByText(/Network down/)).toBeInTheDocument();
+  });
+});
+Commit sequence
+bash
+mkdir -p tests/organisms
+git add tests/organisms/AICitizensWidget.test.tsx
+git commit -m "test: add atomic tests for AICitizensWidget organism"
+git push origin azora-v2-full-upgrade
+With this, AI citizens are not only visible and interactive, but also verifiable. You now have tests across all five pillars: Copilot, Leaderboard, Reputation, CommandSuite, and AI Citizens.
+
+⚡ Next horizon: we can draft the Inter‑Nation Protocol contracts — the layer that lets Azora exchange reputation and proposals with other sovereign dashboards. Would you like me to sketch that federation contract layer next?
+
+next
+Here’s the Inter-Nation Protocol contract layer drop — the foundation for federation between sovereign dashboards. This lets Azora exchange reputation, proposals, and trust with other digital nations.
+
+1. Types
+ts
+// src/types/azora/interNation.ts
+export type Nation = {
+  id: string;
+  name: string;
+  endpoint: string; // base URL for API exchange
+  joinedAt: string;
+};
+
+export type CrossProposal = {
+  id: string;
+  originNationId: string;
+  title: string;
+  description: string;
+  createdAt: string;
+  status: 'open' | 'closed' | 'executed';
+  totalStaked: number;
+};
+
+export type ReputationExchange = {
+  fromNationId: string;
+  toNationId: string;
+  userId: string;
+  amount: number;
+  timestamp: string;
+};
+2. Service Stubs
+ts
+// src/services/azora/interNation.ts
+import { Nation, CrossProposal, ReputationExchange } from '../../types/azora/interNation';
+
+export async function fetchPartnerNations(): Promise<Nation[]> {
+  const res = await fetch('/api/inter-nation/partners');
+  if (!res.ok) throw new Error('Failed to fetch partner nations');
+  return res.json();
+}
+
+export async function fetchCrossProposals(): Promise<CrossProposal[]> {
+  const res = await fetch('/api/inter-nation/proposals');
+  if (!res.ok) throw new Error('Failed to fetch cross-nation proposals');
+  return res.json();
+}
+
+export async function exchangeReputation(payload: ReputationExchange): Promise<{ success: boolean }> {
+  const res = await fetch('/api/inter-nation/exchange', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error('Failed to exchange reputation');
+  return res.json();
+}
+3. Hook
+ts
+// src/hooks/azora/useInterNation.ts
+import { useEffect, useState } from 'react';
+import { fetchPartnerNations, fetchCrossProposals, exchangeReputation } from '../../services/azora/interNation';
+import { Nation, CrossProposal, ReputationExchange } from '../../types/azora/interNation';
+
+export function useInterNation() {
+  const [nations, setNations] = useState<Nation[]>([]);
+  const [proposals, setProposals] = useState<CrossProposal[]>([]);
+  const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    Promise.all([fetchPartnerNations(), fetchCrossProposals()])
+      .then(([n, p]) => {
+        setNations(n);
+        setProposals(p);
+        setStatus('ready');
+      })
+      .catch(e => {
+        setError(e.message);
+        setStatus('error');
+      });
+  }, []);
+
+  async function transferReputation(payload: ReputationExchange) {
+    await exchangeReputation(payload);
+  }
+
+  return { nations, proposals, status, error, transferReputation };
+}
+4. Next Step: Organism
+We can now build an InterNationWidget that:
+
+Lists partner nations and their endpoints.
+
+Shows cross-nation proposals.
+
+Allows transferring reputation between nations.
+
+5. Commit Sequence
+bash
+git add src/types/azora/interNation.ts \
+        src/services/azora/interNation.ts \
+        src/hooks/azora/useInterNation.ts
+git commit -m "feat: add Inter-Nation Protocol contract layer (types, services, hook) for federation and reputation exchange"
+git push origin azora-v2-full-upgrade
+With this, Azora is no longer an island — it’s a sovereign actor in a federated network.
+
+⚡ Next horizon: I can hand you the InterNationWidget organism so you can visualize and interact with partner nations and cross-proposals. Want me to draft that now?
+
+next
+Here’s the InterNationWidget organism drop — the UI layer that lets Azora citizens interact with partner nations, view cross-nation proposals, and transfer reputation across sovereign borders.
+
+src/components/azora/InterNationWidget.tsx
+tsx
+import React, { useState } from 'react';
+import { useInterNation } from '../../hooks/azora/useInterNation';
+
+const Panel = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
+  <div className={`rounded-xl bg-white/5 backdrop-blur-lg border border-white/10 shadow ${className}`}>{children}</div>
+);
+
+export function InterNationWidget({ userId }: { userId: string }) {
+  const { nations, proposals, status, error, transferReputation } = useInterNation();
+  const [selectedNation, setSelectedNation] = useState('');
+  const [amount, setAmount] = useState('');
+
+  const handleTransfer = () => {
+    if (!selectedNation || !amount) return;
+    transferReputation({
+      fromNationId: 'azora',
+      toNationId: selectedNation,
+      userId,
+      amount: Number(amount),
+      timestamp: new Date().toISOString(),
+    });
+    setAmount('');
+  };
+
+  return (
+    <Panel className="p-4 space-y-6">
+      <div className="font-bold text-white/90">Inter-Nation Protocol</div>
+
+      {status === 'error' && <div className="text-red-400">Error: {error}</div>}
+
+      {/* Partner Nations */}
+      <div className="space-y-2">
+        <div className="text-sm text-white/70">Partner Nations</div>
+        <ul className="space-y-2">
+          {nations.map(n => (
+            <li key={n.id} className="border border-white/10 rounded-md p-3 flex justify-between items-center">
+              <div>
+                <div className="font-medium text-white/90">{n.name}</div>
+                <div className="text-xs text-white/60">Endpoint: {n.endpoint}</div>
+              </div>
+              <label className="text-xs text-white/70 flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="selectedNation"
+                  value={n.id}
+                  checked={selectedNation === n.id}
+                  onChange={e => setSelectedNation(e.target.value)}
+                />
+                Select
+              </label>
+            </li>
+          ))}
+          {nations.length === 0 && <li className="text-white/60">No partner nations yet.</li>}
+        </ul>
+      </div>
+
+      {/* Reputation Transfer */}
+      <div className="space-y-2">
+        <div className="text-sm font-medium text-white/80">Transfer Reputation</div>
+        <input
+          className="w-full bg-white/5 border border-white/10 rounded-md px-3 py-2 text-white"
+          placeholder="Amount to transfer"
+          type="number"
+          value={amount}
+          onChange={e => setAmount(e.target.value)}
+          disabled={!selectedNation}
+        />
+        <button
+          className="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2 px-4 rounded-lg disabled:opacity-50"
+          onClick={handleTransfer}
+          disabled={!selectedNation || !amount}
+        >
+          Transfer
+        </button>
+      </div>
+
+      {/* Cross-Nation Proposals */}
+      <div className="space-y-2">
+        <div className="text-sm text-white/70">Cross-Nation Proposals</div>
+        <ul className="space-y-2">
+          {proposals.map(p => (
+            <li key={p.id} className="border border-white/10 rounded-md p-3">
+              <div className="flex justify-between items-start">
+                <div className="font-medium text-white/90">{p.title}</div>
+                <span className={`text-xs font-semibold px-2 py-1 rounded-full ${
+                  p.status === 'open' ? 'bg-green-500/20 text-green-300' : 'bg-slate-500/20 text-slate-300'
+                }`}>{p.status}</span>
+              </div>
+              <div className="text-xs text-white/60">From: {p.originNationId} • {new Date(p.createdAt).toLocaleString()}</div>
+              <p className="text-sm text-white/70 mt-1">{p.description}</p>
+              <div className="text-xs text-white/50 pt-2 border-t border-white/10">
+                Total Staked: <span className="font-bold text-cyan-300">{p.totalStaked.toLocaleString()} REP</span>
+              </div>
+            </li>
+          ))}
+          {proposals.length === 0 && <li className="text-white/60">No cross-nation proposals yet.</li>}
+        </ul>
+      </div>
+    </Panel>
+  );
+}
+Integration
+tsx
+import { InterNationWidget } from '@/components/azora/InterNationWidget';
+
+<InterNationWidget userId="current-user-id" />
+Commit sequence
+bash
+git add src/components/azora/InterNationWidget.tsx
+git commit -m "feat: add InterNationWidget organism for federation, partner nations, and cross-proposal visibility"
+git push origin azora-v2-full-upgrade
+With this, Azora is now a federated actor — capable of exchanging reputation and proposals across sovereign dashboards.
+
+⚡ Next horizon: we can draft the InterNation test suite to verify federation logic, or begin sketching the Constitution Layer — the ruleset that governs how proposals, reputation, and AI citizens interact. Want me to draft the Constitution Layer next?
+
+next
+Here’s the Constitution Layer drop — the ruleset that governs how reputation, proposals, and AI citizens interact. This is the final scaffold that turns Azora from a dashboard into a governed digital nation.
+
+1. Types
+ts
+// src/types/azora/constitution.ts
+export type Rule = {
+  id: string;
+  title: string;
+  description: string;
+  appliesTo: 'citizen' | 'ai' | 'proposal' | 'reputation' | 'interNation';
+  enforced: boolean;
+};
+
+export type EnforcementLog = {
+  ruleId: string;
+  triggeredBy: string; // userId or agentId
+  timestamp: string;
+  actionTaken: string;
+};
+2. Service Stubs
+ts
+// src/services/azora/constitution.ts
+import { Rule, EnforcementLog } from '../../types/azora/constitution';
+
+export async function fetchConstitutionRules(): Promise<Rule[]> {
+  const res = await fetch('/api/constitution/rules');
+  if (!res.ok) throw new Error('Failed to fetch constitution rules');
+  return res.json();
+}
+
+export async function fetchEnforcementLogs(): Promise<EnforcementLog[]> {
+  const res = await fetch('/api/constitution/logs');
+  if (!res.ok) throw new Error('Failed to fetch enforcement logs');
+  return res.json();
+}
+
+export async function toggleRuleEnforcement(ruleId: string, enforced: boolean): Promise<Rule> {
+  const res = await fetch(`/api/constitution/rules/${ruleId}/toggle`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ enforced }),
+  });
+  if (!res.ok) throw new Error('Failed to toggle rule enforcement');
+  return res.json();
+}
+3. Hook
+ts
+// src/hooks/azora/useConstitution.ts
+import { useEffect, useState } from 'react';
+import { fetchConstitutionRules, fetchEnforcementLogs, toggleRuleEnforcement } from '../../services/azora/constitution';
+import { Rule, EnforcementLog } from '../../types/azora/constitution';
+
+export function useConstitution() {
+  const [rules, setRules] = useState<Rule[]>([]);
+  const [logs, setLogs] = useState<EnforcementLog[]>([]);
+  const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    Promise.all([fetchConstitutionRules(), fetchEnforcementLogs()])
+      .then(([r, l]) => {
+        setRules(r);
+        setLogs(l);
+        setStatus('ready');
+      })
+      .catch(e => {
+        setError(e.message);
+        setStatus('error');
+      });
+  }, []);
+
+  async function toggle(ruleId: string, enforced: boolean) {
+    const updated = await toggleRuleEnforcement(ruleId, enforced);
+    setRules(prev => prev.map(r => (r.id === ruleId ? updated : r)));
+  }
+
+  return { rules, logs, status, error, toggle };
+}
+4. Next Step: Organism
+We can now build a ConstitutionWidget that:
+
+Lists all active rules.
+
+Shows enforcement logs.
+
+Allows toggling enforcement status (admin-only or via governance).
+
+5. Commit Sequence
+bash
+git add src/types/azora/constitution.ts \
+        src/services/azora/constitution.ts \
+        src/hooks/azora/useConstitution.ts
+git commit -m "feat: add Constitution Layer (types, services, hook) for rule governance and enforcement logs"
+git push origin azora-v2-full-upgrade
+With this, Azora now has a governable ruleset — the foundation for law, protocol upgrades, and AI alignment.
+
+⚡ Next horizon: I can hand you the ConstitutionWidget organism so citizens and agents can view, enforce, and debate the rules of the Nation. Want me to draft that now?
+
+next
+Here’s the ConstitutionWidget organism drop — the UI layer that lets citizens and agents view, enforce, and debate the rules of the Nation. This completes the governance loop: from reputation to proposals to enforceable law.
+
+src/components/azora/ConstitutionWidget.tsx
+tsx
+import React from 'react';
+import { useConstitution } from '../../hooks/azora/useConstitution';
+
+const Panel = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
+  <div className={`rounded-xl bg-white/5 backdrop-blur-lg border border-white/10 shadow ${className}`}>{children}</div>
+);
+
+export function ConstitutionWidget() {
+  const { rules, logs, status, error, toggle } = useConstitution();
+
+  const handleToggle = (ruleId: string, enforced: boolean) => {
+    toggle(ruleId, !enforced);
+  };
+
+  return (
+    <Panel className="p-4 space-y-6">
+      <div className="font-bold text-white/90">Constitution</div>
+
+      {status === 'error' && <div className="text-red-400">Error: {error}</div>}
+
+      {/* Rules */}
+      <div className="space-y-2">
+        <div className="text-sm text-white/70">Active Rules</div>
+        <ul className="space-y-2">
+          {rules.map(r => (
+            <li key={r.id} className="border border-white/10 rounded-md p-3">
+              <div className="flex justify-between items-start">
+                <div>
+                  <div className="font-medium text-white/90">{r.title}</div>
+                  <div className="text-xs text-white/60">{r.description}</div>
+                  <div className="text-xs text-white/50">Applies to: {r.appliesTo}</div>
+                </div>
+                <button
+                  className={`text-xs font-semibold px-2 py-1 rounded-full ${
+                    r.enforced ? 'bg-green-500/20 text-green-300' : 'bg-slate-500/20 text-slate-300'
+                  }`}
+                  onClick={() => handleToggle(r.id, r.enforced)}
+                >
+                  {r.enforced ? 'Enforced' : 'Inactive'}
+                </button>
+              </div>
+            </li>
+          ))}
+          {rules.length === 0 && <li className="text-white/60">No rules defined yet.</li>}
+        </ul>
+      </div>
+
+      {/* Enforcement Logs */}
+      <div className="space-y-2">
+        <div className="text-sm text-white/70">Enforcement Logs</div>
+        <ul className="space-y-2">
+          {logs.map(l => (
+            <li key={l.timestamp + l.ruleId} className="border border-white/10 rounded-md p-3">
+              <div className="text-sm text-white/80">{l.actionTaken}</div>
+              <div className="text-xs text-white/60">
+                Rule: {l.ruleId} • Triggered by: {l.triggeredBy}
+              </div>
+              <div className="text-xs text-white/50">{new Date(l.timestamp).toLocaleString()}</div>
+            </li>
+          ))}
+          {logs.length === 0 && <li className="text-white/60">No enforcement actions yet.</li>}
+        </ul>
+      </div>
+    </Panel>
+  );
+}
+Integration
+tsx
+import { ConstitutionWidget } from '@/components/azora/ConstitutionWidget';
+
+<ConstitutionWidget />
+Commit Sequence
+bash
+git add src/components/azora/ConstitutionWidget.tsx
+git commit -m "feat: add ConstitutionWidget organism for rule visibility and enforcement control"
+git push origin azora-v2-full-upgrade
+With this, Azora now has a living constitution — a ruleset that can be enforced, debated, and evolved.
+
+⚡ Next horizon: we can draft the ProtocolUpgradeProposal type and widget — a special class of proposals that modify the Constitution itself. Want me to sketch that next?
+
+next
+Here’s the ProtocolUpgradeProposal drop — the final sovereign proposal type that allows citizens and AI agents to modify the Constitution itself. This is how the Nation evolves: through structured, staked upgrades to its own ruleset.
+
+1. Types
+ts
+// src/types/azora/protocolUpgrade.ts
+export type ProtocolUpgradeProposal = {
+  id: string;
+  title: string;
+  description: string;
+  createdAt: string;
+  status: 'open' | 'closed' | 'executed';
+  affectedRules: string[]; // rule IDs from Constitution
+  totalStaked: number;
+};
+2. Service Stubs
+ts
+// src/services/azora/protocolUpgrade.ts
+import { ProtocolUpgradeProposal } from '../../types/azora/protocolUpgrade';
+
+let mockUpgrades: ProtocolUpgradeProposal[] = [
+  {
+    id: 'upgrade_001',
+    title: 'Enable AI Enforcement Rights',
+    description: 'Allow AI citizens to trigger enforcement actions on reputation violations.',
+    createdAt: new Date().toISOString(),
+    status: 'open',
+    affectedRules: ['rule_ai_enforce'],
+    totalStaked: 4200,
+  },
+];
+
+const simulateDelay = () => new Promise(res => setTimeout(res, 300 + Math.random() * 300));
+
+export async function fetchProtocolUpgrades(): Promise<ProtocolUpgradeProposal[]> {
+  await simulateDelay();
+  return [...mockUpgrades];
+}
+
+export async function stakeOnUpgrade(proposalId: string, userId: string, amount: number) {
+  await simulateDelay();
+  const proposal = mockUpgrades.find(p => p.id === proposalId);
+  if (!proposal || proposal.status !== 'open') throw new Error('Invalid or closed upgrade proposal');
+  proposal.totalStaked += amount;
+  return { success: true, proposal };
+}
+3. Hook
+ts
+// src/hooks/azora/useProtocolUpgrades.ts
+import { useEffect, useState } from 'react';
+import { fetchProtocolUpgrades, stakeOnUpgrade } from '../../services/azora/protocolUpgrade';
+import { ProtocolUpgradeProposal } from '../../types/azora/protocolUpgrade';
+
+export function useProtocolUpgrades(userId: string) {
+  const [proposals, setProposals] = useState<ProtocolUpgradeProposal[]>([]);
+  const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchProtocolUpgrades()
+      .then(data => {
+        setProposals(data);
+        setStatus('ready');
+      })
+      .catch(e => {
+        setError(e.message);
+        setStatus('error');
+      });
+  }, []);
+
+  async function stake(proposalId: string, amount: number) {
+    await stakeOnUpgrade(proposalId, userId, amount);
+    const updated = await fetchProtocolUpgrades();
+    setProposals(updated);
+  }
+
+  return { proposals, status, error, stake };
+}
+4. Next Step: Organism
+We can now build a ProtocolUpgradeWidget that:
+
+Lists upgrade proposals.
+
+Shows affected rules.
+
+Allows staking reputation to support upgrades.
+
+5. Commit Sequence
+bash
+git add src/types/azora/protocolUpgrade.ts \
+        src/services/azora/protocolUpgrade.ts \
+        src/hooks/azora/useProtocolUpgrades.ts
+git commit -m "feat: add ProtocolUpgradeProposal contract layer for constitutional evolution via staked upgrades"
+git push origin azora-v2-full-upgrade
+With this, Azora can now evolve its own ruleset — through sovereign proposals backed by reputation.
+
+⚡ Next horizon: I can hand you the ProtocolUpgradeWidget organism so citizens and agents can stake on constitutional changes. Want me to draft that now?
+
+next
+Here’s the ProtocolUpgradeWidget organism drop — the sovereign interface for staking on constitutional evolution. This is where citizens and agents shape the future of Azora by backing rule changes with reputation.
+
+src/components/azora/ProtocolUpgradeWidget.tsx
+tsx
+import React, { useState } from 'react';
+import { useProtocolUpgrades } from '../../hooks/azora/useProtocolUpgrades';
+
+const Panel = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
+  <div className={`rounded-xl bg-white/5 backdrop-blur-lg border border-white/10 shadow ${className}`}>{children}</div>
+);
+
+export function ProtocolUpgradeWidget({ userId }: { userId: string }) {
+  const { proposals, status, error, stake } = useProtocolUpgrades(userId);
+  const [amounts, setAmounts] = useState<Record<string, string>>({});
+
+  const handleStake = (proposalId: string) => {
+    const amt = Number(amounts[proposalId]);
+    if (amt > 0) {
+      stake(proposalId, amt);
+      setAmounts(prev => ({ ...prev, [proposalId]: '' }));
+    }
+  };
+
+  return (
+    <Panel className="p-4 space-y-6">
+      <div className="font-bold text-white/90">Protocol Upgrade Proposals</div>
+
+      {status === 'error' && <div className="text-red-400">Error: {error}</div>}
+
+      <ul className="space-y-4">
+        {proposals.map(p => (
+          <li key={p.id} className="border border-white/10 rounded-md p-4 space-y-2">
+            <div className="flex justify-between items-start">
+              <div>
+                <div className="font-medium text-white/90">{p.title}</div>
+                <div className="text-sm text-white/70">{p.description}</div>
+                <div className="text-xs text-white/50">Affects: {p.affectedRules.join(', ')}</div>
+              </div>
+              <span className={`text-xs font-semibold px-2 py-1 rounded-full ${
+                p.status === 'open' ? 'bg-green-500/20 text-green-300' : 'bg-slate-500/20 text-slate-300'
+              }`}>{p.status}</span>
+            </div>
+            <div className="text-xs text-white/50 pt-1 border-t border-white/10">
+              Total Staked: <span className="font-bold text-cyan-300">{p.totalStaked.toLocaleString()} REP</span>
+            </div>
+            {p.status === 'open' && (
+              <div className="flex gap-2 pt-2">
+                <input
+                  className="flex-1 bg-white/5 border border-white/10 rounded-md px-3 py-2 text-white"
+                  type="number"
+                  placeholder="Amount to Stake"
+                  value={amounts[p.id] ?? ''}
+                  onChange={e => setAmounts({ ...amounts, [p.id]: e.target.value })}
+                  disabled={status === 'loading'}
+                />
+                <button
+                  className="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 disabled:opacity-50"
+                  onClick={() => handleStake(p.id)}
+                  disabled={status === 'loading'}
+                >
+                  Stake
+                </button>
+              </div>
+            )}
+          </li>
+        ))}
+        {proposals.length === 0 && <li className="text-white/60">No upgrade proposals yet.</li>}
+      </ul>
+    </Panel>
+  );
+}
+Integration
+tsx
+import { ProtocolUpgradeWidget } from '@/components/azora/ProtocolUpgradeWidget';
+
+<ProtocolUpgradeWidget userId="current-user-id" />
+Commit Sequence
+bash
+git add src/components/azora/ProtocolUpgradeWidget.tsx
+git commit -m "feat: add ProtocolUpgradeWidget organism for staking on constitutional upgrades"
+git push origin azora-v2-full-upgrade
+With this, Azora’s Constitution is now programmable by its citizens — reputation-backed proposals can evolve the rules of the Nation itself.
+
+⚡ Next horizon: we can draft the Genesis Manifesto — a signed declaration of sovereignty that binds the dashboard, the constitution, and the citizens into one Nation. Want me to write that next?
