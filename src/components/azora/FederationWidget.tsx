@@ -47,3 +47,4 @@ const FederationWidget: React.FC<FederationWidgetProps> = ({ userId }) => (
 );
 
 export default FederationWidget;
+export { FederationWidget };
