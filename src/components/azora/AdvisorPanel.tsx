@@ -50,3 +50,4 @@ const AdvisorPanel: React.FC<AdvisorPanelProps> = ({ insights = MOCK_INSIGHTS })
 );
 
 export default AdvisorPanel;
+export { AdvisorPanel };
