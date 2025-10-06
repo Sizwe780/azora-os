@@ -51,6 +51,7 @@
     "@aws-sdk/s3-request-presigner": "^3.901.0",
     "@prisma/client": "^6.16.3",
     "archiver": "^7.0.1",
+    "autoprefixer": "^10.4.21",
     "axios": "^1.12.2",
     "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.7",
@@ -66,11 +67,13 @@
     "jsonwebtoken": "^9.0.2",
     "jspdf": "^3.0.3",
     "leaflet": "^1.9.4",
+    "lottie-react": "^2.4.1",
     "lucide-react": "^0.544.0",
     "multer": "^2.0.2",
     "node-cron": "^4.2.1",
     "nodemailer": "^7.0.7",
     "pdfkit": "^0.17.2",
+    "postcss": "^8.5.6",
     "prisma": "^6.16.3",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
@@ -80,6 +83,7 @@
     "react-signature-canvas": "^1.1.0-alpha.1",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1",
+    "tailwindcss": "^4.1.14",
     "undefined": "^0.1.0"
   }
 }

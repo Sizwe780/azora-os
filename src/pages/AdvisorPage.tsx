@@ -1,6 +1,6 @@
 import React from 'react';
 import Heading from '../components/azora/atoms/Heading';
-import { useApi } from '../hooks/useApi';
+import { useApi } from '../hooks/azora/useApi';
 
 type Insight = { id: string; severity: string; message: string; suggestion: string };
 

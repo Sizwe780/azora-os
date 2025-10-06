@@ -1,29 +1,47 @@
-import React from 'react';
-import GlassPanel from '../components/azora/atoms/GlassPanel';
-import Heading from '../components/azora/atoms/Heading';
-import Skeleton from '../components/azora/atoms/Skeleton';
-import ProfileCard from '../components/azora/molecules/ProfileCard';
-import AdvisorPanel from '../components/azora/AdvisorPanel';
-import FederationWidget from '../components/azora/FederationWidget';
-import { ReputationEconomyWidget } from '../components/azora/ReputationEconomyWidget';
-import { GovernanceProposalsWidget } from '../components/azora/GovernanceProposalsWidget';
-import { ConstitutionWidget } from '../components/azora/ConstitutionWidget';
-import LeaderboardWidget from '../components/azora/LeaderboardWidget';
+import React from "react";
+import GlassPanel from "../components/azora/atoms/GlassPanel";
+// Import your actual widgets/components here:
+import ProfileCard from "../components/azora/molecules/ProfileCard";
+import AdvisorPanel from "../components/azora/AdvisorPanel";
+import FederationWidget from "../components/azora/FederationWidget";
+import { ReputationEconomyWidget } from "../components/azora/ReputationEconomyWidget";
+import { GovernanceProposalsWidget } from "../components/azora/GovernanceProposalsWidget";
+import { ConstitutionWidget } from "../components/azora/ConstitutionWidget";
+import LeaderboardWidget from "../components/azora/LeaderboardWidget";
 
 export default function MainDashboard() {
   return (
-    <div className="space-y-6 p-6">
-      <GlassPanel className="flex flex-col items-center p-8 mb-6">
-        <Heading level={1}>Azora Intelligent Logistics Console</Heading>
-        <Skeleton lines={1} className="w-1/2 mx-auto" />
+    <div className="w-full max-w-6xl mx-auto px-2 py-8">
+      <GlassPanel accent="premium" animated className="mb-8 flex flex-col items-center">
+        <h1 className="text-4xl font-extrabold text-yellow-300 mb-2 text-center">Azora Intelligent Logistics Console</h1>
+        <p className="text-lg text-white/70 text-center mb-2">Welcome to your premium dashboard ✨</p>
       </GlassPanel>
-      <ProfileCard username="Demo User" role="Citizen" status="online" />
-      <AdvisorPanel />
-      <FederationWidget userId="demo_user" />
-      <ReputationEconomyWidget userId="demo_user" />
-      <GovernanceProposalsWidget userId="demo_user" />
-      <ConstitutionWidget />
-      <LeaderboardWidget />
+
+      {/* Responsive grid for widgets */}
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <GlassPanel className="col-span-1">
+          <ProfileCard username="Demo User" role="Citizen" status="online" />
+        </GlassPanel>
+        <GlassPanel className="col-span-1">
+          <AdvisorPanel />
+        </GlassPanel>
+        <GlassPanel className="col-span-1">
+          <FederationWidget userId="demo_user" />
+        </GlassPanel>
+        <GlassPanel className="col-span-1">
+          <ReputationEconomyWidget userId="demo_user" />
+        </GlassPanel>
+        <GlassPanel className="col-span-1">
+          <GovernanceProposalsWidget userId="demo_user" />
+        </GlassPanel>
+        <GlassPanel className="col-span-1">
+          <ConstitutionWidget />
+        </GlassPanel>
+        <GlassPanel className="col-span-1">
+          <LeaderboardWidget />
+        </GlassPanel>
+        {/* Add more GlassPanels with widgets as needed */}
+      </div>
     </div>
   );
 }

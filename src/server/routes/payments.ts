@@ -17,7 +17,7 @@ router.get('/api/payments', async (req, res) => {
       }
     });
 
-    const result = payments.map(p => ({
+    const result = payments.map((p: { id: any; reference: any; provider: any; amount: any; currency: any; status: any; createdAt: any; company: { name: any; }; ledgerEntries: { uid: any; }[]; }) => ({
       id: p.id,
       reference: p.reference,
       provider: p.provider,

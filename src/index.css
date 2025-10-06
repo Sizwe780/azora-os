@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Animations for float effect on GlassPanel and custom beams */
+@layer utilities {
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) }
+    50% { transform: translateY(-12px) }
+  }
+
+  .animate-azora-beam1 {
+    animation: azora-beam1 17s ease-in-out infinite alternate;
+  }
+  .animate-azora-beam2 {
+    animation: azora-beam2 13s ease-in-out infinite alternate;
+  }
+  .animate-azora-beam3 {
+    animation: azora-beam3 19s ease-in-out infinite alternate;
+  }
+  .animate-azora-shimmer {
+    animation: azora-shimmer 7s linear infinite;
+  }
+
+  @keyframes azora-beam1 {
+    0% { transform: translateY(0) scale(1); }
+    100% { transform: translateY(-40px) scale(1.12);}
+  }
+  @keyframes azora-beam2 {
+    0% { transform: translateY(0) scale(1);}
+    100% { transform: translateY(30px) scale(1.18);}
+  }
+  @keyframes azora-beam3 {
+    0% { transform: translateY(0) scale(1);}
+    100% { transform: translateY(-20px) scale(1.10);}
+  }
+  @keyframes azora-shimmer {
+    0% { opacity: 0.38; filter: blur(12px);}
+    50% { opacity: 0.68; filter: blur(16px);}
+    100% { opacity: 0.38; filter: blur(12px);}
+  }
+}
+
+/* Optional: Prevent global plain backgrounds */
+body {
+  /* Don't set a solid background here! Let the glass and beams show through. */
+}

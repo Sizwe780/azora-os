@@ -18,7 +18,7 @@ router.get('/api/contracts', async (req, res) => {
       }
     });
 
-    const result = contracts.map(c => ({
+    const result = contracts.map((c: { id: any; name: any; version: any; active: any; updatedAt: any; ledgerEntries: { uid: any; }[]; }) => ({
       id: c.id,
       name: c.name,
       version: c.version,

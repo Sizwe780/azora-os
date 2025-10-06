@@ -20,7 +20,7 @@ router.get('/api/drivers', async (req, res) => {
       }
     });
   
-    const result = drivers.map(d => ({
+    const result = drivers.map((d: { id: any; email: any; createdAt: any; ledgerEntries: { uid: any; }[]; }) => ({
       id: d.id,
       email: d.email,
       createdAt: d.createdAt,

@@ -13,7 +13,7 @@ export async function planTripWithHOS({ companyId, driverId, currentCycleUsedHrs
   const leg1 = await routeBetween(current, pickup);
   const leg2 = await routeBetween(pickup, drop);
 
-  const fuelStops = []; // compute from distance and policy.fuelEveryKm
+  const fuelStops: never[] = []; // compute from distance and policy.fuelEveryKm
   const legsData = [
     { sequence: 1, start: current, end: pickup, type: 'pickup', distanceKm: leg1.distanceKm, durationMin: leg1.durationMin, plannedAt: new Date() },
     { sequence: 2, start: pickup, end: drop, type: 'driving', distanceKm: leg2.distanceKm, durationMin: leg2.durationMin, plannedAt: new Date() },

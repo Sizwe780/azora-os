@@ -17,7 +17,7 @@ router.get('/api/payouts', async (req, res) => {
       }
     });
 
-    const result = payouts.map(p => ({
+    const result = payouts.map((p: { id: any; partner: { id: any; }; amountCents: any; status: any; period: any; createdAt: any; ledgerEntries: { uid: any; }[]; }) => ({
       id: p.id,
       partner: p.partner?.id ?? '—',
       amountCents: p.amountCents,

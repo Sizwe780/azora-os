@@ -1,15 +1,34 @@
-import React from 'react';
+import React from "react";
 
-interface GlassPanelProps {
+export default function GlassPanel({
+  children,
+  className = "",
+  accent = "",
+  animated = false,
+}: {
   children: React.ReactNode;
   className?: string;
+  accent?: "premium" | "";
+  animated?: boolean;
+}) {
+  return (
+    <div
+      className={`
+        rounded-2xl shadow-xl overflow-hidden
+        backdrop-blur-lg bg-white/30 dark:bg-slate-900/40
+        border border-white/20 dark:border-slate-800/40
+        ${accent === "premium" ? "border-2 border-yellow-400/40" : ""}
+        ${animated ? "animate-float" : ""}
+        ${className}
+      `}
+      style={{
+        boxShadow:
+          accent === "premium"
+            ? "0 8px 40px 0 rgba(255, 215, 0, 0.13), 0 2px 12px 0 rgba(0,0,0,0.23)"
+            : undefined,
+      }}
+    >
+      {children}
+    </div>
+  );
 }
-
-const GlassPanel: React.FC<GlassPanelProps> = ({ children, className = '' }) => (
-  <div className={`rounded-xl bg-white/5 backdrop-blur-lg border border-white/10 shadow ${className}`}>
-    {children}
-  </div>
-);
-
-export default GlassPanel;
-export { GlassPanel };

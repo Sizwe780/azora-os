@@ -6,23 +6,26 @@ const Panel = ({ children, className = '' }: { children: React.ReactNode; classN
 );
 
 export function ConstitutionWidget() {
-  const { rules, logs, status, error, toggle } = useConstitution();
+  const { rules, logs, status, error, toggle, constitution } = useConstitution();
 
   const handleToggle = (ruleId: string, enforced: boolean) => {
     toggle(ruleId, !enforced);
   };
 
+  const safeRules = Array.isArray(rules) ? rules : [];
+  const safeLogs = Array.isArray(logs) ? logs : [];
+
   return (
     <Panel className="p-4 space-y-6">
       <div className="font-bold text-white/90">Constitution</div>
-
+      <div className="whitespace-pre-wrap text-white mb-4">{constitution}</div>
       {status === 'error' && <div className="text-red-400">Error: {error}</div>}
 
       {/* Rules */}
       <div className="space-y-2">
         <div className="text-sm text-white/70">Active Rules</div>
         <ul className="space-y-2">
-          {rules.map(r => (
+          {safeRules.map(r => (
             <li key={r.id} className="border border-white/10 rounded-md p-3">
               <div className="flex justify-between items-start">
                 <div>
@@ -41,7 +44,7 @@ export function ConstitutionWidget() {
               </div>
             </li>
           ))}
-          {rules.length === 0 && <li className="text-white/60">No rules defined yet.</li>}
+          {safeRules.length === 0 && <li className="text-white/60">No rules defined yet.</li>}
         </ul>
       </div>
 
@@ -49,7 +52,7 @@ export function ConstitutionWidget() {
       <div className="space-y-2">
         <div className="text-sm text-white/70">Enforcement Logs</div>
         <ul className="space-y-2">
-          {logs.map(l => (
+          {safeLogs.map(l => (
             <li key={l.timestamp + l.ruleId} className="border border-white/10 rounded-md p-3">
               <div className="text-sm text-white/80">{l.actionTaken}</div>
               <div className="text-xs text-white/60">
@@ -58,7 +61,7 @@ export function ConstitutionWidget() {
               <div className="text-xs text-white/50">{new Date(l.timestamp).toLocaleString()}</div>
             </li>
           ))}
-          {logs.length === 0 && <li className="text-white/60">No enforcement actions yet.</li>}
+          {safeLogs.length === 0 && <li className="text-white/60">No enforcement actions yet.</li>}
         </ul>
       </div>
     </Panel>

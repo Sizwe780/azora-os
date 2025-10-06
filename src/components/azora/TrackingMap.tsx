@@ -35,7 +35,7 @@ interface ClientToServerEvents {
 
 // Connect to backend (use env var for flexibility)
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
-  process.env.REACT_APP_SOCKET_URL || window.location.origin
+  import.meta.env.VITE_SOCKET_URL || window.location.origin
 );
 
 export default function TrackingMap() {

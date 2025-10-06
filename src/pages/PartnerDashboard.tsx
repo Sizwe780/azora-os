@@ -1,6 +1,6 @@
 // src/pages/PartnerDashboard.tsx
 import React from 'react';
-import { useApi } from '../hooks/useApi';
+import { useApi } from '../hooks/azora/useApi';
 import Card from '../components/azora/atoms/Card';
 import Heading from '../components/azora/atoms/Heading';
 import toast from 'react-hot-toast';

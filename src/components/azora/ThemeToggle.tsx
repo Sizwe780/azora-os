@@ -1,21 +1,16 @@
-// src/components/azora/ThemeToggle.tsx
-import React from 'react';
-import { Sun, Moon } from 'lucide-react';
-import { useTheme } from '../../context/ThemeProvider';
+import React from "react";
+import { useTheme } from "../../context/ThemeProvider";
+import { Sun, Moon } from "lucide-react";
 
-const ThemeToggle: React.FC = () => {
-  const { theme, toggle } = useTheme();
-  const isDark = theme === 'dark';
-
+export default function ThemeToggle() {
+  const { theme, setTheme } = useTheme();
   return (
     <button
-      onClick={toggle}
+      className="fixed top-4 right-4 z-50 bg-white/40 dark:bg-slate-900/50 rounded-full p-2 shadow hover:scale-110 transition"
+      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
       aria-label="Toggle theme"
-      className="p-2 rounded bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 hover:opacity-80 transition"
     >
-      {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+      {theme === "dark" ? <Sun className="text-yellow-400" /> : <Moon className="text-blue-600" />}
     </button>
   );
-};
-
-export default ThemeToggle;
+}
