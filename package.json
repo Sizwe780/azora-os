@@ -2,7 +2,11 @@
   "name": "azora-os",
   "version": "1.0.0",
   "private": true,
-  "scripts": {},
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
   "description": "",
   "main": "index.js",
   "directories": {

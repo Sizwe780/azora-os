@@ -14,3 +14,4 @@ const Skeleton: React.FC<SkeletonProps> = ({ lines = 1, className = '' }) => (
 );
 
 export default Skeleton;
+export { Skeleton };
