@@ -117,25 +117,21 @@ model Payout {
 // ----------------------------- Logistics -----------------------------
 
 model Driver {
-  id           String   @id @default(cuid())
-  companyId    String?
-  company      Company? @relation(fields: [companyId], references: [id])
-
-  userId       String?
-  name         String?
-  phone        String?
-
-  status       String?
-  lastLat      Float?
-  lastLon      Float?
-  lastUpdated  DateTime?
-
-  jobs         Job[]
-
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  @@index([companyId])
+  id        String        @id @default(cuid())
+  email     String?       @unique
+  companyId String?
+  company   Company?      @relation(fields: [companyId], references: [id])
+  userId    String?
+  name      String?
+  phone     String?
+  status    String?
+  lastLat   Float?
+  lastLon   Float?
+  lastUpdated DateTime?
+  jobs      Job[]
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  ledgerEntries LedgerEntry[] @relation("DriverLedger")
 }
 
 model Job {
@@ -175,10 +171,12 @@ model Contract {
   startDate    DateTime
   endDate      DateTime?
   active       Boolean  @default(true)
-
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-
+  version     Int       @default(1)
+  federationId String?
+  federation   Federation? @relation(fields: [federationId], references: [id])
+  ledgerEntries LedgerEntry[]
   @@index([companyId, active])
 }
 
@@ -212,7 +210,7 @@ model Payment {
   currency     String    @default("ZAR")
   status       String
   meta         Json?
-
+  ledgerEntries LedgerEntry[] @relation("PaymentLedger")
   createdAt    DateTime  @default(now())
 
   @@index([companyId, provider])
@@ -429,18 +427,6 @@ model ELDLog {
   createdAt    DateTime @default(now())
 }
 
-model Payment {
-  id           String        @id @default(cuid())
-  reference    String        @unique
-  provider     String
-  amount       Int
-  currency     String
-  status       String
-  companyId    String
-  company      Company       @relation(fields: [companyId], references: [id])
-  createdAt    DateTime      @default(now())
-  ledgerEntries LedgerEntry[] @relation("PaymentLedger")
-}
 
 model Payout {
   id           String        @id @default(cuid())
@@ -453,21 +439,7 @@ model Payout {
   ledgerEntries LedgerEntry[] @relation("PayoutLedger")
 }
 
-model Driver {
-  id        String        @id @default(cuid())
-  email     String        @unique
-  createdAt DateTime      @default(now())
-  ledgerEntries LedgerEntry[] @relation("DriverLedger")
-}
 
-model ScheduledExport {
-  id        String   @id @default(cuid())
-  type      String   // e.g. "MONTHLY", "WEEKLY"
-  period    String   // e.g. "2025-09"
-  url       String   // signed URL
-  expiresAt DateTime
-  createdAt DateTime @default(now())
-}
 
 // prisma/schema.prisma
 model User {
@@ -494,22 +466,6 @@ model PasswordResetToken {
   token     String   @unique
   expiresAt DateTime
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model Contract {
-  id          String   @id @default(cuid())
-  name        String
-  terms       String
-  version     Int       @default(1)
-  active      Boolean   @default(true)
-  companyId   String?
-  company     Company?  @relation(fields: [companyId], references: [id])
-  federationId String?
-  federation   Federation? @relation(fields: [federationId], references: [id])
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  ledgerEntries LedgerEntry[]
 }
 
 
