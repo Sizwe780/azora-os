@@ -1,17 +1,30 @@
-import React, { useState, useCallback, createContext } from 'react';
-import NotificationToast from './molecules/NotificationToast';
+import React, { useState, useCallback, createContext, useContext } from 'react';
+import NotificationToast from '../components/azora/molecules/NotificationToast';
 
-export const NotificationContext = createContext(null);
+export type NotificationType = 'success' | 'error' | 'info';
 
-export function NotificationProvider({ children }) {
-  const [notifications, setNotifications] = useState([]);
+export interface Notification {
+  id: string;
+  type: NotificationType;
+  title: string;
+  message: string;
+}
 
-  const notify = useCallback((notification) => {
+interface NotificationContextType {
+  notify: (notification: Omit<Notification, 'id'>) => void;
+}
+
+const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
+
+export function NotificationProvider({ children }: { children: React.ReactNode }) {
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+
+  const notify = useCallback((notification: Omit<Notification, 'id'>) => {
     const id = crypto.randomUUID();
     setNotifications(prev => [...prev, { id, ...notification }]);
   }, []);
 
-  const dismiss = useCallback((id) => {
+  const dismiss = useCallback((id: string) => {
     setNotifications(prev => prev.filter(n => n.id !== id));
   }, []);
 
@@ -34,4 +47,11 @@ export function NotificationProvider({ children }) {
       </div>
     </NotificationContext.Provider>
   );
+}
+
+// Custom hook for usage in components
+export function useNotify() {
+  const context = useContext(NotificationContext);
+  if (!context) throw new Error('useNotify must be used within NotificationProvider');
+  return context.notify;
 }

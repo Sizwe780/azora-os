@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useReputationEconomy } from '../../hooks/azora/useReputationEconomy';
-import { Card } from '../../components/azora/atoms/Card';
-import { Heading } from '../../components/azora/atoms/Heading';
-import { Skeleton } from '../../components/azora/atoms/Skeleton';
+import Card from '../../components/azora/atoms/Card';
+import Heading from '../../components/azora/atoms/Heading';
+import Skeleton from '../../components/azora/atoms/Skeleton';
 import { Zap, Users, ShieldCheck } from 'lucide-react';
 
 const Stat = ({ icon, label, value }: { icon: React.ReactNode, label: string, value: string }) => (
