@@ -263,15 +263,6 @@ model NationKPI {
   @@index([name, period])
 }
 
-model Federation {
-  id         String   @id @default(cuid())
-  name       String
-  meta       Json?
-
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-}
-
 model AdvisorMessage {
   id         String   @id @default(cuid())
   topic      String
@@ -339,18 +330,6 @@ model TripLeg {
   type      String?  // driving, rest, fuel, pickup, dropoff
   plannedAt DateTime?
   actualAt  DateTime?
-}
-
-model ELDLog {
-  id          String   @id @default(cuid())
-  tripId      String
-  trip        TripPlan @relation(fields: [tripId], references: [id])
-  driverId    String?
-  driver      Driver?  @relation(fields: [driverId], references: [id])
-  date        DateTime // day of log
-  sheet       Json     // structured entries + grid coordinates
-  pdfUrl      String?  // cached export
-  createdAt   DateTime @default(now())
 }
 
 model DriverHours {
