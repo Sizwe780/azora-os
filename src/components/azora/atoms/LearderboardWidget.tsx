@@ -23,3 +23,5 @@ export function LeaderboardWidget() {
     </Card>
   );
 }
+export default LeaderboardWidget;
+export { LeaderboardWidget };
