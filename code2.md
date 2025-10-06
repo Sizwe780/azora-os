@@ -1,9 +1,5 @@
 # Azora OS full update: backend, frontend, realtime, PWA, and responsive UX
 
-You’ve got the skeleton and muscles; this wraps all missing pieces into a cohesive, shippable system: payments, subscriptions, partners, drivers, jobs, audit, analytics, legal, localization, routing, dark/light mode, PWA, and live GPS tracking. It’s pragmatic and drop-in. If you want me to upgrade any of your existing files, tell me the exact paths and I’ll refactor them to production quality.
-
----
-
 ## Backend foundation and security
 
 ### Prisma schema essentials
