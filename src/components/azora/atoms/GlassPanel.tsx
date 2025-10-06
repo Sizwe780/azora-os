@@ -12,3 +12,4 @@ const GlassPanel: React.FC<GlassPanelProps> = ({ children, className = '' }) => 
 );
 
 export default GlassPanel;
+export { GlassPanel };
