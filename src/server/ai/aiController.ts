@@ -37,7 +37,7 @@ export async function stopTrip(req: Request, res: Response) {
 export async function generateLogs(req: Request, res: Response) {
   const { id } = req.params;
   enforcePolicy(defaultAzoraPolicy, { type: 'logs.generate', params: { id } });
-  const log = await generateELDForTrip(id);
+  const log = await generateEldPdf(id);
   res.json(log);
 }
 

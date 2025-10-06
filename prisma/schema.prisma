@@ -4,7 +4,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql" // or mysql/sqlite depending on your DB
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -48,21 +48,17 @@ model Company {
   vatPercent      Int               @default(15)
   billingEmail    String?           @db.VarChar(255)
   popiaConsent    Boolean           @default(false)
-
-  // Relations
   partners        Partner[]
   drivers         Driver[]
   contracts       Contract[]
-  referrals       Referral[]        // referrals pointing to this company
+  referrals       Referral[]
   jobs            Job[]
   subscriptions   Subscription[]
   payments        Payment[]
   audits          AuditLog[]
-  advisorMessages AdvisorMessage[]  // 🔥 added to fix missing relation
-
+  advisorMessages AdvisorMessage[]
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
-
   @@index([name])
 }
 
@@ -70,18 +66,14 @@ model Partner {
   id                 String       @id @default(cuid())
   companyId          String?
   company            Company?     @relation(fields: [companyId], references: [id])
-
   code               String?      @unique
   commissionRateBps  Int          @default(500)
   tier               Int          @default(1)
-
   referrals          Referral[]
   payouts            Payout[]
   audits             AuditLog[]
-
   createdAt          DateTime     @default(now())
   updatedAt          DateTime     @updatedAt
-
   @@index([companyId])
 }
 
@@ -89,12 +81,9 @@ model Referral {
   id          String   @id @default(cuid())
   partnerId   String
   partner     Partner  @relation(fields: [partnerId], references: [id])
-
   companyId   String
   company     Company  @relation(fields: [companyId], references: [id])
-
   createdAt   DateTime @default(now())
-
   @@index([partnerId])
   @@index([companyId])
 }
@@ -103,49 +92,41 @@ model Payout {
   id           String       @id @default(cuid())
   partnerId    String
   partner      Partner      @relation(fields: [partnerId], references: [id])
-
   amountCents  Int
   status       PayoutStatus @default(pending)
   period       String
-
   createdAt    DateTime     @default(now())
   paidAt       DateTime?
-
+  ledgerEntries LedgerEntry[] @relation("PayoutLedger")
   @@index([partnerId, status])
 }
 
 // ----------------------------- Logistics -----------------------------
 
 model Driver {
-  id           String   @id @default(cuid())
-  companyId    String?
-  company      Company? @relation(fields: [companyId], references: [id])
-
-  userId       String?
-  name         String?
-  phone        String?
-
-  status       String?
-  lastLat      Float?
-  lastLon      Float?
-  lastUpdated  DateTime?
-
-  jobs         Job[]
-
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  @@index([companyId])
+  id        String        @id @default(cuid())
+  email     String?       @unique
+  companyId String?
+  company   Company?      @relation(fields: [companyId], references: [id])
+  userId    String?
+  name      String?
+  phone     String?
+  status    String?
+  lastLat   Float?
+  lastLon   Float?
+  lastUpdated DateTime?
+  jobs      Job[]
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  ledgerEntries LedgerEntry[] @relation("DriverLedger")
 }
 
 model Job {
   id           String    @id @default(cuid())
   companyId    String
   company      Company   @relation(fields: [companyId], references: [id])
-
   driverId     String?
   driver       Driver?   @relation(fields: [driverId], references: [id])
-
   status       JobStatus @default(queued)
   pickupLat    Float?
   pickupLon    Float?
@@ -154,10 +135,8 @@ model Job {
   payload      Json?
   scheduledAt  DateTime?
   completedAt  DateTime?
-
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
-
   @@index([companyId])
   @@index([driverId])
   @@index([status])
@@ -169,16 +148,17 @@ model Contract {
   id           String   @id @default(cuid())
   companyId    String
   company      Company  @relation(fields: [companyId], references: [id])
-
   name         String
   terms        String
   startDate    DateTime
   endDate      DateTime?
   active       Boolean  @default(true)
-
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-
+  version      Int      @default(1)
+  federationId String?
+  federation   Federation? @relation(fields: [federationId], references: [id])
+  ledgerEntries LedgerEntry[]
   @@index([companyId, active])
 }
 
@@ -188,16 +168,13 @@ model Subscription {
   id           String             @id @default(cuid())
   companyId    String
   company      Company            @relation(fields: [companyId], references: [id])
-
   plan         String
   status       SubscriptionStatus @default(active)
   periodStart  DateTime
   periodEnd    DateTime
   nextBilling  DateTime?
-
   createdAt    DateTime           @default(now())
   updatedAt    DateTime           @updatedAt
-
   @@index([companyId, status])
 }
 
@@ -205,16 +182,14 @@ model Payment {
   id           String    @id @default(cuid())
   companyId    String
   company      Company   @relation(fields: [companyId], references: [id])
-
   provider     String
   reference    String    @unique
   amountCents  Int
   currency     String    @default("ZAR")
   status       String
   meta         Json?
-
+  ledgerEntries LedgerEntry[] @relation("PaymentLedger")
   createdAt    DateTime  @default(now())
-
   @@index([companyId, provider])
 }
 
@@ -224,17 +199,13 @@ model AuditLog {
   id          String      @id @default(cuid())
   companyId   String?
   company     Company?    @relation(fields: [companyId], references: [id])
-
   partnerId   String?
   partner     Partner?    @relation(fields: [partnerId], references: [id])
-
   actorUserId String?
   entityType  String?
   action      AuditAction
   payload     Json?
-
   createdAt   DateTime    @default(now())
-
   @@index([companyId])
   @@index([partnerId])
   @@index([action])
@@ -251,7 +222,6 @@ model Audit {
   createdAt DateTime @default(now())
 }
 
-
 // ----------------------------- Governance -----------------------------
 
 model NationKPI {
@@ -259,19 +229,8 @@ model NationKPI {
   name        String
   value       Float
   period      String
-
   createdAt   DateTime @default(now())
-
   @@index([name, period])
-}
-
-model Federation {
-  id         String   @id @default(cuid())
-  name       String
-  meta       Json?
-
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
 }
 
 model AdvisorMessage {
@@ -280,7 +239,6 @@ model AdvisorMessage {
   content    String
   severity   String?
   createdAt  DateTime @default(now())
-
   companyId  String?
   company    Company? @relation(fields: [companyId], references: [id])
 }
@@ -297,10 +255,10 @@ model UserProfile {
   companyId   String?
   company     Company? @relation(fields: [companyId], references: [id])
   name        String?
-  role        String?    // driver, dispatcher, partner
-  preferences Json?      // time format, units, notification prefs
-  vehicle     Json?      // type, tank size, average consumption
-  cycleMaxHrs Int?       // e.g., 70
+  role        String?
+  preferences Json?
+  vehicle     Json?
+  cycleMaxHrs Int?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -311,19 +269,18 @@ model TripPlan {
   company       Company   @relation(fields: [companyId], references: [id])
   driverId      String?
   driver        Driver?   @relation(fields: [driverId], references: [id])
-  jobId         String?   // optional linkage to a Job
+  jobId         String?
   status        TripStatus @default(planned)
   currentCycleUsedHrs Int @default(0)
-  currentLocation Json      // { lat, lon }
-  pickupLocation  Json      // { lat, lon, name }
-  dropoffLocation Json      // { lat, lon, name }
-  routeSummary   Json?      // { distanceKm, durationMin, fuelStops[] }
+  currentLocation Json
+  pickupLocation  Json
+  dropoffLocation Json
+  routeSummary   Json?
   startsAt       DateTime?
   completedAt    DateTime?
   createdByUserId String?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
-
   legs          TripLeg[]
   insights      InsightEvent[]
   logs          ELDLog[]
@@ -334,38 +291,52 @@ model TripLeg {
   tripId    String
   trip      TripPlan @relation(fields: [tripId], references: [id])
   sequence  Int
-  start     Json     // { lat, lon, name }
-  end       Json     // { lat, lon, name }
+  start     Json
+  end       Json
   distanceKm Float?
   durationMin Int?
-  type      String?  // driving, rest, fuel, pickup, dropoff
+  type      String?
   plannedAt DateTime?
   actualAt  DateTime?
 }
 
 model ELDLog {
-  id          String   @id @default(cuid())
-  tripId      String
-  trip        TripPlan @relation(fields: [tripId], references: [id])
-  driverId    String?
-  driver      Driver?  @relation(fields: [driverId], references: [id])
-  date        DateTime // day of log
-  sheet       Json     // structured entries + grid coordinates
-  pdfUrl      String?  // cached export
-  createdAt   DateTime @default(now())
+  id           String   @id @default(cuid())
+  tripId       String
+  trip         TripPlan @relation(fields: [tripId], references: [id])
+  driverId     String?
+  driver       Driver?  @relation(fields: [driverId], references: [id])
+  date         DateTime
+  sheet        Json
+  pdfUrl       String?
+  driverLicense   String?
+  vehiclePlate    String?
+  vehicleId       String?
+  odometerStartKm Int?
+  odometerEndKm   Int?
+  timeZone        String? @default("SAST")
+  utcOffsetMin    Int?    @default(120)
+  hosDrivingMin   Int?    @default(0)
+  hosOnDutyMin    Int?    @default(0)
+  hosCycleMin     Int?    @default(0)
+  violations      Json?
+  certifiedByDriver Boolean @default(false)
+  certifiedByCarrier Boolean @default(false)
+  contentHash     String?
+  auditLogId      String?
+  createdAt    DateTime @default(now())
 }
 
 model DriverHours {
   id         String   @id @default(cuid())
   driverId   String
   driver     Driver   @relation(fields: [driverId], references: [id])
-  period     String   // e.g., "2025-10-06"
+  period     String
   onDutyMin  Int      @default(0)
   drivingMin Int      @default(0)
   offDutyMin Int      @default(0)
-  cycleMin   Int      @default(0) // cumulative for 8-day
+  cycleMin   Int      @default(0)
   updatedAt  DateTime @updatedAt
-
   @@index([driverId, period])
 }
 
@@ -382,7 +353,6 @@ model InsightEvent {
   message     String
   data        Json?
   createdAt   DateTime @default(now())
-
   @@index([tripId])
   @@index([companyId])
   @@index([driverId])
@@ -395,81 +365,10 @@ model AISession {
   company     Company? @relation(fields: [companyId], references: [id])
   startedAt   DateTime @default(now())
   endedAt     DateTime?
-  transcript  Json?    // messages with intents and actions
-  actions     Json?    // executed actions ({ type, params, result })
+  transcript  Json?
+  actions     Json?
 }
 
-model ELDLog {
-  id           String   @id @default(cuid())
-  tripId       String
-  trip         TripPlan @relation(fields: [tripId], references: [id])
-  driverId     String?
-  driver       Driver?  @relation(fields: [driverId], references: [id])
-  date         DateTime
-  sheet        Json     // canonical data used by renderer
-  pdfUrl       String?
-  // Compliance metadata:
-  driverLicense   String?
-  vehiclePlate    String?
-  vehicleId       String?
-  odometerStartKm Int?
-  odometerEndKm   Int?
-  timeZone        String? @default("SAST")
-  utcOffsetMin    Int?    @default(120)
-  hosDrivingMin   Int?    @default(0)
-  hosOnDutyMin    Int?    @default(0)
-  hosCycleMin     Int?    @default(0)
-  violations      Json?   // e.g., [{ code, message }]
-  certifiedByDriver Boolean @default(false)
-  certifiedByCarrier Boolean @default(false)
-  // Tamper-evidence:
-  contentHash     String?
-  auditLogId      String?
-
-  createdAt    DateTime @default(now())
-}
-
-model Payment {
-  id           String        @id @default(cuid())
-  reference    String        @unique
-  provider     String
-  amount       Int
-  currency     String
-  status       String
-  companyId    String
-  company      Company       @relation(fields: [companyId], references: [id])
-  createdAt    DateTime      @default(now())
-  ledgerEntries LedgerEntry[] @relation("PaymentLedger")
-}
-
-model Payout {
-  id           String        @id @default(cuid())
-  partnerId    String
-  partner      Partner       @relation(fields: [partnerId], references: [id])
-  amountCents  Int
-  status       PayoutStatus
-  period       String
-  createdAt    DateTime      @default(now())
-  ledgerEntries LedgerEntry[] @relation("PayoutLedger")
-}
-
-model Driver {
-  id        String        @id @default(cuid())
-  email     String        @unique
-  createdAt DateTime      @default(now())
-  ledgerEntries LedgerEntry[] @relation("DriverLedger")
-}
-
-model ScheduledExport {
-  id        String   @id @default(cuid())
-  type      String   // e.g. "MONTHLY", "WEEKLY"
-  period    String   // e.g. "2025-09"
-  url       String   // signed URL
-  expiresAt DateTime
-  createdAt DateTime @default(now())
-}
-
-// prisma/schema.prisma
 model User {
   id            String   @id @default(cuid())
   email         String   @unique
@@ -496,31 +395,13 @@ model PasswordResetToken {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model Contract {
-  id          String   @id @default(cuid())
-  name        String
-  terms       String
-  version     Int       @default(1)
-  active      Boolean   @default(true)
-  companyId   String?
-  company     Company?  @relation(fields: [companyId], references: [id])
-  federationId String?
-  federation   Federation? @relation(fields: [federationId], references: [id])
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  ledgerEntries LedgerEntry[]
-}
-
-
 model Nation {
   id          String   @id @default(cuid())
   name        String   @unique
-  code        String   @unique // e.g. "ZA", "NG"
+  code        String   @unique
   description String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-
   federations Federation[]
   advisors    Advisor[]
 }
@@ -544,10 +425,8 @@ model Federation {
   nation      Nation?   @relation(fields: [nationId], references: [id])
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-
   contracts   Contract[]
 }
-
 
 model LedgerEntry {
   id        String   @id @default(cuid())
@@ -558,7 +437,6 @@ model LedgerEntry {
   driverId  String?
   hash      String
   createdAt DateTime @default(now())
-
   contract  Contract? @relation("ContractLedger", fields: [entityId], references: [id])
   payment   Payment?  @relation("PaymentLedger", fields: [entityId], references: [id])
   payout    Payout?   @relation("PayoutLedger", fields: [entityId], references: [id])

@@ -20,7 +20,7 @@ const navItems = [
   { label: 'Settings', href: '/settings' }
 ];
 
-export default function Sidebar({ isOpen = false }: { isOpen?: boolean }) {
+const Sidebar = ({ isOpen = false }: { isOpen?: boolean }) => {
   const [open, setOpen] = useState(isOpen);
   return (
     <>
@@ -47,11 +47,13 @@ export default function Sidebar({ isOpen = false }: { isOpen?: boolean }) {
           </nav>
           <div className="mt-auto flex items-center justify-between">
             <p className="text-xs text-white/40">AzoraOS v2.3-atomic</p>
-              {/* import ThemeToggle from ./ThemeToggle */}
             <ThemeToggle />
           </div>
         </GlassPanel>
       </div>
     </>
   );
-}
+};
+
+export default Sidebar;
+export { Sidebar };

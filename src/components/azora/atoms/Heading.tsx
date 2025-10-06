@@ -16,3 +16,4 @@ const Heading: React.FC<HeadingProps> = ({ children, level = 2, className = '' }
 };
 
 export default Heading;
+export { Heading };

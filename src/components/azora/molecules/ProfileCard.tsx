@@ -1,5 +1,6 @@
 import React from 'react';
 import { Avatar } from '../atoms/Avatar';
+
 export const ProfileCard = ({ name, role, avatarUrl, status }) => (
   <div className="flex gap-4 items-center">
     <Avatar src={avatarUrl} alt={name} />
@@ -10,3 +11,5 @@ export const ProfileCard = ({ name, role, avatarUrl, status }) => (
     </div>
   </div>
 );
+
+export default ProfileCard;

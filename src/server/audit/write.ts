@@ -10,7 +10,7 @@ export interface AuditEntry {
   meta?: Record<string, any>;
 }
 
-export async function writeAudit(entry: AuditEntry) {
+export async function writeAudit(entry: AuditEntry, p0: string, p1: string, p2: { name: any; vatNumber: any; vatPercent: any; popiaConsent: any; }) {
   return prisma.audit.create({
     data: {
       uid: entry.uid,
