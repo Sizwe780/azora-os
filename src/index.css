@@ -2,42 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Glass + Beams */
-.background-beams {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  overflow: hidden;
+/* Glassmorphic animated beams */
+@keyframes azora-beam1 {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(-40px) scale(1.08); }
 }
-.background-beam {
-  position: absolute;
-  border-radius: 999px;
-  filter: blur(64px);
-  opacity: 0.55;
-  animation: beam-move 8s linear infinite alternate;
+@keyframes azora-beam2 {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(32px) scale(1.05); }
 }
-.background-beam1 {
-  background: radial-gradient(circle at 40% 30%, #60a5fa 0%, transparent 80%);
-  width: 60vw;
-  height: 60vw;
-  left: -10vw;
-  top: -20vw;
-  animation-delay: 0s;
+@keyframes azora-beam3 {
+  0% { transform: translateX(0) scale(1); }
+  100% { transform: translateX(-24px) scale(1.06); }
 }
-.background-beam2 {
-  background: radial-gradient(circle at 70% 60%, #eab308 0%, transparent 80%);
-  width: 50vw;
-  height: 50vw;
-  right: -5vw;
-  bottom: -15vw;
-  animation-delay: 3s;
+@keyframes azora-shimmer {
+  0% { opacity: 0.3; }
+  50% { opacity: 0.7; }
+  100% { opacity: 0.3; }
 }
-@keyframes beam-move {
-  0% {
-    transform: scale(1) translateY(0);
-  }
-  100% {
-    transform: scale(1.2) translateY(40px);
-  }
-}
+
+.animate-azora-beam1 { animation: azora-beam1 8s ease-in-out infinite alternate; }
+.animate-azora-beam2 { animation: azora-beam2 10s ease-in-out infinite alternate; }
+.animate-azora-beam3 { animation: azora-beam3 11s ease-in-out infinite alternate; }
+.animate-azora-shimmer { animation: azora-shimmer 5s ease-in-out infinite; }
