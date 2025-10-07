@@ -1,26 +1,29 @@
 import React from "react";
+import clsx from "clsx";
+
+interface GlassPanelProps {
+  children: React.ReactNode;
+  className?: string;
+  accent?: "premium" | "";
+  animated?: boolean;
+}
 
 export default function GlassPanel({
   children,
   className = "",
   accent = "",
   animated = false,
-}: {
-  children: React.ReactNode;
-  className?: string;
-  accent?: "premium" | "";
-  animated?: boolean;
-}) {
+}: GlassPanelProps) {
   return (
     <div
-      className={`
-        rounded-2xl shadow-xl overflow-hidden
-        backdrop-blur-lg bg-white/30 dark:bg-slate-900/40
-        border border-white/20 dark:border-slate-800/40
-        ${accent === "premium" ? "border-2 border-yellow-400/40" : ""}
-        ${animated ? "animate-float" : ""}
-        ${className}
-      `}
+      className={clsx(
+        "rounded-2xl shadow-xl overflow-hidden",
+        "backdrop-blur-lg bg-white/30 dark:bg-slate-900/40",
+        "border border-white/20 dark:border-slate-800/40",
+        accent === "premium" && "border-2 border-yellow-400/40",
+        animated && "animate-float",
+        className
+      )}
       style={{
         boxShadow:
           accent === "premium"
