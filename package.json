@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/Azora-OS/azora-os#readme",
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.14",
     "@types/archiver": "^6.0.3",
     "@types/bcryptjs": "^2.4.6",
     "@types/cookie-parser": "^1.4.9",

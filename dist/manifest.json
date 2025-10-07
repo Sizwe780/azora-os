@@ -1,0 +1,15 @@
+{
+    "short_name": "Azora OS",
+    "name": "Azora OS Premium",
+    "icons": [
+      {
+        "src": "/logo-premium.svg",
+        "sizes": "192x192",
+        "type": "image/svg+xml"
+      }
+    ],
+    "start_url": ".",
+    "display": "standalone",
+    "theme_color": "#FFD700",
+    "background_color": "#111827"
+  }
