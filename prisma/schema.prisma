@@ -8,437 +8,95 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ----------------------------- Enums -----------------------------
-
-enum PayoutStatus {
-  pending
-  paid
-  failed
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  name          String?
+  role          String   // 'admin' | 'driver' | 'dispatcher' | 'partner'
+  passwordHash  String
+  companyId     String?
+  company       Company? @relation(fields: [companyId], references: [id])
+  createdAt     DateTime @default(now())
+  payments      Payment[]
 }
-
-enum JobStatus {
-  queued
-  assigned
-  en_route
-  completed
-  cancelled
-}
-
-enum SubscriptionStatus {
-  active
-  past_due
-  canceled
-}
-
-enum AuditAction {
-  refresh_code
-  update_company
-  create_job
-  update_job_status
-  payout_created
-  payout_paid
-}
-
-// ----------------------------- Core -----------------------------
 
 model Company {
-  id              String            @id @default(cuid())
-  name            String
-  vatNumber       String?           @db.VarChar(64)
-  vatPercent      Int               @default(15)
-  billingEmail    String?           @db.VarChar(255)
-  popiaConsent    Boolean           @default(false)
-  partners        Partner[]
-  drivers         Driver[]
-  contracts       Contract[]
-  referrals       Referral[]
-  jobs            Job[]
-  subscriptions   Subscription[]
-  payments        Payment[]
-  audits          AuditLog[]
-  advisorMessages AdvisorMessage[]
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  @@index([name])
-}
-
-model Partner {
-  id                 String       @id @default(cuid())
-  companyId          String?
-  company            Company?     @relation(fields: [companyId], references: [id])
-  code               String?      @unique
-  commissionRateBps  Int          @default(500)
-  tier               Int          @default(1)
-  referrals          Referral[]
-  payouts            Payout[]
-  audits             AuditLog[]
-  createdAt          DateTime     @default(now())
-  updatedAt          DateTime     @updatedAt
-  @@index([companyId])
-}
-
-model Referral {
-  id          String   @id @default(cuid())
-  partnerId   String
-  partner     Partner  @relation(fields: [partnerId], references: [id])
-  companyId   String
-  company     Company  @relation(fields: [companyId], references: [id])
-  createdAt   DateTime @default(now())
-  @@index([partnerId])
-  @@index([companyId])
-}
-
-model Payout {
-  id           String       @id @default(cuid())
-  partnerId    String
-  partner      Partner      @relation(fields: [partnerId], references: [id])
-  amountCents  Int
-  status       PayoutStatus @default(pending)
-  period       String
-  createdAt    DateTime     @default(now())
-  paidAt       DateTime?
-  ledgerEntries LedgerEntry[] @relation("PayoutLedger")
-  @@index([partnerId, status])
-}
-
-// ----------------------------- Logistics -----------------------------
-
-model Driver {
-  id        String        @id @default(cuid())
-  email     String?       @unique
-  companyId String?
-  company   Company?      @relation(fields: [companyId], references: [id])
-  userId    String?
-  name      String?
-  phone     String?
-  status    String?
-  lastLat   Float?
-  lastLon   Float?
-  lastUpdated DateTime?
-  jobs      Job[]
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
-  ledgerEntries LedgerEntry[] @relation("DriverLedger")
+  id                 String   @id @default(cuid())
+  name               String
+  vatNumber          String?
+  vatPercent         Int      @default(15)
+  billingEmail       String?
+  popiaConsent       Boolean  @default(false)
+  pilotActive        Boolean  @default(false)
+  pilotActivatedAt   DateTime?
+  subscriptionStatus String   @default("none") // 'none' | 'active' | 'past_due' | 'canceled'
+  tenants            Tenant[]
+  jobs               Job[]
+  payments           Payment[]
+  createdAt          DateTime @default(now())
 }
 
 model Job {
-  id           String    @id @default(cuid())
-  companyId    String
-  company      Company   @relation(fields: [companyId], references: [id])
-  driverId     String?
-  driver       Driver?   @relation(fields: [driverId], references: [id])
-  status       JobStatus @default(queued)
-  pickupLat    Float?
-  pickupLon    Float?
-  dropLat      Float?
-  dropLon      Float?
-  payload      Json?
-  scheduledAt  DateTime?
-  completedAt  DateTime?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  @@index([companyId])
-  @@index([driverId])
-  @@index([status])
-}
+  id         String   @id @default(cuid())
+  companyId  String
+  company    Company  @relation(fields: [companyId], references: [id])
+  ref        String
+  pickup     Json
+  dropoff    Json
+  status     String   // 'new' | 'assigned' | 'in_transit' | 'delivered' | 'failed'
+  driverId   String?
+  etaMinutes Int?
+  tracking   Json?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-// ----------------------------- Contracts -----------------------------
-
-model Contract {
-  id           String   @id @default(cuid())
-  companyId    String
-  company      Company  @relation(fields: [companyId], references: [id])
-  name         String
-  terms        String
-  startDate    DateTime
-  endDate      DateTime?
-  active       Boolean  @default(true)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  version      Int      @default(1)
-  federationId String?
-  federation   Federation? @relation(fields: [federationId], references: [id])
-  ledgerEntries LedgerEntry[]
-  @@index([companyId, active])
-}
-
-// ----------------------------- Subscriptions & Payments -----------------------------
-
-model Subscription {
-  id           String             @id @default(cuid())
-  companyId    String
-  company      Company            @relation(fields: [companyId], references: [id])
-  plan         String
-  status       SubscriptionStatus @default(active)
-  periodStart  DateTime
-  periodEnd    DateTime
-  nextBilling  DateTime?
-  createdAt    DateTime           @default(now())
-  updatedAt    DateTime           @updatedAt
-  @@index([companyId, status])
+  @@unique([ref, companyId], name: "ref_companyId")
 }
 
 model Payment {
-  id           String    @id @default(cuid())
-  companyId    String
-  company      Company   @relation(fields: [companyId], references: [id])
-  provider     String
-  reference    String    @unique
-  amountCents  Int
-  currency     String    @default("ZAR")
-  status       String
-  meta         Json?
-  ledgerEntries LedgerEntry[] @relation("PaymentLedger")
-  createdAt    DateTime  @default(now())
-  @@index([companyId, provider])
+  id        String   @id @default(cuid())
+  reference String   @unique
+  provider  String   // 'paystack' | 'yoco'
+  status    String   // 'success' | 'failed' | 'pending'
+  amount    Int
+  currency  String
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  companyId String?
+  company   Company? @relation(fields: [companyId], references: [id])
+  raw       Json
+  createdAt DateTime @default(now())
 }
 
-// ----------------------------- Audit -----------------------------
+model Plan {
+  id             String  @id @default(cuid())
+  code           String  @unique
+  name           String
+  priceZarCents  Int
+  interval       String  // 'monthly' | 'annual'
+  features       Json
+  active         Boolean @default(true)
+}
 
-model AuditLog {
-  id          String      @id @default(cuid())
-  companyId   String?
-  company     Company?    @relation(fields: [companyId], references: [id])
-  partnerId   String?
-  partner     Partner?    @relation(fields: [partnerId], references: [id])
-  actorUserId String?
-  entityType  String?
-  action      AuditAction
-  payload     Json?
-  createdAt   DateTime    @default(now())
-  @@index([companyId])
-  @@index([partnerId])
-  @@index([action])
+model Subscription {
+  id               String   @id @default(cuid())
+  companyId        String
+  company          Company  @relation(fields: [companyId], references: [id])
+  planId           String
+  plan             Plan     @relation(fields: [planId], references: [id])
+  status           String   // 'active' | 'past_due' | 'canceled'
+  currentPeriodEnd DateTime
+  provider         String   // 'paystack'
+  providerRef      String?
+  createdAt        DateTime @default(now())
 }
 
 model Audit {
   id        String   @id @default(cuid())
-  uid       String   @unique
+  companyId String
   actorId   String?
-  companyId String?
-  type      String
-  targetId  String?
+  type      String   // 'payment' | 'job' | 'settings' | 'partner' | 'subscription' | 'integration'
+  action    String
   meta      Json
   createdAt DateTime @default(now())
-}
-
-// ----------------------------- Governance -----------------------------
-
-model NationKPI {
-  id          String   @id @default(cuid())
-  name        String
-  value       Float
-  period      String
-  createdAt   DateTime @default(now())
-  @@index([name, period])
-}
-
-model AdvisorMessage {
-  id         String   @id @default(cuid())
-  topic      String
-  content    String
-  severity   String?
-  createdAt  DateTime @default(now())
-  companyId  String?
-  company    Company? @relation(fields: [companyId], references: [id])
-}
-
-// --- AI, trips, logs, insights ---
-
-enum TripStatus { planned started paused completed canceled }
-enum InsightSeverity { info warning critical }
-enum InsightType { weather hos_delay fuel_stop route_change compliance }
-
-model UserProfile {
-  id          String   @id @default(cuid())
-  userId      String   @unique
-  companyId   String?
-  company     Company? @relation(fields: [companyId], references: [id])
-  name        String?
-  role        String?
-  preferences Json?
-  vehicle     Json?
-  cycleMaxHrs Int?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
-model TripPlan {
-  id            String    @id @default(cuid())
-  companyId     String
-  company       Company   @relation(fields: [companyId], references: [id])
-  driverId      String?
-  driver        Driver?   @relation(fields: [driverId], references: [id])
-  jobId         String?
-  status        TripStatus @default(planned)
-  currentCycleUsedHrs Int @default(0)
-  currentLocation Json
-  pickupLocation  Json
-  dropoffLocation Json
-  routeSummary   Json?
-  startsAt       DateTime?
-  completedAt    DateTime?
-  createdByUserId String?
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-  legs          TripLeg[]
-  insights      InsightEvent[]
-  logs          ELDLog[]
-}
-
-model TripLeg {
-  id        String   @id @default(cuid())
-  tripId    String
-  trip      TripPlan @relation(fields: [tripId], references: [id])
-  sequence  Int
-  start     Json
-  end       Json
-  distanceKm Float?
-  durationMin Int?
-  type      String?
-  plannedAt DateTime?
-  actualAt  DateTime?
-}
-
-model ELDLog {
-  id           String   @id @default(cuid())
-  tripId       String
-  trip         TripPlan @relation(fields: [tripId], references: [id])
-  driverId     String?
-  driver       Driver?  @relation(fields: [driverId], references: [id])
-  date         DateTime
-  sheet        Json
-  pdfUrl       String?
-  driverLicense   String?
-  vehiclePlate    String?
-  vehicleId       String?
-  odometerStartKm Int?
-  odometerEndKm   Int?
-  timeZone        String? @default("SAST")
-  utcOffsetMin    Int?    @default(120)
-  hosDrivingMin   Int?    @default(0)
-  hosOnDutyMin    Int?    @default(0)
-  hosCycleMin     Int?    @default(0)
-  violations      Json?
-  certifiedByDriver Boolean @default(false)
-  certifiedByCarrier Boolean @default(false)
-  contentHash     String?
-  auditLogId      String?
-  createdAt    DateTime @default(now())
-}
-
-model DriverHours {
-  id         String   @id @default(cuid())
-  driverId   String
-  driver     Driver   @relation(fields: [driverId], references: [id])
-  period     String
-  onDutyMin  Int      @default(0)
-  drivingMin Int      @default(0)
-  offDutyMin Int      @default(0)
-  cycleMin   Int      @default(0)
-  updatedAt  DateTime @updatedAt
-  @@index([driverId, period])
-}
-
-model InsightEvent {
-  id          String         @id @default(cuid())
-  tripId      String?
-  trip        TripPlan?      @relation(fields: [tripId], references: [id])
-  companyId   String?
-  company     Company?       @relation(fields: [companyId], references: [id])
-  driverId    String?
-  driver      Driver?        @relation(fields: [driverId], references: [id])
-  type        InsightType
-  severity    InsightSeverity @default(info)
-  message     String
-  data        Json?
-  createdAt   DateTime @default(now())
-  @@index([tripId])
-  @@index([companyId])
-  @@index([driverId])
-}
-
-model AISession {
-  id          String   @id @default(cuid())
-  userId      String
-  companyId   String?
-  company     Company? @relation(fields: [companyId], references: [id])
-  startedAt   DateTime @default(now())
-  endedAt     DateTime?
-  transcript  Json?
-  actions     Json?
-}
-
-model User {
-  id            String   @id @default(cuid())
-  email         String   @unique
-  passwordHash  String
-  roles         String[] @default([])
-  refreshToken  String?
-  verified      Boolean  @default(false)
-  createdAt     DateTime @default(now())
-}
-
-model VerificationToken {
-  id        String   @id @default(cuid())
-  userId    String
-  token     String   @unique
-  expiresAt DateTime
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model PasswordResetToken {
-  id        String   @id @default(cuid())
-  userId    String
-  token     String   @unique
-  expiresAt DateTime
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model Nation {
-  id          String   @id @default(cuid())
-  name        String   @unique
-  code        String   @unique
-  description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  federations Federation[]
-  advisors    Advisor[]
-}
-
-model Advisor {
-  id          String   @id @default(cuid())
-  name        String
-  expertise   String?
-  email       String?   @unique
-  nationId    String?
-  nation      Nation?   @relation(fields: [nationId], references: [id])
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-}
-
-model Federation {
-  id          String   @id @default(cuid())
-  name        String   @unique
-  description String?
-  nationId    String?
-  nation      Nation?   @relation(fields: [nationId], references: [id])
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  contracts   Contract[]
-}
-
-model LedgerEntry {
-  id        String   @id @default(cuid())
-  uid       String   @unique
-  type      String
-  entityId  String
-  companyId String?
-  driverId  String?
-  hash      String
-  createdAt DateTime @default(now())
-  contract  Contract? @relation("ContractLedger", fields: [entityId], references: [id])
-  payment   Payment?  @relation("PaymentLedger", fields: [entityId], references: [id])
-  payout    Payout?   @relation("PayoutLedger", fields: [entityId], references: [id])
-  driver    Driver?  @relation("DriverLedger", fields: [entityId], references: [id])
 }
