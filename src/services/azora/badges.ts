@@ -8,8 +8,8 @@ const badges: Badge[] = [
 
 export function checkBadges(citizen: any, actions: any[]): Badge[] {
   const earned: Badge[] = [];
-  if (actions.some(a => a.type === 'createProposal')) earned.push(badges[0]);
-  if (actions.some(a => a.type === 'stake' && a.amount >= 100)) earned.push(badges[1]);
-  if (actions.some(a => a.type === 'crossVote')) earned.push(badges[2]);
+  if (actions.some(a => a.type === 'createProposal')) earned.push(badges[0]!);  // Fixed: non-null assertion
+  if (actions.some(a => a.type === 'stake' && a.amount >= 100)) earned.push(badges[1]!);  // Fixed: non-null assertion
+  if (actions.some(a => a.type === 'crossVote')) earned.push(badges[2]!);  // Fixed: non-null assertion
   return earned;
 }

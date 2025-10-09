@@ -1,10 +1,8 @@
 import { analyzeSentiment } from './sentiment';
 import { summarizeProposal } from './proposalSummarizer';
-import { predictOutcome } from './predictor';
+import { predictOutcome, adjustForecastWithSentiment } from './predictor';
 import { simulateProposalOutcome } from './simulator';
-import { adjustForecastWithSentiment } from './predictor';
-import { aggregateSentiment } from './sentimentAggregator';
-import { collectiveIntelligenceSummary } from './advisor';
+import { aggregateSentiment, SentimentScore } from './sentimentAggregator';
 
 export function analyzeProposalText(proposal: { title: string; description: string }) {
   const sentiment = analyzeSentiment(proposal.description);
@@ -22,8 +20,23 @@ export function analyzeProposalText(proposal: { title: string; description: stri
   return { summary, sentiment, suggestion };
 }
 
-export function analyzeProposalGovernance(proposal: any, existing: any[]) {
-  // Implementation from implement.md
+export function analyzeProposalFuture(proposal: any, repDistribution: any) {
+  const prediction = predictOutcome(proposal, repDistribution);
+  return {
+    message: `Predicted likelihood of passing: ${(prediction.likelihood * 100).toFixed(0)}%. 
+      REP impact: ${prediction.repImpact}. 
+      Federation: ${prediction.federationImpact}.`,
+  };
+}
+
+export function forecastWithSentiment(proposal: any, repDistribution: any, sentiment: SentimentScore) {
+  const base = predictOutcome(proposal, repDistribution);
+  const adjustedProb = adjustForecastWithSentiment(base.likelihood, sentiment);
+
+  return {
+    message: `Forecast (with sentiment): ${(adjustedProb * 100).toFixed(0)}% chance of passing. 
+      Citizen mood shifted base forecast from ${(base.likelihood * 100).toFixed(0)}%.`,
+  };
 }
 
 export function forecastProposal(proposal: any, repDistribution: any) {
