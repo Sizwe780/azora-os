@@ -25,3 +25,18 @@
 .animate-azora-beam2 { animation: azora-beam2 10s ease-in-out infinite alternate; }
 .animate-azora-beam3 { animation: azora-beam3 11s ease-in-out infinite alternate; }
 .animate-azora-shimmer { animation: azora-shimmer 5s ease-in-out infinite; }
+
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
