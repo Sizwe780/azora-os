@@ -1,105 +1,80 @@
-// src/pages/Jobs.tsx
 import React, { useEffect, useState } from 'react';
+import { jobsBoard, Job } from '../features/jobs/jobsBoard';
+import { useMetrics } from '../context/MetricsProvider';
+import { Card } from '../components/ui/Card';
+import { Skeleton } from '../components/ui/Skeleton';
 
-type Job = {
-  id: string;
-  ref: string;
-  pickup: { address: string };
-  dropoff: { address: string };
-  status: 'new' | 'assigned' | 'in_transit' | 'delivered' | 'failed';
-  driverId?: string;
-};
-
-const statuses: Job['status'][] = ['new', 'assigned', 'in_transit', 'delivered', 'failed'];
-
-export default function Jobs() {
+const JobsPage = () => {
   const [jobs, setJobs] = useState<Job[]>([]);
-  const [assigning, setAssigning] = useState<string | null>(null);
-  const [driverId, setDriverId] = useState<string>('');
-
-  async function loadJobs() {
-    const res = await fetch('/api/jobs');
-    const data = await res.json();
-    setJobs(data.jobs || []);
-  }
+  const [isLoading, setIsLoading] = useState(true); // Add loading state
+  const { updateMetricsFromJobs } = useMetrics();
 
   useEffect(() => {
+    const loadJobs = async () => {
+      setIsLoading(true);
+      try {
+        const fetchedJobs = await jobsBoard.getJobs();
+        setJobs(fetchedJobs);
+        updateMetricsFromJobs(fetchedJobs);
+      } catch (error) {
+        console.error("Failed to load jobs:", error);
+        // Handle error state if needed
+      } finally {
+        setIsLoading(false);
+      }
+    };
     loadJobs();
-  }, []);
+  }, [updateMetricsFromJobs]);
 
-  async function assignDriver(jobId: string) {
-    setAssigning(jobId);
-    await fetch('/api/jobs/assign', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ jobId, driverId })
-    });
-    setAssigning(null);
-    setDriverId('');
-    loadJobs();
-  }
+  const jobStatusStyles = {
+    scheduled: 'text-blue-400 border-blue-400',
+    in_progress: 'text-yellow-400 border-yellow-400',
+    completed: 'text-green-400 border-green-400',
+    canceled: 'text-red-400 border-red-400',
+  };
 
-  async function updateStatus(jobId: string, status: Job['status']) {
-    await fetch('/api/jobs/status', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ jobId, status })
-    });
-    loadJobs();
-  }
+  const renderSkeletons = () => (
+    <>
+      <div className="glass p-4 rounded-lg flex justify-between items-center">
+        <div>
+          <Skeleton className="h-5 w-48 mb-2" />
+          <Skeleton className="h-4 w-64" />
+        </div>
+        <Skeleton className="h-6 w-24 rounded-full" />
+      </div>
+      <div className="glass p-4 rounded-lg flex justify-between items-center">
+        <div>
+          <Skeleton className="h-5 w-40 mb-2" />
+          <Skeleton className="h-4 w-56" />
+        </div>
+        <Skeleton className="h-6 w-24 rounded-full" />
+      </div>
+    </>
+  );
 
   return (
-    <div className="p-6">
-      <h1 className="text-xl font-bold mb-4">Jobs Board</h1>
-      <table className="w-full border">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="p-2">Ref</th>
-            <th className="p-2">Pickup</th>
-            <th className="p-2">Dropoff</th>
-            <th className="p-2">Status</th>
-            <th className="p-2">Driver</th>
-            <th className="p-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {jobs.map((job) => (
-            <tr key={job.id} className="border-t">
-              <td className="p-2">{job.ref}</td>
-              <td className="p-2">{job.pickup.address}</td>
-              <td className="p-2">{job.dropoff.address}</td>
-              <td className="p-2">{job.status}</td>
-              <td className="p-2">{job.driverId || '-'}</td>
-              <td className="p-2">
-                <div className="flex items-center gap-2">
-                  <input
-                    placeholder="Driver ID"
-                    value={driverId}
-                    onChange={(e) => setDriverId(e.target.value)}
-                    className="border px-2 py-1 rounded"
-                  />
-                  <button
-                    onClick={() => assignDriver(job.id)}
-                    disabled={assigning === job.id || !driverId}
-                    className="px-2 py-1 bg-green-600 text-white rounded disabled:opacity-50"
-                  >
-                    {assigning === job.id ? 'Assigning...' : 'Assign'}
-                  </button>
-                  <select
-                    value={job.status}
-                    onChange={e => updateStatus(job.id, e.target.value as Job['status'])}
-                    className="border px-2 py-1 rounded"
-                  >
-                    {statuses.map(s => (
-                      <option key={s} value={s}>{s}</option>
-                    ))}
-                  </select>
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <Card title="Job Listings">
+      {isLoading ? renderSkeletons() : (
+        jobs.length > 0 ? jobs.map(job => (
+          <div key={job.id} className="glass p-4 rounded-lg flex justify-between items-center">
+            <div>
+              <h3 className="font-bold">{job.title}</h3>
+              <p className="text-sm text-white/60">
+                {job.pickup} → {job.dropoff}
+              </p>
+            </div>
+            <span 
+              className={`text-xs font-bold uppercase px-2 py-1 border rounded-full ${jobStatusStyles[job.status]}`}
+            >
+              {job.status.replace('_', ' ')}
+            </span>
+          </div>
+        )) : (
+          <p className="text-white/70">No jobs available at the moment.</p>
+        )
+      )}
+    </Card>
   );
-}
+};
+
+export default JobsPage;
