@@ -1,5 +1,5 @@
 import React, { useState, useCallback, createContext, useContext } from 'react';
-import NotificationToast from '../components/azora/molecules/NotificationToast';
+import NotificationToast from '../../../apps/driver-pwa/src/components/molecules/NotificationToast.js';
 
 export type NotificationType = 'success' | 'error' | 'info';
 
