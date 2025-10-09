@@ -8,11 +8,48 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Enums for type safety
+enum UserRole {
+  admin
+  driver
+  dispatcher
+  partner
+}
+
+enum JobStatus {
+  new
+  assigned
+  in_transit
+  delivered
+  failed
+}
+
+enum PaymentStatus {
+  success
+  failed
+  pending
+}
+
+enum SubscriptionStatus {
+  active
+  past_due
+  canceled
+}
+
+enum AuditType {
+  payment
+  job
+  settings
+  partner
+  subscription
+  integration
+}
+
 model User {
   id            String   @id @default(cuid())
   email         String   @unique
   name          String?
-  role          String   // 'admin' | 'driver' | 'dispatcher' | 'partner'
+  role          UserRole // Now enforced as enum
   passwordHash  String
   companyId     String?
   company       Company? @relation(fields: [companyId], references: [id])
@@ -21,82 +58,96 @@ model User {
 }
 
 model Company {
-  id                 String   @id @default(cuid())
+  id                 String         @id @default(cuid())
   name               String
   vatNumber          String?
-  vatPercent         Int      @default(15)
+  vatPercent         Int            @default(15)
   billingEmail       String?
-  popiaConsent       Boolean  @default(false)
-  pilotActive        Boolean  @default(false)
+  popiaConsent       Boolean        @default(false)
+  pilotActive        Boolean        @default(false)
   pilotActivatedAt   DateTime?
-  subscriptionStatus String   @default("none") // 'none' | 'active' | 'past_due' | 'canceled'
+  subscriptionStatus SubscriptionStatus @default(none) // 'none' | 'active' | 'past_due' | 'canceled'
   tenants            Tenant[]
   jobs               Job[]
   payments           Payment[]
-  createdAt          DateTime @default(now())
+  users              User[]         // Added relation
+  subscriptions      Subscription[] // Added relation
+  audits             Audit[]        // Added relation
+  createdAt          DateTime       @default(now())
+}
+
+// Minimal Tenant model added
+model Tenant {
+  id        String   @id @default(cuid())
+  name      String
+  companyId String
+  company   Company  @relation(fields: [companyId], references: [id])
+  createdAt DateTime @default(now())
 }
 
 model Job {
-  id         String   @id @default(cuid())
+  id         String    @id @default(cuid())
   companyId  String
-  company    Company  @relation(fields: [companyId], references: [id])
+  company    Company   @relation(fields: [companyId], references: [id])
   ref        String
   pickup     Json
   dropoff    Json
-  status     String   // 'new' | 'assigned' | 'in_transit' | 'delivered' | 'failed'
-  driverId   String?
+  status     JobStatus @default(new) // Now enforced as enum
+  // driverId removed as no Driver model exists
   etaMinutes Int?
   tracking   Json?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 
   @@unique([ref, companyId], name: "ref_companyId")
 }
 
 model Payment {
-  id        String   @id @default(cuid())
-  reference String   @unique
-  provider  String   // 'paystack' | 'yoco'
-  status    String   // 'success' | 'failed' | 'pending'
+  id        String        @id @default(cuid())
+  reference String        @unique
+  provider  String        // 'paystack' | 'yoco'
+  status    PaymentStatus // Now enforced as enum
   amount    Int
   currency  String
   userId    String?
-  user      User?    @relation(fields: [userId], references: [id])
+  user      User?         @relation(fields: [userId], references: [id])
   companyId String?
-  company   Company? @relation(fields: [companyId], references: [id])
+  company   Company?      @relation(fields: [companyId], references: [id])
   raw       Json
-  createdAt DateTime @default(now())
+  createdAt DateTime      @default(now())
 }
 
 model Plan {
-  id             String  @id @default(cuid())
-  code           String  @unique
+  id             String         @id @default(cuid())
+  code           String         @unique
   name           String
   priceZarCents  Int
-  interval       String  // 'monthly' | 'annual'
+  interval       String         // 'monthly' | 'annual'
   features       Json
-  active         Boolean @default(true)
+  active         Boolean        @default(true)
+  subscriptions  Subscription[] // Added relation
 }
 
 model Subscription {
-  id               String   @id @default(cuid())
+  id               String             @id @default(cuid())
   companyId        String
-  company          Company  @relation(fields: [companyId], references: [id])
+  company          Company            @relation(fields: [companyId], references: [id])
   planId           String
-  plan             Plan     @relation(fields: [planId], references: [id])
-  status           String   // 'active' | 'past_due' | 'canceled'
+  plan             Plan               @relation(fields: [planId], references: [id])
+  status           SubscriptionStatus // Now enforced as enum
   currentPeriodEnd DateTime
-  provider         String   // 'paystack'
+  provider         String             // 'paystack'
   providerRef      String?
-  createdAt        DateTime @default(now())
+  createdAt        DateTime           @default(now())
 }
 
 model Audit {
-  id        String   @id @default(cuid())
+  id        String     @id @default(cuid())
   companyId String
+  company   Company?   @relation(fields: [companyId], references: [id]) // Added relation
   actorId   String?
-  type      String   // 'payment' | 'job' | 'settings' | 'partner' | 'subscription' | 'integration'
+  type      AuditType  // Now enforced as enum
   action    String
   meta      Json
-  createdAt DateTime @default(now())
+  createdAt DateTime   @default(now())
 }
