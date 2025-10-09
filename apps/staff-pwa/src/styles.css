@@ -1,7 +1,45 @@
 :root { --bg1:#0b1020; --bg2:#0f1730; --glass:rgba(255,255,255,0.06); --border:rgba(255,255,255,0.12); --text:#e7eefc; --muted:#a7b3d1; --accent:#4699ff; }
-body { margin:0; font-family:Inter,system-ui; color:var(--text); background:linear-gradient(180deg,var(--bg1),var(--bg2)); }
+body { margin:0; font-family:Inter,system-ui; color:var(--text); background:linear-gradient(180deg,var(--bg1),var(--bg2)); min-height:100vh; }
 .container { max-width:900px; margin:0 auto; padding:24px; }
 .header h1 { margin:0 0 6px; } .header p { margin:0 0 20px; color:var(--muted); } .row { display:flex; gap:10px; }
 .card { background:var(--glass); backdrop-filter:blur(10px); border:1px solid var(--border); border-radius:14px; padding:16px 20px; margin-bottom:20px; }
 .answer { padding:12px; border:1px dashed var(--border); border-radius:10px; min-height:48px; }
 button { padding:10px 16px; border-radius:10px; border:1px solid var(--border); background:var(--accent); color:white; cursor:pointer; }
+
+/* Coupon Popup Animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
