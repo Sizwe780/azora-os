@@ -4,11 +4,11 @@ import { Card } from '../../components/azora/atoms/Card';
 import { Heading } from '../../components/azora/atoms/Heading';
 import { Skeleton } from '../../components/azora/atoms/Skeleton';
 
-const GlassPanel = ({ className = '', children }) => (
+const GlassPanel: React.FC<{ className?: string; children: React.ReactNode }> = ({ className = '', children }) => (
   <div className={`rounded-xl bg-white/5 backdrop-blur-lg border border-white/10 shadow ${className}`}>{children}</div>
 );
 
-export function GovernanceProposalsWidget({ userId }: { userId: string }) {
+const GovernanceProposalsWidget: React.ComponentType<{ userId: string }> = ({ userId }) => {
   const { proposals, status, error, vote } = useGovernance(userId);
   const [amounts, setAmounts] = useState<Record<string, string>>({});
 
@@ -70,3 +70,4 @@ export function GovernanceProposalsWidget({ userId }: { userId: string }) {
     </Card>
   );
 }
+export default GovernanceProposalsWidget;

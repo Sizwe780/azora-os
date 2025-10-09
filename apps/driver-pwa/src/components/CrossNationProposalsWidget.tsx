@@ -1,7 +1,17 @@
 import React, { useState } from 'react';
-import { useInterNation } from '../../hooks/azora/useInterNation';
-import { Card } from '../ui/Card';
-import { Skeleton } from '../ui/Skeleton';
+// Mock useInterNation for demo
+const useInterNation = () => ({
+  proposals: [
+    { id: 'p1', title: 'Merge Apparel Rewards', originNationId: 'Woolworths', description: 'Proposal to merge rewards.', totalStaked: 1200, status: 'open' },
+    { id: 'p2', title: 'Expand Voice Copilot', originNationId: 'WRewards', description: 'Proposal to expand voice copilot.', totalStaked: 800, status: 'closed' }
+  ],
+  isLoading: false,
+  error: '',
+  vote: async () => {},
+});
+import Card from './atoms/Card';
+// Inline Skeleton for demo
+const Skeleton = ({ className = '' }) => <div className={`animate-pulse bg-white/10 rounded-md ${className}`} />;
 
 export const CrossNationProposalsWidget = () => {
   const { proposals, isLoading, error, vote } = useInterNation();
@@ -14,11 +24,9 @@ export const CrossNationProposalsWidget = () => {
       alert("Please enter a valid amount to stake.");
       return;
     }
-
     setIsSubmitting(proposalId);
     try {
-      await vote(proposalId, amount);
-      // Clear input after successful vote
+      await vote(); // No arguments for mock
       setStakeAmounts(prev => ({ ...prev, [proposalId]: '' }));
     } catch (err: any) {
       alert(`Error: ${err.message}`);
@@ -41,15 +49,14 @@ export const CrossNationProposalsWidget = () => {
 
   const renderProposals = () => (
     <ul className="space-y-4">
-      {proposals.map(p => (
+      {proposals.map((p: any) => (
         <li key={p.id} className="glass p-4 rounded-lg space-y-3">
           <div>
             <p className="font-semibold text-white/90">{p.title}</p>
             <p className="text-xs text-white/60">From: {p.originNationId}</p>
           </div>
           <p className="text-sm text-white/70">{p.description}</p>
-          <p className="text-sm font-bold">Total Staked: {p.totalStaked.toLocaleString()} REP</p>
-          
+          <p className="text-sm font-bold">Total Staked: {p.totalStaked?.toLocaleString?.() || 0} REP</p>
           {p.status === 'open' && (
             <div className="flex gap-2 pt-2 border-t border-white/10">
               <input
@@ -76,7 +83,7 @@ export const CrossNationProposalsWidget = () => {
 
   return (
     <Card title="Cross-Nation Proposals">
-       {isLoading ? renderLoadingState() : (
+      {isLoading ? renderLoadingState() : (
         error ? renderErrorState() : (
           proposals.length > 0 ? renderProposals() : (
             <p className="text-sm text-white/70">No active cross-nation proposals.</p>
@@ -86,3 +93,5 @@ export const CrossNationProposalsWidget = () => {
     </Card>
   );
 };
+
+export default CrossNationProposalsWidget;

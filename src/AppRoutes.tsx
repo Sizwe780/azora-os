@@ -16,12 +16,14 @@ import SubscriptionPage from './pages/Subscription';
 import PartnerDashboard from './pages/PartnerDashboard';
 import Billing from './pages/Billing';
 import Settings from './pages/Settings';
+import KlippPage from './pages/KlippPage';
 
 // Wrap every page in DashboardLayout for the premium glassmorphic UI on every route
 export default function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<DashboardLayout><MainDashboard /></DashboardLayout>} />
+      <Route path="/klipp" element={<DashboardLayout><KlippPage /></DashboardLayout>} />
       <Route path="/ledger" element={<DashboardLayout><LedgerPage /></DashboardLayout>} />
       <Route path="/contracts" element={<DashboardLayout><ContractsPage /></DashboardLayout>} />
       <Route path="/profile" element={<DashboardLayout><ProfilePage /></DashboardLayout>} />

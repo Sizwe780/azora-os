@@ -5,7 +5,7 @@ const Panel = ({ children, className = '' }: { children: React.ReactNode; classN
   <div className={`rounded-xl bg-white/5 backdrop-blur-lg border border-white/10 shadow ${className}`}>{children}</div>
 );
 
-export function ProtocolUpgradeWidget({ userId }: { userId: string }) {
+const ProtocolUpgradeWidget: React.ComponentType<{ userId: string }> = ({ userId }) => {
   const { proposals, status, error, stake } = useProtocolUpgrades(userId);
   const [amounts, setAmounts] = useState<Record<string, string>>({});
 
@@ -65,3 +65,4 @@ export function ProtocolUpgradeWidget({ userId }: { userId: string }) {
     </Panel>
   );
 }
+export default ProtocolUpgradeWidget;

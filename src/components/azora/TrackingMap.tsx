@@ -1,11 +1,12 @@
 // src/components/azora/TrackingMap.tsx
 import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Polyline, CircleMarker } from 'react-leaflet';
 import { io, Socket } from 'socket.io-client';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import axios from 'axios'; // For calling our new AI service
 
-// Fix Leaflet marker icons (important for Webpack/Vite builds)
+// --- Icon Fix & Setup ---
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
@@ -16,7 +17,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow,
 });
 
-// Define event payloads
+// --- Type Definitions ---
 type DriverPoint = {
   driverId: string;
   lat: number;
@@ -25,67 +26,131 @@ type DriverPoint = {
   updatedAt?: number;
 };
 
-// Strongly type your socket events
+type Risk = {
+  zoneId: string;
+  location: { lat: number; lon: number };
+  risk: number;
+  type: string;
+};
+
+type Responder = {
+  id: string;
+  name: string;
+  location: { lat: number; lon: number };
+};
+
 interface ServerToClientEvents {
   'dispatch:update': (data: DriverPoint) => void;
+  'emergency:alert': (data: { driverId: string; location: { lat: number; lon: number } }) => void;
 }
 interface ClientToServerEvents {
   'driver:location': (data: DriverPoint) => void;
+  'emergency:trigger': (data: { driverId: string; location: { lat: number; lon: number } }) => void;
 }
 
-// Connect to backend (use env var for flexibility)
+// --- Component ---
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
-  import.meta.env.VITE_SOCKET_URL || window.location.origin
+  process.env.VITE_SOCKET_URL || window.location.origin
 );
 
 export default function TrackingMap() {
   const [drivers, setDrivers] = useState<DriverPoint[]>([]);
+  const [predictedRisks, setPredictedRisks] = useState<Risk[]>([]);
+  const [optimalRoute, setOptimalRoute] = useState<L.LatLngExpression[]>([]);
+  const [emergency, setEmergency] = useState<{ location: L.LatLngTuple; authority: Responder; responders: Responder[] } | null>(null);
 
+  // --- AI & Real-time Handlers ---
   useEffect(() => {
-    const handler = (data: DriverPoint) => {
+    const handleDispatchUpdate = (data: DriverPoint) => {
       setDrivers((prev) => [
         ...prev.filter((d) => d.driverId !== data.driverId),
         { ...data, updatedAt: Date.now() },
       ]);
+      // Trigger predictive analysis on driver movement
+      predictAndSetRoute(data);
     };
 
-    socket.on('dispatch:update', handler);
+    const handleEmergencyAlert = async (data: { driverId: string; location: { lat: number; lon: number } }) => {
+      // Fetch nearby responders using our AI service
+      const res = await axios.post('/api/ai-orchestrator/map/responders', { location: data.location });
+      setEmergency({
+        location: [data.location.lat, data.location.lon],
+        authority: res.data.closestAuthority,
+        responders: res.data.firstResponders,
+      });
+    };
+
+    socket.on('dispatch:update', handleDispatchUpdate);
+    socket.on('emergency:alert', handleEmergencyAlert);
     return () => {
-      socket.off('dispatch:update', handler);
+      socket.off('dispatch:update', handleDispatchUpdate);
+      socket.off('emergency:alert', handleEmergencyAlert);
     };
   }, []);
 
+  const predictAndSetRoute = async (driver: DriverPoint) => {
+    try {
+      const route = {
+        start: { lat: driver.lat, lon: driver.lon },
+        // In a real app, destination would come from the job/dispatch system
+        destination: { lat: -29.9, lon: 31.0 },
+        waypoints: [[driver.lat, driver.lon], [-29.9, 31.0]],
+      };
+      const res = await axios.post('/api/ai-orchestrator/map/predict-risk', { route });
+      setPredictedRisks(res.data.risks);
+      setOptimalRoute(res.data.optimalRoute.map((p: { lat: number; lon: number }) => [p.lat, p.lon]));
+    } catch (error) {
+      console.error("Failed to get route prediction:", error);
+    }
+  };
+
+  const triggerEmergency = (driverId: string) => {
+    const driver = drivers.find(d => d.driverId === driverId);
+    if (driver) {
+      socket.emit('emergency:trigger', { driverId, location: { lat: driver.lat, lon: driver.lon } });
+    }
+  };
+
+  // --- Rendering ---
   return (
-    <div className="h-96 w-full">
-      <MapContainer
-        center={[-29.85, 31.02]} // Durban as default center
-        zoom={6}
-        className="h-full w-full rounded"
-      >
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution="&copy; OpenStreetMap contributors"
-        />
+    <div className="h-[600px] w-full relative">
+      <div className="absolute top-2 right-2 z-[1000] bg-white/80 p-2 rounded shadow-lg">
+        <h3 className="font-bold">AI Map Controls</h3>
+        <button onClick={() => triggerEmergency('driver-001')} className="text-xs bg-red-500 text-white p-1 rounded">
+          Simulate Emergency
+        </button>
+      </div>
+      <MapContainer center={[-29.85, 31.02]} zoom={10} className="h-full w-full rounded-lg shadow-2xl">
+        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="&copy; OpenStreetMap" />
+        
+        {/* Live Drivers */}
         {drivers.map((d) => (
           <Marker key={d.driverId} position={[d.lat, d.lon]}>
             <Popup>
-              <div className="text-sm">
-                <div>
-                  <strong>Driver:</strong> {d.driverId}
-                </div>
-                <div>
-                  <strong>Status:</strong> {d.status || 'unknown'}
-                </div>
-                <div>
-                  <strong>Updated:</strong>{' '}
-                  {d.updatedAt
-                    ? new Date(d.updatedAt).toLocaleTimeString('en-ZA')
-                    : '-'}
-                </div>
-              </div>
+              <strong>Driver:</strong> {d.driverId}<br/>
+              <strong>Status:</strong> {d.status || 'unknown'}
             </Popup>
           </Marker>
         ))}
+
+        {/* AI Predicted Route & Risks */}
+        {optimalRoute.length > 0 && <Polyline positions={optimalRoute} color="blue" weight={5} opacity={0.7} />}
+        {predictedRisks.map(risk => (
+          <CircleMarker key={risk.zoneId} center={[risk.location.lat, risk.location.lon]} radius={20} color="red" fillColor="orange" fillOpacity={0.4}>
+            <Popup><strong>Risk Zone:</strong> {risk.type}<br/><strong>Score:</strong> {risk.risk}</Popup>
+          </CircleMarker>
+        ))}
+
+        {/* Emergency Visualization */}
+        {emergency && (
+          <>
+            <CircleMarker center={emergency.location} radius={30} color="red" weight={5}>
+              <Popup>EMERGENCY</Popup>
+            </CircleMarker>
+            {emergency.authority && <Marker position={[emergency.authority.location.lat, emergency.authority.location.lon]}><Popup>Authority: {emergency.authority.name}</Popup></Marker>}
+            {emergency.responders.map(r => <Marker key={r.id} position={[r.location.lat, r.location.lon]}><Popup>First Responder: {r.name}</Popup></Marker>)}
+          </>
+        )}
       </MapContainer>
     </div>
   );

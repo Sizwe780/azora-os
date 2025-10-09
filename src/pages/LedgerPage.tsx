@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Card from '../components/azora/atoms/Card';
 import Heading from '../components/azora/atoms/Heading';
 import { useApi } from '../hooks/azora/useApi';
+import axios from 'axios';
 
 type LedgerEntry = {
   uid: string;
@@ -19,9 +20,26 @@ export default function LedgerPage() {
   const [to, setTo] = useState('');
   const [companyId, setCompanyId] = useState('');
   const [driverId, setDriverId] = useState('');
+  const [aiResult, setAiResult] = useState<{ uid: string; insight: string } | null>(null);
+  const [printing, setPrinting] = useState<string | null>(null);
 
   const query = `/api/ledger?${typeFilter ? `type=${typeFilter}&` : ''}${from ? `from=${from}&` : ''}${to ? `to=${to}&` : ''}${companyId ? `companyId=${companyId}&` : ''}${driverId ? `driverId=${driverId}` : ''}`;
   const { data, loading, error } = useApi<{ entries: LedgerEntry[] }>(query);
+
+  // AI analysis handler
+  async function handleAnalyze(uid: string) {
+    setAiResult(null);
+    // Simulate AI call (replace with real endpoint)
+    const res = await axios.post('/api/ai/analyze-ledger', { uid });
+    setAiResult({ uid, insight: res.data.insight });
+  }
+
+  // Print document handler
+  function handlePrint(uid: string) {
+    setPrinting(uid);
+    window.open(`/api/ledger/${uid}/print`, '_blank');
+    setTimeout(() => setPrinting(null), 2000);
+  }
 
   return (
     <div className="p-6 space-y-6">
@@ -73,6 +91,8 @@ export default function LedgerPage() {
                 <th className="p-2">Company</th>
                 <th className="p-2">Driver</th>
                 <th className="p-2">Actions</th>
+                <th className="p-2">AI</th>
+                <th className="p-2">Print</th>
               </tr>
             </thead>
             <tbody>
@@ -94,17 +114,40 @@ export default function LedgerPage() {
                       Verify
                     </a>
                   </td>
+                  <td className="p-2">
+                    <button
+                      className="px-2 py-1 bg-indigo-600 text-white rounded text-xs"
+                      onClick={() => handleAnalyze(e.uid)}
+                      disabled={!!(aiResult && aiResult.uid === e.uid)}
+                    >
+                      {aiResult && aiResult.uid === e.uid ? 'Analyzed' : 'AI Analyze'}
+                    </button>
+                  </td>
+                  <td className="p-2">
+                    <button
+                      className="px-2 py-1 bg-yellow-400 text-black rounded text-xs"
+                      onClick={() => handlePrint(e.uid)}
+                      disabled={printing === e.uid}
+                    >
+                      {printing === e.uid ? 'Printing...' : 'Print PDF'}
+                    </button>
+                  </td>
                 </tr>
               ))}
               {data.entries.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="p-4 text-center text-gray-500">
+                  <td colSpan={9} className="p-4 text-center text-gray-500">
                     No ledger entries found
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
+        )}
+        {aiResult && (
+          <div className="mt-4 p-4 bg-indigo-50 text-indigo-900 rounded">
+            <strong>AI Insight for UID {aiResult.uid}:</strong> {aiResult.insight}
+          </div>
         )}
       </Card>
     </div>

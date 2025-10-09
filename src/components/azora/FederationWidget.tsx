@@ -17,7 +17,7 @@ const MOCK_NATIONS: Nation[] = [
   { id: "nation_3", name: "Azora Research", citizens: 5, reputation: 1960 }
 ];
 
-const FederationWidget: React.FC<FederationWidgetProps> = ({ userId }) => (
+const FederationWidget: React.ComponentType<FederationWidgetProps> = ({ userId }) => (
   <div className="rounded-xl bg-slate-900/70 border border-white/10 p-6">
     <h2 className="text-lg font-bold text-cyan-300 mb-4">Federation Overview</h2>
     <table className="w-full text-left">

@@ -5,7 +5,7 @@ const Panel = ({ children, className = '' }: { children: React.ReactNode; classN
   <div className={`rounded-xl bg-white/5 backdrop-blur-lg border border-white/10 shadow ${className}`}>{children}</div>
 );
 
-export function ConstitutionWidget() {
+const ConstitutionWidget: React.ComponentType = () => {
   const { rules, logs, status, error, toggle, constitution } = useConstitution();
 
   const handleToggle = (ruleId: string, enforced: boolean) => {
@@ -67,3 +67,4 @@ export function ConstitutionWidget() {
     </Panel>
   );
 }
+export default ConstitutionWidget;

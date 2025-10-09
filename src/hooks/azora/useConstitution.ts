@@ -13,7 +13,7 @@ export function useConstitution() {
   const logs: any[] = [];
   const status = "idle";
   const error = "";
-  const toggle = () => {};
+  const toggle = (ruleId: string, p0: boolean) => {};
 
   return {
     constitution,
