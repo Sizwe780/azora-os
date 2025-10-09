@@ -1,19 +1,10 @@
 import React from 'react';
 import { useMetrics } from '../context/MetricsProvider';
 import { useAlert } from '../context/AlertProvider';
-// Update the import path below if Card is located elsewhere, e.g. '../components/Card'
-// Update the import path below if Card is located elsewhere, e.g. '../components/Card'
 import { Card } from '../components/atoms/Card';
 import { ReputationBridgeWidget } from '../components/atoms/ReputationBridgeWidget';
-// Update the import path if the file is located elsewhere, for example:
 import { CrossNationProposalsWidget } from '../components/CrossNationProposalsWidget';
-// Or create the missing file in ../components/azora/ if it does not exist.
-// If InviteNationForm exists in ../components/InviteNationForm.tsx, use:
 import { InviteNationForm } from '../components/InviteNationForm';
-// Or, if it exists elsewhere, update the path accordingly.
-// If the file does not exist, create it in the correct location.
-import DemoCouponScenario from './DemoCouponScenario';
-import './components/CouponPopup.css';
 
 const DashboardPage = () => {
   const { metrics } = useMetrics();
@@ -21,8 +12,6 @@ const DashboardPage = () => {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      {/* Coupon Popup Demo for Scenario 1 */}
-      <DemoCouponScenario />
       {/* Key Metrics card */}
       <div className="lg:col-span-2">
         <Card title="Key Metrics">
