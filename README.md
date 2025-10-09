@@ -1,6 +1,6 @@
 # Azora OS
 
-**Azora OS** is a comprehensive, AI-powered operating system for modern logistics and transportation. It provides tools for route optimization, job management, and real-time fleet monitoring to enhance efficiency and reduce operational costs.
+**Azora OS** is a comprehensive, AI-powered operating system for modern logistics and transportation. It provides tools for route optimization, job management, and real-time fleet monitoring to enhance operational efficiency and reduce costs.
 
 ## Key Features
 
@@ -20,7 +20,7 @@
 
 1.  Clone the repository:
     ```bash
-    git clone https://github.com/Azora-OS/azora-os.git
+    git clone https://github.com/azoraworld/azora-os.git
     ```
 2.  Navigate to the project directory:
     ```bash
