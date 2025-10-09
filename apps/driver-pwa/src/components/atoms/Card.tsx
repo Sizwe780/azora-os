@@ -1,17 +1,16 @@
 import React from "react";
 
 interface CardProps {
+  title?: string;
   children: React.ReactNode;
   className?: string;
 }
 
-const Card: React.FC<CardProps> = ({ children, className = "" }) => (
-  <div
-    className={`rounded-xl bg-white/40 dark:bg-slate-800/60 backdrop-blur-lg border border-white/20 shadow-lg p-4 ${className}`}
-  >
+export const Card: React.FC<CardProps> = ({ title, children, className = "" }) => (
+  <div className={`glass rounded-2xl shadow-xl p-6 mb-4 ${className}`}>
+    {title && <h2 className="text-xl font-bold mb-3 text-white/90">{title}</h2>}
     {children}
   </div>
 );
 
 export default Card;
-export { Card };

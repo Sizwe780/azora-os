@@ -13,7 +13,8 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true
+  "exactOptionalPropertyTypes": true,
+  "allowImportingTsExtensions": true
     // Remove "verbatimModuleSyntax"
   }
 }
