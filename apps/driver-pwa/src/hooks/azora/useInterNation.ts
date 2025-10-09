@@ -32,17 +32,27 @@ export const useInterNation = () => {
     refresh();
   }, [refresh]);
 
-  const vote = async (proposalId: string, amount: number) => {
+  const invite = async (name: string, endpoint: string) => {
     try {
-      await interNationService.voteOnCrossProposal(proposalId, amount);
-      // Refresh data to show the updated stake
+      const newNation = await interNationService.inviteNation(name, endpoint);
+      // Refresh data to show the new nation immediately
       await refresh();
+      return newNation;
     } catch (err: any) {
-      setError(err.message || 'Failed to vote on proposal.');
-      // Re-throw to be caught in the component if needed
+      setError(err.message || 'Failed to invite nation.');
       throw err;
     }
   };
 
-  return { nations, proposals, isLoading, error, refresh, vote };
+  const vote = async (proposalId: string, amount: number) => {
+    try {
+      await interNationService.voteOnCrossProposal(proposalId, amount);
+      await refresh();
+    } catch (err: any) {
+      setError(err.message || 'Failed to vote on proposal.');
+      throw err;
+    }
+  };
+
+  return { nations, proposals, isLoading, error, refresh, vote, invite };
 };
