@@ -1,0 +1,11 @@
+body { margin:0; font-family:Inter,system-ui; background:#0b1020; color:#e7eefc; }
+.container { max-width:900px; margin:0 auto; padding:20px; }
+.header h1 { margin:0 0 6px; } .header p { margin:0 0 16px; color:#a7b3d1; }
+.controls { display:flex; gap:8px; margin-bottom:12px; }
+button { padding:8px 12px; border:1px solid rgba(255,255,255,0.12); background:#4699ff; color:white; border-radius:10px; cursor:pointer; }
+button.active { background:#2f7be5; }
+.list { list-style:none; margin:0; padding:0; display:grid; gap:10px; }
+.item { background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:12px; padding:12px; }
+.item .row { display:flex; justify-content:space-between; } .item .title { font-weight:600; } .item .meta { color:#a7b3d1; font-size:12px; }
+.item .details { margin-top:6px; color:#cfe3ff; } .item .actions { margin-top:8px; display:flex; gap:10px; align-items:center; }
+.status.open { color:#ff6060; } .status.resolved { color:#00e09f; } .item.warning .title { color:#ffd166; } .item.critical .title { color:#ff6060; }
