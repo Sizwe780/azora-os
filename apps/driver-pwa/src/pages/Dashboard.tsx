@@ -4,6 +4,7 @@ import { useAlert } from '../context/AlertProvider';
 import { Card } from '../components/ui/Card';
 import { ReputationBridgeWidget } from '../components/azora/ReputationBridgeWidget';
 import { CrossNationProposalsWidget } from '../components/azora/CrossNationProposalsWidget';
+import { InviteNationForm } from '../components/azora/InviteNationForm';
 
 const DashboardPage = () => {
   const { metrics } = useMetrics();
@@ -12,7 +13,7 @@ const DashboardPage = () => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       
-      {/* Key Metrics card spans two columns */}
+      {/* Key Metrics card */}
       <div className="lg:col-span-2">
         <Card title="Key Metrics">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -51,9 +52,10 @@ const DashboardPage = () => {
         </Card>
       </div>
 
-      {/* NEW: Federation Section */}
-      <div className="lg:col-span-2">
+      {/* --- Federation Section --- */}
+      <div className="lg:col-span-2 space-y-6">
         <CrossNationProposalsWidget />
+        <InviteNationForm />
       </div>
 
       <div className="lg:col-span-1">
