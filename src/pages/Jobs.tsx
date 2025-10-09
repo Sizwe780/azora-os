@@ -87,10 +87,10 @@ export default function Jobs() {
                   </button>
                   <select
                     value={job.status}
-                    onChange={(e) => updateStatus(job.id, e.target.value as Job['status'])}
+                    onChange={e => updateStatus(job.id, e.target.value as Job['status'])}
                     className="border px-2 py-1 rounded"
                   >
-                    {statuses.map((s) => (
+                    {statuses.map(s => (
                       <option key={s} value={s}>{s}</option>
                     ))}
                   </select>
