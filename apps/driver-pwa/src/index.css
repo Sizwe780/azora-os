@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Glassmorphic animated beams */
+@keyframes azora-beam1 {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(-40px) scale(1.08); }
+}
+@keyframes azora-beam2 {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(32px) scale(1.05); }
+}
+@keyframes azora-beam3 {
+  0% { transform: translateX(0) scale(1); }
+  100% { transform: translateX(-24px) scale(1.06); }
+}
+@keyframes azora-shimmer {
+  0% { opacity: 0.3; }
+  50% { opacity: 0.7; }
+  100% { opacity: 0.3; }
+}
+
+.animate-azora-beam1 { animation: azora-beam1 8s ease-in-out infinite alternate; }
+.animate-azora-beam2 { animation: azora-beam2 10s ease-in-out infinite alternate; }
+.animate-azora-beam3 { animation: azora-beam3 11s ease-in-out infinite alternate; }
+.animate-azora-shimmer { animation: azora-shimmer 5s ease-in-out infinite; }
+
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
