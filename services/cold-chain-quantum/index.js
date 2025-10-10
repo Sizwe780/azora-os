@@ -30,7 +30,7 @@ const initializeColdChain = () => {
     {
       id: 'CC-FRIDGE-001',
       type: 'refrigerator',
-      location: 'Woolworths Store #1 - Dairy Section',
+      location: 'Store #1 - Dairy Section',
       currentTemp: 3.2,
       targetTemp: 3.0,
       targetRange: [2.0, 4.0],
@@ -47,7 +47,7 @@ const initializeColdChain = () => {
     {
       id: 'CC-FREEZER-002',
       type: 'freezer',
-      location: 'Woolworths Store #1 - Frozen Foods',
+      location: 'Store #1 - Frozen Foods',
       currentTemp: -18.5,
       targetTemp: -18.0,
       targetRange: [-20.0, -16.0],

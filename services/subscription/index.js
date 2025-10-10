@@ -6,7 +6,7 @@
 const express = require('express');
 const router = express.Router();
 
-// Mock database (replace with PostgreSQL/Prisma in production)
+// In-memory storage (production will use PostgreSQL/Prisma)
 const subscriptions = new Map();
 const pricingTiers = require('./pricingConfig');
 

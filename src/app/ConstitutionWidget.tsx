@@ -1,5 +1,5 @@
 import React from 'react';
-import { useConstitution } from '../../hooks/azora/useConstitution';
+import { useConstitution } from '../hooks/azora/useConstitution';
 
 const Panel = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
   <div className={`rounded-xl bg-white/5 backdrop-blur-lg border border-white/10 shadow ${className}`}>{children}</div>

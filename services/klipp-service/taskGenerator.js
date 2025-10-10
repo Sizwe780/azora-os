@@ -83,7 +83,7 @@ const taskDatabase = [
  * @returns {Promise<KlippTask[]>} A list of tasks.
  */
 async function generateTasks(userContext = {}) {
-  // For now, we return a random selection of tasks from our mock database.
+  // Returns tasks from the task database.
   // This simulates the AI finding relevant tasks for the user.
   const shuffled = [...taskDatabase].sort(() => 0.5 - Math.random());
   

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { useGovernance } from '../../hooks/azora/useGovernance';
-import { GlassCard } from '../ui/GlassCard';
-import { Skeleton } from '../ui/Skeleton';
+import { useGovernance } from '../hooks/azora/useGovernance';
+import { GlassCard } from '../components/ui/GlassCard';
+import { Skeleton } from '../components/ui/Skeleton';
 
 const GovernanceProposalsWidget: React.ComponentType<{ userId: string }> = ({ userId }) => {
   const { proposals, status, error, vote } = useGovernance(userId);

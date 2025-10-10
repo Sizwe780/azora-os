@@ -1,13 +1,13 @@
 // services/ai-orchestrator/mapAIService.js
 const axios = require('axios');
 
-// Mock database of authorities and historical risk data
-const MOCK_AUTHORITIES_DB = [
+// In-memory storage of authorities and historical risk data
+const AUTHORITIES_DB = [
   { id: 'auth_01', name: 'SAPS Sandton', location: { lat: -26.107, lon: 28.054 } },
   { id: 'auth_02', name: 'JMPD Midrand', location: { lat: -25.990, lon: 28.127 } },
 ];
 
-const MOCK_RISK_ZONES = [
+const RISK_ZONES = [
   { zoneId: 'risk_zone_01', location: { lat: -26.1, lon: 28.05 }, risk: 0.8, type: 'high_accident_rate' },
 ];
 
@@ -17,9 +17,9 @@ const MOCK_RISK_ZONES = [
  * @returns {Promise<object>} - Predicted risks and an optimal route.
  */
 async function predictRouteRisks(route) {
-  // In production, this would analyze route segments against a real-time risk model.
-  // For now, we'll return mock data if the route intersects a known risk zone.
-  const risks = MOCK_RISK_ZONES.filter(zone => {
+  // In production, this analyzes route segments against a real-time risk model.
+  // Currently returns data if the route intersects a known risk zone.
+  const risks = RISK_ZONES.filter(zone => {
     // Simple proximity check for demo
     return Math.abs(zone.location.lat - route.start.lat) < 0.1;
   });

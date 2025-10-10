@@ -1,7 +1,7 @@
 // src/components/azora/SovereignWeaverUI.tsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { GlassCard } from '../ui/GlassCard';
+import { GlassCard } from '../components/ui/GlassCard';
 import TrackingMap from './TrackingMap'; // The AI-powered map
 
 // --- Type Definitions ---

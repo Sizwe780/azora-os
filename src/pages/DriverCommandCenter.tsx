@@ -15,7 +15,7 @@ import {
   FaRoute, FaDollarSign, FaCoffee, FaShieldAlt, 
   FaMicrophone, FaBolt, FaHeart, FaMapMarkedAlt 
 } from 'react-icons/fa';
-import TrackingMap from '../components/azora/TrackingMap';
+import TrackingMap from '../app/TrackingMap';
 
 type DriverStats = {
   earnings: number;

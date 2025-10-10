@@ -8,7 +8,6 @@ import KlippPage from './pages/KlippPage';
 import GenesisChamberPage from './pages/GenesisChamberPage';
 import Settings from './pages/Settings';
 import DriverCommandCenter from './pages/DriverCommandCenter';
-import WoolworthsDashboard from './pages/WoolworthsDashboard';
 import ColdChainCommand from './pages/ColdChainCommand';
 import UniversalSafetyCommand from './pages/UniversalSafetyCommand';
 import QuantumTracking from './pages/QuantumTracking';
@@ -58,7 +57,6 @@ export default function AppRoutes() {
         <Route path="/tracking" element={<QuantumTracking />} />
         <Route path="/ai" element={<QuantumAI />} />
         <Route path="/evolution" element={<AIEvolution />} />
-        <Route path="/woolworths" element={<WoolworthsDashboard />} />
         <Route path="/coldchain" element={<ColdChainCommand />} />
         <Route path="/safety" element={<UniversalSafetyCommand />} />
         <Route path="/klipp" element={<KlippPage />} />

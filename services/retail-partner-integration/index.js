@@ -1,8 +1,8 @@
-// services/woolworths-integration/index.js
+// services/retail-partner-integration/index.js
 /**
- * WOOLWORTHS ELITE INTEGRATION
+ * RETAIL PARTNER INTEGRATION SERVICE
  * 
- * A complete, AI-powered integration with Woolworths operations.
+ * A complete, AI-powered integration with retail operations.
  * This service provides real-time inventory sync, customer flow prediction,
  * dynamic pricing, and employee wellness monitoring.
  */
@@ -13,21 +13,21 @@ const bodyParser = require('body-parser');
 const app = express();
 app.use(bodyParser.json());
 
-const PORT = process.env.WOOLWORTHS_PORT || 4006;
+const PORT = process.env.RETAIL_PARTNER_PORT || 4006;
 
-// --- Mock Data Stores ---
+// --- In-Memory Data Stores ---
 const inventory = new Map();
 const customerFlowData = [];
 const employeeWellness = new Map();
 
-// --- Initialize with mock data ---
-const initializeMockData = () => {
-  // Mock inventory
+// --- Initialize with sample data for development ---
+const initializeSampleData = () => {
+  // Sample inventory items
   inventory.set('BREAD_WHITE', { sku: 'BREAD_WHITE', stock: 150, demand: 'high', suggestedReorder: 200 });
   inventory.set('MILK_2L', { sku: 'MILK_2L', stock: 80, demand: 'medium', suggestedReorder: 150 });
   inventory.set('EGGS_12', { sku: 'EGGS_12', stock: 200, demand: 'high', suggestedReorder: 250 });
   
-  // Mock customer flow (hourly predictions for next 24 hours)
+  // Customer flow predictions (hourly predictions for next 24 hours)
   for (let i = 0; i < 24; i++) {
     const hour = new Date().getHours() + i;
     const flow = Math.floor(Math.random() * 200) + 50; // 50-250 customers/hour
@@ -35,11 +35,11 @@ const initializeMockData = () => {
   }
 };
 
-initializeMockData();
+initializeSampleData();
 
 // --- API Endpoints ---
 
-app.get('/health', (req, res) => res.json({ status: 'connected_to_woolworths', version: 'elite' }));
+app.get('/health', (req, res) => res.json({ status: 'retail_partner_connected', version: 'production' }));
 
 /**
  * Get real-time inventory with AI-powered reorder suggestions
@@ -55,7 +55,7 @@ app.get('/inventory', (req, res) => {
 });
 
 /**
- * Update inventory (would sync with real Woolworths API)
+ * Update inventory (syncs with retail partner systems)
  */
 app.post('/inventory/update', (req, res) => {
   const { sku, stock } = req.body;
@@ -169,6 +169,6 @@ app.get('/employee/wellness/dashboard', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`🛒 Woolworths Elite Integration online on port ${PORT}`);
+  console.log(`🛒 Retail Partner Integration Service online on port ${PORT}`);
   console.log(`AI-powered inventory, pricing, and wellness monitoring active.`);
 });

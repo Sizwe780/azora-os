@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useProtocolUpgrades } from '../../hooks/azora/useProtocolUpgrades';
+import { useProtocolUpgrades } from '../hooks/azora/useProtocolUpgrades';
 
 const Panel = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
   <div className={`rounded-xl bg-white/5 backdrop-blur-lg border border-white/10 shadow ${className}`}>{children}</div>

@@ -161,7 +161,7 @@ export default function LandingPage() {
             >
               <p className="text-white/60 text-sm uppercase tracking-wider mb-4">Trusted By</p>
               <div className="flex flex-wrap justify-center gap-8 items-center">
-                <div className="text-2xl font-bold text-white/40">Woolworths</div>
+                <div className="text-2xl font-bold text-white/40">Retail Partners</div>
                 <div className="text-2xl font-bold text-white/40">Government Departments</div>
                 <div className="text-2xl font-bold text-white/40">Mining Operations</div>
                 <div className="text-2xl font-bold text-white/40">Corporate SA</div>

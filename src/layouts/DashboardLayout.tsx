@@ -1,8 +1,8 @@
-import React from "react";
-import Sidebar from "../components/azora/Sidebar";
-import BeamsBackground from "../components/azora/BeamsBackground";
-import ThemeToggle from "../components/azora/ThemeToggle";
-import AuraUI from "../components/azora/AuraUI";
+import * as React from "react";
+import Sidebar from "../app/Sidebar";
+import BeamsBackground from "../app/BeamsBackground";
+import ThemeToggle from "../app/ThemeToggle";
+import AuraUI from "../app/AuraUI";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (

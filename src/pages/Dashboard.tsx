@@ -7,20 +7,20 @@ import { RepDistributionChart } from '../components/metrics/RepDistributionChart
 import { FederationTrafficWidget } from '../components/metrics/FederationTrafficWidget';
 import { AlertBanner } from '../components/ui/AlertBanner';
 import { useAlerting } from '../hooks/useAlerting';
-import { CommandCenter } from '../components/azora/CommandCenter';
-import { AZORAFounderWidget } from '../components/azora/AZORAFounderWidget';
+import { CommandCenter } from '../app/CommandCenter';
+import { AZORAFounderWidget } from '../app/AZORAFounderWidget';
 
-const GovernanceProposalsWidget = lazy(() => import('../components/azora/GovernanceProposalsWidget.tsx').then(mod => ({ default: mod.default as unknown as React.ComponentType<any> })));
-const GovernanceProposalForm = lazy(() => import('../components/azora/GovernanceProposalForm.tsx').then(mod => ({ default: mod.default as unknown as React.ComponentType<any> })));
-const ConstitutionWidget = lazy(() => import('../components/azora/ConstitutionWidget.tsx').then(mod => ({ default: mod.default as unknown as React.ComponentType<any> })));
-const ProtocolUpgradeWidget = lazy(() => import('../components/azora/ProtocolUpgradeWidget.tsx').then(mod => ({ default: mod.default as unknown as React.ComponentType<any> })));
-const InterNationWidget = lazy(() => import('../components/azora/FederationWidget.tsx').then(mod => ({ default: mod.default as unknown as React.ComponentType<any> })));
-const InviteNationForm = lazy(() => import('../components/azora/InviteNationForm.tsx').then(mod => ({ default: mod.default as unknown as React.ComponentType<any> })));
-const ReputationBridgeWidget = lazy(() => import('../components/azora/ReputationBridgeWidget.tsx').then(mod => ({ default: mod.default as unknown as React.ComponentType<any> })));
-const CrossNationProposalsWidget = lazy(() => import('../components/azora/CrossNationProposalsWidget.tsx').then(mod => ({ default: mod.default as unknown as React.ComponentType<any> })));
-const LeaderboardWidget = lazy(() => import('../components/azora/LeaderboardWidget.tsx').then(mod => ({ default: mod.default as unknown as React.ComponentType<any> })));
-const ReputationMilestonesWidget = lazy(() => import('../components/azora/ReputationMilestonesWidget.tsx').then(mod => ({ default: mod.default as unknown as React.ComponentType<any> })));
-const DelegateReputationWidget = lazy(() => import('../components/azora/DelegateReputationWidget.tsx').then(mod => ({ default: mod.default as unknown as React.ComponentType<any> })));
+const GovernanceProposalsWidget = lazy(() => import('../app/GovernanceProposalsWidget.tsx').then(mod => ({ default: mod.default as unknown as React.ComponentType<any> })));
+const GovernanceProposalForm = lazy(() => import('../app/GovernanceProposalForm.tsx').then(mod => ({ default: mod.default as unknown as React.ComponentType<any> })));
+const ConstitutionWidget = lazy(() => import('../app/ConstitutionWidget.tsx').then(mod => ({ default: mod.default as unknown as React.ComponentType<any> })));
+const ProtocolUpgradeWidget = lazy(() => import('../app/ProtocolUpgradeWidget.tsx').then(mod => ({ default: mod.default as unknown as React.ComponentType<any> })));
+const InterNationWidget = lazy(() => import('../app/FederationWidget.tsx').then(mod => ({ default: mod.default as unknown as React.ComponentType<any> })));
+const InviteNationForm = lazy(() => import('../app/InviteNationForm.tsx').then(mod => ({ default: mod.default as unknown as React.ComponentType<any> })));
+const ReputationBridgeWidget = lazy(() => import('../app/ReputationBridgeWidget.tsx').then(mod => ({ default: mod.default as unknown as React.ComponentType<any> })));
+const CrossNationProposalsWidget = lazy(() => import('../app/CrossNationProposalsWidget.tsx').then(mod => ({ default: mod.default as unknown as React.ComponentType<any> })));
+const LeaderboardWidget = lazy(() => import('../app/LeaderboardWidget.tsx').then(mod => ({ default: mod.default as unknown as React.ComponentType<any> })));
+const ReputationMilestonesWidget = lazy(() => import('../app/ReputationMilestonesWidget.tsx').then(mod => ({ default: mod.default as unknown as React.ComponentType<any> })));
+const DelegateReputationWidget = lazy(() => import('../app/DelegateReputationWidget.tsx').then(mod => ({ default: mod.default as unknown as React.ComponentType<any> })));
 
 export default function Dashboard({ userId = 'demo_user' }: { userId?: string }) {
   useAlerting();

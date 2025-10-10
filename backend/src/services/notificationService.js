@@ -1,4 +1,4 @@
-// Notification logic (mock)
+// Notification service
 async function sendNotification(userId, message, type = 'info') {
   // In production, integrate with push/email/SMS
   console.log(`Notify ${userId}: [${type}] ${message}`);

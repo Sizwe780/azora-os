@@ -1,4 +1,4 @@
-// Google STT integration (mock)
+// Google STT integration
 const speech = require('@google-cloud/speech');
 const client = new speech.SpeechClient();
 

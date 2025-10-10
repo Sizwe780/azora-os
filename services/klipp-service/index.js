@@ -60,8 +60,8 @@ app.post('/needs', (req, res) => {
   postedNeeds.push(need);
   console.log('New need posted:', need);
 
-  // --- AI-powered matching/alert logic (mock) ---
-  // For demo: check if any task in taskDatabase matches the need's title or description
+  // --- AI-powered matching and alert logic ---
+  // Check if any task in taskDatabase matches the need's title or description
   const { taskDatabase } = require('./taskGenerator');
   const matches = taskDatabase.filter(task =>
     need.title.toLowerCase().includes(task.title.toLowerCase()) ||

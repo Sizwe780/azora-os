@@ -33,7 +33,7 @@ const initializeSafetyZones = () => {
   const zones = [
     {
       id: 'ZONE-STORE-001',
-      name: 'Woolworths Store #1',
+      name: 'Retail Store #1',
       type: 'retail',
       location: { lat: -33.8688, lng: 151.2093 },
       area_sqm: 2500,

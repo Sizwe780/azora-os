@@ -31,10 +31,10 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/neural/, ''),
       },
-      '/api/woolworths': {
-        target: 'http://localhost:4006', // Woolworths Integration
+      '/api/retail': {
+        target: 'http://localhost:4006', // Retail Partner Integration
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/woolworths/, ''),
+        rewrite: (path) => path.replace(/^\/api\/retail/, ''),
       },
       '/api/coldchain': {
         target: 'http://localhost:4007', // Cold Chain Quantum Engine

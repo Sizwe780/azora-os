@@ -17,6 +17,7 @@ export default function BeamsBackground() {
           ease: "easeInOut"
         }}
       />
+      
       <motion.div
         className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl"
         animate={{

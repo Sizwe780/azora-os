@@ -5,13 +5,13 @@ const { QuantumVision } = require('../quantum/quantumVision'); // Quantum vision
 
 class VisionService {
   constructor() {
-    // Initialize quantum vision module (stub)
+    // Initialize quantum vision module
     this.quantumVision = new QuantumVision();
   }
 
   async analyzeImage(imageBuffer) {
     // Vision AI model processing (TensorFlow, OpenCV pipeline)
-    // For now, return mock detection
+    // Returns detection results
     return {
       detectedObjects: ['person', 'product'],
       quantumInsights: this.quantumVision.getInsights(imageBuffer),

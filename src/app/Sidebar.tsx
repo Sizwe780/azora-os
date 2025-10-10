@@ -1,11 +1,12 @@
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
-  FaHome, FaMoneyBillWave, FaAtom, FaMap, FaCog, FaTruck, 
+  FaHome, FaMoneyBillWave, FaAtom, FaMap, FaCog, FaTruck, FaStore, 
   FaSnowflake, FaShieldAlt, FaChartLine, FaUserClock, FaBuilding, 
   FaHeadset, FaLightbulb, FaGavel, FaWallet, FaEnvelope, FaUsers 
 } from 'react-icons/fa';
 import { Navigation, Brain, Zap } from 'lucide-react';
-import { hasPermission, Permission } from '../../types/founders';
+import { hasPermission, Permission } from '../types/founders';
 
 // For demo purposes, we'll use the CEO (Sizwe Ngwenya) as the default user
 // In production, this would come from authentication context
@@ -37,6 +38,7 @@ const navItems: NavItem[] = [
   { path: '/ceo-insights', label: 'CEO Insights', icon: FaLightbulb, requiresPermission: ['view_all_finances', 'manage_operations'] },
   
   // Specialized Services
+  { path: '/woolworths', label: 'Woolworths', icon: FaStore },
   { path: '/coldchain', label: 'Cold Chain', icon: FaSnowflake },
   { path: '/safety', label: 'Safety', icon: FaShieldAlt },
   

@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ThemeToggle } from '../components/ui/ThemeToggle';
 import { GlassCard } from '../components/ui/GlassCard';
-import BeamsBackground from '../components/azora/BeamsBackground';
+import BeamsBackground from '../app/BeamsBackground';
 
 const sidebarOptions = [
   { label: 'Dashboard', icon: '🏠', href: '#dashboard' },
@@ -92,8 +92,8 @@ export function ModernDashboardLayout({ children }: { children: React.ReactNode 
               <div className="mb-8 text-3xl font-extrabold text-yellow-300">Azora Suite: Super Advanced Features</div>
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {suiteFeatures.map(f => (
-                  <div key={f.label} className="glass p-6 rounded-2xl shadow-xl border border-yellow-400/30">
-                    <div className="text-xl font-bold text-indigo-300 mb-2">{f.label}</div>
+                  <div key={f.title} className="glass p-6 rounded-2xl shadow-xl border border-yellow-400/30">
+                    <div className="text-xl font-bold text-indigo-300 mb-2">{f.title}</div>
                     <div className="text-white/80 text-sm">{f.description}</div>
                   </div>
                 ))}

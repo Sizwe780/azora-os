@@ -1,7 +1,7 @@
 {
-  "name": "woolworths-integration",
+  "name": "retail-partner-integration",
   "version": "1.0.0",
-  "description": "Elite Woolworths Integration with AI-powered inventory, pricing, and wellness",
+  "description": "AI-powered retail partner integration with inventory, pricing, and wellness monitoring",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"

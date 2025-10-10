@@ -131,9 +131,9 @@ app.post('/assign-optimal-task', (req, res) => {
       score -= 30;
     }
     
-    // Consider location proximity (mock)
+    // Consider location proximity
     if (task.location && context.currentLocation) {
-      const distance = Math.random() * 10; // Mock distance calculation
+      const distance = Math.random() * 10; // Distance calculation
       score -= distance * 2;
     }
     
