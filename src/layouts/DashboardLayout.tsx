@@ -2,7 +2,7 @@ import React from "react";
 import Sidebar from "../components/azora/Sidebar";
 import BeamsBackground from "../components/azora/BeamsBackground";
 import ThemeToggle from "../components/azora/ThemeToggle";
-import SovereignWeaverUI from "../components/azora/SovereignWeaverUI";
+import AuraUI from "../components/azora/AuraUI";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -20,7 +20,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* Floating theme toggle and AI command center */}
       <div className="fixed bottom-6 right-6 z-20 flex items-end gap-4">
-        <SovereignWeaverUI />
+        <AuraUI />
         <ThemeToggle />
       </div>
     </div>

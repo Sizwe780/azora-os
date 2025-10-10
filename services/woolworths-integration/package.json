@@ -1,0 +1,13 @@
+{
+  "name": "woolworths-integration",
+  "version": "1.0.0",
+  "description": "Elite Woolworths Integration with AI-powered inventory, pricing, and wellness",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "body-parser": "^1.20.2"
+  }
+}

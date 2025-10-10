@@ -1,6 +1,35 @@
 {
-  "outputDirectory": "dist",
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "apps/driver-pwa/dist" }
+    },
+    { "src": "services/payment/index.js", "use": "@vercel/node" },
+    { "src": "services/assistant/index.js", "use": "@vercel/node" },
+    { "src": "services/auth/index.js", "use": "@vercel/node" },
+    { "src": "services/conversation/index.js", "use": "@vercel/node" },
+    { "src": "services/knowledge/index.js", "use": "@vercel/node" },
+    { "src": "services/security-camera/index.js", "use": "@vercel/node" },
+    { "src": "services/security-core/index.js", "use": "@vercel/node" },
+    { "src": "services/security-pos/index.js", "use": "@vercel/node" },
+    { "src": "services/speaker/index.js", "use": "@vercel/node" },
+    { "src": "services/store/index.js", "use": "@vercel/node" },
+    { "src": "services/voice/index.js", "use": "@vercel/node" }
+  ],
   "rewrites": [
-    { "source": "/", "destination": "/index.html" }
+    { "source": "/api/v1/payment/(.*)", "destination": "/services/payment/index.js" },
+    { "source": "/api/v1/assistant/(.*)", "destination": "/services/assistant/index.js" },
+    { "source": "/api/v1/auth/(.*)", "destination": "/services/auth/index.js" },
+    { "source": "/api/v1/conversation/(.*)", "destination": "/services/conversation/index.js" },
+    { "source": "/api/v1/knowledge/(.*)", "destination": "/services/knowledge/index.js" },
+    { "source": "/api/v1/security-camera/(.*)", "destination": "/services/security-camera/index.js" },
+    { "source": "/api/v1/security-core/(.*)", "destination": "/services/security-core/index.js" },
+    { "source": "/api/v1/security-pos/(.*)", "destination": "/services/security-pos/index.js" },
+    { "source": "/api/v1/speaker/(.*)", "destination": "/services/speaker/index.js" },
+    { "source": "/api/v1/store/(.*)", "destination": "/services/store/index.js" },
+    { "source": "/api/v1/voice/(.*)", "destination": "/services/voice/index.js" },
+    { "source": "/(.*)", "destination": "/apps/driver-pwa/dist/index.html" }
   ]
 }

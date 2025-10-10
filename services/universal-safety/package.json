@@ -1,0 +1,14 @@
+{
+  "name": "universal-safety",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Universal Safety Operating System ensuring peace and safety for everyone",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "body-parser": "^1.20.3"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "cold-chain-quantum",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Revolutionary cold chain management with zero loss guarantee",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "body-parser": "^1.20.3"
+  }
+}

@@ -1,12 +1,7 @@
 import React, { useState } from 'react';
 import { useGovernance } from '../../hooks/azora/useGovernance';
-import { Card } from '../../components/azora/atoms/Card';
-import { Heading } from '../../components/azora/atoms/Heading';
-import { Skeleton } from '../../components/azora/atoms/Skeleton';
-
-const GlassPanel: React.FC<{ className?: string; children: React.ReactNode }> = ({ className = '', children }) => (
-  <div className={`rounded-xl bg-white/5 backdrop-blur-lg border border-white/10 shadow ${className}`}>{children}</div>
-);
+import { GlassCard } from '../ui/GlassCard';
+import { Skeleton } from '../ui/Skeleton';
 
 const GovernanceProposalsWidget: React.ComponentType<{ userId: string }> = ({ userId }) => {
   const { proposals, status, error, vote } = useGovernance(userId);
@@ -21,13 +16,13 @@ const GovernanceProposalsWidget: React.ComponentType<{ userId: string }> = ({ us
   }
 
   const renderContent = () => {
-    if (status === 'loading' && proposals.length === 0) return <Skeleton lines={5} />;
+    if (status === 'loading' && proposals.length === 0) return <Skeleton className="h-48 w-full" />;
     if (status === 'error') return <div className="p-4 text-red-400">Error: {error}</div>;
 
     return (
         <div className="space-y-4">
             {proposals.map(p => (
-                <GlassPanel key={p.id} className="p-4 space-y-3">
+                <GlassCard key={p.id} className="p-4 space-y-3">
                     <div className="flex justify-between items-start">
                         <h4 className="font-bold text-white/90">{p.title}</h4>
                         <span className={`text-xs font-semibold px-2 py-1 rounded-full ${p.status === 'open' ? 'bg-green-500/20 text-green-300' : 'bg-slate-500/20 text-slate-300'}`}>
@@ -57,17 +52,17 @@ const GovernanceProposalsWidget: React.ComponentType<{ userId: string }> = ({ us
                             </button>
                         </div>
                     )}
-                </GlassPanel>
+                </GlassCard>
             ))}
         </div>
     );
   };
 
   return (
-    <Card>
-      <Heading>Governance Proposals</Heading>
+    <GlassCard className="p-4">
+      <h2 className="text-xl font-bold text-white mb-4">Governance Proposals</h2>
       {renderContent()}
-    </Card>
+    </GlassCard>
   );
 }
 export default GovernanceProposalsWidget;
