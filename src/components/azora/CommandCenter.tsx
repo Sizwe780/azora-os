@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { GlassCard } from './ui/GlassCard';
+import { GlassCard } from '../ui/GlassCard';
 
 const commands = [
   { cmd: 'get logsheet <tripId>', desc: 'Download a PDF logsheet for a specific trip.' },

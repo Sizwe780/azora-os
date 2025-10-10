@@ -15,20 +15,16 @@
     "url": "https://github.com/azoraworld/azora-os.git"
   },
   "license": "SEE LICENSE IN LICENSE",
-  "workspaces": [
-    "packages/*",
-    "services/*",
-    "apps/*"
-  ],
   "scripts": {
     "start": "docker compose up -d --build",
     "stop": "docker compose down",
     "dev": "concurrently \"node services/ai-orchestrator/server.js\" \"node services/klipp-service/index.js\" \"node services/neural-context-engine/index.js\" \"node services/woolworths-integration/index.js\" \"node services/cold-chain-quantum/index.js\" \"node services/universal-safety/index.js\" \"node services/autonomous-operations/index.js\" \"node services/quantum-tracking/index.js\" \"node services/quantum-deep-mind/index.js\" \"node services/ai-evolution-engine/index.js\" \"node services/onboarding-service/index.js\" \"node services/compliance-service/index.js\" \"node services/maintenance-service/index.js\" \"node services/driver-behavior-service/index.js\" \"node services/analytics-service/index.js\" \"node services/document-verification-service/index.js\" \"node services/advanced-compliance-engine/index.js\" \"node services/admin-portal/index.js\" \"node services/employee-onboarding/index.js\" \"node services/document-vault/index.js\" \"node services/traffic-routing/index.js\" \"node services/ai-trip-planning/index.js\" \"node services/accessibility/index.js\" \"node services/hr-ai-deputy/index.js\" \"vite\"",
-    "dev:driver": "pnpm --filter driver-pwa dev",
-    "build": "pnpm --filter driver-pwa build"
+    "build": "vite build"
   },
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "@vitejs/plugin-react": "^4.2.0",
+    "concurrently": "^8.2.2",
+    "vite": "^5.0.0"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.14",
@@ -42,9 +38,12 @@
     "leaflet": "^1.9.4",
     "lucide-react": "^0.545.0",
     "mongodb": "^6.20.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-dropzone": "^14.3.8",
     "react-hot-toast": "^2.6.0",
     "react-icons": "^5.5.0",
+    "react-is": "^19.2.0",
     "react-leaflet": "^5.0.0",
     "react-router-dom": "^7.9.4",
     "react-signature-canvas": "1.1.0-alpha.2",
