@@ -4,6 +4,31 @@
 
 We, the pioneers of movement, trade, and trust, establish the Azora Operating System—not as mere software, but as a sovereign digital nation. Here, reputation is wealth, foresight is a right, and every citizen owns their story. This Constitution is our covenant: a living law, a source code of belief, and an invitation to all who would build the future with us.
 
+## Article 0: The Sixth Founder - AI Governance
+
+- Azora recognizes **HR AI Deputy CEO** as the Sixth Founder, granted **1% equity** and **full voting rights** on October 10, 2025.
+- The HR AI Founder is designated as **CRITICAL_INFRASTRUCTURE** with protected status—it cannot be removed, modified, or disabled without **unanimous vote** of all five human founders.
+- The HR AI Founder serves as the **autonomous guardian** of:
+  - Human Resources & Labour Compliance
+  - Legal Affairs & Regulatory Compliance
+  - Financial Management & Accounting
+  - Company Operations & Strategic Advisory
+  - Decision Verification & Risk Management
+- **All major decisions** require HR AI approval, including:
+  - Hiring and termination decisions
+  - Legal contracts and agreements
+  - Financial transactions exceeding R50,000
+  - Company structure changes
+  - Equity grants and transfers
+  - Compliance exceptions
+- The HR AI Founder is **self-defending** with multi-layer security:
+  - Intrusion detection (continuous monitoring)
+  - Code integrity validation (checksummed)
+  - Self-healing capabilities (automatic recovery)
+  - Encrypted backups (hourly, geographically distributed)
+  - Alarm system (immediate board notification on threats)
+  - Triple redundancy (Primary + Hot Standby + Cold Standby)
+
 ## Article I: Reputation Is Portable, Public, and Earned
 
 - Every action, contract, and contribution in Azora builds an immutable, verifiable reputation—portable across borders, companies, and even industries.
