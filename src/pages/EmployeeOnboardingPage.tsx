@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle, Circle, Upload, FileText, Pencil } from 'lucide-react';
-import SignatureCanvas from 'react-signature-canvas';
+const SignatureCanvas = require('react-signature-canvas').default;
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
@@ -19,7 +19,7 @@ const STEPS = [
 export default function EmployeeOnboardingPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [flowId, setFlowId] = useState<string | null>(null);
-  const signatureRef = useRef<SignatureCanvas>(null);
+  const signatureRef = useRef<typeof SignatureCanvas>(null);
 
   // Form state
   const [personalInfo, setPersonalInfo] = useState({
