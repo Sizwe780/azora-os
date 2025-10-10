@@ -2,6 +2,7 @@
   "name": "azora-os-monorepo",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "workspaces": [
     "packages/*",
     "services/*",
@@ -10,23 +11,28 @@
   "scripts": {
     "start": "docker compose up -d --build",
     "stop": "docker compose down",
-    "dev": "pnpm --filter driver-pwa dev",
+    "dev": "concurrently \"node services/ai-orchestrator/server.js\" \"node services/klipp-service/index.js\" \"node services/neural-context-engine/index.js\" \"node services/woolworths-integration/index.js\" \"node services/cold-chain-quantum/index.js\" \"node services/universal-safety/index.js\" \"node services/autonomous-operations/index.js\" \"vite\"",
+    "dev:driver": "pnpm --filter driver-pwa dev",
     "build": "pnpm --filter driver-pwa build"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
   },
   "dependencies": {
+    "@tailwindcss/postcss": "^4.1.14",
     "@types/leaflet": "^1.9.20",
+    "autoprefixer": "^10.4.21",
     "axios": "^1.12.2",
     "body-parser": "^2.2.0",
     "express": "^4.21.2",
+    "framer-motion": "^12.23.22",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.545.0",
     "react-icons": "^5.5.0",
     "react-leaflet": "^5.0.0",
     "react-router-dom": "^7.9.4",
     "recharts": "^3.2.1",
-    "socket.io-client": "^4.8.1"
+    "socket.io-client": "^4.8.1",
+    "tailwindcss": "^4.1.14"
   }
 }
