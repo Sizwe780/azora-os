@@ -1,56 +1,27 @@
 import { ReputationBalance, StakeAction, Delegation } from '../../types/azora/reputationEconomy';
 
-// --- MOCK API ---
-// In a real scenario, these would be authenticated API calls to a secure backend.
-// For now, we simulate the backend logic and latency.
-
-let mockBalance: ReputationBalance = {
-    userId: '0xAZORA',
-    available: 10000,
-    staked: 2500,
-    delegated: 500,
-};
+// TODO: Replace with real API calls to reputation economy service
+// Remove mock data and implement actual backend integration
 
 const simulateNetworkDelay = () => new Promise(res => setTimeout(res, 500 + Math.random() * 500));
 
 export async function fetchReputationBalance(userId: string): Promise<ReputationBalance> {
   await simulateNetworkDelay();
-  console.log(`[API STUB] Fetching reputation balance for ${userId}`);
-  return { ...mockBalance, userId };
+  // TODO: Replace with real API call
+  console.log(`Fetching reputation balance for ${userId}`);
+  throw new Error('Not implemented: Real API integration required');
 }
 
 export async function stakeReputation(userId: string, proposalId: string, amount: number): Promise<StakeAction> {
   await simulateNetworkDelay();
-  if (amount > mockBalance.available) {
-    throw new Error('Insufficient available reputation to stake.');
-  }
-  mockBalance.available -= amount;
-  mockBalance.staked += amount;
-  console.log(`[API STUB] ${userId} staked ${amount} REP on proposal ${proposalId}`);
-  const action: StakeAction = {
-    id: crypto.randomUUID(),
-    fromUserId: userId,
-    toProposalId: proposalId,
-    amount,
-    timestamp: new Date().toISOString(),
-  };
-  return action;
+  // TODO: Replace with real API call
+  console.log(`${userId} staking ${amount} REP on proposal ${proposalId}`);
+  throw new Error('Not implemented: Real API integration required');
 }
 
 export async function delegateReputation(fromUserId: string, toUserId: string, amount: number): Promise<Delegation> {
   await simulateNetworkDelay();
-   if (amount > mockBalance.available) {
-    throw new Error('Insufficient available reputation to delegate.');
-  }
-  mockBalance.available -= amount;
-  mockBalance.delegated += amount;
-  console.log(`[API STUB] ${fromUserId} delegated ${amount} REP to ${toUserId}`);
-  const delegation: Delegation = {
-      id: crypto.randomUUID(),
-      fromUserId,
-      toUserId,
-      amount,
-      timestamp: new Date().toISOString(),
-  };
-  return delegation;
+  // TODO: Replace with real API call
+  console.log(`${fromUserId} delegating ${amount} REP to ${toUserId}`);
+  throw new Error('Not implemented: Real API integration required');
 }

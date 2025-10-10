@@ -1,5 +1,6 @@
+import React from 'react';
 // src/pages/KlippPage.tsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { GlassCard } from '../components/ui/GlassCard';
 import { FaTasks, FaDollarSign, FaClock, FaCheckCircle } from 'react-icons/fa';

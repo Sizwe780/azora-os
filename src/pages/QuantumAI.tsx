@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { useState, useEffect } from 'react';
 import { Brain, Sparkles, Activity, Zap, TrendingUp, RefreshCw, Send, Award } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 

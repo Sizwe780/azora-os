@@ -1,3 +1,4 @@
+import React from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { useMetrics } from '../../context/MetricsProvider';
 

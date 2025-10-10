@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useEffect, useState } from 'react';
 import { Activity, CheckCircle, XCircle, Clock, TrendingUp } from 'lucide-react';
 
 interface SystemHealth {

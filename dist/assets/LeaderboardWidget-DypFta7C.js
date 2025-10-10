@@ -1,1 +1,0 @@
-import{j as e}from"./index-BusU-Dyw.js";const d=({userId:r})=>e.jsxDEV("div",{children:e.jsxDEV("h1",{children:"Leaderboard"},void 0,!1,{fileName:"/workspaces/azora-os/src/app/LeaderboardWidget.tsx",lineNumber:7,columnNumber:13},void 0)},void 0,!1,{fileName:"/workspaces/azora-os/src/app/LeaderboardWidget.tsx",lineNumber:6,columnNumber:9},void 0);export{d as default};

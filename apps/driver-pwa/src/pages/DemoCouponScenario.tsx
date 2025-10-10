@@ -1,24 +1,25 @@
 import React, { useState } from 'react';
 import CouponPopup, { CouponData } from '../components/CouponPopup';
 
-const mockCoupon: CouponData = {
-  title: 'WRewards: 20% Off Apparel',
-  description: 'Enjoy 20% off on all Woolworths apparel. Exclusive for WRewards members!',
-  expiry: '2025-10-31',
-  rewards: 'Earn 200 bonus points',
-  brandLogoUrl: 'https://upload.wikimedia.org/wikipedia/commons/6/6e/Woolworths_South_Africa_logo.svg',
+// TODO: Replace with real coupon data from API
+const coupon: CouponData = {
+  title: 'Demo Coupon',
+  description: 'This is a placeholder coupon for demonstration purposes.',
+  expiry: '2025-12-31',
+  rewards: 'Demo rewards',
+  brandLogoUrl: '',
 };
 
 const DemoCouponScenario: React.FC = () => {
   const [showCoupon, setShowCoupon] = useState(true);
 
-  // Simulate real-time event (for demo, just show on mount)
+  // TODO: Implement real coupon fetching logic
   const handleClose = () => setShowCoupon(false);
 
   return (
     <div>
-      {/* Other demo UI ... */}
-      <CouponPopup coupon={mockCoupon} visible={showCoupon} onClose={handleClose} />
+      {/* TODO: Add proper demo UI */}
+      <CouponPopup coupon={coupon} visible={showCoupon} onClose={handleClose} />
     </div>
   );
 };

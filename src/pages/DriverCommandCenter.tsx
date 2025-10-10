@@ -1,3 +1,4 @@
+import React from 'react';
 // src/pages/DriverCommandCenter.tsx
 /**
  * THE DRIVER COMMAND CENTER
@@ -7,7 +8,7 @@
  * real-time earnings, and smart break recommendations.
  */
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import { GlassCard } from '../components/ui/GlassCard';

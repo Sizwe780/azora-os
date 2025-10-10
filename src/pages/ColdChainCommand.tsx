@@ -1,3 +1,4 @@
+import React from 'react';
 /**
  * COLD CHAIN COMMAND CENTER
  * Revolutionary interface for zero-loss cold chain management

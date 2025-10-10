@@ -1,3 +1,4 @@
+import React from 'react';
 /**
  * Universal Onboarding System
  * 
@@ -7,7 +8,7 @@
  * Copyright (c) 2025 Sizwe Ngwenya (Azora World)
  */
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import SignaturePad from '../../components/signature/SignaturePad';

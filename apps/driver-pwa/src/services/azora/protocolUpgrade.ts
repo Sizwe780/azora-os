@@ -1,28 +1,21 @@
 import { ProtocolUpgradeProposal } from '../../types/azora/protocolUpgrade';
 
-let mockUpgrades: ProtocolUpgradeProposal[] = [
-  {
-    id: 'upgrade_001',
-    title: 'Enable AI Enforcement Rights',
-    description: 'Allow AI citizens to trigger enforcement actions on reputation violations.',
-    createdAt: new Date().toISOString(),
-    status: 'open',
-    affectedRules: ['rule_ai_enforce'],
-    totalStaked: 4200,
-  },
-];
+// TODO: Replace with real protocol upgrade API service
+// Remove mock data and implement actual backend integration
+
+const upgrades: ProtocolUpgradeProposal[] = [];
 
 const simulateDelay = () => new Promise(res => setTimeout(res, 300 + Math.random() * 300));
 
 export async function fetchProtocolUpgrades(): Promise<ProtocolUpgradeProposal[]> {
   await simulateDelay();
-  return [...mockUpgrades];
+  // TODO: Implement real API call to protocol upgrade service
+  return [...upgrades];
 }
 
 export async function stakeOnUpgrade(proposalId: string, userId: string, amount: number) {
   await simulateDelay();
-  const proposal = mockUpgrades.find(p => p.id === proposalId);
-  if (!proposal || proposal.status !== 'open') throw new Error('Invalid or closed upgrade proposal');
-  proposal.totalStaked += amount;
-  return { success: true, proposal };
+  // TODO: Implement real API call to protocol upgrade service
+  console.log(`User ${userId} staking ${amount} REP on upgrade ${proposalId}`);
+  throw new Error('Not implemented: Real API integration required');
 }

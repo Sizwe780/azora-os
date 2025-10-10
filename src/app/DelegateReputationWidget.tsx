@@ -1,3 +1,4 @@
+import React from 'react';
 
 const DelegateReputationWidget: React.ComponentType<{ userId: string }> = ({ userId }) => (
 	<div>

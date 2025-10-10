@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useEffect, useState } from 'react';
 import { DollarSign, TrendingUp, TrendingDown, FileText, Calculator, CheckCircle } from 'lucide-react';
 
 interface ProfitAndLoss {

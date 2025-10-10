@@ -1,3 +1,4 @@
+import React from 'react';
 import { useAlerts } from '../../context/AlertProvider';
 
 export function AlertBanner() {

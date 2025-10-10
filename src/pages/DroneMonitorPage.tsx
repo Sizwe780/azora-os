@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useState } from 'react';
 import Card from '../components/azora/atoms/Card';
 import Heading from '../components/azora/atoms/Heading';
 

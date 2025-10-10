@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useState } from 'react';
 import { useGovernance } from '../hooks/azora/useGovernance';
 import { GlassCard } from '../components/ui/GlassCard';
 import { Skeleton } from '../components/ui/Skeleton';

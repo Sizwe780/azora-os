@@ -1,3 +1,4 @@
+import React from 'react';
 import { useMetrics } from '../../context/MetricsProvider';
 
 export function FederationTrafficWidget() {

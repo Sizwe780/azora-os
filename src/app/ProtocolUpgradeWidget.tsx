@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useState } from 'react';
 import { useProtocolUpgrades } from '../hooks/azora/useProtocolUpgrades';
 
 const Panel = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (

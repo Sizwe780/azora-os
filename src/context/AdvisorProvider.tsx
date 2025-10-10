@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState } from 'react';
+import React from 'react';
+import { createContext, useContext, useState } from 'react';
 
 type Insight = { id: string; severity: 'low' | 'medium' | 'high'; message: string; suggestion: string };
 

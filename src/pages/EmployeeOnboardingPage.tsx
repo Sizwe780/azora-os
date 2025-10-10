@@ -1,4 +1,5 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
+import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle, Circle, Upload, FileText, Pencil } from 'lucide-react';
 const SignatureCanvas = require('react-signature-canvas').default;

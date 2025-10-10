@@ -1,19 +1,20 @@
-// Minimal stub for useConstitution hook.
-// Fill in with actual logic later if needed.
+// TODO: Implement real useConstitution hook with API integration
+// Remove stub implementation and connect to actual constitution service
 
 import { useState } from "react";
 
-// If you want rules/logs, provide dummy arrays or real logic
 export function useConstitution() {
-  // Example state and dummy data
-  const [constitution, setConstitution] = useState<string>("No constitution loaded.");
+  // TODO: Implement real state management and API calls
+  const [constitution, setConstitution] = useState<string>("Constitution not loaded.");
 
-  // If your UI expects rules/logs, provide defaults—even if empty arrays
+  // TODO: Replace with real data from API
   const rules: any[] = [];
   const logs: any[] = [];
   const status = "idle";
   const error = "";
-  const toggle = () => {};
+  const toggle = () => {
+    // TODO: Implement toggle functionality
+  };
 
   return {
     constitution,

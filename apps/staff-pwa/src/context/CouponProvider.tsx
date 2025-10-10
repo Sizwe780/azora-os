@@ -11,36 +11,8 @@ interface CouponContextType {
 
 const CouponContext = createContext<CouponContextType | undefined>(undefined);
 
-// Mock coupon data for demo
-const mockCoupons: Coupon[] = [
-  {
-    id: 'WW-COUP-001',
-    title: '20% Off Premium Apparel',
-    description: 'Save on selected premium fashion items',
-    discount: '20%',
-    expiryDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
-    code: 'STYLE20',
-    category: 'apparel',
-  },
-  {
-    id: 'WW-COUP-002',
-    title: 'R50 Off Groceries',
-    description: 'Spend R300 or more on groceries',
-    discount: 'R50',
-    expiryDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3 days from now
-    code: 'FRESH50',
-    category: 'groceries',
-  },
-  {
-    id: 'WW-COUP-003',
-    title: 'Free Delivery',
-    description: 'Free delivery on your next online order',
-    discount: 'Free Delivery',
-    expiryDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 14 days from now
-    code: 'DELIVER',
-    category: 'general',
-  },
-];
+// TODO: Replace with real coupon data from API or state
+const coupons: Coupon[] = [];
 
 export const CouponProvider = ({ children }: { children: ReactNode }) => {
   const [currentCoupon, setCurrentCoupon] = useState<Coupon | null>(null);
@@ -64,7 +36,7 @@ export const CouponProvider = ({ children }: { children: ReactNode }) => {
         showPopup, 
         showCoupon, 
         dismissCoupon,
-        coupons: mockCoupons 
+  coupons: coupons
       }}
     >
       {children}

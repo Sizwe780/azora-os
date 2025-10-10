@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
-// Mock useInterNation for demo
-const useInterNation = () => ({
-  proposals: [
-    { id: 'p1', title: 'Merge Apparel Rewards', originNationId: 'Woolworths', description: 'Proposal to merge rewards.', totalStaked: 1200, status: 'open' },
-    { id: 'p2', title: 'Expand Voice Copilot', originNationId: 'WRewards', description: 'Proposal to expand voice copilot.', totalStaked: 800, status: 'closed' }
-  ],
-  isLoading: false,
-  error: '',
-  vote: async () => {},
-});
+// TODO: Import real useInterNation hook from API client
+// import { useInterNation } from '@azora/api-client';
 import Card from './atoms/Card';
+
 // Inline Skeleton for demo
 const Skeleton = ({ className = '' }) => <div className={`animate-pulse bg-white/10 rounded-md ${className}`} />;
+
+// TODO: Replace with real hook implementation
+const useInterNation = () => ({
+  proposals: [], // TODO: Replace with real data from API
+  isLoading: false,
+  error: '',
+  vote: async () => {}, // TODO: Implement real voting logic
+});
 
 export const CrossNationProposalsWidget = () => {
   const { proposals, isLoading, error, vote } = useInterNation();

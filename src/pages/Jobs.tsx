@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useEffect, useState } from 'react';
 import { jobsBoard, Job } from '../features/jobs/jobsBoard';
 import { useMetrics } from '../context/MetricsProvider';
 import { Card } from '../components/ui/Card';

@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FileText, Upload, Download, Search, Shield, CheckCircle, AlertTriangle, QrCode } from 'lucide-react';
 import axios from 'axios';

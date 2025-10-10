@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useEffect, useState } from 'react';
 import { Shield, AlertTriangle, CheckCircle, Database, Lock, Activity } from 'lucide-react';
 
 interface SecurityLayer {

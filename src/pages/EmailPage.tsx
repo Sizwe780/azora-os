@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useEffect, useState } from 'react';
 import { Mail, Send, Inbox, Star, Trash2, RefreshCw, Plus, Search, Paperclip } from 'lucide-react';
 import { Email, getEmailAccount, hasPermission } from '../types/founders';
 

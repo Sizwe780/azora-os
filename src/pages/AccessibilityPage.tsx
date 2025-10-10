@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mic, Keyboard, Eye, Type, Contrast, ZoomIn, Users, Volume2 } from 'lucide-react';
 import axios from 'axios';

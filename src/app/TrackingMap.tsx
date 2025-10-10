@@ -1,5 +1,6 @@
+import React from 'react';
 // src/components/azora/TrackingMap.tsx
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, CircleMarker } from 'react-leaflet';
 import { io, Socket } from 'socket.io-client';
 import 'leaflet/dist/leaflet.css';

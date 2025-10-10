@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { GlassCard } from '../components/ui/GlassCard';
@@ -69,26 +70,8 @@ export default function GenesisChamberPage() {
         setProposal(res.data);
       } catch (error) {
         console.error("Could not fetch Genesis proposal:", error);
-        // Mock data for demo
-        setProposal({
-          proposalId: 'gen_001',
-          title: 'Genesis: Urban Coffee Cart',
-          summary: 'Create a mobile coffee cart business in high-traffic area',
-          targetOperator: { name: 'Sarah Chen', klippLevel: 12 },
-          genesisPackage: {
-            seedCapital: { amount: 2500, currency: 'USD' },
-            assetAllocation: [{ assetId: 'cart_01', type: 'Equipment' }],
-            networkOrchestration: [
-              { service: 'Klipp', task: 'Design logo' },
-              { service: 'Klipp', task: 'Social media setup' }
-            ]
-          },
-          projectedImpact: {
-            firstMonthRevenue: '$3,500',
-            timeToProfitability: '14 days'
-          },
-          status: 'awaiting_approval'
-        });
+        // TODO: Handle error gracefully - show error message to user
+        setProposal(null);
       } finally {
         setIsLoading(false);
       }

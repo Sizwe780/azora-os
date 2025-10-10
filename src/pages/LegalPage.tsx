@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useEffect, useState } from 'react';
 import { Scale, CheckCircle, AlertTriangle, FileText, Shield } from 'lucide-react';
 
 interface ComplianceFramework {

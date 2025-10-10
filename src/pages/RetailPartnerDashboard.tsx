@@ -1,3 +1,4 @@
+import React from 'react';
 // src/pages/WoolworthsDashboard.tsx
 /**
  * WOOLWORTHS ELITE DASHBOARD
@@ -7,7 +8,7 @@
  * dynamic pricing, and employee wellness monitoring.
  */
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import { GlassCard } from '../components/ui/GlassCard';

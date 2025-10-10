@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { FaRobot, FaTimes } from 'react-icons/fa';
 
 export default function AuraUI() {

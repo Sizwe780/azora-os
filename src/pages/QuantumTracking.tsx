@@ -1,3 +1,4 @@
+import React from 'react';
 /**
  * 🎯 QUANTUM TRACKING COMMAND CENTER
  * 

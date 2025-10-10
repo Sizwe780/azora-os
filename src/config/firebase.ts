@@ -22,8 +22,5 @@ const firebaseConfig = {
   measurementId: "G-ZPTHGX4864"
 };
 
-// Mock exports for now (install firebase package if you need push notifications)
-const app = null;
-const analytics = null;
-
-export { app, analytics, firebaseConfig };
+// TODO: Integrate Firebase and export real instances for production
+export { firebaseConfig };

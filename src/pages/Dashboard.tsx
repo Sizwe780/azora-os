@@ -1,4 +1,5 @@
-import React, { Suspense, lazy } from 'react';
+import React from 'react';
+import { Suspense, lazy } from 'react';
 import { ModernDashboardLayout } from '../layouts/ModernDashboardLayout';
 import { Skeleton } from '../components/ui/Skeleton';
 import { ThemeToggle } from '../components/ui/ThemeToggle';

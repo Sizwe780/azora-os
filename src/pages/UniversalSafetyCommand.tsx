@@ -1,3 +1,4 @@
+import React from 'react';
 /**
  * UNIVERSAL SAFETY COMMAND CENTER
  * Ensuring everyone lives in peace and is safe
@@ -82,75 +83,13 @@ export default function UniversalSafetyCommand() {
 
   const fetchSafetyData = async () => {
     try {
-      // In production, these would be real API calls
-      // For now, generating realistic mock data
-      
-      setMetrics({
-        overallStatus: 'SECURE',
-        activeThreats: Math.floor(Math.random() * 3),
-        resolvedIncidents: 247 + Math.floor(Math.random() * 10),
-        employeeWellness: 90 + Math.floor(Math.random() * 10),
-        communityScore: 95 + Math.floor(Math.random() * 5),
-      });
+      // TODO: Replace with real API calls to safety monitoring service
+      const response = await fetch('/api/safety/metrics');
+      const data = await response.json();
 
-      // Mock threat data
-      setThreats([
-        {
-          id: 'T-001',
-          type: 'Equipment Malfunction',
-          severity: 'MEDIUM',
-          location: 'Warehouse Section B',
-          timestamp: new Date(Date.now() - 15 * 60000).toISOString(),
-          status: 'CONTAINED',
-          autonomousResponse: [
-            'Emergency stop activated',
-            'Area cordoned off',
-            'Maintenance team alerted',
-            'Backup systems engaged',
-          ],
-        },
-        {
-          id: 'T-002',
-          type: 'Wellness Alert',
-          severity: 'LOW',
-          location: 'Driver Unit #45',
-          timestamp: new Date(Date.now() - 45 * 60000).toISOString(),
-          status: 'MONITORING',
-          autonomousResponse: [
-            'Rest break recommended',
-            'Route adjusted for safety',
-            'Supervisor notified',
-          ],
-        },
-      ]);
-
-      // Mock wellness alerts
-      setWellnessAlerts([
-        {
-          employeeId: 'EMP-123',
-          name: 'John Driver',
-          type: 'Fatigue Detection',
-          severity: 'MEDIUM',
-          vitalSigns: {
-            heartRate: 95,
-            stress: 72,
-            fatigue: 68,
-          },
-          recommendation: 'Mandatory 30-minute break recommended',
-        },
-        {
-          employeeId: 'EMP-456',
-          name: 'Sarah Warehouse',
-          type: 'Stress Level',
-          severity: 'LOW',
-          vitalSigns: {
-            heartRate: 82,
-            stress: 58,
-            fatigue: 42,
-          },
-          recommendation: 'Consider task rotation',
-        },
-      ]);
+      setMetrics(data.metrics);
+      setThreats(data.threats);
+      setWellnessAlerts(data.wellnessAlerts);
 
       setLoading(false);
     } catch (error) {
@@ -179,19 +118,9 @@ export default function UniversalSafetyCommand() {
     }
   };
 
-  // Mock data for charts
-  const safetyTrendData = Array.from({ length: 24 }, (_, i) => ({
-    hour: i,
-    incidents: Math.floor(Math.random() * 5),
-    wellness: 85 + Math.floor(Math.random() * 15),
-    threats: Math.floor(Math.random() * 3),
-  }));
-
-  const safetyDistribution = [
-    { name: 'Secure', value: 85, color: '#10B981' },
-    { name: 'Monitoring', value: 12, color: '#FBBF24' },
-    { name: 'Active Response', value: 3, color: '#EF4444' },
-  ];
+  // TODO: Replace with real chart data from API
+  const safetyTrendData = [];
+  const safetyDistribution = [];
 
   if (loading) {
     return (

@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useEffect, useState } from 'react';
 import { Activity, Shield, TrendingUp, CheckCircle, AlertCircle } from 'lucide-react';
 
 interface AZORAStatus {

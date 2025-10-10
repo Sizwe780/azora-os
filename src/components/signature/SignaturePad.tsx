@@ -1,3 +1,4 @@
+import React from 'react';
 /**
  * Signature Pad Component
  * 
@@ -7,7 +8,7 @@
  * Copyright (c) 2025 Sizwe Ngwenya (Azora World)
  */
 
-import React, { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 interface SignaturePadProps {
   onSign: (signature: string) => void;

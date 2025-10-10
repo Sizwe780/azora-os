@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useEffect, useState } from 'react';
 import { MessageSquare, CheckCircle, Clock, XCircle, Bot } from 'lucide-react';
 
 interface Ticket {

@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { FaShieldAlt, FaGlobe, FaBolt, FaChartLine, FaLock, FaUsers, FaRocket, FaCheckCircle } from 'react-icons/fa';

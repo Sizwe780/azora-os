@@ -1,1 +1,0 @@
-import{j as e}from"./index-BusU-Dyw.js";const i=()=>e.jsxDEV("div",{children:e.jsxDEV("h2",{children:"Invite Nation Form"},void 0,!1,{fileName:"/workspaces/azora-os/src/app/InviteNationForm.tsx",lineNumber:5,columnNumber:5},void 0)},void 0,!1,{fileName:"/workspaces/azora-os/src/app/InviteNationForm.tsx",lineNumber:4,columnNumber:3},void 0);export{i as default};

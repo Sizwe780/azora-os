@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useEffect, useState } from 'react';
 import { Lightbulb, TrendingUp, Globe, AlertTriangle, Target } from 'lucide-react';
 
 interface Insight {

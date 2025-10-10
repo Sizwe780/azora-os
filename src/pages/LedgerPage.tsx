@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useState } from 'react';
 import { GlassCard } from '../components/ui/GlassCard';
 import { useApi } from '../hooks/azora/useApi';
 import axios from 'axios';
@@ -34,7 +35,7 @@ export default function LedgerPage() {
         setAiResult({ uid, insight: res.data.insight });
     } catch (e) {
         console.error("AI analysis failed", e);
-        setAiResult({ uid, insight: "AI analysis failed. This is a mock response." });
+        setAiResult({ uid, insight: "AI analysis failed. Please try again later." });
     }
   }
 

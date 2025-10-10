@@ -11,11 +11,7 @@ export interface FederationWidgetProps {
   userId?: string;
 }
 
-const MOCK_NATIONS: Nation[] = [
-  { id: "nation_1", name: "Azora Core", citizens: 12, reputation: 5640 },
-  { id: "nation_2", name: "Azora Trade", citizens: 8, reputation: 2800 },
-  { id: "nation_3", name: "Azora Research", citizens: 5, reputation: 1960 }
-];
+const nations: Nation[] = [];
 
 const FederationWidget: React.FC<FederationWidgetProps> = ({ userId }) => (
   <div className="rounded-xl bg-slate-900/70 border border-white/10 p-6">
@@ -29,7 +25,7 @@ const FederationWidget: React.FC<FederationWidgetProps> = ({ userId }) => (
         </tr>
       </thead>
       <tbody>
-        {MOCK_NATIONS.map(nation => (
+        {nations.map(nation => (
           <tr key={nation.id} className="border-b border-white/10">
             <td className="py-2 font-semibold text-cyan-200">{nation.name}</td>
             <td className="py-2">{nation.citizens}</td>
