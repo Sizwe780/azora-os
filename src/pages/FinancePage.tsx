@@ -54,7 +54,7 @@ export default function FinancePage() {
   const [data, setData] = useState<FinanceData | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect() => {
+  useEffect(() => {
     const fetchFinance = async () => {
       try {
         const response = await fetch('/api/hr-ai/finance/status');

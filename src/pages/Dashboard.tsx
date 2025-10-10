@@ -5,7 +5,6 @@ import { ThemeToggle } from '../components/ui/ThemeToggle';
 import { ProposalVolumeChart } from '../components/metrics/ProposalVolumeChart';
 import { RepDistributionChart } from '../components/metrics/RepDistributionChart';
 import { FederationTrafficWidget } from '../components/metrics/FederationTrafficWidget';
-import { AdvisorPanel } from '../components/azora/AdvisorPanel';
 import { AlertBanner } from '../components/ui/AlertBanner';
 import { useAlerting } from '../hooks/useAlerting';
 import { CommandCenter } from '../components/azora/CommandCenter';
@@ -36,9 +35,6 @@ export default function Dashboard({ userId = 'demo_user' }: { userId?: string })
       <section id="azora-founder" className="col-span-2">
         <AZORAFounderWidget />
       </section>
-      <aside className="lg:col-span-1">
-        <AdvisorPanel />
-      </aside>
       {/* Metrics Section */}
       <section id="metrics" className="col-span-2 space-y-6">
         <ProposalVolumeChart />

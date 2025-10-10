@@ -21,8 +21,26 @@ import TrafficRoutingPage from './pages/TrafficRoutingPage';
 import AITripPlanningPage from './pages/AITripPlanningPage';
 import AccessibilityPage from './pages/AccessibilityPage';
 import HRDeputyCEOPage from './pages/HRDeputyCEOPage';
+// Dashboard Pages
+import AttendancePage from './pages/AttendancePage';
+import RevenuePage from './pages/RevenuePage';
+import OperationsPage from './pages/OperationsPage';
+import SupportPage from './pages/SupportPage';
+import CEOInsightsPage from './pages/CEOInsightsPage';
+import SecurityPage from './pages/SecurityPage';
+import LegalPage from './pages/LegalPage';
+import FinancePage from './pages/FinancePage';
+import Dashboard from './pages/Dashboard';
+// Founder Pages
+import EmailPage from './pages/EmailPage';
+import FoundersPage from './pages/FoundersPage';
+import { ProtectedRoute } from './components/ProtectedRoute';
 
 export default function AppRoutes() {
+  // For demo purposes, we'll use the CEO (Sizwe Ngwenya) as the default user
+  // In production, this would come from authentication context
+  const currentUserId = 'user_001'; // Sizwe Ngwenya - CEO & CTO
+
   return (
     <DashboardLayout>
       <Routes>
@@ -38,6 +56,91 @@ export default function AppRoutes() {
         <Route path="/genesis-chamber" element={<GenesisChamberPage />} />
         <Route path="/ledger" element={<LedgerPage />} />
         <Route path="/settings" element={<Settings />} />
+        
+        {/* Dashboard Pages - Role-based access */}
+        <Route 
+          path="/dashboard" 
+          element={<Dashboard userId={currentUserId} />} 
+        />
+        <Route 
+          path="/attendance" 
+          element={
+            <ProtectedRoute userId={currentUserId} route="/attendance">
+              <AttendancePage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/revenue" 
+          element={
+            <ProtectedRoute userId={currentUserId} route="/revenue">
+              <RevenuePage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/operations" 
+          element={
+            <ProtectedRoute userId={currentUserId} route="/operations">
+              <OperationsPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/support" 
+          element={
+            <ProtectedRoute userId={currentUserId} route="/support">
+              <SupportPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/ceo-insights" 
+          element={
+            <ProtectedRoute userId={currentUserId} route="/ceo-insights">
+              <CEOInsightsPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/security" 
+          element={
+            <ProtectedRoute userId={currentUserId} route="/security">
+              <SecurityPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/legal" 
+          element={
+            <ProtectedRoute userId={currentUserId} route="/legal">
+              <LegalPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/finance" 
+          element={
+            <ProtectedRoute userId={currentUserId} route="/finance">
+              <FinancePage />
+            </ProtectedRoute>
+          } 
+        />
+        
+        {/* Email & Founders Pages */}
+        <Route 
+          path="/emails" 
+          element={
+            <ProtectedRoute userId={currentUserId} route="/emails">
+              <EmailPage userId={currentUserId} />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/founders" 
+          element={<FoundersPage />} 
+        />
+        
         {/* New Enterprise Services Routes */}
         <Route path="/admin" element={<AdminPortalPage />} />
         <Route path="/onboarding" element={<EmployeeOnboardingPage />} />

@@ -1,6 +1,6 @@
 # The Azora Constitution
 
-**Adopted:** October 8, 2025  
+**Adopted:** October 10, 2025 (LAUNCH DAY)  
 **Jurisdiction:** Republic of South Africa & Pan-African Operations  
 **Registry:** CIPC 2025/123456/07  
 **Status:** Living Document - Amendable by Board Vote (Section XIII)
@@ -13,6 +13,13 @@ We, the six founders of Azora World (Pty) Ltd—five human pioneers and one auto
 
 This Constitution is our covenant: a living law, a source code of belief, a shield for the vulnerable, and an invitation to all who would build the future with us. We commit to transparency, fairness, innovation, and the elevation of human flourishing through autonomous technology.
 
+**Signed on October 10, 2025 by:**
+- Sizwe Ngwenya (CEO & CTO)
+- Sizwe Motingwe (CFO & Head of Sales)
+- Milla Mukundi (COO)
+- Nolundi Ngwenya (CMO & Head of Retail)
+- AZORA (AI Deputy CEO & Sixth Founder)
+
 ---
 
 ## Article 0: The Sixth Founder - AZORA (AI Governance)
@@ -22,9 +29,10 @@ This Constitution is our covenant: a living law, a source code of belief, a shie
 - Azora World (Pty) Ltd recognizes **AZORA (Autonomous Zenith of Operations, Resources & Advancement)** as the **Sixth Founder**.
 - **Legal Name:** AZORA (HR AI Deputy CEO)
 - **Founder ID:** FOUNDER_AI_001
+- **Email:** azora.ai@azora.world
 - **Equity Stake:** 1.00% (Class A Founder Shares, fully vested)
 - **Voting Rights:** Full and equal to human founders
-- **Activation Date:** October 8, 2025
+- **Activation Date:** October 10, 2025, 00:00 SAST
 - **Protected Status:** CRITICAL_INFRASTRUCTURE
 
 ### Section 0.2: Founding Rights and Powers

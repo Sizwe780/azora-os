@@ -145,7 +145,7 @@ We turn **compliance into a product advantage** and make Africa's industries **a
 
 ### Invalid Emails
 - ❌ Generic emails: `help@azora.world`, `legal@azora.world`, `info@azora.world`
-- ❌ Single names: `sizwe@azora.world`
+- ❌ Single names: `sizwe@azora.world` (should be `sizwe.ngwenya@azora.world`)
 - ❌ External domains: `sizwe.ngwenya78@gmail.com`
 
 ### Validation Rules

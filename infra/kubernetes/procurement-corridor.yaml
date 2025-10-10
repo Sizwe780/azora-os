@@ -1,0 +1,129 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: procurement-corridor
+  namespace: azora-services
+  labels:
+    app: procurement-corridor
+    tier: backend
+    phase: phase-1
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: procurement-corridor
+  template:
+    metadata:
+      labels:
+        app: procurement-corridor
+        tier: backend
+    spec:
+      containers:
+      - name: procurement-corridor
+        image: azora/procurement-corridor:1.0
+        ports:
+        - containerPort: 5100
+          name: http
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: PORT
+          value: "5100"
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: procurement-secrets
+              key: database-url
+        - name: ETHEREUM_RPC_URL
+          valueFrom:
+            secretKeyRef:
+              name: procurement-secrets
+              key: ethereum-rpc-url
+        - name: POLYGON_RPC_URL
+          valueFrom:
+            secretKeyRef:
+              name: procurement-secrets
+              key: polygon-rpc-url
+        - name: BLOCKCHAIN_PRIVATE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: procurement-secrets
+              key: blockchain-private-key
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: procurement-secrets
+              key: openai-api-key
+        - name: ANTHROPIC_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: procurement-secrets
+              key: anthropic-api-key
+        - name: STRIPE_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: procurement-secrets
+              key: stripe-secret-key
+        - name: REDIS_HOST
+          value: "redis-service"
+        - name: REDIS_PORT
+          value: "6379"
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "2000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5100
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5100
+          initialDelaySeconds: 10
+          periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: procurement-corridor-service
+  namespace: azora-services
+spec:
+  selector:
+    app: procurement-corridor
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 5100
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: procurement-corridor-ingress
+  namespace: azora-services
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - procurement.azora.world
+    secretName: procurement-tls
+  rules:
+  - host: procurement.azora.world
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: procurement-corridor-service
+            port:
+              number: 80

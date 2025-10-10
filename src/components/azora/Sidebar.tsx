@@ -1,17 +1,64 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { FaHome, FaMoneyBillWave, FaAtom, FaMap, FaCog, FaTruck, FaStore, FaSnowflake, FaShieldAlt } from 'react-icons/fa';
+import { 
+  FaHome, FaMoneyBillWave, FaAtom, FaMap, FaCog, FaTruck, FaStore, 
+  FaSnowflake, FaShieldAlt, FaChartLine, FaUserClock, FaBuilding, 
+  FaHeadset, FaLightbulb, FaGavel, FaWallet, FaEnvelope, FaUsers 
+} from 'react-icons/fa';
 import { Navigation, Brain, Zap } from 'lucide-react';
+import { hasPermission, Permission } from '../../types/founders';
 
-const navItems = [
+// For demo purposes, we'll use the CEO (Sizwe Ngwenya) as the default user
+// In production, this would come from authentication context
+const CURRENT_USER_ID = 'user_001'; // Sizwe Ngwenya - CEO & CTO
+
+interface NavItem {
+  path: string;
+  label: string;
+  icon: any;
+  highlight?: boolean;
+  newFeature?: boolean;
+  saMarket?: boolean;
+  requiresPermission?: Permission | Permission[]; // Single permission or array of permissions (any match grants access)
+}
+
+const navItems: NavItem[] = [
   { path: '/', label: 'Sanctuary', icon: FaHome },
+  { path: '/dashboard', label: 'Dashboard', icon: FaChartLine },
   { path: '/driver', label: 'Driver AI', icon: FaTruck },
   { path: '/ai', label: 'Quantum AI', icon: Brain, highlight: true, newFeature: true },
   { path: '/evolution', label: 'AI Evolution 🇿🇦', icon: Zap, highlight: true, newFeature: true, saMarket: true },
   { path: '/tracking', label: 'Quantum Track', icon: Navigation, highlight: true },
+  
+  // Business Operations
+  { path: '/attendance', label: 'Attendance', icon: FaUserClock, requiresPermission: ['view_all_hr', 'view_own_hr'] },
+  { path: '/revenue', label: 'Revenue', icon: FaMoneyBillWave, requiresPermission: ['view_all_finances', 'view_own_finances'] },
+  { path: '/operations', label: 'Operations', icon: FaBuilding, requiresPermission: ['manage_operations', 'view_operations'] },
+  { path: '/support', label: 'Support', icon: FaHeadset, requiresPermission: ['manage_operations', 'view_operations'] },
+  { path: '/ceo-insights', label: 'CEO Insights', icon: FaLightbulb, requiresPermission: ['view_all_finances', 'manage_operations'] },
+  
+  // Specialized Services
   { path: '/woolworths', label: 'Woolworths', icon: FaStore },
   { path: '/coldchain', label: 'Cold Chain', icon: FaSnowflake },
   { path: '/safety', label: 'Safety', icon: FaShieldAlt },
+  
+  // Security & Compliance
+  { path: '/security', label: 'Security', icon: FaShieldAlt, requiresPermission: ['view_security', 'manage_security'] },
+  { path: '/legal', label: 'Legal', icon: FaGavel, requiresPermission: ['view_compliance', 'manage_compliance'] },
+  { path: '/finance', label: 'Finance', icon: FaWallet, requiresPermission: ['view_all_finances', 'view_own_finances'] },
+  
+  // Communication & Team
+  { 
+    path: '/emails', 
+    label: 'Emails', 
+    icon: FaEnvelope, 
+    requiresPermission: 'access_emails',
+    highlight: true,
+    newFeature: true
+  },
+  { path: '/founders', label: 'Founders', icon: FaUsers, highlight: true, newFeature: true },
+  
+  // System
   { path: '/klipp', label: 'Klipp', icon: FaMoneyBillWave },
   { path: '/genesis-chamber', label: 'Genesis', icon: FaAtom },
   { path: '/ledger', label: 'Ledger', icon: FaMap },
@@ -21,15 +68,34 @@ const navItems = [
 export default function Sidebar() {
   const location = useLocation();
 
+  // Filter nav items based on permissions
+  const visibleNavItems = navItems.filter(item => {
+    // If no permission required, show to everyone
+    if (!item.requiresPermission) {
+      return true;
+    }
+
+    // If permission is an array, check if user has ANY of them
+    if (Array.isArray(item.requiresPermission)) {
+      return item.requiresPermission.some(permission => 
+        hasPermission(CURRENT_USER_ID, permission)
+      );
+    }
+
+    // Single permission check
+    return hasPermission(CURRENT_USER_ID, item.requiresPermission);
+  });
+
   return (
-    <aside className="w-64 bg-slate-800/50 backdrop-blur-xl border-r border-white/10 p-6 flex flex-col gap-4 relative z-10">
+    <aside className="w-64 bg-slate-800/50 backdrop-blur-xl border-r border-white/10 p-6 flex flex-col gap-4 relative z-10 overflow-y-auto">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-cyan-300">Azora OS</h1>
         <p className="text-sm text-white/60">Infinite Aura</p>
+        <p className="text-xs text-cyan-400 mt-2">🚀 Launch Day: Oct 10, 2025</p>
       </div>
       
       <nav className="flex flex-col gap-2">
-        {navItems.map((item) => {
+        {visibleNavItems.map((item) => {
           const Icon = item.icon;
           const isActive = location.pathname === item.path;
           return (
@@ -55,7 +121,7 @@ export default function Sidebar() {
               }`}
             >
               <Icon className={item.highlight ? 'animate-pulse' : ''} />
-              <span>{item.label}</span>
+              <span className="text-sm">{item.label}</span>
               {item.highlight && !isActive && (
                 <span className={`ml-auto text-xs px-2 py-1 rounded-full ${
                   item.saMarket
@@ -64,13 +130,22 @@ export default function Sidebar() {
                     ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white animate-pulse'
                     : 'bg-purple-500 text-white'
                 }`}>
-                  {item.saMarket ? '🚀 NEW' : item.newFeature ? '🧠 NEW' : 'NEW'}
+                  {item.saMarket ? '🚀' : item.newFeature ? '✨' : 'NEW'}
                 </span>
               )}
             </Link>
           );
         })}
       </nav>
+      
+      {/* User info at bottom */}
+      <div className="mt-auto pt-4 border-t border-white/10">
+        <div className="text-xs text-white/60">
+          <p className="font-semibold text-white">Sizwe Ngwenya</p>
+          <p>CEO & CTO</p>
+          <p className="text-cyan-400 mt-1">All Access ✓</p>
+        </div>
+      </div>
     </aside>
   );
 }

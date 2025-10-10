@@ -34,8 +34,8 @@ All 5 human founders will officially join Azora as employees through the HR AI D
   "founderId": "FOUNDER_SIZWE_001",
   "personalInfo": {
     "name": "Sizwe Ngwenya",
-    "title": "Chief Executive Officer",
-    "email": "sizwe@azora.world",
+    "title": "Founder, Chief Architect & CEO",
+    "email": "sizwe.ngwenya@azora.world",
     "phone": "+27 XX XXX XXXX",
     "location": "South Africa"
   },
@@ -51,7 +51,7 @@ All 5 human founders will officially join Azora as employees through the HR AI D
     "annualSalary": 1200000,
     "currency": "ZAR",
     "paymentFrequency": "monthly",
-    "equity": 0.40,
+    "equity": 0.65,
     "performanceBonus": true,
     "bonusTarget": 0.30
   },
