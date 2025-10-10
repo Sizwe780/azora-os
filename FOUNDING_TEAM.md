@@ -30,10 +30,10 @@ We turn **compliance into a product advantage** and make Africa's industries **a
 - **Why 65%?** Created the IP, built the technical foundation, mapped all compliance frameworks, and drives the vision
 
 #### **Sizwe Motingwe** — 15% Equity
-- **Role:** Head of Sales & Partnerships
+- **Role:** Chief Financial Officer (CFO) & Head of Sales & Partnerships
 - **Email:** sizwe.motingwe@azora.world
-- **Responsibilities:** Growth engine, customer adoption, revenue generation, partnership development
-- **Why 15%?** Critical for converting vision into revenue, enterprise sales, strategic partnerships
+- **Responsibilities:** Financial oversight, growth engine, customer adoption, revenue generation, partnership development, capital allocation, investor relations, financial discipline, and strategic planning
+- **Why 15%?** Critical for converting vision into revenue, enterprise sales, strategic partnerships, ensuring financial discipline, and driving sustainable growth
 
 #### **Milla Mukundi** — 7% Equity
 - **Role:** Operations & Support Lead

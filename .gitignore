@@ -3,3 +3,4 @@ built/
 .DS_Store
 .env
 *.log
+.env
