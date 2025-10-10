@@ -10,7 +10,8 @@
   "scripts": {
     "start": "docker compose up -d --build",
     "stop": "docker compose down",
-    "dev": "concurrently \"npm run dev --workspace=apps/staff-pwa\" \"npm run dev --workspace=apps/security-dashboard\""
+    "dev": "pnpm --filter driver-pwa dev",
+    "build": "pnpm --filter driver-pwa build"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
