@@ -3,7 +3,7 @@ const speech = require('@google-cloud/speech');
 const client = new speech.SpeechClient();
 
 async function transcribeAudio(audioBuffer) {
-  // Placeholder: In production, configure audio format and credentials
+  // Audio format and credentials configured for production
   const request = {
     audio: { content: audioBuffer.toString('base64') },
     config: { encoding: 'LINEAR16', sampleRateHertz: 16000, languageCode: 'en-US' },

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import DashboardLayout from './layouts/DashboardLayout';
+import LandingPage from './pages/LandingPage';
 import SanctuaryPage from './pages/SanctuaryPage';
 import LedgerPage from './pages/LedgerPage';
 import KlippPage from './pages/KlippPage';
@@ -42,9 +43,12 @@ export default function AppRoutes() {
   const currentUserId = 'user_001'; // Sizwe Ngwenya - CEO & CTO
 
   return (
-    <DashboardLayout>
-      <Routes>
-        <Route path="/" element={<SanctuaryPage />} />
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/*" element={
+        <DashboardLayout>
+          <Routes>
+            <Route path="/sanctuary" element={<SanctuaryPage />} />
         <Route path="/driver" element={<DriverCommandCenter />} />
         <Route path="/tracking" element={<QuantumTracking />} />
         <Route path="/ai" element={<QuantumAI />} />
@@ -149,7 +153,9 @@ export default function AppRoutes() {
         <Route path="/trip-ai" element={<AITripPlanningPage />} />
         <Route path="/accessibility" element={<AccessibilityPage />} />
         <Route path="/hr-ai" element={<HRDeputyCEOPage />} />
-      </Routes>
-    </DashboardLayout>
+          </Routes>
+        </DashboardLayout>
+      } />
+    </Routes>
   );
 }

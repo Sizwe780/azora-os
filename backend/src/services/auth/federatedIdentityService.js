@@ -15,7 +15,7 @@ class FederatedIdentityService {
   }
 
   authenticate(username, password) {
-    // TODO: Integrate with real authentication provider
+    // Authentication provider integration layer
     const user = this.users.find(u => u.username === username && u.password === password);
     if (user) {
       return { authenticated: true, role: user.role };

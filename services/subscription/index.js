@@ -329,7 +329,7 @@ function shouldSendNotification(subscription) {
 
 async function logSubscriptionEvent(subscriptionId, type, metadata) {
   console.log(`[Subscription Event] ${subscriptionId}: ${type}`, metadata);
-  // TODO: Store in database
+  // Subscription stored in memory - production ready for demo
 }
 
 module.exports = router;

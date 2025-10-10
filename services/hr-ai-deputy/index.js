@@ -2104,7 +2104,7 @@ class HRDeputyCEO {
       runway: runway.toFixed(1),
       burnRate: monthlyBurn,
       cashReserves: cashReserves,
-      revenueGrowth: 0 // TODO: Calculate month-over-month growth
+      revenueGrowth: ((monthlyRevenue.revenue - (historicalRevenue[historicalRevenue.length - 2]?.revenue || monthlyRevenue.revenue)) / (historicalRevenue[historicalRevenue.length - 2]?.revenue || 1)) * 100
     };
     
     // Alert CEO if runway < 6 months

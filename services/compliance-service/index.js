@@ -616,7 +616,7 @@ app.get('/api/compliance/violations/fleet/:fleetId', (req, res) => {
   const fleetViolations = [];
   
   drivers.forEach((hos, driverId) => {
-    if (hos.fleetId === fleetId || true) { // TODO: Add fleet filtering
+    if (hos.fleetId === fleetId) {
       fleetViolations.push(...hos.today.violations, ...hos.week.violations);
     }
   });

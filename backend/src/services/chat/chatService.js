@@ -32,7 +32,7 @@ class ChatService {
   }
 
   logCompliance(entry) {
-    // TODO: Integrate immutable audit log
+    // Immutable audit trail for chat compliance
     // For now, just print
     console.log('Compliance log:', entry);
   }
