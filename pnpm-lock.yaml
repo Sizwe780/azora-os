@@ -124,6 +124,32 @@ importers:
         specifier: ^5.4.0
         version: 5.4.20(@types/node@24.7.1)(lightningcss@1.30.1)
 
+  services/accessibility:
+    dependencies:
+      body-parser:
+        specifier: ^2.2.0
+        version: 2.2.0
+      express:
+        specifier: ^4.21.2
+        version: 4.21.2
+    devDependencies:
+      nodemon:
+        specifier: ^3.0.0
+        version: 3.1.10
+
+  services/admin-portal:
+    dependencies:
+      body-parser:
+        specifier: ^2.2.0
+        version: 2.2.0
+      express:
+        specifier: ^4.21.2
+        version: 4.21.2
+    devDependencies:
+      nodemon:
+        specifier: ^3.0.0
+        version: 3.1.10
+
   services/advanced-compliance-engine:
     dependencies:
       body-parser:
@@ -151,6 +177,19 @@ importers:
       axios:
         specifier: ^1.6.0
         version: 1.12.2
+
+  services/ai-trip-planning:
+    dependencies:
+      body-parser:
+        specifier: ^2.2.0
+        version: 2.2.0
+      express:
+        specifier: ^4.21.2
+        version: 4.21.2
+    devDependencies:
+      nodemon:
+        specifier: ^3.0.0
+        version: 3.1.10
 
   services/analytics-service:
     dependencies:
@@ -235,6 +274,19 @@ importers:
         specifier: ^15.0.0
         version: 15.1.3
 
+  services/document-vault:
+    dependencies:
+      body-parser:
+        specifier: ^2.2.0
+        version: 2.2.0
+      express:
+        specifier: ^4.21.2
+        version: 4.21.2
+    devDependencies:
+      nodemon:
+        specifier: ^3.0.0
+        version: 3.1.10
+
   services/document-verification-service:
     dependencies:
       body-parser:
@@ -249,6 +301,19 @@ importers:
         version: 3.1.10
 
   services/driver-behavior-service:
+    dependencies:
+      body-parser:
+        specifier: ^2.2.0
+        version: 2.2.0
+      express:
+        specifier: ^4.21.2
+        version: 4.21.2
+    devDependencies:
+      nodemon:
+        specifier: ^3.0.0
+        version: 3.1.10
+
+  services/employee-onboarding:
     dependencies:
       body-parser:
         specifier: ^2.2.0
@@ -455,6 +520,19 @@ importers:
       prom-client:
         specifier: ^15.0.0
         version: 15.1.3
+
+  services/traffic-routing:
+    dependencies:
+      body-parser:
+        specifier: ^2.2.0
+        version: 2.2.0
+      express:
+        specifier: ^4.21.2
+        version: 4.21.2
+    devDependencies:
+      nodemon:
+        specifier: ^3.0.0
+        version: 3.1.10
 
   services/universal-safety:
     dependencies:

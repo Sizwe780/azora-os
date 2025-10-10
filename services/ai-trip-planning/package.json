@@ -1,0 +1,20 @@
+{
+  "name": "ai-trip-planning",
+  "version": "1.0.0",
+  "description": "AI-powered trip planning with Azora AI integration for easy trip starting and workday optimization",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": ["ai", "trip-planning", "azora-ai", "optimization"],
+  "author": "Sizwe Ngwenya <sizwe.ngwenya@azora.world>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.2",
+    "body-parser": "^2.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  }
+}
