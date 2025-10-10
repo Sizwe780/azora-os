@@ -8,6 +8,7 @@ import { FederationTrafficWidget } from '../components/metrics/FederationTraffic
 import { AdvisorPanel } from '../components/azora/AdvisorPanel';
 import { AlertBanner } from '../components/ui/AlertBanner';
 import { useAlerting } from '../hooks/useAlerting';
+import { CommandCenter } from '../components/azora/CommandCenter';
 
 const GovernanceProposalsWidget = lazy(() => import('../components/azora/GovernanceProposalsWidget.tsx').then(mod => ({ default: mod.default as unknown as React.ComponentType<any> })));
 const GovernanceProposalForm = lazy(() => import('../components/azora/GovernanceProposalForm.tsx').then(mod => ({ default: mod.default as unknown as React.ComponentType<any> })));
@@ -25,6 +26,7 @@ export default function Dashboard({ userId = 'demo_user' }: { userId?: string })
   useAlerting();
   return (
     <ModernDashboardLayout>
+      <CommandCenter />
       <AlertBanner />
       <div className="absolute top-4 right-6">
         <ThemeToggle />
