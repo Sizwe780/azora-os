@@ -36,6 +36,9 @@ import Dashboard from './pages/Dashboard';
 import EmailPage from './pages/EmailPage';
 import FoundersPage from './pages/FoundersPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
+// Onboarding Pages
+import FounderOnboarding from './pages/onboarding/FounderOnboarding';
+import UniversalOnboarding from './pages/onboarding/UniversalOnboarding';
 
 export default function AppRoutes() {
   // For demo purposes, we'll use the CEO (Sizwe Ngwenya) as the default user
@@ -45,6 +48,8 @@ export default function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
+      <Route path="/onboarding" element={<UniversalOnboarding />} />
+      <Route path="/onboarding/founder" element={<FounderOnboarding />} />
       <Route path="/*" element={
         <DashboardLayout>
           <Routes>
