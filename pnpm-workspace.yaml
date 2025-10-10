@@ -1,7 +1,0 @@
-packages:
-  - 'apps/*'
-  - 'packages/*'
-  - 'services/*'
-  - 'ai-models/*'
-  - 'infra/*'
-  - 'docs/*'
