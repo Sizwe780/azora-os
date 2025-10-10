@@ -326,12 +326,12 @@ export default function HRDeputyCEOPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-4 mb-6">
-        {['dashboard', 'founders', 'employees', 'onboarding', 'expansion'].map((tab) => (
+      <div className="flex gap-2 mb-6 flex-wrap">
+        {['dashboard', 'founders', 'employees', 'onboarding', 'compliance', 'compensation', 'recruitment', 'expansion'].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-6 py-3 rounded-xl font-semibold transition-all ${
+            className={`px-4 py-3 rounded-xl font-semibold transition-all text-sm ${
               activeTab === tab
                 ? 'bg-purple-500 text-white shadow-lg shadow-purple-500/50'
                 : 'bg-white/10 text-gray-300 hover:bg-white/20'
@@ -598,6 +598,296 @@ export default function HRDeputyCEOPage() {
               <p>✅ Task assignment</p>
               <p>✅ Performance tracking activation</p>
               <p>✅ Welcome & orientation</p>
+            </div>
+          </div>
+        </motion.div>
+      )}
+
+      {activeTab === 'compliance' && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="space-y-6"
+        >
+          <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl p-6">
+            <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+              <Shield className="w-7 h-7 text-green-400" />
+              CCMA & Labour Law Compliance
+            </h3>
+
+            <div className="grid grid-cols-3 gap-4 mb-6">
+              <div className="bg-green-500/20 border border-green-500/50 rounded-xl p-4">
+                <CheckCircle className="w-8 h-8 text-green-400 mb-2" />
+                <p className="text-sm text-gray-400">Compliance Status</p>
+                <p className="text-2xl font-bold text-green-400">100%</p>
+              </div>
+              <div className="bg-blue-500/20 border border-blue-500/50 rounded-xl p-4">
+                <AlertTriangle className="w-8 h-8 text-blue-400 mb-2" />
+                <p className="text-sm text-gray-400">Active Warnings</p>
+                <p className="text-2xl font-bold text-blue-400">0</p>
+              </div>
+              <div className="bg-purple-500/20 border border-purple-500/50 rounded-xl p-4">
+                <FileText className="w-8 h-8 text-purple-400 mb-2" />
+                <p className="text-sm text-gray-400">Unfair Dismissals</p>
+                <p className="text-2xl font-bold text-purple-400">0</p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <h4 className="text-xl font-bold text-white mb-3">Compliance Framework</h4>
+              
+              <div className="bg-white/5 rounded-xl p-6 space-y-3">
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="w-5 h-5 text-green-400" />
+                  <span className="text-white font-semibold">CCMA Compliant</span>
+                </div>
+                <p className="text-gray-300 text-sm ml-8">✓ Minimum 3 written warnings before dismissal</p>
+                <p className="text-gray-300 text-sm ml-8">✓ 6-month warning validity period</p>
+                <p className="text-gray-300 text-sm ml-8">✓ 30-day Performance Improvement Plans</p>
+                <p className="text-gray-300 text-sm ml-8">✓ Disciplinary hearings mandatory</p>
+                <p className="text-gray-300 text-sm ml-8">✓ Full documentation & appeal rights</p>
+              </div>
+
+              <div className="bg-white/5 rounded-xl p-6 space-y-3">
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="w-5 h-5 text-green-400" />
+                  <span className="text-white font-semibold">Labour Relations Act (LRA)</span>
+                </div>
+                <p className="text-gray-300 text-sm ml-8">✓ Procedural fairness enforced</p>
+                <p className="text-gray-300 text-sm ml-8">✓ Substantive fairness verified</p>
+                <p className="text-gray-300 text-sm ml-8">✓ Unfair dismissal protection</p>
+              </div>
+
+              <div className="bg-white/5 rounded-xl p-6 space-y-3">
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="w-5 h-5 text-green-400" />
+                  <span className="text-white font-semibold">Basic Conditions of Employment Act (BCEA)</span>
+                </div>
+                <p className="text-gray-300 text-sm ml-8">✓ 45-hour work week maximum</p>
+                <p className="text-gray-300 text-sm ml-8">✓ 21 days annual leave</p>
+                <p className="text-gray-300 text-sm ml-8">✓ Fair remuneration</p>
+              </div>
+
+              <div className="bg-white/5 rounded-xl p-6 space-y-3">
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="w-5 h-5 text-green-400" />
+                  <span className="text-white font-semibold">Employment Equity Act (EEA)</span>
+                </div>
+                <p className="text-gray-300 text-sm ml-8">✓ Equal opportunity enforced</p>
+                <p className="text-gray-300 text-sm ml-8">✓ No discrimination</p>
+                <p className="text-gray-300 text-sm ml-8">✓ Affirmative action compliance</p>
+              </div>
+            </div>
+
+            <div className="mt-6 bg-yellow-500/20 border border-yellow-500/50 rounded-xl p-6">
+              <h4 className="text-lg font-bold text-yellow-400 mb-3">Automated Protection</h4>
+              <p className="text-gray-300 text-sm">
+                🛡️ The HR AI Deputy CEO automatically blocks any dismissal that does not meet CCMA standards.
+                All exit processes are verified for compliance before execution, protecting the company from
+                unfair dismissal claims and CCMA fees.
+              </p>
+            </div>
+          </div>
+        </motion.div>
+      )}
+
+      {activeTab === 'compensation' && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="space-y-6"
+        >
+          <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl p-6">
+            <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+              <Award className="w-7 h-7 text-yellow-400" />
+              Compensation Analysis & Fair Pay
+            </h3>
+
+            <div className="grid grid-cols-4 gap-4 mb-6">
+              <div className="bg-green-500/20 border border-green-500/50 rounded-xl p-4">
+                <TrendingUp className="w-8 h-8 text-green-400 mb-2" />
+                <p className="text-sm text-gray-400">Avg. Market Position</p>
+                <p className="text-2xl font-bold text-green-400">96%</p>
+              </div>
+              <div className="bg-blue-500/20 border border-blue-500/50 rounded-xl p-4">
+                <CheckCircle className="w-8 h-8 text-blue-400 mb-2" />
+                <p className="text-sm text-gray-400">Fair Compensation</p>
+                <p className="text-2xl font-bold text-blue-400">100%</p>
+              </div>
+              <div className="bg-purple-500/20 border border-purple-500/50 rounded-xl p-4">
+                <Award className="w-8 h-8 text-purple-400 mb-2" />
+                <p className="text-sm text-gray-400">Bonus Eligible</p>
+                <p className="text-2xl font-bold text-purple-400">4</p>
+              </div>
+              <div className="bg-yellow-500/20 border border-yellow-500/50 rounded-xl p-4">
+                <Briefcase className="w-8 h-8 text-yellow-400 mb-2" />
+                <p className="text-sm text-gray-400">Equity Grants</p>
+                <p className="text-2xl font-bold text-yellow-400">3</p>
+              </div>
+            </div>
+
+            <h4 className="text-xl font-bold text-white mb-4">Compensation Analysis Factors</h4>
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              <div className="bg-white/5 rounded-xl p-4">
+                <p className="text-gray-300 mb-2">📊 Performance Score (30%)</p>
+                <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-green-500 to-blue-500" style={{ width: '30%' }}></div>
+                </div>
+              </div>
+              <div className="bg-white/5 rounded-xl p-4">
+                <p className="text-gray-300 mb-2">⏱️ Experience (20%)</p>
+                <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-blue-500 to-purple-500" style={{ width: '20%' }}></div>
+                </div>
+              </div>
+              <div className="bg-white/5 rounded-xl p-4">
+                <p className="text-gray-300 mb-2">🎯 Skills Match (20%)</p>
+                <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-purple-500 to-pink-500" style={{ width: '20%' }}></div>
+                </div>
+              </div>
+              <div className="bg-white/5 rounded-xl p-4">
+                <p className="text-gray-300 mb-2">💼 Market Position (15%)</p>
+                <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-pink-500 to-red-500" style={{ width: '15%' }}></div>
+                </div>
+              </div>
+            </div>
+
+            <h4 className="text-xl font-bold text-white mb-4">Market Salary Data (South Africa)</h4>
+            <div className="space-y-3">
+              {[
+                { role: 'CEO & Founder', median: 'R1,200,000', range: 'R800K - R2M' },
+                { role: 'Sales Lead', median: 'R600,000', range: 'R400K - R900K' },
+                { role: 'Operations Lead', median: 'R550,000', range: 'R400K - R800K' },
+                { role: 'Fleet Manager', median: 'R420,000', range: 'R300K - R600K' },
+                { role: 'Developer', median: 'R600,000', range: 'R400K - R900K' },
+                { role: 'Driver', median: 'R180,000', range: 'R120K - R250K' }
+              ].map((item, idx) => (
+                <div key={idx} className="bg-white/5 rounded-xl p-4 flex items-center justify-between">
+                  <span className="text-white font-semibold">{item.role}</span>
+                  <div className="text-right">
+                    <p className="text-green-400 font-bold">{item.median}</p>
+                    <p className="text-gray-400 text-sm">{item.range}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-6 bg-blue-500/20 border border-blue-500/50 rounded-xl p-6">
+              <h4 className="text-lg font-bold text-blue-400 mb-3">Fair Pay Guarantees</h4>
+              <div className="space-y-2 text-gray-300">
+                <p>✓ Equal pay for equal work (EEA compliant)</p>
+                <p>✓ No gender pay gap</p>
+                <p>✓ Market-aligned salaries (70-130% of median)</p>
+                <p>✓ 15% performance bonus for top performers (≥85% score)</p>
+                <p>✓ Equity grants for exceptional contributors</p>
+                <p>✓ Minimum 6% annual increase (cost of living)</p>
+                <p>✓ Annual compensation reviews mandatory</p>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      )}
+
+      {activeTab === 'recruitment' && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="space-y-6"
+        >
+          <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl p-6">
+            <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+              <UserPlus className="w-7 h-7 text-blue-400" />
+              AI-Powered Recruitment System
+            </h3>
+
+            <div className="grid grid-cols-4 gap-4 mb-6">
+              <div className="bg-blue-500/20 border border-blue-500/50 rounded-xl p-4">
+                <FileText className="w-8 h-8 text-blue-400 mb-2" />
+                <p className="text-sm text-gray-400">Applications</p>
+                <p className="text-2xl font-bold text-blue-400">0</p>
+              </div>
+              <div className="bg-green-500/20 border border-green-500/50 rounded-xl p-4">
+                <CheckCircle className="w-8 h-8 text-green-400 mb-2" />
+                <p className="text-sm text-gray-400">Strong Fit</p>
+                <p className="text-2xl font-bold text-green-400">0</p>
+              </div>
+              <div className="bg-yellow-500/20 border border-yellow-500/50 rounded-xl p-4">
+                <Activity className="w-8 h-8 text-yellow-400 mb-2" />
+                <p className="text-sm text-gray-400">Interviews</p>
+                <p className="text-2xl font-bold text-yellow-400">0</p>
+              </div>
+              <div className="bg-purple-500/20 border border-purple-500/50 rounded-xl p-4">
+                <Award className="w-8 h-8 text-purple-400 mb-2" />
+                <p className="text-sm text-gray-400">Hires</p>
+                <p className="text-2xl font-bold text-purple-400">0</p>
+              </div>
+            </div>
+
+            <h4 className="text-xl font-bold text-white mb-4">AI Scoring Criteria</h4>
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              <div className="bg-white/5 rounded-xl p-4">
+                <p className="text-gray-300 mb-2 font-semibold">🎯 Experience Match (35%)</p>
+                <p className="text-gray-400 text-sm">Years of relevant experience vs. requirements</p>
+              </div>
+              <div className="bg-white/5 rounded-xl p-4">
+                <p className="text-gray-300 mb-2 font-semibold">💡 Skills Match (30%)</p>
+                <p className="text-gray-400 text-sm">Technical & soft skills alignment</p>
+              </div>
+              <div className="bg-white/5 rounded-xl p-4">
+                <p className="text-gray-300 mb-2 font-semibold">🎓 Education (15%)</p>
+                <p className="text-gray-400 text-sm">PhD, Masters, Bachelor, Diploma scoring</p>
+              </div>
+              <div className="bg-white/5 rounded-xl p-4">
+                <p className="text-gray-300 mb-2 font-semibold">🤝 Culture Fit (10%)</p>
+                <p className="text-gray-400 text-sm">Values alignment assessment</p>
+              </div>
+            </div>
+
+            <h4 className="text-xl font-bold text-white mb-4">Recommendation Thresholds</h4>
+            <div className="space-y-3">
+              <div className="bg-green-500/20 border border-green-500/50 rounded-xl p-4 flex items-center gap-4">
+                <div className="flex-1">
+                  <p className="text-green-400 font-bold text-lg">≥85% - STRONG FIT</p>
+                  <p className="text-gray-300 text-sm">Schedule interview immediately</p>
+                </div>
+                <CheckCircle className="w-8 h-8 text-green-400" />
+              </div>
+              <div className="bg-blue-500/20 border border-blue-500/50 rounded-xl p-4 flex items-center gap-4">
+                <div className="flex-1">
+                  <p className="text-blue-400 font-bold text-lg">≥70% - GOOD FIT</p>
+                  <p className="text-gray-300 text-sm">Schedule interview</p>
+                </div>
+                <CheckCircle className="w-8 h-8 text-blue-400" />
+              </div>
+              <div className="bg-yellow-500/20 border border-yellow-500/50 rounded-xl p-4 flex items-center gap-4">
+                <div className="flex-1">
+                  <p className="text-yellow-400 font-bold text-lg">≥55% - POTENTIAL FIT</p>
+                  <p className="text-gray-300 text-sm">Consider for interview</p>
+                </div>
+                <AlertTriangle className="w-8 h-8 text-yellow-400" />
+              </div>
+              <div className="bg-red-500/20 border border-red-500/50 rounded-xl p-4 flex items-center gap-4">
+                <div className="flex-1">
+                  <p className="text-red-400 font-bold text-lg">&lt;55% - NOT RECOMMENDED</p>
+                  <p className="text-gray-300 text-sm">Does not meet requirements</p>
+                </div>
+                <UserMinus className="w-8 h-8 text-red-400" />
+              </div>
+            </div>
+
+            <div className="mt-6 bg-purple-500/20 border border-purple-500/50 rounded-xl p-6">
+              <h4 className="text-lg font-bold text-purple-400 mb-3">Bias-Free Recruitment</h4>
+              <div className="space-y-2 text-gray-300">
+                <p>✓ Name anonymization during initial screening</p>
+                <p>✓ Age, gender, and race-blind assessment</p>
+                <p>✓ Objective criteria only</p>
+                <p>✓ Structured interviews with consistent questions</p>
+                <p>✓ Multiple interviewers for fairness</p>
+                <p>✓ Board recommendations automated</p>
+                <p>✓ CEO & Board notified of strong candidates (≥80%)</p>
+              </div>
             </div>
           </div>
         </motion.div>

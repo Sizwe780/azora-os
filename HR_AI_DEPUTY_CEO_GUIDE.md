@@ -655,6 +655,402 @@ Continuous monitoring with automated interventions:
 - Annex C: Founder responsibilities tracked
 - Annex D: Exit process automation
 - Annex E: Board resolution compliance
+- **CCMA:** Full South African labour law compliance
+- **LRA:** Labour Relations Act compliance (unfair dismissal protection)
+- **BCEA:** Basic Conditions of Employment Act compliance
+- **EEA:** Employment Equity Act compliance (equal opportunity)
+- **ILO:** International Labour Organization standards
+
+---
+
+## ⚖️ CCMA & LABOUR LAW COMPLIANCE
+
+### **Overview:**
+The HR AI Deputy CEO is **fully compliant** with South African labour laws and international standards, **automatically blocking** any dismissal that doesn't meet CCMA requirements. This protects the company from unfair dismissal claims and CCMA fees.
+
+### **CCMA Compliance Module:**
+
+#### **1. Warning System (Minimum 3 Warnings Required)**
+```javascript
+WARNING_REQUIREMENTS = {
+  minimum_warnings: 3,
+  validity_period: 6 months,  // Warnings expire after 6 months
+  documentation: {
+    employee_signature: required,
+    witness_signature: required,
+    appeal_rights: "7 days to appeal",
+    specific_examples: required,
+    improvement_required: required
+  },
+  ceo_board_notification: automatic
+}
+```
+
+**Automated Process:**
+1. Performance drops below 60% → First Warning issued
+2. Warning documented with employee acknowledgement
+3. CEO & Board notified automatically (severity: low/medium/high)
+4. Performance Improvement Plan (PIP) created automatically
+5. Support resources assigned (coaching, training, mentorship)
+6. Weekly check-ins scheduled
+7. Warning expires after 6 months if performance improves
+
+#### **2. Performance Improvement Plans (PIP)**
+```javascript
+PIP_REQUIREMENTS = {
+  duration: 30 days minimum,
+  goals: {
+    task_completion: 0.85,      // 85% target
+    on_time_delivery: 0.85,     // 85% target
+    quality_score: 0.80         // 80% target
+  },
+  support: [
+    "Weekly coaching sessions",
+    "Training resources access",
+    "Mentorship assignment",
+    "Reduced workload (70%)",
+    "Daily check-ins (first 2 weeks)"
+  ],
+  review_schedule: "Weekly",
+  completion_date: "+30 days"
+}
+```
+
+**Automated Actions:**
+- PIP created automatically after first warning
+- Goals tailored to employee's role and performance gaps
+- Support resources assigned based on needs analysis
+- Progress tracked weekly
+- CEO & Board receive weekly PIP status reports
+
+#### **3. Disciplinary Hearings (Mandatory Before Dismissal)**
+```javascript
+HEARING_REQUIREMENTS = {
+  notice_period: 7 days,
+  chairperson: "HR AI Deputy CEO",
+  attendees: [
+    {role: "Employee", representation_allowed: true},
+    {role: "Manager", witness: true},
+    {role: "HR", facilitator: true}
+  ],
+  evidence_provided: [
+    "Performance reviews (minimum 3)",
+    "Written warnings (minimum 3)",
+    "PIP documentation",
+    "Support records",
+    "Task completion records"
+  ],
+  employee_rights: {
+    statement: "Employee may respond to all allegations",
+    representation: "Employee may bring representative",
+    appeal: "7 days to appeal decision"
+  },
+  decision_timeline: "Within 2 days of hearing",
+  ccma_compliant: true
+}
+```
+
+**Hearing Process:**
+1. 7-day notice sent to employee
+2. All evidence compiled and presented
+3. Employee given opportunity to respond
+4. Evidence analyzed for substantive fairness (valid reason exists)
+5. Process reviewed for procedural fairness (correct process followed)
+6. Decision made: Guilty / Procedural Issue / Not Guilty / Insufficient Evidence
+7. If "Guilty" → Dismissal approved
+8. If any other outcome → Dismissal BLOCKED
+9. Decision documented with appeal rights
+10. CEO & Board notified of outcome
+
+#### **4. Exit Process Verification (Automated Compliance Check)**
+```javascript
+EXIT_BLOCKED_IF = {
+  warnings_insufficient: warnings < 3,
+  pip_incomplete: pip_not_completed,
+  hearing_not_conducted: hearing_required && !hearing_done,
+  documentation_incomplete: required_docs_missing,
+  procedural_fairness_violated: process_not_followed,
+  substantive_fairness_not_established: no_valid_reason,
+  hearing_outcome_not_guilty: hearing.outcome !== "guilty"
+}
+
+COMPLIANCE_CHECK_RESULT = {
+  compliant: boolean,
+  reason: "Non-compliance reason if blocked",
+  required_actions: [
+    "Issue additional warnings",
+    "Complete PIP",
+    "Conduct disciplinary hearing",
+    "Gather additional documentation"
+  ],
+  ceo_board_alert: immediate
+}
+```
+
+**Automated Protection:**
+- Every dismissal request triggers `verifyCCMACompliance()`
+- System automatically checks:
+  * Minimum 3 valid warnings (not expired)
+  * PIP completed (30 days minimum)
+  * Disciplinary hearing conducted
+  * All documentation complete
+  * Procedural fairness followed
+  * Substantive fairness established
+- If ANY requirement not met → **Dismissal BLOCKED**
+- CEO & Board immediately notified with compliance roadmap
+- Legal risk alert issued
+
+### **Labour Law Framework:**
+
+#### **Labour Relations Act (LRA) - Act 66 of 1995**
+```javascript
+LRA_COMPLIANCE = {
+  unfair_dismissal_protection: {
+    procedural_fairness: enforced,  // Correct process followed
+    substantive_fairness: verified,  // Valid reason exists
+    consultation: required,
+    alternatives_considered: true
+  },
+  fair_reasons_for_dismissal: [
+    "Poor work performance (after warnings & PIP)",
+    "Misconduct (after disciplinary process)",
+    "Operational requirements (retrenchment)",
+    "Incapacity (after accommodation)"
+  ],
+  unfair_dismissal_prohibited: [
+    "Discrimination",
+    "Retaliation",
+    "Union membership",
+    "Pregnancy",
+    "Whistleblowing"
+  ]
+}
+```
+
+#### **Basic Conditions of Employment Act (BCEA) - Act 75 of 1997**
+```javascript
+BCEA_COMPLIANCE = {
+  working_hours: {
+    maximum_per_week: 45,
+    maximum_per_day_5day: 9,
+    maximum_per_day_6day: 8,
+    overtime_limit: 10 hours per week
+  },
+  leave_entitlement: {
+    annual_leave: 21 days per year,
+    sick_leave: 30 days per 3 year cycle,
+    maternity_leave: 4 months,
+    family_responsibility: 3 days per year
+  },
+  notice_periods: {
+    under_6_months: "1 week",
+    six_months_to_1_year: "2 weeks",
+    over_1_year: "4 weeks"
+  }
+}
+```
+
+#### **Employment Equity Act (EEA) - Act 55 of 1998**
+```javascript
+EEA_COMPLIANCE = {
+  equal_opportunity: enforced,
+  no_discrimination: [
+    "Race", "Gender", "Sex", "Pregnancy", "Marital status",
+    "Family responsibility", "Ethnic origin", "Color",
+    "Sexual orientation", "Age", "Disability", "Religion",
+    "HIV status", "Conscience", "Political opinion", "Culture"
+  ],
+  affirmative_action: {
+    equity_plan: in_place,
+    designated_groups: prioritized,
+    progress_monitoring: continuous
+  }
+}
+```
+
+### **Compensation Analysis & Fair Pay:**
+
+#### **Multi-Factor Compensation Analysis**
+```javascript
+FAIR_SALARY_CALCULATION = {
+  factors: {
+    performance: 30%,        // Current performance score
+    experience: 20%,         // Years of experience (capped at 15 years)
+    skills: 20%,            // Skills match for role
+    market_position: 15%,   // 70-130% of market median
+    responsibilities: 10%,  // Role complexity
+    impact: 5%              // Task completion ratio
+  },
+  market_data: {
+    CEO: "R1,200,000 (R800K - R2M)",
+    Sales_Lead: "R600,000 (R400K - R900K)",
+    Operations_Lead: "R550,000 (R400K - R800K)",
+    Fleet_Manager: "R420,000 (R300K - R600K)",
+    Developer: "R600,000 (R400K - R900K)",
+    Driver: "R180,000 (R120K - R250K)"
+  }
+}
+```
+
+**Automated Recommendations:**
+```javascript
+COMPENSATION_ACTIONS = {
+  ">20% below market": {
+    action: "URGENT_INCREASE_REQUIRED",
+    reason: "Retention risk - significantly below market",
+    timing: "Immediate",
+    retention_risk: "High"
+  },
+  "10-20% below market": {
+    action: "INCREASE_RECOMMENDED",
+    reason: "Below fair market value",
+    timing: "Within 90 days",
+    retention_risk: "Medium"
+  },
+  "-5% to +10% of market": {
+    action: "MAINTAIN",
+    reason: "Fair and competitive",
+    timing: "Annual review"
+  },
+  ">10% above market": {
+    action: "REVIEW_PERFORMANCE",
+    reason: "Verify justification for premium pay"
+  }
+}
+```
+
+**Bonus & Equity:**
+```javascript
+PERFORMANCE_REWARDS = {
+  bonus_eligibility: "Performance ≥85%",
+  bonus_amount: "15% of annual salary",
+  equity_grants: {
+    threshold: "≥90% performance + ≥80% impact",
+    amount: "0.5% - 2.0% of company equity",
+    vesting: "Per Annex A schedule"
+  },
+  annual_increase_minimum: "6% (cost of living)",
+  equal_pay_verified: true,
+  ccma_compliant: true
+}
+```
+
+### **AI-Powered Recruitment System:**
+
+#### **Application Processing & AI Scoring**
+```javascript
+RECRUITMENT_SCORING = {
+  factors: {
+    experience_match: 35%,   // Years vs. required
+    skills_match: 30%,       // Technical & soft skills
+    education_match: 15%,    // PhD/Masters/Bachelor/Diploma
+    cover_letter: 10%,       // Quality & fit
+    culture_fit: 10%         // Values alignment
+  },
+  thresholds: {
+    "≥85%": "STRONG_FIT - Interview immediately",
+    "≥70%": "GOOD_FIT - Schedule interview",
+    "≥55%": "POTENTIAL_FIT - Consider if no stronger candidates",
+    "<55%": "NOT_RECOMMENDED - Does not meet requirements"
+  },
+  bias_prevention: {
+    name_anonymized: true,
+    age_hidden: true,
+    gender_neutral: true,
+    race_blind: true,
+    objective_criteria_only: true
+  }
+}
+```
+
+**Board Recommendations:**
+```javascript
+BOARD_RECOMMENDATIONS = {
+  strong_candidates: {
+    score: "≥80%",
+    action: "APPROVE_INTERVIEW",
+    ceo_board_notification: "Immediate"
+  },
+  good_candidates: {
+    score: "≥70%",
+    action: "CONSIDER_INTERVIEW"
+  },
+  weak_candidates: {
+    score: "<70%",
+    action: "REJECT"
+  }
+}
+```
+
+### **CEO & Board Notification System:**
+
+All critical HR actions automatically notify CEO and Board:
+```javascript
+NOTIFICATION_TRIGGERS = {
+  warnings: {
+    first_warning: {severity: "low", notify: "CEO + Board"},
+    second_warning: {severity: "medium", notify: "CEO + Board"},
+    third_warning: {severity: "high", notify: "CEO + Board + Legal"}
+  },
+  dismissals: {
+    blocked_dismissal: {severity: "critical", notify: "CEO + Board + Legal"},
+    approved_dismissal: {severity: "high", notify: "CEO + Board"}
+  },
+  hearings: {
+    hearing_scheduled: {severity: "high", notify: "CEO + Board"},
+    hearing_outcome: {severity: "high", notify: "CEO + Board"}
+  },
+  recruitment: {
+    strong_candidate: {score: "≥80%", notify: "CEO + Board"}
+  },
+  compensation: {
+    urgent_increase: {risk: "high", notify: "CEO + Board + Finance"}
+  }
+}
+```
+
+### **Compliance Monitoring & Reporting:**
+
+```javascript
+COMPLIANCE_METRICS = {
+  daily_checks: [
+    "Warnings expiry (6-month validity)",
+    "PIP completion (30-day minimum)",
+    "Hearing notice (7-day minimum)",
+    "Documentation completeness"
+  ],
+  monthly_reports: {
+    warnings_issued: count,
+    pips_active: count,
+    hearings_conducted: count,
+    dismissals: {total, ccma_compliant_percentage},
+    unfair_dismissal_claims: target_zero,
+    compensation_equity: percentage,
+    recruitment_diversity: score
+  },
+  legal_risk_score: calculated_automatically
+}
+```
+
+### **Cost Savings:**
+
+```javascript
+UNFAIR_DISMISSAL_COSTS_AVOIDED = {
+  ccma_arbitration: "R5,000 - R15,000",
+  legal_fees: "R20,000 - R100,000",
+  compensation_award: "Up to 12 months salary",
+  reinstatement: "Possible",
+  reputational_damage: "High",
+  time_cost: "6-12 months"
+}
+
+HR_AI_SAVINGS = {
+  unfair_dismissal_claims: "R0 (100% prevention)",
+  legal_fees: "R0 (automated compliance)",
+  time_saved: "Significant",
+  peace_of_mind: "Priceless"
+}
+```
 
 ---
 

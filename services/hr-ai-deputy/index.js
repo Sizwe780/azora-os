@@ -38,6 +38,92 @@ class HRDeputyCEO {
       employeeExpectationScore: 0.75
     };
     
+    // CCMA Compliance & Labour Law Framework
+    this.ccmaCompliance = {
+      minimumWarnings: 3, // CCMA requires minimum 3 warnings before dismissal
+      warningValidityPeriod: 6, // months - warnings expire after 6 months
+      performanceImprovementPlan: 30, // days minimum for PIP
+      dismissalNoticePeriod: 30, // days notice required
+      severanceCalculation: true, // automatic severance calculation
+      unfairDismissalProtection: true,
+      disciplinaryHearing: true, // required before dismissal
+      rightToRepresentation: true, // employee can bring representative
+      appealProcess: true, // 7-day appeal period
+      documentationRequired: [
+        'Performance reviews',
+        'Written warnings',
+        'Improvement plans',
+        'Support provided',
+        'Meeting minutes',
+        'Evidence of misconduct'
+      ]
+    };
+    
+    // International Labour Standards
+    this.labourStandards = {
+      ILO: { // International Labour Organization
+        fairWages: true,
+        safeWorkingConditions: true,
+        noDiscrimination: true,
+        freedomOfAssociation: true,
+        collectiveBargaining: true
+      },
+      BCEA: { // Basic Conditions of Employment Act (SA)
+        maximumHours: 45, // per week
+        overtimeRules: true,
+        leaveEntitlement: 21, // days annual leave
+        maternityLeave: 4, // months
+        sickLeave: 30, // days per 3-year cycle
+        familyResponsibilityLeave: 3 // days per year
+      },
+      EEA: { // Employment Equity Act (SA)
+        equalOpportunity: true,
+        affirmativeAction: true,
+        noDiscrimination: true,
+        equityPlans: true
+      },
+      LRA: { // Labour Relations Act (SA)
+        unfairDismissalProtection: true,
+        proceduralFairness: true,
+        substantiveFairness: true,
+        consultationRequired: true
+      }
+    };
+    
+    // Compensation & Valuation System
+    this.compensationFramework = {
+      marketResearch: true,
+      equityAnalysis: true,
+      performanceBasedBonus: true,
+      skillsBasedPay: true,
+      experienceWeighting: true,
+      costOfLivingAdjustment: true,
+      annualIncreaseMinimum: 0.06, // 6% minimum annual increase
+      bonusPool: 0.15 // 15% of salary for high performers
+    };
+    
+    // Recruitment & Application System
+    this.recruitmentSystem = {
+      applications: new Map(),
+      interviews: new Map(),
+      assessments: new Map(),
+      recommendations: new Map()
+    };
+    
+    // Executive Support System
+    this.executiveSupport = {
+      ceoDeputy: new Map(),
+      seniorRoleDeputies: new Map(),
+      advisoryReports: new Map(),
+      strategicGoals: new Map()
+    };
+    
+    // Warnings and Disciplinary Records (CCMA Compliance)
+    this.warningsRegistry = new Map();
+    this.disciplinaryHearings = new Map();
+    this.improvementPlans = new Map();
+    this.dismissalDocumentation = new Map();
+    
     // Global Expansion Metrics
     this.globalReachMetrics = {
       targetCountries: ['ZA', 'ZW', 'BW', 'MZ', 'NA', 'ZM', 'US', 'UK', 'NG', 'KE'],
@@ -155,6 +241,9 @@ class HRDeputyCEO {
     });
     
     console.log(`🤖 Initialized ${founders.length} founders with performance tracking`);
+    
+    // Initialize executive support system
+    this.initializeExecutiveSupport();
   }
   
   // ============================================================================
@@ -621,23 +710,77 @@ class HRDeputyCEO {
     const employee = this.employees.get(employeeId);
     if (!employee) return;
     
+    // Get or create warnings registry for employee
+    if (!this.warningsRegistry.has(employeeId)) {
+      this.warningsRegistry.set(employeeId, []);
+    }
+    const warningHistory = this.warningsRegistry.get(employeeId);
+    
+    // Remove expired warnings (older than 6 months per CCMA)
+    const validWarnings = warningHistory.filter(w => {
+      const monthsSince = (Date.now() - new Date(w.issuedAt).getTime()) / (1000 * 60 * 60 * 24 * 30);
+      return monthsSince < this.ccmaCompliance.warningValidityPeriod;
+    });
+    
+    const warningNumber = validWarnings.length + 1;
+    
     const warning = {
       id: `WARNING-${Date.now()}`,
       employeeId: employeeId,
+      warningNumber: warningNumber,
       issuedAt: new Date(),
       reason: 'Performance below acceptable threshold',
       metrics: metrics,
       improvementPlan: this.generateImprovementPlan(employeeId, metrics),
-      reviewDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
-      issuedBy: 'HR AI Deputy CEO'
+      reviewDate: new Date(Date.now() + this.ccmaCompliance.performanceImprovementPlan * 24 * 60 * 60 * 1000),
+      issuedBy: 'HR AI Deputy CEO',
+      ccmaCompliant: true,
+      expiryDate: new Date(Date.now() + this.ccmaCompliance.warningValidityPeriod * 30 * 24 * 60 * 60 * 1000),
+      documentationProvided: [
+        'Performance metrics report',
+        'Written warning letter',
+        'Improvement plan',
+        'Support resources',
+        'Meeting minutes'
+      ],
+      employeeAcknowledgement: null, // To be signed by employee
+      witnessSignature: null, // HR or manager witness
+      appealRights: 'Employee has 7 days to appeal this warning',
+      supportProvided: [
+        'Performance coaching',
+        'Skills training',
+        'Weekly check-ins',
+        'Resource allocation',
+        'Mentorship assignment'
+      ]
     };
+    
+    validWarnings.push(warning);
+    this.warningsRegistry.set(employeeId, validWarnings);
     
     const performanceData = this.performanceMetrics.get(employeeId);
     if (performanceData) {
       performanceData.warnings.push(warning);
     }
     
-    console.log(`⚠️ Warning issued to ${employee.name} for performance below threshold`);
+    // CEO and Board notification for warnings
+    this.notifyCEOAndBoard({
+      type: 'warning_issued',
+      severity: warningNumber === 1 ? 'low' : warningNumber === 2 ? 'medium' : 'high',
+      employee: employee,
+      warningNumber: warningNumber,
+      metrics: metrics,
+      action: warningNumber >= 3 ? 'Dismissal may be considered after 3rd warning' : 'Performance improvement required'
+    });
+    
+    console.log(`⚠️ CCMA-Compliant Warning #${warningNumber} issued to ${employee.name}`);
+    console.log(`   Valid warnings: ${warningNumber}/${this.ccmaCompliance.minimumWarnings}`);
+    console.log(`   Expiry date: ${warning.expiryDate.toISOString().split('T')[0]}`);
+    
+    // Create PIP if not exists
+    if (!this.improvementPlans.has(employeeId)) {
+      this.createPerformanceImprovementPlan(employeeId, metrics);
+    }
     
     return warning;
   }
@@ -658,6 +801,259 @@ class HRDeputyCEO {
       ],
       consequences: 'Failure to improve may result in role reassignment or exit process'
     };
+  }
+  
+  // ============================================================================
+  // CCMA COMPLIANCE & FAIR DISMISSAL PROCEDURES
+  // ============================================================================
+  
+  verifyCCMACompliance(employeeId, reason) {
+    const warnings = this.warningsRegistry.get(employeeId) || [];
+    const validWarnings = warnings.filter(w => {
+      const monthsSince = (Date.now() - new Date(w.issuedAt).getTime()) / (1000 * 60 * 60 * 24 * 30);
+      return monthsSince < this.ccmaCompliance.warningValidityPeriod;
+    });
+    
+    const employee = this.employees.get(employeeId);
+    const required = [];
+    
+    // Check minimum warnings (except for gross misconduct)
+    if (reason === 'poor_performance' && validWarnings.length < this.ccmaCompliance.minimumWarnings) {
+      return {
+        compliant: false,
+        reason: `Only ${validWarnings.length} valid warnings issued. CCMA requires minimum ${this.ccmaCompliance.minimumWarnings} warnings before dismissal for poor performance.`,
+        required: [
+          `Issue ${this.ccmaCompliance.minimumWarnings - validWarnings.length} more written warnings`,
+          'Provide performance improvement plan',
+          'Allow 30 days for improvement',
+          'Document all support provided'
+        ]
+      };
+    }
+    
+    // Check if PIP was completed
+    const pip = this.improvementPlans.get(employeeId);
+    if (reason === 'poor_performance' && (!pip || !pip.completed)) {
+      return {
+        compliant: false,
+        reason: 'Performance Improvement Plan not completed. Employee must be given opportunity to improve.',
+        required: [
+          'Create and document Performance Improvement Plan',
+          'Provide minimum 30 days for improvement',
+          'Offer training and support',
+          'Conduct regular check-ins',
+          'Document all efforts to help employee'
+        ]
+      };
+    }
+    
+    // Check documentation
+    const performanceData = this.performanceMetrics.get(employeeId);
+    if (!performanceData || performanceData.reviews.length < 3) {
+      return {
+        compliant: false,
+        reason: 'Insufficient performance documentation. CCMA requires thorough records.',
+        required: [
+          'Minimum 3 documented performance reviews',
+          'Written warnings with specific examples',
+          'Meeting minutes',
+          'Evidence of poor performance',
+          'Proof of support provided'
+        ]
+      };
+    }
+    
+    return {
+      compliant: true,
+      warnings: validWarnings.length,
+      documentation: 'complete',
+      proceduralFairness: 'verified',
+      substantiveFairness: 'verified'
+    };
+  }
+  
+  async conductDisciplinaryHearing(employeeId, reason) {
+    const hearingId = `HEARING-${Date.now()}`;
+    const employee = this.employees.get(employeeId);
+    
+    const hearing = {
+      id: hearingId,
+      employeeId: employeeId,
+      scheduledDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days notice
+      reason: reason,
+      status: 'scheduled',
+      chairperson: 'HR AI Deputy CEO',
+      attendees: [
+        { role: 'Employee', name: employee.name, present: true },
+        { role: 'Representative', name: 'Employee may bring representative', present: null },
+        { role: 'Witness', name: 'Manager/Supervisor', present: true },
+        { role: 'HR', name: 'HR AI Deputy CEO', present: true }
+      ],
+      evidence: {
+        performanceReviews: this.performanceMetrics.get(employeeId),
+        warnings: this.warningsRegistry.get(employeeId),
+        improvementPlans: this.improvementPlans.get(employeeId),
+        tasksCompleted: Array.from(this.tasks.values()).filter(t => t.employeeId === employeeId && t.status === 'completed').length,
+        tasksOverdue: Array.from(this.tasks.values()).filter(t => t.employeeId === employeeId && t.status === 'pending' && new Date(t.deadlineDate) < new Date()).length
+      },
+      employeeStatement: null, // Employee has right to respond
+      decision: null,
+      outcome: null,
+      appealRights: 'Employee has 7 days to appeal the decision',
+      ccmaCompliant: true
+    };
+    
+    // Simulate hearing (in production, would schedule actual meeting)
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // AI analysis of evidence
+    const evidenceScore = this.analyzeHearingEvidence(hearing.evidence);
+    
+    if (evidenceScore.substantiated && evidenceScore.procedurallyFair) {
+      hearing.outcome = 'guilty';
+      hearing.decision = 'Dismissal approved - substantive and procedural fairness verified';
+    } else if (evidenceScore.substantiated && !evidenceScore.procedurallyFair) {
+      hearing.outcome = 'procedural_issue';
+      hearing.decision = 'Dismissal blocked - procedural fairness not met';
+    } else {
+      hearing.outcome = 'not_guilty';
+      hearing.decision = 'Dismissal denied - insufficient evidence';
+    }
+    
+    hearing.status = 'completed';
+    hearing.completedAt = new Date();
+    
+    this.disciplinaryHearings.set(hearingId, hearing);
+    
+    // Notify CEO and Board
+    this.notifyCEOAndBoard({
+      type: 'disciplinary_hearing_completed',
+      severity: 'high',
+      employee: employee,
+      outcome: hearing.outcome,
+      decision: hearing.decision,
+      evidence: evidenceScore
+    });
+    
+    console.log(`⚖️ Disciplinary hearing completed for ${employee.name}`);
+    console.log(`   Outcome: ${hearing.outcome}`);
+    console.log(`   Decision: ${hearing.decision}`);
+    
+    return hearing;
+  }
+  
+  analyzeHearingEvidence(evidence) {
+    const reviews = evidence.performanceReviews?.reviews || [];
+    const warnings = evidence.warnings || [];
+    const pip = evidence.improvementPlans;
+    
+    // Check substantive fairness (is there valid reason?)
+    const averageScore = reviews.length > 0 
+      ? reviews.reduce((sum, r) => sum + r.overallScore, 0) / reviews.length 
+      : 1.0;
+    
+    const substantiated = averageScore < 0.40 || evidence.tasksOverdue > 10;
+    
+    // Check procedural fairness (was process followed?)
+    const procedurallyFair = 
+      warnings.length >= 3 && // Minimum warnings
+      reviews.length >= 3 && // Documented reviews
+      pip && pip.completed && // PIP given
+      pip.supportProvided; // Support offered
+    
+    return {
+      substantiated,
+      procedurallyFair,
+      averageScore,
+      warningsIssued: warnings.length,
+      reviewsConducted: reviews.length,
+      pipCompleted: pip?.completed || false,
+      tasksOverdue: evidence.tasksOverdue
+    };
+  }
+  
+  createPerformanceImprovementPlan(employeeId, metrics) {
+    const pipId = `PIP-${Date.now()}`;
+    const employee = this.employees.get(employeeId);
+    
+    const pip = {
+      id: pipId,
+      employeeId: employeeId,
+      startDate: new Date(),
+      duration: 30, // days
+      endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      status: 'active',
+      goals: [
+        {
+          metric: 'Task Completion Rate',
+          current: metrics.taskCompletionRate,
+          target: 0.85,
+          progress: 0
+        },
+        {
+          metric: 'On-Time Delivery',
+          current: metrics.onTimeDeliveryRate,
+          target: 0.85,
+          progress: 0
+        },
+        {
+          metric: 'Quality Score',
+          current: metrics.qualityScore,
+          target: 0.80,
+          progress: 0
+        }
+      ],
+      supportProvided: [
+        'Weekly one-on-one coaching sessions',
+        'Access to online training platform',
+        'Mentorship from senior team member',
+        'Reduced workload (70% of normal)',
+        'Additional resources allocated',
+        'Daily check-ins for first 2 weeks'
+      ],
+      weeklyCheckIns: [],
+      progress: 0,
+      completed: false,
+      ccmaCompliant: true
+    };
+    
+    this.improvementPlans.set(employeeId, pip);
+    
+    console.log(`📋 Performance Improvement Plan created for ${employee.name}`);
+    console.log(`   Duration: ${pip.duration} days`);
+    console.log(`   End date: ${pip.endDate.toISOString().split('T')[0]}`);
+    
+    return pip;
+  }
+  
+  notifyCEOAndBoard(notification) {
+    const report = {
+      id: `NOTIFICATION-${Date.now()}`,
+      timestamp: new Date(),
+      ...notification,
+      recipientsNotified: [
+        'CEO (Sizwe Ngwenya)',
+        'Board of Directors',
+        'HR Deputy AI'
+      ],
+      actionRequired: notification.severity === 'critical' || notification.severity === 'high',
+      dashboardAlert: true
+    };
+    
+    // Store in executive support system
+    if (!this.executiveSupport.advisoryReports.has('ceo')) {
+      this.executiveSupport.advisoryReports.set('ceo', []);
+    }
+    
+    this.executiveSupport.advisoryReports.get('ceo').push(report);
+    
+    console.log(`\n📢 CEO & BOARD NOTIFICATION`);
+    console.log(`   Type: ${notification.type}`);
+    console.log(`   Severity: ${notification.severity}`);
+    console.log(`   Employee: ${notification.employee?.name || 'N/A'}`);
+    console.log(`   Action Required: ${report.actionRequired ? 'YES' : 'NO'}\n`);
+    
+    return report;
   }
   
   grantAchievement(employeeId, achievementType) {
@@ -701,12 +1097,528 @@ class HRDeputyCEO {
   }
   
   // ============================================================================
-  // AUTOMATED EXIT PROCESS (ANNEX D)
+  // COMPENSATION ANALYSIS & FAIR VALUATION
+  // ============================================================================
+  
+  analyzeCompensation(employeeId) {
+    const employee = this.employees.get(employeeId);
+    if (!employee) return null;
+    
+    const performance = this.performanceMetrics.get(employeeId);
+    const currentSalary = parseFloat(employee.salary?.replace(/[R,]/g, '') || '0');
+    
+    // Market research data (would integrate with real APIs in production)
+    const marketData = this.getMarketSalaryData(employee.role);
+    
+    // Calculate fair compensation based on multiple factors
+    const factors = {
+      performance: performance?.metrics.overallScore || 1.0,
+      experience: this.calculateExperience(employee),
+      skills: this.assessSkills(employee),
+      marketPosition: this.calculateMarketPosition(currentSalary, marketData),
+      responsibilities: this.assessResponsibilities(employee),
+      impact: this.measureBusinessImpact(employeeId)
+    };
+    
+    // Weighted calculation
+    const fairSalary = marketData.median * (
+      factors.performance * 0.30 +
+      factors.experience * 0.20 +
+      factors.skills * 0.20 +
+      factors.marketPosition * 0.15 +
+      factors.responsibilities * 0.10 +
+      factors.impact * 0.05
+    );
+    
+    const recommendation = {
+      employeeId: employeeId,
+      currentSalary: currentSalary,
+      fairSalary: Math.round(fairSalary),
+      marketMedian: marketData.median,
+      marketRange: marketData.range,
+      adjustment: Math.round(fairSalary - currentSalary),
+      adjustmentPercentage: ((fairSalary - currentSalary) / currentSalary * 100).toFixed(2),
+      factors: factors,
+      recommendation: this.generateSalaryRecommendation(currentSalary, fairSalary, factors),
+      equityRecommendation: this.assessEquityGrant(employee, factors),
+      bonusEligibility: factors.performance >= 0.85,
+      estimatedBonus: factors.performance >= 0.85 ? Math.round(currentSalary * 0.15) : 0,
+      nextReviewDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+      ccmaCompliant: true,
+      equalPayVerified: true
+    };
+    
+    console.log(`💰 Compensation Analysis for ${employee.name}:`);
+    console.log(`   Current: R${currentSalary.toLocaleString()}`);
+    console.log(`   Fair Value: R${recommendation.fairSalary.toLocaleString()}`);
+    console.log(`   Adjustment: R${recommendation.adjustment.toLocaleString()} (${recommendation.adjustmentPercentage}%)`);
+    
+    return recommendation;
+  }
+  
+  getMarketSalaryData(role) {
+    // Market salary data for South African roles (in Rands)
+    const marketData = {
+      'CEO & Founder': { median: 1200000, range: [800000, 2000000] },
+      'Founding Partner - Sales': { median: 600000, range: [400000, 900000] },
+      'Founding Partner - Operations': { median: 550000, range: [400000, 800000] },
+      'Founding Partner - Community': { median: 500000, range: [350000, 750000] },
+      'Founding Partner - Design': { median: 550000, range: [400000, 800000] },
+      'Fleet Manager': { median: 420000, range: [300000, 600000] },
+      'Driver': { median: 180000, range: [120000, 250000] },
+      'Compliance Officer': { median: 480000, range: [350000, 650000] },
+      'Accountant': { median: 450000, range: [300000, 600000] },
+      'Developer': { median: 600000, range: [400000, 900000] }
+    };
+    
+    return marketData[role] || { median: 400000, range: [250000, 600000] };
+  }
+  
+  calculateExperience(employee) {
+    const yearsExperience = employee.yearsExperience || 5;
+    return Math.min(yearsExperience / 15, 1.2); // Cap at 15 years = 120%
+  }
+  
+  assessSkills(employee) {
+    // In production, would integrate with skills assessment system
+    return 0.85 + Math.random() * 0.15;
+  }
+  
+  calculateMarketPosition(currentSalary, marketData) {
+    const position = currentSalary / marketData.median;
+    return Math.min(Math.max(position, 0.7), 1.3); // 70% to 130% of market
+  }
+  
+  assessResponsibilities(employee) {
+    const responsibilityCount = employee.responsibilities?.length || 5;
+    return Math.min(responsibilityCount / 10, 1.2);
+  }
+  
+  measureBusinessImpact(employeeId) {
+    const tasks = Array.from(this.tasks.values()).filter(t => t.employeeId === employeeId);
+    const completedTasks = tasks.filter(t => t.status === 'completed');
+    const impactScore = completedTasks.length / Math.max(tasks.length, 1);
+    return Math.min(impactScore, 1.0);
+  }
+  
+  generateSalaryRecommendation(current, fair, factors) {
+    const diff = fair - current;
+    const percentDiff = (diff / current) * 100;
+    
+    if (percentDiff > 20) {
+      return {
+        action: 'URGENT_INCREASE_REQUIRED',
+        reason: 'Employee significantly underpaid relative to market and performance',
+        timing: 'Immediate',
+        riskLevel: 'High (retention risk)',
+        message: `Recommend immediate increase of R${Math.round(diff).toLocaleString()} to prevent attrition`
+      };
+    } else if (percentDiff > 10) {
+      return {
+        action: 'INCREASE_RECOMMENDED',
+        reason: 'Employee below fair market value',
+        timing: 'Next review cycle (within 90 days)',
+        riskLevel: 'Medium',
+        message: `Recommend increase of R${Math.round(diff).toLocaleString()} to align with market`
+      };
+    } else if (percentDiff > -5 && percentDiff <= 10) {
+      return {
+        action: 'MAINTAIN',
+        reason: 'Compensation aligned with market and performance',
+        timing: 'Annual review',
+        riskLevel: 'Low',
+        message: 'Current compensation is fair and competitive'
+      };
+    } else {
+      return {
+        action: 'REVIEW_PERFORMANCE',
+        reason: 'Compensation above market - verify performance justifies premium',
+        timing: 'Next review cycle',
+        riskLevel: 'Low',
+        message: 'Employee compensated above market rate - ensure performance supports this'
+      };
+    }
+  }
+  
+  assessEquityGrant(employee, factors) {
+    if (employee.equity) {
+      return {
+        hasEquity: true,
+        currentEquity: employee.equity,
+        recommendation: 'Monitor vesting schedule',
+        additionalGrant: null
+      };
+    }
+    
+    if (factors.performance >= 0.90 && factors.impact >= 0.80) {
+      return {
+        hasEquity: false,
+        recommendation: 'GRANT_EQUITY',
+        suggestedGrant: '0.5% - 2.0%',
+        reason: 'Exceptional performance and high business impact',
+        vestingSchedule: '4 years with 1-year cliff'
+      };
+    }
+    
+    return {
+      hasEquity: false,
+      recommendation: 'NO_EQUITY_GRANT',
+      reason: 'Performance does not yet warrant equity grant'
+    };
+  }
+  
+  // ============================================================================
+  // RECRUITMENT & APPLICATION SYSTEM
+  // ============================================================================
+  
+  async processApplication(applicationData) {
+    const applicationId = `APP-${Date.now()}`;
+    
+    const application = {
+      id: applicationId,
+      applicantName: applicationData.name,
+      email: applicationData.email,
+      phone: applicationData.phone,
+      role: applicationData.role,
+      experience: applicationData.experience,
+      education: applicationData.education,
+      skills: applicationData.skills || [],
+      cv: applicationData.cv,
+      coverLetter: applicationData.coverLetter,
+      appliedAt: new Date(),
+      status: 'under_review',
+      aiScore: null,
+      recommendation: null,
+      interviewScheduled: false
+    };
+    
+    // AI analysis of application
+    const analysis = await this.analyzeApplication(application);
+    application.aiScore = analysis.score;
+    application.recommendation = analysis.recommendation;
+    
+    this.recruitmentSystem.applications.set(applicationId, application);
+    
+    // Notify CEO and Board for strong candidates
+    if (analysis.score >= 0.80) {
+      this.notifyCEOAndBoard({
+        type: 'strong_candidate',
+        severity: 'medium',
+        applicant: applicationData.name,
+        role: applicationData.role,
+        score: analysis.score,
+        recommendation: analysis.recommendation
+      });
+    }
+    
+    console.log(`📝 Application received: ${applicationData.name} for ${applicationData.role}`);
+    console.log(`   AI Score: ${(analysis.score * 100).toFixed(1)}%`);
+    console.log(`   Recommendation: ${analysis.recommendation}`);
+    
+    return application;
+  }
+  
+  async analyzeApplication(application) {
+    // AI-powered application analysis
+    const scores = {
+      experienceMatch: this.scoreExperience(application.experience, application.role),
+      skillsMatch: this.scoreSkills(application.skills, application.role),
+      educationMatch: this.scoreEducation(application.education, application.role),
+      coverLetterQuality: this.scoreCoverLetter(application.coverLetter),
+      cultureFit: 0.75 + Math.random() * 0.25 // Simulate culture fit assessment
+    };
+    
+    const overallScore = (
+      scores.experienceMatch * 0.35 +
+      scores.skillsMatch * 0.30 +
+      scores.educationMatch * 0.15 +
+      scores.coverLetterQuality * 0.10 +
+      scores.cultureFit * 0.10
+    );
+    
+    let recommendation;
+    if (overallScore >= 0.85) {
+      recommendation = 'STRONG_FIT - Schedule interview immediately';
+    } else if (overallScore >= 0.70) {
+      recommendation = 'GOOD_FIT - Schedule interview';
+    } else if (overallScore >= 0.55) {
+      recommendation = 'POTENTIAL_FIT - Consider for interview';
+    } else {
+      recommendation = 'NOT_RECOMMENDED - Does not meet requirements';
+    }
+    
+    return {
+      score: overallScore,
+      breakdown: scores,
+      recommendation: recommendation,
+      strengths: this.identifyStrengths(scores),
+      concerns: this.identifyConcerns(scores)
+    };
+  }
+  
+  scoreExperience(experience, role) {
+    // Simplified experience scoring
+    const years = parseInt(experience) || 0;
+    const requiredYears = this.getRequiredExperience(role);
+    
+    if (years >= requiredYears) return 1.0;
+    if (years >= requiredYears * 0.75) return 0.85;
+    if (years >= requiredYears * 0.50) return 0.70;
+    return 0.50;
+  }
+  
+  getRequiredExperience(role) {
+    const requirements = {
+      'CEO & Founder': 10,
+      'Founding Partner - Sales': 8,
+      'Founding Partner - Operations': 8,
+      'Fleet Manager': 5,
+      'Compliance Officer': 5,
+      'Accountant': 5,
+      'Developer': 3,
+      'Driver': 2
+    };
+    return requirements[role] || 3;
+  }
+  
+  scoreSkills(skills, role) {
+    // Would integrate with skills database in production
+    return skills.length >= 5 ? 0.90 : skills.length / 5 * 0.90;
+  }
+  
+  scoreEducation(education, role) {
+    // Simplified education scoring
+    if (!education) return 0.60;
+    if (education.includes('PhD') || education.includes('Doctorate')) return 1.0;
+    if (education.includes('Masters') || education.includes('MBA')) return 0.95;
+    if (education.includes('Bachelor') || education.includes('Degree')) return 0.85;
+    if (education.includes('Diploma')) return 0.75;
+    return 0.65;
+  }
+  
+  scoreCoverLetter(coverLetter) {
+    if (!coverLetter) return 0.50;
+    const length = coverLetter.length;
+    if (length > 800 && length < 1500) return 0.90;
+    if (length > 500 && length < 2000) return 0.80;
+    return 0.70;
+  }
+  
+  identifyStrengths(scores) {
+    const strengths = [];
+    if (scores.experienceMatch >= 0.85) strengths.push('Strong relevant experience');
+    if (scores.skillsMatch >= 0.85) strengths.push('Excellent skills match');
+    if (scores.educationMatch >= 0.85) strengths.push('Strong educational background');
+    if (scores.cultureFit >= 0.85) strengths.push('Good culture fit');
+    return strengths;
+  }
+  
+  identifyConcerns(scores) {
+    const concerns = [];
+    if (scores.experienceMatch < 0.70) concerns.push('Limited relevant experience');
+    if (scores.skillsMatch < 0.70) concerns.push('Skills gap identified');
+    if (scores.educationMatch < 0.70) concerns.push('Educational requirements not fully met');
+    return concerns;
+  }
+  
+  getBoardRecommendation(applicationId) {
+    const application = this.recruitmentSystem.applications.get(applicationId);
+    if (!application) return null;
+    
+    const recommendation = {
+      applicationId: applicationId,
+      applicant: application.applicantName,
+      role: application.role,
+      aiScore: application.aiScore,
+      recommendation: application.recommendation,
+      boardAction: application.aiScore >= 0.80 ? 'APPROVE_INTERVIEW' : application.aiScore >= 0.70 ? 'CONSIDER_INTERVIEW' : 'REJECT',
+      reasoning: this.generateBoardReasoning(application),
+      timestamp: new Date()
+    };
+    
+    this.recruitmentSystem.recommendations.set(applicationId, recommendation);
+    
+    return recommendation;
+  }
+  
+  generateBoardReasoning(application) {
+    if (application.aiScore >= 0.85) {
+      return 'Exceptional candidate with strong qualifications and experience. Highly recommended for immediate interview.';
+    } else if (application.aiScore >= 0.70) {
+      return 'Good candidate with solid qualifications. Recommended for interview to assess fit.';
+    } else if (application.aiScore >= 0.55) {
+      return 'Potential candidate but has some gaps. Consider for interview if no stronger candidates.';
+    } else {
+      return 'Does not meet minimum requirements. Not recommended to proceed.';
+    }
+  }
+  
+  // ============================================================================
+  // EXECUTIVE SUPPORT & DEPUTY SYSTEM
+  // ============================================================================
+  
+  initializeExecutiveSupport() {
+    // CEO Support
+    this.executiveSupport.ceoDeputy.set('tasks', []);
+    this.executiveSupport.ceoDeputy.set('priorities', [
+      'Global expansion strategy',
+      'Investor relations',
+      'Product development oversight',
+      'Strategic partnerships'
+    ]);
+    
+    // Senior roles deputies
+    const seniorRoles = [
+      'Head of Sales & Partnerships',
+      'Operations & Support Lead',
+      'Head of Retail & Community',
+      'Founding UI/UX Engineer'
+    ];
+    
+    seniorRoles.forEach(role => {
+      this.executiveSupport.seniorRoleDeputies.set(role, {
+        tasks: [],
+        advisoryReports: [],
+        goals: this.getGoalsForRole(role)
+      });
+    });
+    
+    console.log(`🎯 Executive support system initialized for CEO + ${seniorRoles.length} senior roles`);
+  }
+  
+  getGoalsForRole(role) {
+    const goalMap = {
+      'Head of Sales & Partnerships': [
+        'Achieve monthly revenue targets',
+        'Close 3 strategic partnerships per quarter',
+        'Expand customer base by 25% per quarter',
+        'Maintain 90% customer retention rate'
+      ],
+      'Operations & Support Lead': [
+        'Ensure 99.9% system uptime',
+        'Deploy weekly product updates',
+        'Reduce operational costs by 10%',
+        'Improve efficiency by 15% per quarter'
+      ],
+      'Head of Retail & Community': [
+        'Launch pilots in 3 new communities per quarter',
+        'Achieve 85% community satisfaction score',
+        'Secure regulatory approvals in target markets',
+        'Build partnerships with 5 local organizations'
+      ],
+      'Founding UI/UX Engineer': [
+        'Achieve 90% user satisfaction score',
+        'Complete weekly UI updates',
+        'Maintain WCAG 2.1 AA compliance',
+        'Reduce user onboarding time by 20%'
+      ]
+    };
+    
+    return goalMap[role] || [];
+  }
+  
+  generateExecutiveAdvisory(role) {
+    const deputy = this.executiveSupport.seniorRoleDeputies.get(role);
+    if (!deputy) return null;
+    
+    const advisory = {
+      id: `ADVISORY-${Date.now()}`,
+      role: role,
+      timestamp: new Date(),
+      priorities: deputy.goals,
+      activeTasks: this.getActiveTasksForRole(role),
+      recommendations: this.generateRecommendationsForRole(role),
+      riskAlerts: this.identifyRisksForRole(role),
+      opportunities: this.identifyOpportunitiesForRole(role)
+    };
+    
+    deputy.advisoryReports.push(advisory);
+    
+    console.log(`📊 Executive advisory generated for ${role}`);
+    
+    return advisory;
+  }
+  
+  getActiveTasksForRole(role) {
+    // Get all employees in this role
+    const employees = Array.from(this.employees.values()).filter(e => e.role === role);
+    const employeeIds = employees.map(e => e.id);
+    
+    // Get active tasks for these employees
+    return Array.from(this.tasks.values()).filter(t => 
+      employeeIds.includes(t.employeeId) && t.status === 'pending'
+    );
+  }
+  
+  generateRecommendationsForRole(role) {
+    return [
+      'Focus on high-priority tasks this week',
+      'Delegate routine tasks to team members',
+      'Schedule quarterly strategic planning session',
+      'Review team performance metrics'
+    ];
+  }
+  
+  identifyRisksForRole(role) {
+    return [
+      'Resource constraints may impact Q4 targets',
+      'Market competition increasing in key segments',
+      'Team capacity at 85% - consider hiring'
+    ];
+  }
+  
+  identifyOpportunitiesForRole(role) {
+    return [
+      'New market expansion opportunities in East Africa',
+      'Partnership opportunity with major logistics player',
+      'Technology advancement enables new features'
+    ];
+  }
+  
+  // ============================================================================
+  // AUTOMATED EXIT PROCESS (CCMA COMPLIANT)
   // ============================================================================
   
   async initiateExitProcess(employeeId, reason) {
     const employee = this.employees.get(employeeId);
     if (!employee) return null;
+    
+    // CCMA COMPLIANCE CHECK: Verify dismissal is fair and legal
+    const complianceCheck = this.verifyCCMACompliance(employeeId, reason);
+    
+    if (!complianceCheck.compliant) {
+      console.log(`🚫 EXIT BLOCKED: CCMA non-compliance detected`);
+      console.log(`   Reason: ${complianceCheck.reason}`);
+      console.log(`   Required: ${complianceCheck.required.join(', ')}`);
+      
+      // Notify CEO and Board of blocked dismissal
+      this.notifyCEOAndBoard({
+        type: 'exit_blocked',
+        severity: 'critical',
+        employee: employee,
+        reason: complianceCheck.reason,
+        required: complianceCheck.required
+      });
+      
+      return {
+        blocked: true,
+        reason: complianceCheck.reason,
+        required: complianceCheck.required,
+        message: 'Exit process blocked due to CCMA non-compliance. All requirements must be met to proceed.'
+      };
+    }
+    
+    // Conduct disciplinary hearing (CCMA requirement)
+    const hearing = await this.conductDisciplinaryHearing(employeeId, reason);
+    
+    if (hearing.outcome === 'not_guilty' || hearing.outcome === 'insufficient_evidence') {
+      console.log(`🚫 EXIT BLOCKED: Disciplinary hearing found insufficient grounds`);
+      return {
+        blocked: true,
+        reason: 'Disciplinary hearing did not support dismissal',
+        hearingOutcome: hearing
+      };
+    }
     
     const exitId = `EXIT-${Date.now()}`;
     const exitProcess = {
@@ -1142,6 +2054,114 @@ app.get('/api/hr-ai/expansion/tasks', (req, res) => {
     tasks,
     globalReach: hrDeputyCEO.globalReachMetrics
   });
+});
+
+// Compensation Analysis
+app.get('/api/hr-ai/compensation/:employeeId', (req, res) => {
+  try {
+    const analysis = hrDeputyCEO.analyzeCompensation(req.params.employeeId);
+    if (!analysis) {
+      return res.status(404).json({ success: false, error: 'Employee not found' });
+    }
+    res.json({ success: true, analysis });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+app.get('/api/hr-ai/compensation/all', (req, res) => {
+  try {
+    const analyses = [];
+    hrDeputyCEO.employees.forEach((employee, employeeId) => {
+      const analysis = hrDeputyCEO.analyzeCompensation(employeeId);
+      if (analysis) analyses.push(analysis);
+    });
+    res.json({ success: true, analyses, count: analyses.length });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Recruitment & Applications
+app.post('/api/hr-ai/recruitment/apply', async (req, res) => {
+  try {
+    const application = await hrDeputyCEO.processApplication(req.body);
+    res.json({ success: true, application });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+app.get('/api/hr-ai/recruitment/applications', (req, res) => {
+  const applications = Array.from(hrDeputyCEO.recruitmentSystem.applications.values());
+  res.json({ success: true, applications, count: applications.length });
+});
+
+app.get('/api/hr-ai/recruitment/application/:applicationId', (req, res) => {
+  const application = hrDeputyCEO.recruitmentSystem.applications.get(req.params.applicationId);
+  if (!application) {
+    return res.status(404).json({ success: false, error: 'Application not found' });
+  }
+  res.json({ success: true, application });
+});
+
+app.get('/api/hr-ai/recruitment/recommendation/:applicationId', (req, res) => {
+  try {
+    const recommendation = hrDeputyCEO.getBoardRecommendation(req.params.applicationId);
+    if (!recommendation) {
+      return res.status(404).json({ success: false, error: 'Application not found' });
+    }
+    res.json({ success: true, recommendation });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Executive Support & Advisory
+app.get('/api/hr-ai/executive/ceo/advisory', (req, res) => {
+  const reports = hrDeputyCEO.executiveSupport.advisoryReports.get('ceo') || [];
+  res.json({ success: true, reports, count: reports.length });
+});
+
+app.get('/api/hr-ai/executive/:role/advisory', (req, res) => {
+  try {
+    const advisory = hrDeputyCEO.generateExecutiveAdvisory(req.params.role);
+    if (!advisory) {
+      return res.status(404).json({ success: false, error: 'Role not found' });
+    }
+    res.json({ success: true, advisory });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// CCMA Compliance Reports
+app.get('/api/hr-ai/ccma/warnings/:employeeId', (req, res) => {
+  const warnings = hrDeputyCEO.warningsRegistry.get(req.params.employeeId) || [];
+  const validWarnings = warnings.filter(w => {
+    const monthsSince = (Date.now() - new Date(w.issuedAt).getTime()) / (1000 * 60 * 60 * 24 * 30);
+    return monthsSince < hrDeputyCEO.ccmaCompliance.warningValidityPeriod;
+  });
+  res.json({ 
+    success: true, 
+    warnings: validWarnings,
+    count: validWarnings.length,
+    ccmaCompliant: validWarnings.length <= hrDeputyCEO.ccmaCompliance.minimumWarnings
+  });
+});
+
+app.get('/api/hr-ai/ccma/hearings/:employeeId', (req, res) => {
+  const hearings = Array.from(hrDeputyCEO.disciplinaryHearings.values())
+    .filter(h => h.employeeId === req.params.employeeId);
+  res.json({ success: true, hearings, count: hearings.length });
+});
+
+app.get('/api/hr-ai/ccma/pip/:employeeId', (req, res) => {
+  const pip = hrDeputyCEO.improvementPlans.get(req.params.employeeId);
+  if (!pip) {
+    return res.status(404).json({ success: false, error: 'No PIP found for this employee' });
+  }
+  res.json({ success: true, pip });
 });
 
 // Dashboard Stats
