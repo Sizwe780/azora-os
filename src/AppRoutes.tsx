@@ -13,6 +13,13 @@ import UniversalSafetyCommand from './pages/UniversalSafetyCommand';
 import QuantumTracking from './pages/QuantumTracking';
 import QuantumAI from './pages/QuantumAI';
 import AIEvolution from './pages/AIEvolution';
+// New Enterprise Services Pages
+import AdminPortalPage from './pages/AdminPortalPage';
+import EmployeeOnboardingPage from './pages/EmployeeOnboardingPage';
+import DocumentVaultPage from './pages/DocumentVaultPage';
+import TrafficRoutingPage from './pages/TrafficRoutingPage';
+import AITripPlanningPage from './pages/AITripPlanningPage';
+import AccessibilityPage from './pages/AccessibilityPage';
 
 export default function AppRoutes() {
   return (
@@ -30,6 +37,13 @@ export default function AppRoutes() {
         <Route path="/genesis-chamber" element={<GenesisChamberPage />} />
         <Route path="/ledger" element={<LedgerPage />} />
         <Route path="/settings" element={<Settings />} />
+        {/* New Enterprise Services Routes */}
+        <Route path="/admin" element={<AdminPortalPage />} />
+        <Route path="/onboarding" element={<EmployeeOnboardingPage />} />
+        <Route path="/documents" element={<DocumentVaultPage />} />
+        <Route path="/traffic" element={<TrafficRoutingPage />} />
+        <Route path="/trip-ai" element={<AITripPlanningPage />} />
+        <Route path="/accessibility" element={<AccessibilityPage />} />
       </Routes>
     </DashboardLayout>
   );
