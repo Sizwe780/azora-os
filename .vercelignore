@@ -1,0 +1,21 @@
+# Ignore service directories during Vercel build
+services/
+apps/driver-pwa/
+apps/staff-pwa/
+apps/security-dashboard/
+infra/
+prisma/
+ai-models/
+
+# Ignore backend files
+backend/
+
+# Keep only root-level frontend files
+!src/
+!public/
+!index.html
+!package.json
+!vite.config.js
+!tailwind.config.js
+!postcss.config.js
+!tsconfig.json
