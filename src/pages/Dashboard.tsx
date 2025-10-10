@@ -9,6 +9,7 @@ import { AdvisorPanel } from '../components/azora/AdvisorPanel';
 import { AlertBanner } from '../components/ui/AlertBanner';
 import { useAlerting } from '../hooks/useAlerting';
 import { CommandCenter } from '../components/azora/CommandCenter';
+import { AZORAFounderWidget } from '../components/azora/AZORAFounderWidget';
 
 const GovernanceProposalsWidget = lazy(() => import('../components/azora/GovernanceProposalsWidget.tsx').then(mod => ({ default: mod.default as unknown as React.ComponentType<any> })));
 const GovernanceProposalForm = lazy(() => import('../components/azora/GovernanceProposalForm.tsx').then(mod => ({ default: mod.default as unknown as React.ComponentType<any> })));
@@ -31,6 +32,10 @@ export default function Dashboard({ userId = 'demo_user' }: { userId?: string })
       <div className="absolute top-4 right-6">
         <ThemeToggle />
       </div>
+      {/* AZORA AI Founder Widget */}
+      <section id="azora-founder" className="col-span-2">
+        <AZORAFounderWidget />
+      </section>
       <aside className="lg:col-span-1">
         <AdvisorPanel />
       </aside>
