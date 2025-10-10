@@ -20,6 +20,7 @@ import DocumentVaultPage from './pages/DocumentVaultPage';
 import TrafficRoutingPage from './pages/TrafficRoutingPage';
 import AITripPlanningPage from './pages/AITripPlanningPage';
 import AccessibilityPage from './pages/AccessibilityPage';
+import HRDeputyCEOPage from './pages/HRDeputyCEOPage';
 
 export default function AppRoutes() {
   return (
@@ -44,6 +45,7 @@ export default function AppRoutes() {
         <Route path="/traffic" element={<TrafficRoutingPage />} />
         <Route path="/trip-ai" element={<AITripPlanningPage />} />
         <Route path="/accessibility" element={<AccessibilityPage />} />
+        <Route path="/hr-ai" element={<HRDeputyCEOPage />} />
       </Routes>
     </DashboardLayout>
   );
