@@ -6,16 +6,21 @@ apps/security-dashboard/
 infra/
 prisma/
 ai-models/
-
-# Ignore backend files
 backend/
+
+# Ignore pnpm files completely
+pnpm-lock.yaml
+pnpm-workspace.yaml
+.pnpm-store/
 
 # Keep only root-level frontend files
 !src/
 !public/
 !index.html
 !package.json
+!package-lock.json
 !vite.config.js
 !tailwind.config.js
 !postcss.config.js
 !tsconfig.json
+!.npmrc

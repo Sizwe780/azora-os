@@ -1,9 +1,12 @@
 {
-  "buildCommand": "cd /vercel/path0 && npm install && npm run build",
+  "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "installCommand": "npm install --legacy-peer-deps",
   "framework": null,
   "ignoreCommand": "exit 0",
+  "env": {
+    "ENABLE_EXPERIMENTAL_COREPACK": "0"
+  },
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ]
