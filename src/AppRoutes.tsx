@@ -10,6 +10,9 @@ import DriverCommandCenter from './pages/DriverCommandCenter';
 import WoolworthsDashboard from './pages/WoolworthsDashboard';
 import ColdChainCommand from './pages/ColdChainCommand';
 import UniversalSafetyCommand from './pages/UniversalSafetyCommand';
+import QuantumTracking from './pages/QuantumTracking';
+import QuantumAI from './pages/QuantumAI';
+import AIEvolution from './pages/AIEvolution';
 
 export default function AppRoutes() {
   return (
@@ -17,6 +20,9 @@ export default function AppRoutes() {
       <Routes>
         <Route path="/" element={<SanctuaryPage />} />
         <Route path="/driver" element={<DriverCommandCenter />} />
+        <Route path="/tracking" element={<QuantumTracking />} />
+        <Route path="/ai" element={<QuantumAI />} />
+        <Route path="/evolution" element={<AIEvolution />} />
         <Route path="/woolworths" element={<WoolworthsDashboard />} />
         <Route path="/coldchain" element={<ColdChainCommand />} />
         <Route path="/safety" element={<UniversalSafetyCommand />} />

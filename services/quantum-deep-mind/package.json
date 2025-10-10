@@ -1,0 +1,24 @@
+{
+  "name": "@azora/quantum-deep-mind",
+  "version": "1.0.0",
+  "description": "Revolutionary local AI - Quantum-inspired neural networks with self-healing capabilities",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "keywords": [
+    "ai",
+    "quantum",
+    "neural-network",
+    "machine-learning",
+    "self-healing",
+    "generative-ai",
+    "local-ai"
+  ],
+  "dependencies": {
+    "express": "^4.18.2",
+    "body-parser": "^1.20.2"
+  }
+}

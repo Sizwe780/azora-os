@@ -1,0 +1,20 @@
+{
+  "name": "document-verification-service",
+  "version": "1.0.0",
+  "description": "Blockchain-backed document verification with UID tracking, watermarking, and geofenced alerts for Azora OS",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": ["blockchain", "document-verification", "watermarking", "geofence", "customs", "uid-tracking"],
+  "author": "Sizwe Ngwenya <sizwe.ngwenya@azora.world>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.2",
+    "body-parser": "^2.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  }
+}

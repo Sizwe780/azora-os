@@ -1,0 +1,20 @@
+{
+  "name": "advanced-compliance-engine",
+  "version": "3.0.0",
+  "description": "Industry-grade SADC compliance engine with logsheet generation, TREMCARD, HOS tracking, and cross-border rules for Azora OS",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": ["compliance", "sadc", "logsheet", "tremcard", "hos", "cross-border", "hazchem"],
+  "author": "Sizwe Ngwenya <sizwe.ngwenya@azora.world>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.2",
+    "body-parser": "^2.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  }
+}

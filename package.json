@@ -3,6 +3,18 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "author": {
+    "name": "Sizwe Ngwenya",
+    "email": "sizwe.ngwenya@azora.world",
+    "url": "https://azora.world"
+  },
+  "description": "Africa's first self-improving autonomous AI platform for logistics and operations",
+  "homepage": "https://azora.world",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/azoraworld/azora-os.git"
+  },
+  "license": "SEE LICENSE IN LICENSE",
   "workspaces": [
     "packages/*",
     "services/*",
@@ -11,7 +23,7 @@
   "scripts": {
     "start": "docker compose up -d --build",
     "stop": "docker compose down",
-    "dev": "concurrently \"node services/ai-orchestrator/server.js\" \"node services/klipp-service/index.js\" \"node services/neural-context-engine/index.js\" \"node services/woolworths-integration/index.js\" \"node services/cold-chain-quantum/index.js\" \"node services/universal-safety/index.js\" \"node services/autonomous-operations/index.js\" \"vite\"",
+    "dev": "concurrently \"node services/ai-orchestrator/server.js\" \"node services/klipp-service/index.js\" \"node services/neural-context-engine/index.js\" \"node services/woolworths-integration/index.js\" \"node services/cold-chain-quantum/index.js\" \"node services/universal-safety/index.js\" \"node services/autonomous-operations/index.js\" \"node services/quantum-tracking/index.js\" \"node services/quantum-deep-mind/index.js\" \"node services/ai-evolution-engine/index.js\" \"node services/onboarding-service/index.js\" \"node services/compliance-service/index.js\" \"node services/maintenance-service/index.js\" \"node services/driver-behavior-service/index.js\" \"node services/analytics-service/index.js\" \"node services/document-verification-service/index.js\" \"node services/advanced-compliance-engine/index.js\" \"vite\"",
     "dev:driver": "pnpm --filter driver-pwa dev",
     "build": "pnpm --filter driver-pwa build"
   },
@@ -28,11 +40,13 @@
     "framer-motion": "^12.23.22",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.545.0",
+    "mongodb": "^6.20.0",
     "react-icons": "^5.5.0",
     "react-leaflet": "^5.0.0",
     "react-router-dom": "^7.9.4",
     "recharts": "^3.2.1",
     "socket.io-client": "^4.8.1",
-    "tailwindcss": "^4.1.14"
+    "tailwindcss": "^4.1.14",
+    "ws": "^8.18.0"
   }
 }

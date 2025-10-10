@@ -1,0 +1,20 @@
+{
+  "name": "analytics-service",
+  "version": "1.0.0",
+  "description": "Profit analytics, TCO tracking, predictive forecasting, and custom reports for Azora OS",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": ["analytics", "profit", "tco", "forecasting", "reports", "fleet-management"],
+  "author": "Sizwe Ngwenya <sizwe.ngwenya@azora.world>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.2",
+    "body-parser": "^2.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  }
+}

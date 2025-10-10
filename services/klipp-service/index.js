@@ -28,6 +28,7 @@ app.post('/tasks', async (req, res) => {
     if (tasks.length === 0) {
       return res.status(404).json({ message: 'No suitable tasks found at this time.' });
     }
+    const postedNeeds = [];
     res.json(tasks);
   } catch (error) {
     console.error('Error fetching tasks:', error);
@@ -41,25 +42,43 @@ app.post('/tasks', async (req, res) => {
  * @route POST /submit
  * @example body { "taskId": "task_001", "submission": { "photo_url": "...", "geotag": "..." } }
  */
-app.post('/submit', (req, res) => {
-  const { taskId, submission } = req.body;
-  if (!taskId || !submission) {
-    return res.status(400).json({ error: 'Task ID and submission data are required.' });
+app.post('/needs', (req, res) => {
+  const { title, description, price, currency, location, contact } = req.body;
+  if (!title || !description || !price || !currency || !location || !contact) {
+    return res.status(400).json({ error: 'All fields are required: title, description, price, currency, location, contact.' });
+  }
+  const need = {
+    id: `need_${Date.now()}`,
+    title,
+    description,
+    price,
+    currency,
+    location,
+    contact,
+    postedAt: new Date().toISOString()
+  };
+  postedNeeds.push(need);
+  console.log('New need posted:', need);
+
+  // --- AI-powered matching/alert logic (mock) ---
+  // For demo: check if any task in taskDatabase matches the need's title or description
+  const { taskDatabase } = require('./taskGenerator');
+  const matches = taskDatabase.filter(task =>
+    need.title.toLowerCase().includes(task.title.toLowerCase()) ||
+    need.description.toLowerCase().includes(task.title.toLowerCase())
+  );
+  if (matches.length > 0) {
+    // In a real system, alert users with matching items/services
+    console.log(`AI MATCH ALERT: Found ${matches.length} matching tasks for posted need '${need.title}'.`);
+    matches.forEach(match => {
+      console.log(` - Match: ${match.title} (${match.taskId})`);
+    });
+  } else {
+    console.log('AI MATCH ALERT: No matching tasks found for posted need.');
   }
 
-  // Mock verification process
-  console.log(`Received submission for task ${taskId}. Verifying...`, submission);
-  
-  // Mock payment process
-  console.log(`Verification successful. Initiating payment for task ${taskId}.`);
-
-  res.json({ 
-    status: 'success', 
-    message: `Task ${taskId} submitted successfully. Payment is being processed.` 
-  });
+  res.json({ status: 'success', need, aiMatches: matches });
 });
-
-
 app.listen(PORT, () => {
   console.log(`Klipp Service running on port ${PORT}`);
 });

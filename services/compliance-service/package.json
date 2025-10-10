@@ -1,0 +1,20 @@
+{
+  "name": "compliance-service",
+  "version": "1.0.0",
+  "description": "ELD/HOS management and SA/SADC load compliance automation for Azora OS",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": ["compliance", "eld", "hos", "sadc", "south-africa", "fleet-management"],
+  "author": "Sizwe Ngwenya <sizwe.ngwenya@azora.world>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.2",
+    "body-parser": "^2.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  }
+}

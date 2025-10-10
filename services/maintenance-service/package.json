@@ -1,0 +1,20 @@
+{
+  "name": "maintenance-service",
+  "version": "1.0.0",
+  "description": "Predictive maintenance with AI, automated scheduling, and digital twin integration for Azora OS",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": ["maintenance", "predictive", "ai", "fleet-management", "digital-twin"],
+  "author": "Sizwe Ngwenya <sizwe.ngwenya@azora.world>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.2",
+    "body-parser": "^2.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  }
+}
