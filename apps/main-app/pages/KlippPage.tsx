@@ -1,141 +1,136 @@
-import React from 'react';
-// src/pages/KlippPage.tsx
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import { GlassCard } from '../components/ui/GlassCard';
-import { FaDollarSign, FaClock, FaCheckCircle } from 'react-icons/fa';
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { DollarSign, Clock, CheckCircle, Zap, BrainCircuit, Camera } from 'lucide-react';
 
-// --- Type Definitions ---
-type KlippTask = {
-  taskId: string;
-  title: string;
-  description: string;
-  category: string;
-  estimatedEarnings: number;
-  currency: string;
-  estimatedTimeMinutes: number;
-  requiredSkills: string[];
-};
-
-// --- Task Card Component ---
-const TaskCard = ({ task, onAccept }: { task: KlippTask; onAccept: (task: KlippTask) => void }) => (
-  <GlassCard className="p-6 flex flex-col justify-between hover:border-green-400/50 transition-all duration-300">
-    <div>
-      <div className="flex justify-between items-start">
-        <h3 className="text-xl font-bold text-green-300">{task.title}</h3>
-        <span className="text-xs font-semibold bg-green-800/70 px-2 py-1 rounded-full">{task.category}</span>
+const StatCard = ({ icon: Icon, title, value, color }) => (
+  <div className={`bg-gray-900/50 border border-${color}-500/30 rounded-2xl p-4`}>
+    <div className="flex items-center justify-between">
+      <div>
+        <p className={`text-sm text-${color}-300`}>{title}</p>
+        <p className="text-2xl font-bold text-white">{value}</p>
       </div>
-      <p className="text-sm text-white/80 mt-2 mb-4">{task.description}</p>
+      <div className={`p-3 bg-${color}-500/20 rounded-xl`}>
+        <Icon className={`w-6 h-6 text-${color}-400`} />
+      </div>
+    </div>
+  </div>
+);
+
+const mockTasks = [
+  { id: 'TASK001', title: 'Verify Storefront Hours', description: 'Visit the specified location and take a clear photo of the store\'s posted hours.', category: 'Field Verification', icon: Camera, earnings: 15, time: 20 },
+  { id: 'TASK002', title: 'Train AI Object Recognition', description: 'Identify and label common objects in a series of images to help train our AI models.', category: 'AI Training', icon: BrainCircuit, earnings: 8, time: 15 },
+  { id: 'TASK003', title: 'Test New App Feature', description: 'Follow a script to test a new feature in our upcoming mobile app and provide feedback.', category: 'Usability Testing', icon: Zap, earnings: 25, time: 30 },
+  { id: 'TASK004', title: 'Local Landmark Photo', description: 'Submit a high-quality, original photo of a well-known local landmark.', category: 'Field Verification', icon: Camera, earnings: 12, time: 15 },
+];
+
+const TaskCard = ({ task, onAccept }) => (
+  <div className="bg-gray-900/50 border border-gray-700/50 rounded-2xl p-6 flex flex-col justify-between hover:border-cyan-500/50 transition-all duration-300">
+    <div>
+      <div className="flex justify-between items-start mb-4">
+        <div className="p-3 bg-cyan-500/20 rounded-xl">
+          <task.icon className="w-6 h-6 text-cyan-400" />
+        </div>
+        <span className="text-xs font-semibold bg-cyan-900/70 text-cyan-300 px-2 py-1 rounded-full">{task.category}</span>
+      </div>
+      <h3 className="text-xl font-bold text-white">{task.title}</h3>
+      <p className="text-sm text-gray-400 mt-2 mb-4">{task.description}</p>
     </div>
     <div>
-      <div className="flex items-center justify-between text-sm border-t border-white/10 pt-3">
-        <span className="flex items-center gap-2"><FaDollarSign /> {task.estimatedEarnings} {task.currency}</span>
-        <span className="flex items-center gap-2"><FaClock /> {task.estimatedTimeMinutes} min</span>
+      <div className="flex items-center justify-between text-sm border-t border-gray-700/50 pt-4">
+        <span className="flex items-center gap-2 text-green-400 font-bold"><DollarSign size={16} /> ${task.earnings.toFixed(2)}</span>
+        <span className="flex items-center gap-2 text-gray-400"><Clock size={16} /> {task.time} min</span>
       </div>
-      <button 
+      <button
         onClick={() => onAccept(task)}
-        className="w-full mt-4 py-2 bg-green-600 hover:bg-green-500 rounded-lg font-bold text-white transition-all"
+        className="w-full mt-4 py-2 bg-gradient-to-r from-cyan-600 to-blue-600 text-white rounded-lg font-semibold hover:scale-105 transition-transform"
       >
         Accept Task
       </button>
     </div>
-  </GlassCard>
+  </div>
 );
 
-// --- Main Klipp Page ---
 export default function KlippPage() {
-  const [tasks, setTasks] = useState<KlippTask[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [activeTask, setActiveTask] = useState<KlippTask | null>(null);
+  const [activeTask, setActiveTask] = useState(null);
 
-  useEffect(() => {
-    fetchTasks();
-  }, []);
-
-  const fetchTasks = async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      // This would be the endpoint for the new Klipp service
-      const res = await axios.post('/api/klipp/tasks', {
-        // Mock user context. In a real app, this would come from the user's profile.
-        skills: ['smartphone_camera', 'walking', 'communication'],
-      });
-      setTasks(res.data);
-    } catch (error) {
-      setError('Could not fetch tasks. The network may be busy. Please try again later.');
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleAcceptTask = (task: KlippTask) => {
-    setActiveTask(task);
-  };
-
-  const handleCompleteTask = async () => {
-    if (!activeTask) return;
-    
-    // Mock submission
-    try {
-      await axios.post('/api/klipp/submit', {
-        taskId: activeTask.taskId,
-        submission: { data: 'mock_submission_data_e.g_photo_url' }
-      });
-      setActiveTask(null); // Go back to the task list
-      fetchTasks(); // Refresh tasks
-    } catch (error) {
-      console.error('Failed to submit task:', error);
-      setError('Failed to submit task.');
-    }
-  };
-
-  // --- Render Logic ---
   if (activeTask) {
     return (
-      <div className="animate-fade-in">
-        <h1 className="text-3xl font-bold text-cyan-300 mb-4">Active Task</h1>
-        <GlassCard className="p-8">
-          <h2 className="text-2xl font-bold text-green-300 mb-2">{activeTask.title}</h2>
-          <p className="mb-6 text-white/80">{activeTask.description}</p>
-          <div className="text-center">
-            <p className="text-lg mb-4">Complete the instructions to earn your reward.</p>
-            <button 
-              onClick={handleCompleteTask}
-              className="px-8 py-4 bg-green-600 hover:bg-green-500 rounded-lg font-bold text-xl text-white transition-all flex items-center gap-3 mx-auto"
+      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="space-y-8">
+        <div className="flex items-center gap-4">
+          <Zap className="w-8 h-8 text-cyan-400" />
+          <div>
+            <h1 className="text-3xl font-bold text-white">Active Task: {activeTask.title}</h1>
+            <p className="text-cyan-300">Follow the instructions below to earn your reward.</p>
+          </div>
+        </div>
+        <div className="bg-gray-900/50 border border-cyan-500/30 rounded-2xl p-8">
+          <div className="flex justify-center mb-6">
+            <div className="p-4 bg-cyan-500/20 rounded-full">
+              <activeTask.icon className="w-12 h-12 text-cyan-300" />
+            </div>
+          </div>
+          <p className="text-center text-lg text-gray-300 mb-6">{activeTask.description}</p>
+          <div className="flex justify-around items-center text-center mb-8 p-4 bg-gray-900 rounded-xl">
+            <div>
+              <p className="text-sm text-gray-400">Reward</p>
+              <p className="text-2xl font-bold text-green-400">${activeTask.earnings.toFixed(2)}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-400">Est. Time</p>
+              <p className="text-2xl font-bold text-white">{activeTask.time} min</p>
+            </div>
+          </div>
+          <div className="flex flex-col items-center gap-4">
+            <button
+              onClick={() => setActiveTask(null)}
+              className="w-full max-w-xs py-3 bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-lg font-bold text-lg hover:scale-105 transition-transform flex items-center justify-center gap-2"
             >
-              <FaCheckCircle /> Mark as Complete
+              <CheckCircle /> Mark as Complete
+            </button>
+            <button
+              onClick={() => setActiveTask(null)}
+              className="text-gray-400 hover:text-white transition-colors text-sm"
+            >
+              Cancel Task
             </button>
           </div>
-        </GlassCard>
-      </div>
+        </div>
+      </motion.div>
     );
   }
 
   return (
-    <div className="animate-fade-in">
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-3xl font-bold text-cyan-300">Klipp Service</h1>
-          <p className="text-white/70">Complete simple tasks. Get paid. Guaranteed.</p>
+    <div className="space-y-8">
+      {/* Header */}
+      <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
+        <div className="flex items-center gap-4">
+          <Zap className="w-8 h-8 text-cyan-400" />
+          <div>
+            <h1 className="text-3xl font-bold text-white">Klipp Micro-Tasks</h1>
+            <p className="text-cyan-300">Complete simple tasks. Get paid instantly.</p>
+          </div>
         </div>
-        <button onClick={fetchTasks} disabled={isLoading} className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 rounded-lg font-semibold disabled:opacity-50">
-          {isLoading ? 'Refreshing...' : 'Refresh Tasks'}
-        </button>
+      </motion.div>
+
+      {/* User Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <StatCard icon={DollarSign} title="Total Earnings" value="$1,240.50" color="green" />
+        <StatCard icon={CheckCircle} title="Tasks Completed" value="88" color="blue" />
+        <StatCard icon={Clock} title="Avg. Time/Task" value="12 min" color="purple" />
+        <StatCard icon={Zap} title="Available Tasks" value={mockTasks.length} color="cyan" />
       </div>
 
-      {isLoading && <p className="text-center">Finding tasks for you...</p>}
-      {error && <p className="text-center text-red-400">{error}</p>}
-      
-      {!isLoading && !error && (
+      {/* Task List */}
+      <div>
+        <h2 className="text-2xl font-bold text-white mb-6">Available for you</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {tasks.map(task => (
-            <TaskCard key={task.taskId} task={task} onAccept={handleAcceptTask} />
+          {mockTasks.map(task => (
+            <motion.div key={task.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: mockTasks.indexOf(task) * 0.1 }}>
+              <TaskCard task={task} onAccept={setActiveTask} />
+            </motion.div>
           ))}
         </div>
-      )}
+      </div>
     </div>
   );
 }

@@ -108,7 +108,7 @@ export default function AIEvolution() {
       {/* Main Stats Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {evolutionStats && (
-          <StatCard icon={Cpu} title="Genetic Evolution" value={`Gen ${evolutionStats.generation}`} color="purple">
+          <StatCard icon={Cpu} title="Genetic Evolution" value={`Gen ${evolutionStats.generation}`} color="purple" metric={undefined}>
             <div className="space-y-3 my-4">
               <MiniStat label="Best Fitness" value={`${(evolutionStats.bestFitness * 100).toFixed(2)}%`} />
               <div className="w-full bg-purple-900/50 rounded-full h-2.5">
@@ -147,7 +147,7 @@ export default function AIEvolution() {
         )}
 
         {saInfo && (
-          <StatCard icon={Globe} title="South Africa 🇿🇦" value="Integrated" color="green">
+          <StatCard icon={Globe} title="South Africa 🇿🇦" value="Integrated" color="green" metric={undefined}>
             <div className="space-y-3 my-4">
               <MiniStat label="Languages" value={saInfo.supportedLanguages.length} />
               <MiniStat label="Provinces Covered" value={saInfo.provinces.length} />
