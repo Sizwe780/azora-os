@@ -1,434 +1,187 @@
-import React from 'react';
 import { useState, useEffect, useRef } from 'react';
-import type { ElementRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, Send, Mic, MapPin, Calendar, Package, TrendingUp } from 'lucide-react';
-import axios from 'axios';
-import toast from 'react-hot-toast';
-
-interface Message {
-  id: string;
-  role: 'user' | 'assistant';
-  content: string;
-  timestamp: string;
-}
-
-interface TripPlan {
-  destination: string;
-  route: string;
-  breaks: string[];
-  fuelStops: string[];
-  estimatedTime: string;
-  optimizations: {
-    timeSaved: string;
-    distanceSaved: string;
-    fuelSaved: string;
-  };
-}
+import { Bot, User, Send, Mic, MapPin, Calendar, Fuel, TrendingUp, Wind, Sun, CloudRain } from 'lucide-react';
 
 const QUICK_ACTIONS = [
-  'Start trip to Durban',
-  'Check my schedule today',
-  'Optimize delivery route',
-  'Find nearest fuel station',
-  'Rest stop recommendations',
-  'Weather along route'
+  'Plan a trip to Durban',
+  'What\'s my schedule today?',
+  'Find the cheapest fuel near me',
+  'Show weather on N3 route',
+];
+
+const mockTripPlan = {
+  destination: 'Durban, KZN',
+  route: 'N3 Highway',
+  estimatedTime: '6h 15m',
+  breaks: ['Harrismith (30min)', 'Mooi River (15min)'],
+  fuelStops: ['Shell Grasmere', 'Engen Harrismith'],
+  optimizations: {
+    timeSaved: '45 min',
+    distanceSaved: '23 km',
+    fuelSaved: 'R185',
+  },
+};
+
+const mockWeather = [
+    { location: 'Johannesburg', icon: Sun, temp: '24°C' },
+    { location: 'Harrismith', icon: Wind, temp: '18°C' },
+    { location: 'Durban', icon: CloudRain, temp: '26°C' },
 ];
 
 export default function AITripPlanningPage() {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      role: 'assistant',
-      content: "Hi! I'm your AI Co-Pilot. I can help you plan trips, optimize routes, check compliance, and answer any questions. Just tell me what you need!",
-      timestamp: new Date().toISOString()
-    }
+  const [messages, setMessages] = useState([
+    { role: 'assistant', content: "I'm your AI Co-Pilot. How can I help you plan your journey today?" },
   ]);
   const [inputMessage, setInputMessage] = useState('');
-  const [listening, setListening] = useState(false);
-  const [tripPlan, setTripPlan] = useState<TripPlan | null>(null);
   const [loading, setLoading] = useState(false);
-  const messagesEndRef = useRef<ElementRef<'div'> | null>(null);
+  const [tripPlan, setTripPlan] = useState(null);
+  const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    scrollToBottom();
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+  const handleSend = (content) => {
+    const messageText = content || inputMessage;
+    if (!messageText.trim()) return;
 
-  const sendMessage = async (content?: string) => {
-    const messageText = content || inputMessage.trim();
-    if (!messageText) return;
-
-    // Add user message
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      role: 'user',
-      content: messageText,
-      timestamp: new Date().toISOString()
-    };
-    setMessages((prev) => [...prev, userMessage]);
+    setMessages(prev => [...prev, { role: 'user', content: messageText }]);
     setInputMessage('');
+    setLoading(true);
 
-    // Send to AI
-    try {
-      setLoading(true);
-      const response = await axios.post('http://localhost:4089/api/ai/chat', {
-        message: messageText,
-        userId: 'user123',
-        context: { previousMessages: messages.slice(-5) }
-      });
-
-      const aiMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: response.data.response,
-        timestamp: new Date().toISOString()
-      };
-      setMessages((prev) => [...prev, aiMessage]);
-
-      // Check if it's a trip planning request
-      if (messageText.toLowerCase().includes('trip') || messageText.toLowerCase().includes('route')) {
-        generateTripPlan(messageText);
+    setTimeout(() => {
+      const response = getDemoResponse(messageText);
+      setMessages(prev => [...prev, { role: 'assistant', content: response }]);
+      if (messageText.toLowerCase().includes('durban')) {
+        setTripPlan(mockTripPlan);
       }
-    } catch (error) {
-      console.error('Error sending chat message:', error);
-      // Demo AI response
-      const demoResponse = generateDemoResponse(messageText);
-      const aiMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: demoResponse,
-        timestamp: new Date().toISOString()
-      };
-      setMessages((prev) => [...prev, aiMessage]);
-
-      if (messageText.toLowerCase().includes('trip') || messageText.toLowerCase().includes('route')) {
-        generateTripPlan(messageText);
-      }
-    } finally {
       setLoading(false);
-    }
+    }, 1200);
   };
 
-  const generateDemoResponse = (message: string): string => {
+  const getDemoResponse = (message) => {
     const lowerMessage = message.toLowerCase();
-
-    if (lowerMessage.includes('trip to durban') || lowerMessage.includes('start trip')) {
-      return "Great! I've planned your trip to Durban. The fastest route is via N3 highway, approximately 580km and 6 hours. I've included rest stops and fuel stations. Check the trip plan on the right!";
-    } else if (lowerMessage.includes('schedule') || lowerMessage.includes('today')) {
-      return "You have 2 deliveries scheduled today:\n1. Durban - 08:00 AM\n2. Pietermaritzburg - 02:00 PM\n\nBoth are within your hours of service limits. You're all good to go!";
-    } else if (lowerMessage.includes('optimize')) {
-      return "I can optimize your route to save time and fuel! Analyzing current traffic and road conditions... I've found a route that saves you 45 minutes and reduces fuel consumption by 12%. Would you like to use it?";
-    } else if (lowerMessage.includes('fuel')) {
-      return "The nearest fuel station is Shell Grasmere, 8km away. Based on your current fuel level, you can comfortably reach there. Price: R21.50/L for diesel.";
-    } else if (lowerMessage.includes('rest stop')) {
-      return "I recommend taking your rest break at Harrismith (N3 highway). There's a good restaurant, clean facilities, and secure parking. It's 280km from your current location - perfect timing for your mandatory break.";
-    } else if (lowerMessage.includes('weather')) {
-      return "Weather along your route today:\n• Johannesburg: Clear, 24°C\n• Harrismith: Partly cloudy, 18°C\n• Durban: Scattered showers, 26°C\n\nDrive safely in the rain approaching Durban!";
-    } else {
-      return "I'm here to help with trip planning, route optimization, compliance checking, and any logistics questions. Try asking me to 'Start trip to [destination]' or 'Optimize my route'!";
+    if (lowerMessage.includes('durban')) {
+      return "Of course. I've planned your trip to Durban via the N3. I've optimized for traffic and included mandatory rest stops. You can see the full plan on the right.";
     }
-  };
-
-  const generateTripPlan = async (message: string) => {
-    try {
-      const response = await axios.post('http://localhost:4089/api/trips/plan', {
-        query: message,
-        userId: 'user123'
-      });
-      setTripPlan(response.data.plan);
-    } catch (error) {
-      console.error('Error generating trip plan:', error);
-      // Demo trip plan
-      setTripPlan({
-        destination: 'Durban, KwaZulu-Natal',
-        route: 'N3 Highway via Harrismith',
-        breaks: [
-          '10:30 AM - Harrismith (30min)',
-          '02:00 PM - Mooi River (20min)'
-        ],
-        fuelStops: [
-          'Shell Grasmere - Now (Full tank)',
-          'Engen Harrismith - 10:30 AM (Top up)'
-        ],
-        estimatedTime: '6 hours 15 minutes',
-        optimizations: {
-          timeSaved: '45 minutes',
-          distanceSaved: '23 km',
-          fuelSaved: 'R185'
-        }
-      });
+    if (lowerMessage.includes('schedule')) {
+      return "You have two deliveries today: one to Sandton at 11:00 AM and another to Pretoria at 3:00 PM. Both are on schedule.";
     }
-  };
-
-  const startVoiceRecognition = () => {
-    setListening(true);
-    toast.success('🎤 Listening...');
-    
-    // Simulate voice recognition (in production, use Web Speech API)
-    if (typeof globalThis.setTimeout !== 'function') {
-      console.error('setTimeout is not available in this environment');
-      setListening(false);
-      return;
+    if (lowerMessage.includes('fuel')) {
+        return "The cheapest fuel nearby is at Sasol on Rivonia Rd for R22.80/L diesel. It's 5km away and on your current route.";
     }
-
-    globalThis.setTimeout(() => {
-      setListening(false);
-      setInputMessage('Start trip to Durban');
-      toast.success('Voice recognized!');
-    }, 2000);
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
+    if (lowerMessage.includes('weather')) {
+        return "I'm checking the weather along the N3 for you. It looks clear for most of the way, with a chance of rain as you approach Durban. I've added weather details to the sidebar.";
     }
+    return "I can help with that. Could you provide a bit more detail?";
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 p-6">
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mb-8"
-      >
-        <h1 className="text-4xl font-bold text-white mb-2">AI Trip Planning</h1>
-        <p className="text-blue-200">Your Smart Co-Pilot - Just Ask!</p>
-      </motion.div>
-
-      <div className="grid grid-cols-3 gap-6">
-        {/* Chat Column */}
-        <div className="col-span-2">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="bg-white/10 backdrop-blur-lg rounded-xl h-[calc(100vh-200px)] flex flex-col"
-          >
-            {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-4">
-              <AnimatePresence>
-                {messages.map((message) => (
-                  <motion.div
-                    key={message.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                  >
-                    <div
-                      className={`max-w-[80%] rounded-2xl px-6 py-4 ${
-                        message.role === 'user'
-                          ? 'bg-blue-500 text-white'
-                          : 'bg-white/10 text-white border border-white/20'
-                      }`}
-                    >
-                      <div className="flex items-start gap-3">
-                        {message.role === 'assistant' && (
-                          <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0 mt-1">
-                            <MessageCircle className="w-5 h-5 text-white" />
-                          </div>
-                        )}
-                        <div className="flex-1">
-                          <p className="whitespace-pre-wrap">{message.content}</p>
-                          <p className="text-xs opacity-70 mt-2">
-                            {new Date(message.timestamp).toLocaleTimeString()}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-              {loading && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="flex justify-start"
-                >
-                  <div className="bg-white/10 rounded-2xl px-6 py-4 border border-white/20">
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" />
-                      <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
-                      <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }} />
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-              <div ref={messagesEndRef} />
-            </div>
-
-            {/* Quick Actions */}
-            <div className="px-6 pb-4">
-              <div className="flex flex-wrap gap-2">
-                {QUICK_ACTIONS.map((action, index) => (
-                  <button
-                    key={index}
-                    onClick={() => sendMessage(action)}
-                    className="px-4 py-2 bg-white/5 hover:bg-white/10 text-white/70 hover:text-white text-sm rounded-full transition-all border border-white/10"
-                  >
-                    {action}
-                  </button>
-                ))}
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
+      {/* Chat Column */}
+      <div className="lg:col-span-2 bg-gray-900/50 border border-gray-700/50 rounded-2xl flex flex-col h-[calc(100vh-140px)]">
+        {/* Messages */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+          <AnimatePresence>
+            {messages.map((msg, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={`flex items-start gap-4 ${msg.role === 'user' ? 'justify-end' : ''}`}
+              >
+                {msg.role === 'assistant' && <div className="p-2 bg-blue-500/20 rounded-full"><Bot className="w-6 h-6 text-blue-400" /></div>}
+                <div className={`max-w-lg p-4 rounded-2xl ${msg.role === 'user' ? 'bg-blue-600 text-white' : 'bg-gray-800'}`}>
+                  <p>{msg.content}</p>
+                </div>
+                {msg.role === 'user' && <div className="p-2 bg-gray-700 rounded-full"><User className="w-6 h-6 text-gray-300" /></div>}
+              </motion.div>
+            ))}
+          </AnimatePresence>
+          {loading && (
+            <div className="flex items-start gap-4">
+              <div className="p-2 bg-blue-500/20 rounded-full"><Bot className="w-6 h-6 text-blue-400" /></div>
+              <div className="max-w-lg p-4 rounded-2xl bg-gray-800 flex items-center gap-2">
+                <span className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
+                <span className="w-2 h-2 bg-blue-400 rounded-full animate-pulse delay-150" />
+                <span className="w-2 h-2 bg-blue-400 rounded-full animate-pulse delay-300" />
               </div>
             </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
 
-            {/* Input */}
-            <div className="p-6 border-t border-white/10">
-              <div className="flex gap-4">
-                <button
-                  onClick={startVoiceRecognition}
-                  className={`px-4 py-3 rounded-lg transition-all ${
-                    listening
-                      ? 'bg-red-500 text-white animate-pulse'
-                      : 'bg-white/10 hover:bg-white/20 text-white'
-                  }`}
-                >
-                  <Mic className="w-6 h-6" />
-                </button>
-                <input
-                  type="text"
-                  value={inputMessage}
-                  onChange={(e) => setInputMessage(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder="Type your message or use voice..."
-                  className="flex-1 px-6 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <button
-                  onClick={() => sendMessage()}
-                  disabled={!inputMessage.trim() || loading}
-                  className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <Send className="w-6 h-6" />
-                </button>
+        {/* Input Area */}
+        <div className="p-6 border-t border-gray-700/50">
+          <div className="flex flex-wrap gap-2 mb-4">
+            {QUICK_ACTIONS.map(action => (
+              <button key={action} onClick={() => handleSend(action)} className="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm rounded-full transition-colors">
+                {action}
+              </button>
+            ))}
+          </div>
+          <div className="flex gap-4">
+            <button className="p-3 bg-gray-800 hover:bg-gray-700 rounded-lg"><Mic className="w-6 h-6 text-gray-300" /></button>
+            <input
+              type="text"
+              value={inputMessage}
+              onChange={(e) => setInputMessage(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+              placeholder="Ask your AI Co-Pilot..."
+              className="flex-1 px-4 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button onClick={() => handleSend()} className="px-6 py-3 bg-blue-600 hover:bg-blue-500 rounded-lg font-semibold"><Send className="w-6 h-6" /></button>
+          </div>
+        </div>
+      </div>
+
+      {/* Right Column */}
+      <div className="space-y-6">
+        {tripPlan ? (
+          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
+            <div className="bg-gray-900/50 border border-gray-700/50 rounded-2xl p-6">
+              <h3 className="text-xl font-bold mb-4 flex items-center gap-2"><MapPin className="text-purple-400" /> Trip to {tripPlan.destination}</h3>
+              <div className="space-y-3 text-sm">
+                <div className="flex justify-between"><span>Route:</span><span className="font-semibold">{tripPlan.route}</span></div>
+                <div className="flex justify-between"><span>Est. Time:</span><span className="font-semibold">{tripPlan.estimatedTime}</span></div>
+                <div className="flex justify-between items-center"><span><Calendar className="inline w-4 h-4 mr-2 text-gray-400"/>Breaks:</span><span className="font-semibold">{tripPlan.breaks.join(', ')}</span></div>
+                <div className="flex justify-between items-center"><span><Fuel className="inline w-4 h-4 mr-2 text-gray-400"/>Fuel Stops:</span><span className="font-semibold">{tripPlan.fuelStops.join(', ')}</span></div>
+              </div>
+            </div>
+            <div className="bg-gray-900/50 border border-gray-700/50 rounded-2xl p-6 mt-6">
+              <h3 className="text-xl font-bold mb-4 flex items-center gap-2"><TrendingUp className="text-green-400" /> Optimizations</h3>
+              <div className="flex justify-around text-center">
+                <div><p className="text-lg font-bold text-green-400">{tripPlan.optimizations.timeSaved}</p><p className="text-xs text-gray-400">Time Saved</p></div>
+                <div><p className="text-lg font-bold text-blue-400">{tripPlan.optimizations.distanceSaved}</p><p className="text-xs text-gray-400">Distance</p></div>
+                <div><p className="text-lg font-bold text-purple-400">{tripPlan.optimizations.fuelSaved}</p><p className="text-xs text-gray-400">Fuel Cost</p></div>
               </div>
             </div>
           </motion.div>
-        </div>
-
-        {/* Trip Plan Column */}
-        <div className="space-y-6">
-          {tripPlan ? (
-            <>
-              {/* Trip Plan Card */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="bg-white/10 backdrop-blur-lg rounded-xl p-6"
-              >
-                <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
-                  <MapPin className="w-6 h-6" />
-                  Trip Plan
-                </h2>
-
-                <div className="space-y-4">
-                  <div>
-                    <p className="text-white/70 text-sm mb-1">Destination</p>
-                    <p className="text-white font-semibold">{tripPlan.destination}</p>
-                  </div>
-
-                  <div>
-                    <p className="text-white/70 text-sm mb-1">Route</p>
-                    <p className="text-white font-semibold">{tripPlan.route}</p>
-                  </div>
-
-                  <div>
-                    <p className="text-white/70 text-sm mb-1">Estimated Time</p>
-                    <p className="text-white font-semibold">{tripPlan.estimatedTime}</p>
-                  </div>
-
-                  <div>
-                    <p className="text-white/70 text-sm mb-2">Rest Breaks</p>
-                    <div className="space-y-2">
-                      {tripPlan.breaks.map((breakItem, index) => (
-                        <div key={index} className="flex items-center gap-2 text-white/80 text-sm">
-                          <Calendar className="w-4 h-4 text-blue-400" />
-                          {breakItem}
+        ) : (
+            <div className="bg-gray-900/50 border border-gray-700/50 rounded-2xl p-6">
+                <h3 className="text-xl font-bold mb-4">Trip Assistant</h3>
+                <p className="text-gray-400 text-sm mb-4">Ask me to plan a trip to see the details here. I can optimize for:</p>
+                <ul className="space-y-2 text-sm">
+                    <li className="flex items-center gap-2"><TrendingUp className="w-4 h-4 text-green-400"/> Real-time Traffic</li>
+                    <li className="flex items-center gap-2"><Fuel className="w-4 h-4 text-purple-400"/> Fuel Prices</li>
+                    <li className="flex items-center gap-2"><Calendar className="w-4 h-4 text-blue-400"/> HOS Compliance</li>
+                </ul>
+            </div>
+        )}
+        {inputMessage.toLowerCase().includes('weather') && (
+            <div className="bg-gray-900/50 border border-gray-700/50 rounded-2xl p-6 mt-6">
+                <h3 className="text-xl font-bold mb-4">Weather on Route</h3>
+                <div className="flex justify-around text-center">
+                    {mockWeather.map(w => (
+                        <div key={w.location}>
+                            <w.icon className="w-8 h-8 mx-auto text-yellow-400"/>
+                            <p className="font-bold mt-2">{w.temp}</p>
+                            <p className="text-xs text-gray-400">{w.location}</p>
                         </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <p className="text-white/70 text-sm mb-2">Fuel Stops</p>
-                    <div className="space-y-2">
-                      {tripPlan.fuelStops.map((stop, index) => (
-                        <div key={index} className="flex items-center gap-2 text-white/80 text-sm">
-                          <Package className="w-4 h-4 text-orange-400" />
-                          {stop}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                    ))}
                 </div>
-
-                <button
-                  onClick={() => toast.success('Trip started! Safe travels!')}
-                  className="w-full mt-6 px-6 py-4 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-all font-semibold"
-                >
-                  Start Trip
-                </button>
-              </motion.div>
-
-              {/* Optimizations Card */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 }}
-                className="bg-white/10 backdrop-blur-lg rounded-xl p-6"
-              >
-                <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5 text-green-400" />
-                  Optimizations
-                </h3>
-
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-white/70">Time Saved</span>
-                    <span className="text-green-400 font-semibold">{tripPlan.optimizations.timeSaved}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-white/70">Distance Saved</span>
-                    <span className="text-blue-400 font-semibold">{tripPlan.optimizations.distanceSaved}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-white/70">Fuel Saved</span>
-                    <span className="text-purple-400 font-semibold">{tripPlan.optimizations.fuelSaved}</span>
-                  </div>
-                </div>
-              </motion.div>
-            </>
-          ) : (
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="bg-white/10 backdrop-blur-lg rounded-xl p-6"
-            >
-              <h3 className="text-xl font-bold text-white mb-4">Easy Trip Start</h3>
-              <p className="text-white/70 mb-6">
-                Try saying: &quot;Start trip to Durban&quot; or click a quick action to see AI trip planning in action!
-              </p>
-              <div className="space-y-3">
-                <div className="p-4 bg-white/5 rounded-lg border border-white/10">
-                  <p className="text-white font-semibold mb-2">✓ Automatic Compliance</p>
-                  <p className="text-white/70 text-sm">AI checks HOS limits, permits, and vehicle fitness</p>
-                </div>
-                <div className="p-4 bg-white/5 rounded-lg border border-white/10">
-                  <p className="text-white font-semibold mb-2">✓ Smart Breaks</p>
-                  <p className="text-white/70 text-sm">Optimizes rest stops for safety and efficiency</p>
-                </div>
-                <div className="p-4 bg-white/5 rounded-lg border border-white/10">
-                  <p className="text-white font-semibold mb-2">✓ Weather Aware</p>
-                  <p className="text-white/70 text-sm">Alerts you about conditions along your route</p>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </div>
+            </div>
+        )}
       </div>
     </div>
   );
