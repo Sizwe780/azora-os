@@ -23,7 +23,7 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { path: '/', label: 'Sanctuary', icon: FaHome },
+  { path: '/sanctuary', label: 'Sanctuary', icon: FaHome },
   { path: '/dashboard', label: 'Dashboard', icon: FaChartLine },
   { path: '/driver', label: 'Driver AI', icon: FaTruck },
   { path: '/ai', label: 'Quantum AI', icon: Brain, highlight: true, newFeature: true },
