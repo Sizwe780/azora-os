@@ -72,7 +72,6 @@ export default function AppRoutes() {
               <Suspense fallback={<PageLoader />}>
                 <Routes>
                   <Route index element={<Dashboard userId={currentUserId} />} />
-                  <Route path="sanctuary" element={<SanctuaryPage />} />
                   <Route path="/dashboard" element={<Dashboard userId={currentUserId} />} />
                   <Route path="/driver" element={<DriverCommandCenter />} />
                   <Route path="/tracking" element={<QuantumTracking />} />
