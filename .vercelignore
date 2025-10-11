@@ -24,3 +24,7 @@ pnpm-workspace.yaml
 !postcss.config.js
 !tsconfig.json
 !.npmrc
+!apps/
+!apps/driver-pwa/
+!apps/driver-pwa/src/
+!apps/driver-pwa/src/**
