@@ -340,7 +340,7 @@ Transform Africa into the AI capital of the world by building technology that ac
 
 ## 🇿🇦 Made in South Africa
 
-This project was conceived, designed, and built in South Africa by a 25-year-old with a background in Physical Science, Mathematics, and Computer Science from UCT.
+This project was conceived, designed, and built in South Africa by a 25-year-old young man with a background in Physical Scienc & Mathematics from NMU and Computer Science from UCT.
 
 **Not funded by Silicon Valley. Not using Silicon Valley's AI. Not following Silicon Valley's playbook.**
 
