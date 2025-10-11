@@ -16,10 +16,9 @@ const OFFLINE_CACHE = 'azora-offline-v1.0.0';
 const CORE_ASSETS = [
   '/',
   '/index.html',
-  '/src/main.tsx',
-  '/src/App.tsx',
-  '/src/index.css',
   '/manifest.json',
+  '/favicon.ico',
+  '/logo-premium.svg',
 ];
 
 // Install service worker and cache core assets
