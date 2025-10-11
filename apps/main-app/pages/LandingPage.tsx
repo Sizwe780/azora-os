@@ -123,7 +123,7 @@ export default function LandingPage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <motion.button
-                  onClick={() => navigate('/dashboard')}
+                  onClick={() => navigate('/onboarding')}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full font-bold text-lg shadow-2xl shadow-cyan-500/50"
@@ -455,7 +455,7 @@ export default function LandingPage() {
 
             <div className="text-center mt-12">
               <motion.button
-                onClick={() => navigate('/dashboard')}
+                onClick={() => navigate('/onboarding')}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="px-12 py-5 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full font-bold text-xl shadow-2xl shadow-cyan-500/50"
@@ -524,7 +524,7 @@ export default function LandingPage() {
                 Join the sovereign immune system. Start your free trial today.
               </p>
               <motion.button
-                onClick={() => navigate('/dashboard')}
+                onClick={() => navigate('/onboarding')}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="px-16 py-6 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full font-black text-2xl shadow-2xl shadow-cyan-500/50"

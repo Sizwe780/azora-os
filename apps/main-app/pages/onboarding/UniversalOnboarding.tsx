@@ -233,13 +233,20 @@ export default function UniversalOnboarding() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 p-8">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-black text-white p-4 sm:p-8 flex items-center justify-center">
+      <div className="w-full max-w-4xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">🌍 Azora OS</h1>
-          <p className="text-white/70">Africa&apos;s First Self-Improving Autonomous Platform</p>
-        </div>
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-8"
+        >
+          <h1 className="text-4xl sm:text-5xl font-black mb-2 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-purple-400 to-yellow-400">
+            Welcome to Azora OS
+          </h1>
+          <p className="text-white/70 text-lg">The Sovereign Immune System</p>
+        </motion.div>
 
         {/* Progress Bar */}
         <div className="mb-8">
@@ -252,18 +259,18 @@ export default function UniversalOnboarding() {
                 }`}
               >
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center text-lg ${
+                  className={`w-10 h-10 rounded-full flex items-center justify-center text-lg transition-all duration-300 ${
                     currentStep >= step.id
-                      ? 'bg-gradient-to-r from-green-400 to-blue-500 text-white'
-                      : 'bg-gray-700 text-gray-400'
+                      ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-lg shadow-cyan-500/30'
+                      : 'bg-gray-800 text-gray-500'
                   }`}
                 >
                   {step.icon}
                 </div>
                 {idx < steps.length - 1 && (
                   <div
-                    className={`flex-1 h-1 mx-2 ${
-                      currentStep > step.id ? 'bg-gradient-to-r from-green-400 to-blue-500' : 'bg-gray-700'
+                    className={`flex-1 h-1 mx-2 rounded-full transition-all duration-500 ${
+                      currentStep > step.id ? 'bg-gradient-to-r from-cyan-500 to-purple-600' : 'bg-gray-800'
                     }`}
                   />
                 )}
@@ -367,71 +374,70 @@ export default function UniversalOnboarding() {
 
 function WelcomeStep({ onNext, inviteCode }: WelcomeStepProps) {
   return (
-    <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 text-white">
+    <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 text-white">
       <h1 className="text-4xl font-bold mb-4">
         👋 Welcome to Azora OS!
       </h1>
-      <p className="text-xl mb-6">
-        Join Africa&apos;s first self-improving autonomous platform. Whether you&apos;re a customer,
-        driver, store staff, vendor, or business partner - we&apos;re excited to have you!
+      <p className="text-xl text-white/80 mb-6">
+        Join the world&apos;s first Sovereign Immune System.
       </p>
       
       {inviteCode && (
-        <div className="bg-green-900/30 rounded-xl p-4 mb-6">
-          <p className="text-sm">✓ Invite Code: <strong>{inviteCode}</strong></p>
+        <div className="bg-green-900/30 border border-green-500/50 rounded-xl p-4 mb-6">
+          <p className="text-sm">✓ Invite Code Applied: <strong>{inviteCode}</strong></p>
         </div>
       )}
       
-      <div className="bg-purple-900/30 rounded-xl p-6 mb-6">
-        <h2 className="text-2xl font-semibold mb-4">What You&apos;ll Get:</h2>
+      <div className="bg-purple-900/30 border border-purple-500/50 rounded-xl p-6 mb-6">
+        <h2 className="text-2xl font-semibold mb-4">What you get:</h2>
         
-        <div className="space-y-3">
-          <div className="flex items-start">
-            <span className="text-2xl mr-3">🚀</span>
+        <div className="space-y-4">
+          <div className="flex items-start gap-4">
+            <span className="text-3xl">🚀</span>
             <div>
               <p className="font-semibold">Instant Access</p>
-              <p className="text-sm text-gray-300">Get started immediately after onboarding</p>
+              <p className="text-sm text-gray-300">Start using the platform immediately after onboarding.</p>
             </div>
           </div>
           
-          <div className="flex items-start">
-            <span className="text-2xl mr-3">💰</span>
+          <div className="flex items-start gap-4">
+            <span className="text-3xl">�</span>
             <div>
-              <p className="font-semibold">Earnings & Rewards</p>
-              <p className="text-sm text-gray-300">Earn reputation points and unlock benefits</p>
+              <p className="font-semibold">Reputation & Rewards</p>
+              <p className="text-sm text-gray-300">Earn reputation credits and unlock exclusive benefits.</p>
             </div>
           </div>
           
-          <div className="flex items-start">
-            <span className="text-2xl mr-3">🤖</span>
+          <div className="flex items-start gap-4">
+            <span className="text-3xl">🤖</span>
             <div>
               <p className="font-semibold">AI-Powered Platform</p>
-              <p className="text-sm text-gray-300">Smart routing, predictions, and automation</p>
+              <p className="text-sm text-gray-300">Leverage predictive AI, smart routing, and automation.</p>
             </div>
           </div>
           
-          <div className="flex items-start">
-            <span className="text-2xl mr-3">🇿🇦</span>
+          <div className="flex items-start gap-4">
+            <span className="text-3xl">🇿🇦</span>
             <div>
               <p className="font-semibold">Built for Africa</p>
-              <p className="text-sm text-gray-300">Designed for South African businesses</p>
+              <p className="text-sm text-gray-300">Designed for the unique challenges of the African market.</p>
             </div>
           </div>
         </div>
       </div>
       
-      <div className="bg-blue-900/30 rounded-xl p-6 mb-8">
+      <div className="bg-blue-900/30 border border-blue-500/50 rounded-xl p-6 mb-8">
         <p className="text-sm">
-          <strong>This process takes about 5-10 minutes.</strong> We&apos;ll collect some basic
-          information to set up your account and get you started.
+          <strong>This process takes about 5 minutes.</strong> We&apos;ll collect some basic
+          information to set up your sovereign account.
         </p>
       </div>
       
       <button
         onClick={onNext}
-        className="w-full bg-gradient-to-r from-green-400 to-blue-500 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:scale-105 transition"
+        className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 text-white px-8 py-4 rounded-lg text-lg font-bold shadow-lg shadow-cyan-500/30 hover:scale-105 transition-transform"
       >
-        Let&apos;s Get Started! 🚀
+        Let&apos;s Begin 🚀
       </button>
     </div>
   );
@@ -441,11 +447,11 @@ function UserTypeStep({ userData, setUserData, onNext, onBack }: UserTypeStepPro
   const [selected, setSelected] = useState<OnboardingData['userType']>(userData.userType);
 
   return (
-    <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 text-white">
+    <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 text-white">
       <h2 className="text-3xl font-bold mb-6">👤 Select Your Role</h2>
-      <p className="text-white/70 mb-6">How do you plan to use Azora OS?</p>
+      <p className="text-white/70 mb-8">How will you interact with the Azora ecosystem?</p>
       
-      <div className="space-y-3 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
         {USER_TYPES.map((type) => (
           <button
             key={type.value}
@@ -453,20 +459,22 @@ function UserTypeStep({ userData, setUserData, onNext, onBack }: UserTypeStepPro
               setSelected(type.value);
               setUserData({ ...userData, userType: type.value });
             }}
-            className={`w-full text-left p-4 rounded-lg border-2 transition ${
+            className={`w-full text-left p-5 rounded-xl border-2 transition-all duration-200 ${
               selected === type.value
-                ? 'border-green-400 bg-green-900/30'
-                : 'border-white/20 bg-white/5 hover:border-white/40'
+                ? 'border-cyan-400 bg-cyan-900/50 shadow-lg shadow-cyan-500/20'
+                : 'border-white/20 bg-white/10 hover:border-white/40 hover:bg-white/20'
             }`}
           >
             <div className="flex items-center">
-              <span className="text-3xl mr-4">{type.label.split(' ')[0]}</span>
+              <span className="text-4xl mr-4">{type.label.split(' ')[0]}</span>
               <div>
-                <p className="font-semibold text-lg">{type.label.substring(3)}</p>
+                <p className="font-bold text-lg">{type.label.substring(3)}</p>
                 <p className="text-sm text-white/70">{type.description}</p>
               </div>
               {selected === type.value && (
-                <span className="ml-auto text-2xl">✓</span>
+                <div className="ml-auto w-6 h-6 rounded-full bg-cyan-400 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" /></svg>
+                </div>
               )}
             </div>
           </button>
@@ -476,13 +484,13 @@ function UserTypeStep({ userData, setUserData, onNext, onBack }: UserTypeStepPro
       <div className="flex gap-4">
         <button
           onClick={onBack}
-          className="flex-1 bg-gray-700 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition"
+          className="flex-1 bg-gray-800 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition-colors"
         >
           Back
         </button>
         <button
           onClick={onNext}
-          className="flex-1 bg-gradient-to-r from-green-400 to-blue-500 text-white px-6 py-3 rounded-lg hover:scale-105 transition"
+          className="flex-1 bg-gradient-to-r from-cyan-500 to-purple-600 text-white px-6 py-3 rounded-lg font-bold shadow-lg shadow-cyan-500/30 hover:scale-105 transition-transform"
         >
           Continue
         </button>
@@ -492,6 +500,10 @@ function UserTypeStep({ userData, setUserData, onNext, onBack }: UserTypeStepPro
 }
 
 function PersonalInfoStep({ userData, setUserData, onNext, onBack }: PersonalInfoStepProps) {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUserData({ ...userData, [e.target.name]: e.target.value });
+  };
+
   const isValid = useMemo(() => {
     return userData.fullName.length > 2 && 
            userData.email.includes('@') && 
@@ -499,82 +511,60 @@ function PersonalInfoStep({ userData, setUserData, onNext, onBack }: PersonalInf
   }, [userData.fullName, userData.email, userData.phone]);
 
   return (
-    <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 text-white">
+    <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 text-white">
       <h2 className="text-3xl font-bold mb-6">📝 Personal Information</h2>
+      <p className="text-white/70 mb-8">Let's get to know you. This helps us tailor your experience.</p>
       
-      <div className="space-y-4 mb-8">
-        <div>
-          <label className="block text-sm font-semibold mb-2">Full Name *</label>
+      <div className="space-y-6 mb-8">
+        <div className="relative">
+          <label htmlFor="fullName" className="absolute -top-2 left-4 bg-gray-900 px-1 text-xs text-cyan-400">Full Name *</label>
           <input
             type="text"
+            id="fullName"
+            name="fullName"
             value={userData.fullName}
             onChange={(e) => setUserData({ ...userData, fullName: e.target.value })}
-            placeholder="Enter your full legal name"
-            className="w-full bg-white/10 border border-white/30 rounded-lg px-4 py-3 text-white placeholder-white/40"
+            placeholder="e.g., Jane Doe"
+            className="w-full bg-white/5 border-2 border-white/20 rounded-lg px-4 py-3 focus:border-cyan-400 focus:outline-none transition"
           />
         </div>
-        
-        <div>
-          <label className="block text-sm font-semibold mb-2">Email Address *</label>
+        <div className="relative">
+          <label htmlFor="email" className="absolute -top-2 left-4 bg-gray-900 px-1 text-xs text-cyan-400">Email Address *</label>
           <input
             type="email"
+            id="email"
+            name="email"
             value={userData.email}
             onChange={(e) => setUserData({ ...userData, email: e.target.value })}
-            placeholder="your.email@example.com"
-            className="w-full bg-white/10 border border-white/30 rounded-lg px-4 py-3 text-white placeholder-white/40"
+            placeholder="e.g., jane.doe@example.com"
+            className="w-full bg-white/5 border-2 border-white/20 rounded-lg px-4 py-3 focus:border-cyan-400 focus:outline-none transition"
           />
-          <p className="text-xs text-white/50 mt-1">Any email works - no restrictions</p>
         </div>
-        
-        <div>
-          <label className="block text-sm font-semibold mb-2">Phone Number *</label>
+        <div className="relative">
+          <label htmlFor="phone" className="absolute -top-2 left-4 bg-gray-900 px-1 text-xs text-cyan-400">Phone Number *</label>
           <input
             type="tel"
+            id="phone"
+            name="phone"
             value={userData.phone}
             onChange={(e) => setUserData({ ...userData, phone: e.target.value })}
-            placeholder="+27 XX XXX XXXX"
-            className="w-full bg-white/10 border border-white/30 rounded-lg px-4 py-3 text-white placeholder-white/40"
+            placeholder="e.g., +27 72 123 4567"
+            className="w-full bg-white/5 border-2 border-white/20 rounded-lg px-4 py-3 focus:border-cyan-400 focus:outline-none transition"
           />
         </div>
-        
-        {(userData.userType === 'driver' || userData.userType === 'store_staff') && (
-          <div>
-            <label className="block text-sm font-semibold mb-2">ID Number</label>
-            <input
-              type="text"
-              value={userData.idNumber || ''}
-              onChange={(e) => setUserData({ ...userData, idNumber: e.target.value })}
-              placeholder="e.g., 9501015800083"
-              className="w-full bg-white/10 border border-white/30 rounded-lg px-4 py-3 text-white placeholder-white/40"
-            />
-          </div>
-        )}
-        
-        {userData.userType === 'driver' && (
-          <div>
-            <label className="block text-sm font-semibold mb-2">Driver&apos;s License Number</label>
-            <input
-              type="text"
-              value={userData.driverLicense || ''}
-              onChange={(e) => setUserData({ ...userData, driverLicense: e.target.value })}
-              placeholder="License number"
-              className="w-full bg-white/10 border border-white/30 rounded-lg px-4 py-3 text-white placeholder-white/40"
-            />
-          </div>
-        )}
       </div>
       
       <div className="flex gap-4">
         <button
           onClick={onBack}
-          className="flex-1 bg-gray-700 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition"
+          className="flex-1 bg-gray-800 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition-colors"
         >
           Back
         </button>
         <button
           onClick={onNext}
           disabled={!isValid}
-          className="flex-1 bg-gradient-to-r from-green-400 to-blue-500 text-white px-6 py-3 rounded-lg hover:scale-105 transition disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex-1 bg-gradient-to-r from-cyan-500 to-purple-600 text-white px-6 py-3 rounded-lg font-bold shadow-lg shadow-cyan-500/30 hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Continue
         </button>
@@ -587,71 +577,65 @@ function BusinessDetailsStep({ userData, setUserData, onNext, onBack, onSkip }: 
   const needsBusinessDetails = ['store_staff', 'vendor', 'partner'].includes(userData.userType);
 
   if (!needsBusinessDetails) {
-    // Skip for customers and drivers
     return (
-      <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 text-white text-center">
+      <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 text-white text-center">
         <h2 className="text-3xl font-bold mb-4">🏢 Business Details</h2>
-        <p className="mb-6">This step is not required for your role.</p>
+        <p className="text-white/70 mb-8">This step is not required for your selected role.</p>
         <button
           onClick={onSkip}
-          className="bg-gradient-to-r from-green-400 to-blue-500 text-white px-8 py-3 rounded-lg hover:scale-105 transition"
+          className="bg-gradient-to-r from-cyan-500 to-purple-600 text-white px-8 py-3 rounded-lg font-bold shadow-lg shadow-cyan-500/30 hover:scale-105 transition-transform"
         >
-          Skip →
+          Skip & Continue →
         </button>
       </div>
     );
   }
 
   return (
-    <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 text-white">
+    <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 text-white">
       <h2 className="text-3xl font-bold mb-6">🏢 Business Details</h2>
+      <p className="text-white/70 mb-8">Provide details about your business or store.</p>
       
-      <div className="space-y-4 mb-8">
-        <div>
-          <label className="block text-sm font-semibold mb-2">
+      <div className="space-y-6 mb-8">
+        <div className="relative">
+          <label htmlFor="businessName" className="absolute -top-2 left-4 bg-gray-900 px-1 text-xs text-cyan-400">
             {userData.userType === 'store_staff' ? 'Store Name' : 'Business Name'}
           </label>
           <input
             type="text"
+            id="businessName"
             value={userData.businessName || ''}
             onChange={(e) => setUserData({ ...userData, businessName: e.target.value })}
-            placeholder="e.g., My Store Name or Any Business Name"
-            className="w-full bg-white/10 border border-white/30 rounded-lg px-4 py-3 text-white placeholder-white/40"
+            placeholder="e.g., Azora Market Sandton"
+            className="w-full bg-white/5 border-2 border-white/20 rounded-lg px-4 py-3 focus:border-cyan-400 focus:outline-none transition"
           />
-          <p className="text-xs text-white/50 mt-1">Any store name works - no restrictions!</p>
         </div>
         
         {userData.userType === 'store_staff' && (
-          <div>
-            <label className="block text-sm font-semibold mb-2">Store Location</label>
+          <div className="relative">
+            <label htmlFor="storeLocation" className="absolute -top-2 left-4 bg-gray-900 px-1 text-xs text-cyan-400">Store Location</label>
             <input
               type="text"
+              id="storeLocation"
               value={userData.storeLocation || ''}
               onChange={(e) => setUserData({ ...userData, storeLocation: e.target.value })}
-              placeholder="e.g., Johannesburg CBD, Sandton City, Cape Town V&A"
-              className="w-full bg-white/10 border border-white/30 rounded-lg px-4 py-3 text-white placeholder-white/40"
+              placeholder="e.g., Johannesburg CBD"
+              className="w-full bg-white/5 border-2 border-white/20 rounded-lg px-4 py-3 focus:border-cyan-400 focus:outline-none transition"
             />
           </div>
         )}
-        
-        <div className="bg-blue-900/30 rounded-lg p-4">
-          <p className="text-sm">
-            💡 <strong>Note:</strong> You can work with ANY store or business. 
-            No need to wait for approval - just enter your details and get started!
-          </p>
-        </div>
       </div>
       
       <div className="flex gap-4">
         <button
           onClick={onBack}
-          className="flex-1 bg-gray-700 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition"
+          className="flex-1 bg-gray-800 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition-colors"
         >
           Back
         </button>
         <button
           onClick={onNext}
-          className="flex-1 bg-gradient-to-r from-green-400 to-blue-500 text-white px-6 py-3 rounded-lg hover:scale-105 transition"
+          className="flex-1 bg-gradient-to-r from-cyan-500 to-purple-600 text-white px-6 py-3 rounded-lg font-bold shadow-lg shadow-cyan-500/30 hover:scale-105 transition-transform"
         >
           Continue
         </button>
@@ -720,30 +704,41 @@ function DocumentsStep({ userData, onNext, onBack, onSkip }: DocumentsStepProps)
 
 function DocumentUploadField({ label, accept, onChange }: DocumentUploadFieldProps) {
   const [file, setFile] = useState<UploadFile | null>(null);
+  const [isHovering, setIsHovering] = useState(false);
 
   const handleChange = (event: ChangeEvent<InputElement>) => {
     const selectedFile = event.target.files?.[0] ?? null;
     if (selectedFile) {
       setFile(selectedFile);
       onChange(selectedFile);
-      return;
+    } else {
+      setFile(null);
     }
-
-    setFile(null);
   };
 
   return (
-    <div className="bg-white/5 rounded-lg p-4">
-      <label className="block text-sm font-semibold mb-2">{label}</label>
+    <div 
+      className="relative border-2 border-dashed border-white/20 rounded-xl p-6 text-center transition-all duration-300"
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}
+    >
       <input
         type="file"
         accept={accept}
         onChange={handleChange}
-        className="w-full text-sm text-gray-300"
+        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
       />
-      {file && (
-        <p className="text-sm text-green-400 mt-2">✓ {file.name} uploaded</p>
-      )}
+      <div className="flex flex-col items-center justify-center">
+        <svg className={`w-12 h-12 mb-3 transition-transform duration-300 ${isHovering ? 'scale-110' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+        </svg>
+        <label className="font-semibold text-cyan-400">{label}</label>
+        {file ? (
+          <p className="text-sm text-green-400 mt-2">✓ {file.name} selected</p>
+        ) : (
+          <p className="text-sm text-white/50 mt-1">Click or drag file to upload</p>
+        )}
+      </div>
     </div>
   );
 }
@@ -752,63 +747,30 @@ function AgreementStep({ onNext, onBack }: AgreementStepProps) {
   const [accepted, setAccepted] = useState(false);
 
   return (
-    <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 text-white">
+    <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 text-white">
       <h2 className="text-3xl font-bold mb-6">✍️ Terms & Agreement</h2>
       
-      <div className="bg-white/5 rounded-lg p-6 mb-6 max-h-96 overflow-y-auto">
-        <h3 className="text-xl font-semibold mb-4">Azora OS User Agreement</h3>
-        
-        <div className="space-y-4 text-sm">
-          <section>
-            <h4 className="font-semibold mb-2">1. Platform Access</h4>
-            <p>By using Azora OS, you agree to use the platform responsibly and in accordance
-            with South African law.</p>
-          </section>
-          
-          <section>
-            <h4 className="font-semibold mb-2">2. Data Privacy</h4>
-            <p>We respect your privacy. Your data is encrypted and stored securely. We will
-            never sell your personal information to third parties.</p>
-          </section>
-          
-          <section>
-            <h4 className="font-semibold mb-2">3. Earning & Payments</h4>
-            <p>For drivers and vendors: Payments are processed weekly. Standard banking fees apply.
-            Minimum payout is R100.</p>
-          </section>
-          
-          <section>
-            <h4 className="font-semibold mb-2">4. Reputation System</h4>
-            <p>Your reputation score is based on your activity and performance. Maintain good
-            standing to unlock premium features.</p>
-          </section>
-          
-          <section>
-            <h4 className="font-semibold mb-2">5. Account Termination</h4>
-            <p>You may terminate your account at any time. We reserve the right to suspend
-            accounts that violate our terms.</p>
-          </section>
-          
-          <section>
-            <h4 className="font-semibold mb-2">6. Changes to Terms</h4>
-            <p>We may update these terms. Continued use of the platform constitutes acceptance
-            of updated terms.</p>
-          </section>
+      <div className="bg-black/20 rounded-lg p-4 mb-6 max-h-60 overflow-y-auto border border-white/10">
+        <h3 className="text-xl font-semibold mb-4 text-cyan-400">Azora OS User Agreement</h3>
+        <div className="space-y-4 text-sm text-white/80">
+          <p><strong>1. Platform Access:</strong> You agree to use Azora OS responsibly and in accordance with South African law.</p>
+          <p><strong>2. Data Privacy:</strong> Your data is encrypted and stored securely. We will never sell your personal information.</p>
+          <p><strong>3. Earning & Payments:</strong> For drivers and vendors, payments are processed weekly. Standard banking fees may apply.</p>
+          <p><strong>4. Reputation System:</strong> Your reputation score is based on your activity. Good standing unlocks premium features.</p>
+          <p><strong>5. Account Termination:</strong> You may terminate your account at any time. We reserve the right to suspend accounts that violate our terms.</p>
         </div>
       </div>
       
-      <div className="bg-yellow-900/30 rounded-lg p-4 mb-6">
-        <label className="flex items-start cursor-pointer">
+      <div className="bg-purple-900/30 border border-purple-500/50 rounded-xl p-4 mb-8">
+        <label className="flex items-center cursor-pointer">
           <input
             type="checkbox"
             checked={accepted}
             onChange={(e) => setAccepted(e.target.checked)}
-            className="mt-1 mr-3"
+            className="h-5 w-5 rounded bg-white/10 border-white/30 text-cyan-500 focus:ring-cyan-500"
           />
-          <span className="text-sm">
-            I have read and agree to the Azora OS Terms of Service, Privacy Policy, and
-            User Agreement. I understand that I can use the platform with any email address
-            or business name.
+          <span className="ml-3 text-sm">
+            I have read and agree to the Azora OS Terms of Service and Privacy Policy.
           </span>
         </label>
       </div>
@@ -816,14 +778,14 @@ function AgreementStep({ onNext, onBack }: AgreementStepProps) {
       <div className="flex gap-4">
         <button
           onClick={onBack}
-          className="flex-1 bg-gray-700 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition"
+          className="flex-1 bg-gray-800 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition-colors"
         >
           Back
         </button>
         <button
           onClick={onNext}
           disabled={!accepted}
-          className="flex-1 bg-gradient-to-r from-green-400 to-blue-500 text-white px-6 py-3 rounded-lg hover:scale-105 transition disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex-1 bg-gradient-to-r from-cyan-500 to-purple-600 text-white px-6 py-3 rounded-lg font-bold shadow-lg shadow-cyan-500/30 hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Accept & Continue
         </button>
@@ -834,45 +796,40 @@ function AgreementStep({ onNext, onBack }: AgreementStepProps) {
 
 function CompletionStep({ userData, onComplete, loading }: CompletionStepProps) {
   return (
-    <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 text-white text-center">
-      <div className="text-6xl mb-6">🎉</div>
-      <h1 className="text-4xl font-bold mb-4">Welcome to Azora OS!</h1>
-      <p className="text-xl mb-8">
-        Your account is ready. Let&apos;s get started!
+    <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 text-white text-center">
+      <motion.div
+        initial={{ scale: 0.5, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ type: 'spring', stiffness: 260, damping: 20, delay: 0.2 }}
+        className="text-7xl mb-6"
+      >
+        🎉
+      </motion.div>
+      <h1 className="text-4xl font-bold mb-4">Setup Complete!</h1>
+      <p className="text-xl text-white/80 mb-8">
+        Welcome aboard, {userData.fullName.split(' ')[0]}. Your Azora OS account is ready.
       </p>
       
-      <div className="bg-green-900/30 rounded-xl p-6 mb-8 text-left">
-        <h3 className="text-xl font-semibold mb-4">✅ Account Created:</h3>
-        <ul className="space-y-2">
-          <li>✓ Name: {userData.fullName}</li>
-          <li>✓ Email: {userData.email}</li>
-          <li>✓ Role: {USER_TYPES.find(t => t.value === userData.userType)?.label}</li>
-          {userData.businessName && <li>✓ Business: {userData.businessName}</li>}
-          {userData.storeLocation && <li>✓ Location: {userData.storeLocation}</li>}
-          <li>✓ Reputation: 100 (Starting score)</li>
-        </ul>
-      </div>
-      
-      <div className="bg-blue-900/30 rounded-xl p-6 mb-8 text-left">
-        <h3 className="text-xl font-semibold mb-4">🚀 Next Steps:</h3>
-        <ul className="space-y-2">
-          <li>• Explore your dashboard</li>
-          <li>• Complete your profile (optional)</li>
-          <li>• Start using the platform</li>
-          <li>• Earn reputation points</li>
+      <div className="bg-black/20 border border-white/10 rounded-xl p-6 mb-8 text-left">
+        <h3 className="text-xl font-semibold mb-4 text-cyan-400">Account Summary</h3>
+        <ul className="space-y-3 text-sm">
+          <li className="flex justify-between"><span>👤 Name:</span> <strong>{userData.fullName}</strong></li>
+          <li className="flex justify-between"><span>✉️ Email:</span> <strong>{userData.email}</strong></li>
+          <li className="flex justify-between"><span>🚀 Role:</span> <strong>{USER_TYPES.find(t => t.value === userData.userType)?.label}</strong></li>
+          <li className="flex justify-between"><span>⭐ Reputation:</span> <strong>100 (Starting Score)</strong></li>
         </ul>
       </div>
       
       <button
         onClick={onComplete}
         disabled={loading}
-        className="w-full bg-gradient-to-r from-green-400 to-blue-500 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:scale-105 transition disabled:opacity-50"
+        className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 text-white px-8 py-4 rounded-lg text-lg font-bold shadow-lg shadow-cyan-500/30 hover:scale-105 transition-transform disabled:opacity-50"
       >
-  {loading ? 'Setting up your account...' : 'Go to Dashboard 🚀'}
+        {loading ? 'Finalizing...' : 'Go to Your Dashboard 🚀'}
       </button>
       
-      <p className="text-sm text-gray-400 mt-6">
-        Built with ❤️ in South Africa 🇿🇦 | Powered by Azora OS
+      <p className="text-xs text-white/50 mt-6">
+        The Sovereign Immune System | Built in South Africa 🇿🇦
       </p>
     </div>
   );
