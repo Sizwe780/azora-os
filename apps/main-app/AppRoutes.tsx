@@ -72,6 +72,7 @@ export default function AppRoutes() {
               <Suspense fallback={<PageLoader />}>
                 <Routes>
                   <Route path="/sanctuary" element={<SanctuaryPage />} />
+                  <Route path="/dashboard" element={<Dashboard userId={currentUserId} />} />
                   <Route path="/driver" element={<DriverCommandCenter />} />
                   <Route path="/tracking" element={<QuantumTracking />} />
                   <Route path="/ai" element={<QuantumAI />} />
@@ -84,10 +85,6 @@ export default function AppRoutes() {
                   <Route path="/settings" element={<Settings />} />
 
                   {/* Dashboard Pages - Role-based access */}
-                  <Route
-                    path="/dashboard"
-                    element={<Dashboard userId={currentUserId} />}
-                  />
                   <Route
                     path="/attendance"
                     element={
@@ -167,9 +164,12 @@ export default function AppRoutes() {
                     element={<FoundersPage />}
                   />
 
+                  {/* Retail Partner Dashboard */}
+                  <Route path="/retail-partner" element={<Dashboard userId={currentUserId} />} />
+
                   {/* New Enterprise Services Routes */}
                   <Route path="/admin" element={<AdminPortalPage />} />
-                  <Route path="/onboarding" element={<EmployeeOnboardingPage />} />
+                  <Route path="/employee-onboarding" element={<EmployeeOnboardingPage />} />
                   <Route path="/documents" element={<DocumentVaultPage />} />
                   <Route path="/traffic" element={<TrafficRoutingPage />} />
                   <Route path="/trip-ai" element={<AITripPlanningPage />} />
