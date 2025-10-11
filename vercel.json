@@ -68,6 +68,9 @@
       "dest": "/services/traffic-routing/index.js"
     },
     {
+      "handle": "filesystem"
+    },
+    {
       "src": "/(.*)",
       "dest": "/index.html"
     }
