@@ -22,9 +22,9 @@
     "checkJs": false,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["apps/main-app/*"]
     }
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "apps", "**/*.css", "src/index.css", "*.css"]
+  "include": ["apps/main-app/**/*"],
+  "exclude": ["node_modules", "dist", "services", "**/*.css", "apps/main-app/index.css", "*.css"]
 }

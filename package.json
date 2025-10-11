@@ -19,7 +19,10 @@
     "start": "docker compose up -d --build",
     "stop": "docker compose down",
     "dev": "concurrently \"node services/ai-orchestrator/server.js\" \"node services/klipp-service/index.js\" \"node services/neural-context-engine/index.js\" \"node services/retail-partner-integration/index.js\" \"node services/cold-chain-quantum/index.js\" \"node services/universal-safety/index.js\" \"node services/autonomous-operations/index.js\" \"node services/quantum-tracking/index.js\" \"node services/quantum-deep-mind/index.js\" \"node services/ai-evolution-engine/index.js\" \"node services/onboarding-service/index.js\" \"node services/compliance-service/index.js\" \"node services/maintenance-service/index.js\" \"node services/driver-behavior-service/index.js\" \"node services/analytics-service/index.js\" \"node services/document-verification-service/index.js\" \"node services/advanced-compliance-engine/index.js\" \"node services/admin-portal/index.js\" \"node services/employee-onboarding/index.js\" \"node services/document-vault/index.js\" \"node services/traffic-routing/index.js\" \"node services/ai-trip-planning/index.js\" \"node services/accessibility/index.js\" \"node services/hr-ai-deputy/index.js\" \"vite\"",
-    "build": "vite build",
+    "dev:frontend": "vite",
+    "dev:services": "concurrently \"node services/ai-orchestrator/server.js\" \"node services/klipp-service/index.js\" \"node services/hr-ai-deputy/index.js\"",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
@@ -28,7 +31,11 @@
     "lint:fix": "eslint . --ext ts,tsx --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio"
   },
   "devDependencies": {
     "@eslint/js": "^9.37.0",

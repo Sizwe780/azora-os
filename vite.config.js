@@ -1,9 +1,17 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import path from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './apps/main-app'),
+    },
+  },
+  root: './',
+  publicDir: 'public',
   build: {
     // Disable sourcemaps for production for better performance and security
     sourcemap: false,
@@ -21,20 +29,20 @@ export default defineConfig({
           'maps-vendor': ['leaflet', 'react-leaflet'],
           'charts-vendor': ['recharts'],
           // Feature chunks
-          'ai-features': [
-            './src/pages/QuantumAI',
-            './src/pages/AIEvolution',
-            './src/pages/AITripPlanningPage'
-          ],
-          'tracking-features': [
-            './src/pages/QuantumTracking',
-            './src/pages/DriverCommandCenter'
-          ],
-          'enterprise-features': [
-            './src/pages/AdminPortalPage',
-            './src/pages/EmployeeOnboardingPage',
-            './src/pages/DocumentVaultPage'
-          ]
+            'ai-features': [
+              './apps/main-app/pages/QuantumAI',
+              './apps/main-app/pages/AIEvolution',
+              './apps/main-app/pages/AITripPlanningPage'
+            ],
+            'tracking-features': [
+              './apps/main-app/pages/QuantumTracking',
+              './apps/main-app/pages/DriverCommandCenter'
+            ],
+            'enterprise-features': [
+              './apps/main-app/pages/AdminPortalPage',
+              './apps/main-app/pages/EmployeeOnboardingPage',
+              './apps/main-app/pages/DocumentVaultPage'
+            ]
         }
       }
     },

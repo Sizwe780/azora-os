@@ -1,13 +1,86 @@
 {
+  "version": 2,
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "installCommand": "npm install --legacy-peer-deps",
   "framework": null,
   "ignoreCommand": "exit 0",
   "env": {
-    "ENABLE_EXPERIMENTAL_COREPACK": "0"
+    "ENABLE_EXPERIMENTAL_COREPACK": "0",
+    "NODE_VERSION": "20"
   },
+  "functions": {
+    "services/*/index.js": {
+      "memory": 1024,
+      "maxDuration": 10
+    }
+  },
+  "routes": [
+    {
+      "src": "/api/ai-orchestrator/(.*)",
+      "dest": "/services/ai-orchestrator/index.js"
+    },
+    {
+      "src": "/api/klipp/(.*)",
+      "dest": "/services/klipp-service/index.js"
+    },
+    {
+      "src": "/api/neural/(.*)",
+      "dest": "/services/neural-context-engine/index.js"
+    },
+    {
+      "src": "/api/retail/(.*)",
+      "dest": "/services/retail-partner-integration/index.js"
+    },
+    {
+      "src": "/api/coldchain/(.*)",
+      "dest": "/services/cold-chain-quantum/index.js"
+    },
+    {
+      "src": "/api/safety/(.*)",
+      "dest": "/services/universal-safety/index.js"
+    },
+    {
+      "src": "/api/autonomous/(.*)",
+      "dest": "/services/autonomous-operations/index.js"
+    },
+    {
+      "src": "/api/tracking/(.*)",
+      "dest": "/services/quantum-tracking/index.js"
+    },
+    {
+      "src": "/api/hr-ai/(.*)",
+      "dest": "/services/hr-ai-deputy/index.js"
+    },
+    {
+      "src": "/api/onboarding/(.*)",
+      "dest": "/services/onboarding-service/index.js"
+    },
+    {
+      "src": "/api/compliance/(.*)",
+      "dest": "/services/compliance-service/index.js"
+    },
+    {
+      "src": "/api/traffic/(.*)",
+      "dest": "/services/traffic-routing/index.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ],
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Credentials", "value": "true" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET,OPTIONS,PATCH,DELETE,POST,PUT" },
+        { "key": "Access-Control-Allow-Headers", "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version" }
+      ]
+    }
   ]
 }
