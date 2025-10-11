@@ -4,7 +4,6 @@
   "outputDirectory": "dist",
   "installCommand": "npm install --legacy-peer-deps",
   "framework": null,
-  "ignoreCommand": "exit 0",
   "env": {
     "ENABLE_EXPERIMENTAL_COREPACK": "0",
     "NODE_VERSION": "20"
