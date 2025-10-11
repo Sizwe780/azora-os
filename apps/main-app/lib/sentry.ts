@@ -4,7 +4,9 @@ const initSentry = () => {
   const dsn = process.env.VITE_SENTRY_DSN
 
   if (!dsn) {
-    console.warn('Sentry DSN not found. Error tracking disabled.')
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('Sentry DSN not found. Error tracking disabled.')
+    }
     return
   }
 

@@ -18,7 +18,7 @@ const CORE_ASSETS = [
   '/index.html',
   '/manifest.json',
   '/favicon.ico',
-  '/logo-premium.svg',
+  '/azora-logo.png',
 ];
 
 // Install service worker and cache core assets
