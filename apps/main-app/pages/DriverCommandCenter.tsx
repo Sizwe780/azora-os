@@ -1,36 +1,27 @@
 import { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
-import { Route, DollarSign, Coffee, Shield, Mic, Zap, Heart, Map } from 'lucide-react';
+import { DollarSign, Zap, Heart, Shield, User } from 'lucide-react';
 
-const StatCard = ({ icon: Icon, title, value, color }) => (
-  <div className={`bg-gray-900/50 border border-${color}-500/30 rounded-2xl p-6 text-center`}>
-    <Icon className={`w-8 h-8 text-${color}-400 mx-auto mb-3`} />
-    <p className={`text-3xl font-bold text-${color}-300`}>{value}</p>
-    <p className="text-sm text-gray-400">{title}</p>
-  </div>
-);
+import {
+  initialStats,
+  coPilotActions,
+  initialRouteInfo,
+  auraResponses,
+  DriverStats,
+  RouteInfo,
+} from '../features/driver-command/mockData';
 
-const ActionCard = ({ icon: Icon, title, description, buttonText, color, onClick }) => (
-  <div className={`bg-gray-900/50 border border-${color}-500/30 rounded-2xl p-6 flex flex-col`}>
-    <Icon className={`w-7 h-7 text-${color}-400 mb-3`} />
-    <h3 className="text-xl font-bold text-white mb-2">{title}</h3>
-    <p className="text-gray-400 text-sm mb-4 flex-grow">{description}</p>
-    <button onClick={onClick} className={`w-full py-2 bg-gradient-to-r from-${color}-600 to-${color === 'blue' ? 'indigo' : color}-500 text-white rounded-lg font-semibold hover:scale-105 transition-transform`}>
-      {buttonText}
-    </button>
-  </div>
-);
+import StatCard from '../components/driver-command/StatCard';
+import VoiceActivationPanel from '../components/driver-command/VoiceActivationPanel';
+import ActionCard from '../components/driver-command/ActionCard';
+import RouteInfoPanel from '../components/driver-command/RouteInfoPanel';
 
 export default function DriverCommandCenter() {
-  const [stats, setStats] = useState({
-    earnings: 125.50,
-    deliveries: 8,
-    energyLevel: 82,
-    safetyScore: 98,
-    nextBreakIn: 112,
-  });
-  const [voiceActive, setVoiceActive] = useState(false);
-  const [auraMessage, setAuraMessage] = useState('Aura is ready. Tap the mic to begin.');
+  const [stats, setStats] = useState<DriverStats>(initialStats);
+  const [routeInfo, setRouteInfo] = useState<RouteInfo>(initialRouteInfo);
+  const [isListening, setIsListening] = useState(false);
+  const [auraMessage, setAuraMessage] = useState(auraResponses.ready);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -38,94 +29,79 @@ export default function DriverCommandCenter() {
         ...prev,
         earnings: prev.earnings + Math.random() * 0.5,
         energyLevel: Math.max(0, prev.energyLevel - 0.1),
-        nextBreakIn: Math.max(0, prev.nextBreakIn - 1),
+        nextBreakIn: Math.max(0, prev.nextBreakIn - 1/60), // decrement minutes
       }));
-    }, 5000);
+    }, 1000);
     return () => clearInterval(interval);
   }, []);
 
   const activateVoice = () => {
-    setVoiceActive(true);
-    setAuraMessage('Listening...');
+    setIsListening(true);
+    setAuraMessage(auraResponses.listening);
     setTimeout(() => {
-      const responses = [
-        'Optimizing your route for maximum earnings.',
-        'Found a faster route, saving you 8 minutes.',
-        'Heavy traffic detected ahead. Rerouting now.'
-      ];
-      setAuraMessage(responses[Math.floor(Math.random() * responses.length)]);
+      setAuraMessage(auraResponses.processing);
       setTimeout(() => {
-        setVoiceActive(false);
-        setAuraMessage('Aura is ready. Tap the mic to begin.');
-      }, 2000);
-    }, 2500);
+        const randomResponse = auraResponses.responses[Math.floor(Math.random() * auraResponses.responses.length)];
+        setAuraMessage(randomResponse);
+        setTimeout(() => {
+          setIsListening(false);
+          setAuraMessage(auraResponses.ready);
+        }, 2500);
+      }, 1500);
+    }, 2000);
   };
 
+  const handleActionClick = (path: string) => {
+    // In a real app, you'd use a router to navigate.
+    console.log(`Navigating to ${path}`);
+    setAuraMessage(`Showing you the ${path.replace('/', '')} screen.`);
+    setTimeout(() => setAuraMessage(auraResponses.ready), 2000);
+  };
+
+  const statCards = [
+    { icon: DollarSign, title: "Earned Today", value: `$${stats.earnings.toFixed(2)}`, color: 'green' },
+    { icon: Zap, title: "Deliveries", value: stats.deliveries.toString(), color: 'cyan' },
+    { icon: Heart, title: "Energy Level", value: `${stats.energyLevel.toFixed(0)}%`, color: 'yellow' },
+    { icon: Shield, title: "Safety Score", value: stats.safetyScore.toString(), color: 'purple' },
+  ];
+
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
-        <h1 className="text-3xl font-bold text-white">Driver Command Center</h1>
-        <p className="text-cyan-300">AI-Powered • Voice-First • Autonomous</p>
-      </motion.div>
+    <>
+      <Helmet>
+        <title>Driver Command Center | Azora</title>
+        <meta name="description" content="Your AI Co-Pilot for the road. Voice-first, autonomous, and optimized for maximum earnings and safety." />
+      </Helmet>
+      <div className="p-4 sm:p-6 lg:p-8 space-y-8 bg-gray-950 min-h-screen text-white">
+        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex items-center gap-4">
+          <div className="p-3 bg-cyan-500/20 rounded-xl border border-cyan-500/30">
+            <User className="w-8 h-8 text-cyan-400" />
+          </div>
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">Driver Command Center</h1>
+            <p className="text-cyan-300/80">Your AI Co-Pilot for the Road</p>
+          </div>
+        </motion.div>
 
-      {/* Voice Activation */}
-      <div className="bg-gray-900/50 border border-purple-500/30 rounded-2xl p-6 text-center">
-        <motion.button
-          onClick={activateVoice}
-          disabled={voiceActive}
-          className="mx-auto p-6 rounded-full bg-gradient-to-br from-purple-600 to-indigo-600 disabled:opacity-70"
-          animate={{ scale: voiceActive ? 1.1 : 1 }}
-          transition={{ duration: 0.5, repeat: voiceActive ? Infinity : 0, repeatType: 'reverse' }}
-        >
-          <Mic className="w-10 h-10 text-white" />
-        </motion.button>
-        <p className="mt-4 text-lg text-purple-200 h-6">{auraMessage}</p>
-      </div>
+        <VoiceActivationPanel
+          isListening={isListening}
+          auraMessage={auraMessage}
+          onActivate={activateVoice}
+        />
 
-      {/* Real-Time Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-        <StatCard icon={DollarSign} title="Earned Today" value={`$${stats.earnings.toFixed(2)}`} color="green" />
-        <StatCard icon={Zap} title="Deliveries" value={stats.deliveries} color="cyan" />
-        <StatCard icon={Heart} title="Energy Level" value={`${stats.energyLevel.toFixed(0)}%`} color="yellow" />
-        <StatCard icon={Shield} title="Safety Score" value={stats.safetyScore} color="purple" />
-      </div>
-
-      {/* AI Co-Pilot Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <ActionCard
-          icon={Route}
-          title="Autonomous Route"
-          description="Aura has optimized your route for maximum efficiency and earnings."
-          buttonText="View Route"
-          color="blue"
-          onClick={() => {}}
-        />
-        <ActionCard
-          icon={Coffee}
-          title="Smart Break"
-          description={`Next suggested break in ${Math.floor(stats.nextBreakIn / 60)}h ${stats.nextBreakIn % 60}m. Aura will find the best spot.`}
-          buttonText="Find Coffee Stop"
-          color="orange"
-          onClick={() => {}}
-        />
-        <ActionCard
-          icon={Map}
-          title="Live Traffic"
-          description="AI is monitoring all routes for congestion and hazards for you."
-          buttonText="See Risks"
-          color="green"
-          onClick={() => {}}
-        />
-      </div>
-      
-      {/* Map Placeholder */}
-      <div className="bg-gray-900/50 border border-gray-700/50 rounded-2xl p-6">
-        <h2 className="text-2xl font-bold text-white mb-4">AI-Powered Navigation</h2>
-        <div className="aspect-video bg-gray-800 rounded-lg flex items-center justify-center">
-          <p className="text-gray-500">Live map would be displayed here.</p>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          {statCards.map((stat, index) => (
+            <StatCard key={stat.title} {...stat} index={index} />
+          ))}
         </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {coPilotActions.map((action, index) => (
+            <ActionCard key={action.id} action={action} index={index} onClick={handleActionClick} />
+          ))}
+        </div>
+        
+        <RouteInfoPanel routeInfo={routeInfo} />
       </div>
-    </div>
+    </>
   );
 }

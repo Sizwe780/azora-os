@@ -1,123 +1,90 @@
-import React from 'react';
-import { useEffect, useState } from 'react';
-import { DollarSign, TrendingUp, PieChart as PieChartIcon } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { DollarSign, TrendingUp, PieChart as PieChartIcon, Activity } from 'lucide-react';
 import { LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { RevenueData, getMockRevenueData } from '../features/revenue/mockRevenue';
+import StatCard from '../components/StatCard';
 
-interface RevenueAllocation {
-  category: string;
-  percentage: number;
-  amount: number;
-  color: string;
-  [key: string]: string | number;
-}
+const pageVariants = {
+  hidden: { opacity: 0 },
+  visible: { 
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  },
+};
 
-interface MonthlyRevenue {
-  month: string;
-  revenue: number;
-}
-
-interface RevenueData {
-  mrr: number;
-  arr: number;
-  growthRate: number;
-  allocations: RevenueAllocation[];
-  trends: MonthlyRevenue[];
-}
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 },
+};
 
 export default function RevenuePage() {
   const [data, setData] = useState<RevenueData | null>(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchRevenue = async () => {
-      try {
-        const response = await fetch('/api/hr-ai/revenue/status');
-        if (response.ok) {
-          const result = await response.json();
-          setData(result);
-        }
-      } catch (error) {
-        console.error('Failed to fetch revenue data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchRevenue();
+    setData(getMockRevenueData());
   }, []);
 
-  if (loading) {
-    return (
-      <div className="p-8">
-        <div className="animate-pulse space-y-4">
-          <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/4"></div>
-          <div className="grid grid-cols-3 gap-4">
-            <div className="h-32 bg-gray-200 dark:bg-gray-700 rounded"></div>
-            <div className="h-32 bg-gray-200 dark:bg-gray-700 rounded"></div>
-            <div className="h-32 bg-gray-200 dark:bg-gray-700 rounded"></div>
-          </div>
-          <div className="h-64 bg-gray-200 dark:bg-gray-700 rounded"></div>
-        </div>
-      </div>
-    );
-  }
-
   if (!data) {
-    return (
-      <div className="p-8">
-        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
-          <p className="text-red-600 dark:text-red-400">Failed to load revenue data</p>
-        </div>
-      </div>
-    );
+    return <div className="flex items-center justify-center h-full"><Activity className="w-16 h-16 text-purple-400 animate-spin" /></div>;
   }
 
   return (
-    <div className="p-8 space-y-6">
+    <motion.div 
+      className="p-6 bg-gray-950 text-white space-y-8"
+      variants={pageVariants}
+      initial="hidden"
+      animate="visible"
+    >
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Revenue Management</h1>
-        <p className="text-gray-600 dark:text-gray-400 mt-1">Track MRR, ARR, growth, and allocation breakdown</p>
-      </div>
+      <motion.div variants={itemVariants}>
+        <div className="flex items-center gap-4">
+          <DollarSign className="w-10 h-10 text-green-400" />
+          <div>
+            <h1 className="text-4xl font-bold text-white">Revenue Command</h1>
+            <p className="text-green-300">Real-time Financial Intelligence</p>
+          </div>
+        </div>
+      </motion.div>
 
       {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* MRR */}
-        <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-lg p-6 text-white">
-          <div className="flex items-center justify-between mb-2">
-            <DollarSign className="w-8 h-8" />
-            <TrendingUp className="w-5 h-5" />
-          </div>
-          <p className="text-sm opacity-90">Monthly Recurring Revenue</p>
-          <p className="text-4xl font-bold mt-2">R{(data.mrr / 1000000).toFixed(1)}M</p>
+      <motion.div 
+        className="grid grid-cols-1 md:grid-cols-3 gap-6"
+        variants={itemVariants}
+      >
+        <StatCard icon={DollarSign} title="Monthly Recurring Revenue" value={`R${(data.mrr / 1000000).toFixed(1)}M`} color="blue" />
+        <StatCard icon={TrendingUp} title="Annual Recurring Revenue" value={`R${(data.arr / 1000000).toFixed(1)}M`} color="green" />
+        <StatCard icon={Activity} title="Growth Rate (MoM)" value={`+${data.growthRate}%`} color="purple" />
+      </motion.div>
+
+      {/* Charts */}
+      <motion.div 
+        className="grid grid-cols-1 lg:grid-cols-5 gap-6"
+        variants={itemVariants}
+      >
+        {/* Revenue Trends */}
+        <div className="lg:col-span-3 bg-gray-900/50 border border-gray-800 rounded-2xl p-6">
+          <h2 className="text-xl font-bold text-white mb-4">Revenue Trends (12-Mo)</h2>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={data.trends} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" />
+              <XAxis dataKey="month" stroke="#888" fontSize={12} />
+              <YAxis stroke="#888" fontSize={12} tickFormatter={(value) => `R${Number(value) / 1000000}M`} />
+              <Tooltip
+                contentStyle={{ backgroundColor: '#1f2937', border: '1px solid #374151', color: '#fff' }}
+                formatter={(value: number) => [`R${(value / 1000000).toFixed(2)}M`, 'Revenue']}
+              />
+              <Legend wrapperStyle={{ fontSize: '14px' }} />
+              <Line type="monotone" dataKey="revenue" stroke="#3b82f6" strokeWidth={2} dot={{ r: 4, fill: '#3b82f6' }} activeDot={{ r: 8, stroke: '#1d4ed8' }} />
+            </LineChart>
+          </ResponsiveContainer>
         </div>
 
-        {/* ARR */}
-        <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-lg shadow-lg p-6 text-white">
-          <div className="flex items-center justify-between mb-2">
-            <DollarSign className="w-8 h-8" />
-            <TrendingUp className="w-5 h-5" />
-          </div>
-          <p className="text-sm opacity-90">Annual Recurring Revenue</p>
-          <p className="text-4xl font-bold mt-2">R{(data.arr / 1000000).toFixed(1)}M</p>
-        </div>
-
-        {/* Growth Rate */}
-        <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg shadow-lg p-6 text-white">
-          <div className="flex items-center justify-between mb-2">
-            <TrendingUp className="w-8 h-8" />
-            <span className="text-sm opacity-90">vs Last Month</span>
-          </div>
-          <p className="text-sm opacity-90">Growth Rate</p>
-          <p className="text-4xl font-bold mt-2">+{data.growthRate}%</p>
-        </div>
-      </div>
-
-      {/* Allocation Breakdown */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Pie Chart */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-6">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center space-x-2">
+        {/* Allocation Breakdown */}
+        <div className="lg:col-span-2 bg-gray-900/50 border border-gray-800 rounded-2xl p-6">
+          <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
             <PieChartIcon className="w-5 h-5" />
             <span>Revenue Allocation</span>
           </h2>
@@ -128,63 +95,25 @@ export default function RevenuePage() {
                 cx="50%"
                 cy="50%"
                 labelLine={false}
-                label={({ category, percentage }) => `${category}: ${percentage}%`}
-                outerRadius={80}
+                outerRadius={100}
                 fill="#8884d8"
                 dataKey="percentage"
+                nameKey="category"
+                label={({ percent }: any) => `${(percent * 100).toFixed(0)}%`}
               >
                 {data.allocations.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
                 ))}
               </Pie>
-              <Tooltip />
+              <Tooltip 
+                contentStyle={{ backgroundColor: '#1f2937', border: '1px solid #374151' }}
+                formatter={(value, name) => [`${value}%`, name]}
+              />
+              <Legend iconSize={10} wrapperStyle={{ fontSize: '12px' }} />
             </PieChart>
           </ResponsiveContainer>
         </div>
-
-        {/* Allocation List */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-6">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Allocation Details</h2>
-          <div className="space-y-4">
-            {data.allocations.map((allocation, index) => (
-              <div key={index} className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <div className="w-4 h-4 rounded" style={{ backgroundColor: allocation.color }}></div>
-                  <span className="font-medium text-gray-900 dark:text-white">{allocation.category}</span>
-                </div>
-                <div className="text-right">
-                  <p className="font-bold text-gray-900 dark:text-white">R{(allocation.amount / 1000000).toFixed(2)}M</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">{allocation.percentage}%</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Revenue Trends */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-6">
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Revenue Trends (Last 12 Months)</h2>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={data.trends}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" />
-            <YAxis />
-            <Tooltip
-              formatter={(value: number) => [`R${(value / 1000000).toFixed(2)}M`, 'Revenue']}
-            />
-            <Legend />
-            <Line
-              type="monotone"
-              dataKey="revenue"
-              stroke="#3B82F6"
-              strokeWidth={2}
-              dot={{ r: 4 }}
-              activeDot={{ r: 6 }}
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

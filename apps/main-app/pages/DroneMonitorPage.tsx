@@ -1,101 +1,120 @@
-import React from 'react';
-import { useState } from 'react';
-import Card from '../components/azora/atoms/Card';
-import Heading from '../components/azora/atoms/Heading';
+import { useState, useMemo } from 'react';
+import { Helmet } from 'react-helmet-async';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Drone, BatteryCharging, PowerOff, Wrench, RefreshCw } from 'lucide-react';
 
-// Demo drone data
-const demoDrones = [
-  { id: 'drone-001', status: 'active', location: 'JNB-OPS', battery: 87, lastCheck: '2025-10-09T14:22:00Z', driver: 'Sizwe', trip: 'Trip-001' },
-  { id: 'drone-002', status: 'charging', location: 'CPT-CARGO', battery: 45, lastCheck: '2025-10-09T13:55:00Z', driver: 'Thandi', trip: 'Trip-002' },
-  { id: 'drone-003', status: 'offline', location: 'JNB-OPS', battery: 0, lastCheck: '2025-10-09T12:10:00Z', driver: 'Mpho', trip: 'Trip-003' },
-];
+import { initialDrones, DroneData, generateLogsheet, statusConfig } from '../features/drone-monitor/mockData';
+import StatCard from '../components/drone-monitor/StatCard';
+import DroneList from '../components/drone-monitor/DroneList';
+import BatteryChart from '../components/drone-monitor/BatteryChart';
+import LogModal from '../components/drone-monitor/LogModal';
 
-// Simple AI module for insights and logsheets
-type Drone = {
-  id: string;
-  status: string;
-  location: string;
-  battery: number;
-  lastCheck: string;
-  driver: string;
-  trip: string;
-};
-
-function getDroneInsight(drone: Drone) {
-  if (drone.battery < 20) return `⚠️ Low battery! Recommend charging soon.`;
-  if (drone.status === 'offline') return `❌ Drone offline. Check hardware or network.`;
-  if (drone.status === 'charging') return `🔋 Charging. Ready for next trip soon.`;
-  return `✅ All systems normal. Trip: ${drone.trip}`;
-}
-
-function generateLogsheet(drone: Drone) {
-  return `Logsheet for ${drone.id}\nDriver: ${drone.driver}\nTrip: ${drone.trip}\nStatus: ${drone.status}\nBattery: ${drone.battery}%\nLocation: ${drone.location}\nLast Check: ${new Date(drone.lastCheck).toLocaleString('en-ZA')}`;
-}
-
-export default function DroneMonitorPage() {
-  const [drones, setDrones] = useState(demoDrones);
+const DroneMonitorPage = () => {
+  const [drones, setDrones] = useState<DroneData[]>(initialDrones);
   const [selectedLog, setSelectedLog] = useState<string | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  // Simulate status update
-  function refreshStatus() {
-    setDrones(drones => drones.map(d => ({
-      ...d,
-      battery: Math.max(0, d.battery - Math.floor(Math.random() * 5)),
-      lastCheck: new Date().toISOString(),
-      status: d.battery > 20 ? 'active' : (d.battery > 0 ? 'charging' : 'offline'),
-    })));
-  }
+  const stats = useMemo(() => {
+    const total = drones.length;
+    const active = drones.filter(d => d.status === 'active').length;
+    const charging = drones.filter(d => d.status === 'charging').length;
+    const offline = drones.filter(d => d.status === 'offline' || d.status === 'maintenance').length;
+    return { total, active, charging, offline };
+  }, [drones]);
 
-  function handleLogsheet(drone: Drone) {
-    setSelectedLog(generateLogsheet(drone));
-  }
+  const refreshStatus = () => {
+    setIsRefreshing(true);
+    setTimeout(() => {
+      setDrones(drones => drones.map(d => {
+        if (d.status === 'maintenance') return d;
+        const batteryChange = Math.floor(Math.random() * 10) - 4;
+        const newBattery = Math.max(0, Math.min(100, d.battery + batteryChange));
+        let newStatus: DroneData['status'] = d.status;
+
+        if (d.status === 'charging') {
+          if (newBattery > 95) newStatus = 'active';
+          else newStatus = 'charging';
+        } else {
+          if (newBattery < 10) newStatus = 'offline';
+          else if (newBattery < 30) newStatus = 'charging';
+          else newStatus = 'active';
+        }
+        
+        return {
+          ...d,
+          battery: newBattery,
+          lastCheck: new Date().toISOString(),
+          status: newStatus,
+          flightTime: d.flightTime + (Math.random() * 0.5),
+        };
+      }));
+      setIsRefreshing(false);
+    }, 750);
+  };
+
+  const statCards = [
+    { icon: Drone, title: "Total Drones", value: stats.total.toString(), color: 'blue' },
+    { icon: statusConfig.active.icon, title: "Active", value: stats.active.toString(), color: 'green' },
+    { icon: statusConfig.charging.icon, title: "Charging", value: stats.charging.toString(), color: 'yellow' },
+    { icon: statusConfig.offline.icon, title: "Offline/Maint.", value: stats.offline.toString(), color: 'red' },
+  ];
 
   return (
-    <div className="p-6 space-y-6">
-      <Heading level={1}>Drone Monitoring (AI-Driven)</Heading>
-      <Card>
-        <button className="mb-4 px-4 py-2 bg-indigo-600 text-white rounded" onClick={refreshStatus}>Refresh Status</button>
-        <table className="w-full text-left">
-          <thead>
-            <tr>
-              <th className="p-2">Drone ID</th>
-              <th className="p-2">Status</th>
-              <th className="p-2">Location</th>
-              <th className="p-2">Battery (%)</th>
-              <th className="p-2">Last Check</th>
-              <th className="p-2">Driver</th>
-              <th className="p-2">Trip</th>
-              <th className="p-2">AI Insight</th>
-              <th className="p-2">Logsheet</th>
-            </tr>
-          </thead>
-          <tbody>
-            {drones.map(d => (
-              <tr key={d.id} className="border-t border-white/10">
-                <td className="p-2">{d.id}</td>
-                <td className="p-2">{d.status}</td>
-                <td className="p-2">{d.location}</td>
-                <td className="p-2">{d.battery}</td>
-                <td className="p-2">{new Date(d.lastCheck).toLocaleString('en-ZA')}</td>
-                <td className="p-2">{d.driver}</td>
-                <td className="p-2">{d.trip}</td>
-                <td className="p-2 text-xs text-indigo-700">{getDroneInsight(d)}</td>
-                <td className="p-2">
-                  <button className="px-2 py-1 bg-yellow-400 text-black rounded text-xs" onClick={() => handleLogsheet(d)}>
-                    View Logsheet
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {selectedLog && (
-          <div className="mt-6 p-4 bg-indigo-50 text-indigo-900 rounded">
-            <pre>{selectedLog}</pre>
-            <button className="mt-2 px-3 py-1 bg-indigo-600 text-white rounded" onClick={() => setSelectedLog(null)}>Close</button>
+    <>
+      <Helmet>
+        <title>Drone Command Center | Azora</title>
+        <meta name="description" content="Monitor and manage your entire autonomous drone fleet in real-time. View live statuses, battery levels, and operational logs." />
+      </Helmet>
+      <div className="p-4 sm:p-6 lg:p-8 space-y-8 bg-gray-950 min-h-screen text-white">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-wrap justify-between items-center gap-4"
+        >
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-blue-500/20 rounded-xl border border-blue-500/30">
+              <Drone className="w-8 h-8 text-blue-400" />
+            </div>
+            <div>
+              <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">Drone Command Center</h1>
+              <p className="text-blue-300/80">Real-Time Fleet Operations</p>
+            </div>
           </div>
+          <motion.button
+            onClick={refreshStatus}
+            disabled={isRefreshing}
+            className="flex items-center gap-2 px-4 py-2 bg-gray-800/60 border border-blue-500/30 rounded-lg hover:bg-blue-500/20 transition-colors disabled:opacity-50"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+            <span>{isRefreshing ? 'Refreshing...' : 'Refresh Status'}</span>
+          </motion.button>
+        </motion.div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {statCards.map((card, index) => (
+            <StatCard key={card.title} {...card} index={index} />
+          ))}
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2">
+            <DroneList drones={drones} onSelectLog={(d) => setSelectedLog(generateLogsheet(d))} />
+          </div>
+          <div className="lg:col-span-1">
+            <BatteryChart drones={drones} />
+          </div>
+        </div>
+      </motion.div>
+
+      <AnimatePresence>
+        {selectedLog && (
+          <LogModal logContent={selectedLog} onClose={() => setSelectedLog(null)} />
         )}
-      </Card>
-    </div>
+      </AnimatePresence>
+    </>
   );
-}
+};
+
+export default DroneMonitorPage;

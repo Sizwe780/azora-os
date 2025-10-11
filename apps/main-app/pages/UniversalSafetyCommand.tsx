@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Shield, HeartPulse, AlertTriangle, CheckCircle, Users, Truck, Building, Bell, Bot } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, CartesianGrid } from 'recharts';
 
 const StatCard = ({ icon: Icon, title, value, color }) => (
   <div className={`bg-gray-900/50 border border-${color}-500/30 rounded-2xl p-4`}>
