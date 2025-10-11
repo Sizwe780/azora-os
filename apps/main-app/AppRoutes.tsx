@@ -71,7 +71,7 @@ export default function AppRoutes() {
             <DashboardLayout>
               <Suspense fallback={<PageLoader />}>
                 <Routes>
-                  <Route index element={<SanctuaryPage />} />
+                  <Route index element={<Dashboard userId={currentUserId} />} />
                   <Route path="sanctuary" element={<SanctuaryPage />} />
                   <Route path="/dashboard" element={<Dashboard userId={currentUserId} />} />
                   <Route path="/driver" element={<DriverCommandCenter />} />

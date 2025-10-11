@@ -1,36 +1,30 @@
 import * as React from "react";
 import Sidebar from "../components/azora/Sidebar";
-import BeamsBackground from "../app/BeamsBackground";
-import ThemeToggle from "../app/ThemeToggle";
-import AuraUI from "../app/AuraUI";
+import Header from "../components/azora/Header";
+import GridPattern from "../components/azora/GridPattern";
+import { cn } from "../lib/utils";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen flex bg-gradient-to-br from-slate-950 via-slate-900 to-black relative overflow-hidden">
-      {/* Animated background beams */}
-      <BeamsBackground />
-
-      {/* Sidebar Navigation */}
-      <nav aria-label="Main navigation" className="hidden lg:block">
-        <Sidebar />
-      </nav>
-
-      {/* Main content */}
-      <main
-        id="main-content"
-        className="flex-1 px-4 py-6 md:p-6 lg:p-8 flex flex-col relative z-10 overflow-y-auto max-w-[100vw]"
-        role="main"
-        tabIndex={-1}
-      >
-        <div className="max-w-7xl mx-auto w-full">
-          {children}
-        </div>
-      </main>
-
-      {/* Floating theme toggle and AI command center */}
-      <div className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-20 flex items-end gap-2 md:gap-4" aria-label="Quick actions">
-        <AuraUI />
-        <ThemeToggle />
+    <div className="min-h-screen flex bg-gray-900 text-white">
+      <GridPattern
+        width={30}
+        height={30}
+        x={-1}
+        y={-1}
+        className={cn(
+          "[mask-image:linear-gradient(to_bottom_right,white,transparent,transparent)]",
+          "absolute inset-0 h-full w-full stroke-white/10"
+        )}
+      />
+      <Sidebar />
+      <div className="flex flex-1 flex-col">
+        <Header />
+        <main className="flex-1 p-6 lg:p-8">
+          <div className="mx-auto max-w-7xl">
+            {children}
+          </div>
+        </main>
       </div>
     </div>
   );
