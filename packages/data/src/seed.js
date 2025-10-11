@@ -1,25 +1,25 @@
 const products = [
-  { tenant: "woolworths", sku: "WW-ALMOND-MILK-1L", name: "Almond Milk 1L", synonyms: ["almond milk"], dietary: ["vegan","dairy-free"], price: 49.99, substitutes: ["WW-SOY-MILK-1L"] },
-  { tenant: "woolworths", sku: "WW-GLUTEN-WRAP", name: "Gluten-free Wraps", synonyms: ["gluten free wraps"], dietary: ["gluten-free"], price: 34.99, promo: "R10 off" },
-  { tenant: "woolworths", sku: "WW-SOY-MILK-1L", name: "Soy Milk 1L", synonyms: ["soy milk"], dietary: ["vegan","dairy-free"], price: 39.99 }
+  { tenant: "retail-partner", sku: "WW-ALMOND-MILK-1L", name: "Almond Milk 1L", synonyms: ["almond milk"], dietary: ["vegan","dairy-free"], price: 49.99, substitutes: ["WW-SOY-MILK-1L"] },
+  { tenant: "retail-partner", sku: "WW-GLUTEN-WRAP", name: "Gluten-free Wraps", synonyms: ["gluten free wraps"], dietary: ["gluten-free"], price: 34.99, promo: "R10 off" },
+  { tenant: "retail-partner", sku: "WW-SOY-MILK-1L", name: "Soy Milk 1L", synonyms: ["soy milk"], dietary: ["vegan","dairy-free"], price: 39.99 }
 ];
 
 const inventories = [
-  { tenant: "woolworths", storeId: "NMB-STORE-001", sku: "WW-ALMOND-MILK-1L", onHand: 0, backroom: 12, reorderPoint: 10 },
-  { tenant: "woolworths", storeId: "NMB-STORE-001", sku: "WW-GLUTEN-WRAP", onHand: 0, backroom: 18, reorderPoint: 8 },
-  { tenant: "woolworths", storeId: "NMB-STORE-001", sku: "WW-SOY-MILK-1L", onHand: 20, backroom: 10, reorderPoint: 10 }
+  { tenant: "retail-partner", storeId: "NMB-STORE-001", sku: "WW-ALMOND-MILK-1L", onHand: 0, backroom: 12, reorderPoint: 10 },
+  { tenant: "retail-partner", storeId: "NMB-STORE-001", sku: "WW-GLUTEN-WRAP", onHand: 0, backroom: 18, reorderPoint: 8 },
+  { tenant: "retail-partner", storeId: "NMB-STORE-001", sku: "WW-SOY-MILK-1L", onHand: 20, backroom: 10, reorderPoint: 10 }
 ];
 
 const planograms = [
-  { tenant: "woolworths", storeId: "NMB-STORE-001", sku: "WW-ALMOND-MILK-1L", location: { storeId: "NMB-STORE-001", zone: "Salesfloor", aisle: "7", bay: "3", shelf: "mid" } },
-  { tenant: "woolworths", storeId: "NMB-STORE-001", sku: "WW-GLUTEN-WRAP", location: { storeId: "NMB-STORE-001", zone: "Salesfloor", aisle: "12", bay: "2", shelf: "top" } },
-  { tenant: "woolworths", storeId: "NMB-STORE-001", sku: "WW-SOY-MILK-1L", location: { storeId: "NMB-STORE-001", zone: "Salesfloor", aisle: "7", bay: "3", shelf: "mid" } }
+  { tenant: "retail-partner", storeId: "NMB-STORE-001", sku: "WW-ALMOND-MILK-1L", location: { storeId: "NMB-STORE-001", zone: "Salesfloor", aisle: "7", bay: "3", shelf: "mid" } },
+  { tenant: "retail-partner", storeId: "NMB-STORE-001", sku: "WW-GLUTEN-WRAP", location: { storeId: "NMB-STORE-001", zone: "Salesfloor", aisle: "12", bay: "2", shelf: "top" } },
+  { tenant: "retail-partner", storeId: "NMB-STORE-001", sku: "WW-SOY-MILK-1L", location: { storeId: "NMB-STORE-001", zone: "Salesfloor", aisle: "7", bay: "3", shelf: "mid" } }
 ];
 
 const sops = [
   {
     id: "SOP-REPLENISH-DAIRY-V1",
-    tenant: "woolworths",
+    tenant: "retail-partner",
     version: "1.0",
     title: "Replenishment — Dairy Alternatives",
     tags: ["replenish","dairy-alt"],
@@ -36,7 +36,7 @@ const sops = [
 const tasks = [
   {
     id: "TASK-001",
-    tenant: "woolworths",
+    tenant: "retail-partner",
     storeId: "NMB-STORE-001",
     type: "REPLENISH",
     title: "Replenish Almond Milk (1L) — 6 units",

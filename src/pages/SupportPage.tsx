@@ -1,6 +1,6 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
-import { MessageSquare, CheckCircle, Clock, XCircle, Bot } from 'lucide-react';
+import { MessageSquare, CheckCircle, Clock, Bot } from 'lucide-react';
 
 interface Ticket {
   id: string;

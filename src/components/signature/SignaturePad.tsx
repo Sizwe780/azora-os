@@ -1,4 +1,3 @@
-import React from 'react';
 /**
  * Signature Pad Component
  * 
@@ -8,7 +7,7 @@ import React from 'react';
  * Copyright (c) 2025 Sizwe Ngwenya (Azora World)
  */
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useMemo } from 'react';
 
 interface SignaturePadProps {
   onSign: (signature: string) => void;
@@ -30,11 +29,11 @@ export default function SignaturePad({
   const [signatureData, setSignatureData] = useState<string | null>(null);
   const [typedSignature, setTypedSignature] = useState('');
   const [signatureMode, setSignatureMode] = useState<'draw' | 'type'>('draw');
-  const [metadata, setMetadata] = useState({
+  const metadata = useMemo(() => ({
     timestamp: new Date().toISOString(),
     ipAddress: '102.65.123.45', // Would get real IP in production
     location: 'Johannesburg, South Africa'
-  });
+  }), []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -253,7 +252,7 @@ export default function SignaturePad({
       {/* Info */}
       <div className="mt-6 text-center text-sm text-gray-400">
         <p>Your signature will be encrypted and stored securely.</p>
-        <p>A copy will be sent to {signerName}'s email.</p>
+  <p>A copy will be sent to {signerName}&apos;s email.</p>
       </div>
     </div>
   );

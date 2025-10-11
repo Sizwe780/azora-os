@@ -1,17 +1,18 @@
+/* eslint-env browser */
 import React from 'react';
 /**
  * Universal Onboarding System
- * 
+ *
  * Onboards anyone - customers, drivers, store staff, vendors, etc.
  * No restrictions on email domain or store name.
- * 
+ *
  * Copyright (c) 2025 Sizwe Ngwenya (Azora World)
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import type { ChangeEvent, Dispatch, SetStateAction } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import SignaturePad from '../../components/signature/SignaturePad';
 
 interface OnboardingData {
   fullName: string;
@@ -24,7 +25,89 @@ interface OnboardingData {
   driverLicense?: string;
 }
 
-const USER_TYPES = [
+interface UserType {
+  value: OnboardingData['userType'];
+  label: string;
+  description: string;
+}
+
+interface Step {
+  id: number;
+  name: string;
+  icon: string;
+}
+
+type StepName = 'userType' | 'personalInfo' | 'businessDetails' | 'documents' | 'agreement';
+
+type UploadFile = globalThis.File;
+type InputElement = globalThis.HTMLInputElement;
+type OnboardingSetter = Dispatch<SetStateAction<OnboardingData>>;
+
+interface DocumentUploads {
+  id?: UploadFile;
+  license?: UploadFile;
+}
+
+type StepUpdatePayloadMap = {
+  userType: { userType: OnboardingData['userType'] };
+  personalInfo: { data: OnboardingData };
+  businessDetails: { data: OnboardingData };
+  documents: { uploads: DocumentUploads };
+  agreement: { accepted: boolean };
+};
+
+interface WelcomeStepProps {
+  onNext: () => void;
+  inviteCode: string | null;
+}
+
+interface UserTypeStepProps {
+  userData: OnboardingData;
+  setUserData: OnboardingSetter;
+  onNext: () => void;
+  onBack: () => void;
+}
+
+interface PersonalInfoStepProps {
+  userData: OnboardingData;
+  setUserData: OnboardingSetter;
+  onNext: () => void;
+  onBack: () => void;
+}
+
+interface BusinessDetailsStepProps {
+  userData: OnboardingData;
+  setUserData: OnboardingSetter;
+  onNext: () => void;
+  onBack: () => void;
+  onSkip: () => void;
+}
+
+interface DocumentsStepProps {
+  userData: OnboardingData;
+  onNext: (uploads: DocumentUploads) => Promise<void> | void;
+  onBack: () => void;
+  onSkip: () => void;
+}
+
+interface DocumentUploadFieldProps {
+  label: string;
+  accept: string;
+  onChange: (file: UploadFile) => void;
+}
+
+interface AgreementStepProps {
+  onNext: () => void;
+  onBack: () => void;
+}
+
+interface CompletionStepProps {
+  userData: OnboardingData;
+  onComplete: () => Promise<void> | void;
+  loading: boolean;
+}
+
+const USER_TYPES: UserType[] = [
   { value: 'customer', label: '🛒 Customer', description: 'Shop and receive deliveries' },
   { value: 'driver', label: '🚗 Driver', description: 'Deliver orders and earn money' },
   { value: 'store_staff', label: '🏪 Store Staff', description: 'Manage store operations' },
@@ -32,7 +115,7 @@ const USER_TYPES = [
   { value: 'partner', label: '🤝 Partner Business', description: 'Integrate your business' },
 ];
 
-const steps = [
+const steps: Step[] = [
   { id: 1, name: 'Welcome', icon: '👋' },
   { id: 2, name: 'User Type', icon: '👤' },
   { id: 3, name: 'Personal Info', icon: '📝' },
@@ -62,39 +145,39 @@ export default function UniversalOnboarding() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Initialize onboarding session
+  // Initialize onboarding session on mount
   useEffect(() => {
-    initiateOnboarding();
-  }, []);
+    const initiateOnboarding = async () => {
+      try {
+  const response = await globalThis.fetch('http://localhost:4070/api/onboarding/universal/initiate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            inviteCode: inviteCode,
+            timestamp: new Date().toISOString()
+          })
+        });
 
-  const initiateOnboarding = async () => {
-    try {
-      const response = await fetch('http://localhost:4070/api/onboarding/universal/initiate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          inviteCode: inviteCode,
-          timestamp: new Date().toISOString()
-        })
-      });
-      
-      const data = await response.json();
-      setOnboardingId(data.onboarding.id);
-    } catch (err) {
-      console.error('Failed to initiate onboarding:', err);
-      // Continue anyway - offline mode
-      setOnboardingId(`offline-${Date.now()}`);
-    }
-  };
+        const data = await response.json();
+        setOnboardingId(data.onboarding.id);
+      } catch (err) {
+        console.error('Failed to initiate onboarding:', err);
+        // Continue anyway - offline mode
+        setOnboardingId(`offline-${Date.now()}`);
+      }
+    };
+
+    initiateOnboarding();
+  }, [inviteCode]);
 
   const nextStep = () => setCurrentStep(prev => Math.min(prev + 1, 7));
   const prevStep = () => setCurrentStep(prev => Math.max(prev - 1, 1));
 
-  const updateStep = async (stepName: string, stepData: any) => {
+  const updateStep = async <K extends StepName>(stepName: K, stepData: StepUpdatePayloadMap[K]) => {
     if (!onboardingId || onboardingId.startsWith('offline')) return;
 
     try {
-      await fetch(`http://localhost:4070/api/onboarding/${onboardingId}/step/${stepName}`, {
+      await globalThis.fetch(`http://localhost:4070/api/onboarding/${onboardingId}/step/${stepName}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(stepData)
@@ -109,7 +192,7 @@ export default function UniversalOnboarding() {
     try {
       setLoading(true);
       
-      await fetch(`http://localhost:4070/api/onboarding/${onboardingId}/complete`, {
+  await globalThis.fetch(`http://localhost:4070/api/onboarding/${onboardingId}/complete`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -119,9 +202,9 @@ export default function UniversalOnboarding() {
       });
 
       // Save to localStorage for demo
-      localStorage.setItem('azoraUser', JSON.stringify(userData));
-      localStorage.setItem('userEmail', userData.email);
-      localStorage.setItem('onboardingComplete', 'true');
+  globalThis.localStorage.setItem('azoraUser', JSON.stringify(userData));
+  globalThis.localStorage.setItem('userEmail', userData.email);
+  globalThis.localStorage.setItem('onboardingComplete', 'true');
       
       setLoading(false);
       
@@ -155,7 +238,7 @@ export default function UniversalOnboarding() {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-2">🌍 Azora OS</h1>
-          <p className="text-white/70">Africa's First Self-Improving Autonomous Platform</p>
+          <p className="text-white/70">Africa&apos;s First Self-Improving Autonomous Platform</p>
         </div>
 
         {/* Progress Bar */}
@@ -241,7 +324,7 @@ export default function UniversalOnboarding() {
             {currentStep === 5 && (
               <DocumentsStep
                 userData={userData}
-                onNext={async (uploads: any) => {
+                onNext={async uploads => {
                   await updateStep('documents', { uploads });
                   nextStep();
                 }}
@@ -251,7 +334,6 @@ export default function UniversalOnboarding() {
             )}
             {currentStep === 6 && (
               <AgreementStep
-                userData={userData}
                 onNext={async () => {
                   await updateStep('agreement', { accepted: true });
                   nextStep();
@@ -283,15 +365,15 @@ export default function UniversalOnboarding() {
 // STEP COMPONENTS
 // ============================================================================
 
-function WelcomeStep({ onNext, inviteCode }: any) {
+function WelcomeStep({ onNext, inviteCode }: WelcomeStepProps) {
   return (
     <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 text-white">
       <h1 className="text-4xl font-bold mb-4">
         👋 Welcome to Azora OS!
       </h1>
       <p className="text-xl mb-6">
-        Join Africa's first self-improving autonomous platform. Whether you're a customer,
-        driver, store staff, vendor, or business partner - we're excited to have you!
+        Join Africa&apos;s first self-improving autonomous platform. Whether you&apos;re a customer,
+        driver, store staff, vendor, or business partner - we&apos;re excited to have you!
       </p>
       
       {inviteCode && (
@@ -301,7 +383,7 @@ function WelcomeStep({ onNext, inviteCode }: any) {
       )}
       
       <div className="bg-purple-900/30 rounded-xl p-6 mb-6">
-        <h2 className="text-2xl font-semibold mb-4">What You'll Get:</h2>
+        <h2 className="text-2xl font-semibold mb-4">What You&apos;ll Get:</h2>
         
         <div className="space-y-3">
           <div className="flex items-start">
@@ -340,7 +422,7 @@ function WelcomeStep({ onNext, inviteCode }: any) {
       
       <div className="bg-blue-900/30 rounded-xl p-6 mb-8">
         <p className="text-sm">
-          <strong>This process takes about 5-10 minutes.</strong> We'll collect some basic
+          <strong>This process takes about 5-10 minutes.</strong> We&apos;ll collect some basic
           information to set up your account and get you started.
         </p>
       </div>
@@ -349,14 +431,14 @@ function WelcomeStep({ onNext, inviteCode }: any) {
         onClick={onNext}
         className="w-full bg-gradient-to-r from-green-400 to-blue-500 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:scale-105 transition"
       >
-        Let's Get Started! 🚀
+        Let&apos;s Get Started! 🚀
       </button>
     </div>
   );
 }
 
-function UserTypeStep({ userData, setUserData, onNext, onBack }: any) {
-  const [selected, setSelected] = useState(userData.userType);
+function UserTypeStep({ userData, setUserData, onNext, onBack }: UserTypeStepProps) {
+  const [selected, setSelected] = useState<OnboardingData['userType']>(userData.userType);
 
   return (
     <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 text-white">
@@ -409,15 +491,12 @@ function UserTypeStep({ userData, setUserData, onNext, onBack }: any) {
   );
 }
 
-function PersonalInfoStep({ userData, setUserData, onNext, onBack }: any) {
-  const [isValid, setIsValid] = useState(false);
-
-  useEffect(() => {
-    const valid = userData.fullName.length > 2 && 
-                  userData.email.includes('@') && 
-                  userData.phone.length >= 10;
-    setIsValid(valid);
-  }, [userData]);
+function PersonalInfoStep({ userData, setUserData, onNext, onBack }: PersonalInfoStepProps) {
+  const isValid = useMemo(() => {
+    return userData.fullName.length > 2 && 
+           userData.email.includes('@') && 
+           userData.phone.length >= 10;
+  }, [userData.fullName, userData.email, userData.phone]);
 
   return (
     <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 text-white">
@@ -473,7 +552,7 @@ function PersonalInfoStep({ userData, setUserData, onNext, onBack }: any) {
         
         {userData.userType === 'driver' && (
           <div>
-            <label className="block text-sm font-semibold mb-2">Driver's License Number</label>
+            <label className="block text-sm font-semibold mb-2">Driver&apos;s License Number</label>
             <input
               type="text"
               value={userData.driverLicense || ''}
@@ -504,7 +583,7 @@ function PersonalInfoStep({ userData, setUserData, onNext, onBack }: any) {
   );
 }
 
-function BusinessDetailsStep({ userData, setUserData, onNext, onBack, onSkip }: any) {
+function BusinessDetailsStep({ userData, setUserData, onNext, onBack, onSkip }: BusinessDetailsStepProps) {
   const needsBusinessDetails = ['store_staff', 'vendor', 'partner'].includes(userData.userType);
 
   if (!needsBusinessDetails) {
@@ -581,8 +660,8 @@ function BusinessDetailsStep({ userData, setUserData, onNext, onBack, onSkip }: 
   );
 }
 
-function DocumentsStep({ userData, onNext, onBack, onSkip }: any) {
-  const [uploads, setUploads] = useState<any>({});
+function DocumentsStep({ userData, onNext, onBack, onSkip }: DocumentsStepProps) {
+  const [uploads, setUploads] = useState<DocumentUploads>({});
 
   return (
     <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 text-white">
@@ -596,14 +675,14 @@ function DocumentsStep({ userData, onNext, onBack, onSkip }: any) {
         <DocumentUploadField
           label="ID Document (Optional)"
           accept=".pdf,.jpg,.png"
-          onChange={(file: File) => setUploads({ ...uploads, id: file })}
+          onChange={(file: UploadFile) => setUploads(prev => ({ ...prev, id: file }))}
         />
         
         {userData.userType === 'driver' && (
           <DocumentUploadField
-            label="Driver's License (Optional)"
+            label="Driver&apos;s License (Optional)"
             accept=".pdf,.jpg,.png"
-            onChange={(file: File) => setUploads({ ...uploads, license: file })}
+            onChange={(file: UploadFile) => setUploads(prev => ({ ...prev, license: file }))}
           />
         )}
         
@@ -639,15 +718,18 @@ function DocumentsStep({ userData, onNext, onBack, onSkip }: any) {
   );
 }
 
-function DocumentUploadField({ label, accept, onChange }: any) {
-  const [file, setFile] = useState<File | null>(null);
+function DocumentUploadField({ label, accept, onChange }: DocumentUploadFieldProps) {
+  const [file, setFile] = useState<UploadFile | null>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
+  const handleChange = (event: ChangeEvent<InputElement>) => {
+    const selectedFile = event.target.files?.[0] ?? null;
     if (selectedFile) {
       setFile(selectedFile);
       onChange(selectedFile);
+      return;
     }
+
+    setFile(null);
   };
 
   return (
@@ -666,7 +748,7 @@ function DocumentUploadField({ label, accept, onChange }: any) {
   );
 }
 
-function AgreementStep({ userData, onNext, onBack }: any) {
+function AgreementStep({ onNext, onBack }: AgreementStepProps) {
   const [accepted, setAccepted] = useState(false);
 
   return (
@@ -750,13 +832,13 @@ function AgreementStep({ userData, onNext, onBack }: any) {
   );
 }
 
-function CompletionStep({ userData, onComplete, loading }: any) {
+function CompletionStep({ userData, onComplete, loading }: CompletionStepProps) {
   return (
     <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 text-white text-center">
       <div className="text-6xl mb-6">🎉</div>
       <h1 className="text-4xl font-bold mb-4">Welcome to Azora OS!</h1>
       <p className="text-xl mb-8">
-        Your account is ready. Let's get started!
+        Your account is ready. Let&apos;s get started!
       </p>
       
       <div className="bg-green-900/30 rounded-xl p-6 mb-8 text-left">
@@ -786,7 +868,7 @@ function CompletionStep({ userData, onComplete, loading }: any) {
         disabled={loading}
         className="w-full bg-gradient-to-r from-green-400 to-blue-500 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:scale-105 transition disabled:opacity-50"
       >
-        {loading ? 'Setting up your account...' : 'Go to Dashboard 🚀'}
+  {loading ? 'Setting up your account...' : 'Go to Dashboard 🚀'}
       </button>
       
       <p className="text-sm text-gray-400 mt-6">

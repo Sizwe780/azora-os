@@ -6,7 +6,7 @@ export function ProposalVolumeChart() {
   const { metrics } = useMetrics();
   const data = Array.from({ length: 10 }).map((_, i) => ({
     time: `${i}m`,
-    proposals: Math.floor(Math.random() * 10) + metrics.proposals,
+    proposals: Math.max(metrics.proposals - i * 3, 0),
   }));
 
   return (

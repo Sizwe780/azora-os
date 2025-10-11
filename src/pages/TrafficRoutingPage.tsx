@@ -1,5 +1,4 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Navigation, MapPin, AlertTriangle, TrendingDown, Fuel, Clock, Activity } from 'lucide-react';
 import axios from 'axios';
@@ -34,27 +33,26 @@ export default function TrafficRoutingPage() {
   const [avoidTolls, setAvoidTolls] = useState(false);
 
   // Current trip monitoring
-  const [currentTrip, setCurrentTrip] = useState<any>(null);
+  interface CurrentTrip {
+    routeId: string;
+    startTime: string;
+    status: 'in_progress' | 'completed' | 'pending';
+  }
+
+  const [currentTrip, setCurrentTrip] = useState<CurrentTrip | null>(null);
   const [riskScore, setRiskScore] = useState(0);
   const [riskyBehaviors, setRiskyBehaviors] = useState<string[]>([]);
 
   useEffect(() => {
     fetchTrafficAlerts();
-    // Simulate real-time monitoring
-    const interval = setInterval(() => {
-      if (currentTrip) {
-        fetchTripMonitoring();
-      }
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [currentTrip]);
+  }, []);
 
   const fetchTrafficAlerts = async () => {
     try {
       const response = await axios.get('http://localhost:4088/api/traffic/alerts');
       setTrafficAlerts(response.data.alerts || []);
     } catch (error) {
+      console.error('Fetching traffic alerts failed:', error);
       // Demo alerts
       setTrafficAlerts([
         {
@@ -96,6 +94,7 @@ export default function TrafficRoutingPage() {
       setRoutes(response.data.routes || []);
       toast.success('Routes calculated!');
     } catch (error) {
+      console.error('Route calculation failed:', error);
       // Demo routes
       setRoutes([
         {
@@ -142,12 +141,15 @@ export default function TrafficRoutingPage() {
     toast.success(`Started ${route.name}`);
   };
 
-  const fetchTripMonitoring = async () => {
+  const fetchTripMonitoring = useCallback(async () => {
+    if (!currentTrip) return;
+
     try {
       const response = await axios.get(`http://localhost:4088/api/trip-monitor/${currentTrip.routeId}`);
       setRiskScore(response.data.riskScore || 0);
       setRiskyBehaviors(response.data.riskyBehaviors || []);
     } catch (error) {
+      console.error('Trip monitoring failed:', error);
       // Demo monitoring
       const demoRisk = Math.random() * 100;
       setRiskScore(demoRisk);
@@ -157,7 +159,20 @@ export default function TrafficRoutingPage() {
         setRiskyBehaviors([]);
       }
     }
-  };
+  }, [currentTrip]);
+
+  useEffect(() => {
+    const scheduleMonitoring = () => {
+      setTimeout(() => {
+        void fetchTripMonitoring();
+      }, 0);
+    };
+
+    scheduleMonitoring();
+    const interval = setInterval(scheduleMonitoring, 5000);
+
+    return () => clearInterval(interval);
+  }, [fetchTripMonitoring]);
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {

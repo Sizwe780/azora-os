@@ -1,10 +1,10 @@
 # WRewards Coupon Popup Component
 
-This component implements a modular, visually engaging coupon popup UI for the Woolworths Voice Copilot & WRewards demo (Scenario 1).
+This component implements a modular, visually engaging coupon popup UI for the Retail Partner Voice Copilot & WRewards demo (Scenario 1).
 
 ## Features
 
-- ✅ **Woolworths Branding**: Green color scheme matching Woolworths brand
+- ✅ **Retail Partner Branding**: Green color scheme matching Retail Partner brand
 - ✅ **Multiple Categories**: Different gradient colors for groceries, apparel, and general coupons
 - ✅ **Animated Popup**: Smooth fade-in and scale-in animations with bouncy effect
 - ✅ **Auto-dismiss**: Automatically closes after 8 seconds
@@ -62,7 +62,7 @@ function YourComponent() {
 
 The component includes 3 mock coupons:
 1. **20% Off Premium Apparel** - Purple/Pink gradient
-2. **R50 Off Groceries** - Green gradient (Woolworths signature)
+2. **R50 Off Groceries** - Green gradient (Retail Partner signature)
 3. **Free Delivery** - Blue gradient
 
 ## Demo
@@ -77,4 +77,4 @@ Then open http://localhost:5173 to interact with the coupon simulator.
 
 ## Scenario Context
 
-This component is part of Scenario 1 for the Woolworths FY2025 demo, where customers earn WRewards coupons by engaging with the Voice Copilot for product recommendations, dietary preferences, and shopping assistance in the Apparel section.
+This component is part of Scenario 1 for the Retail Partner FY2025 demo, where customers earn WRewards coupons by engaging with the Voice Copilot for product recommendations, dietary preferences, and shopping assistance in the Apparel section.

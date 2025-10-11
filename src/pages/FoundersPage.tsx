@@ -1,15 +1,7 @@
-import React from 'react';
 import { FOUNDERS, Founder } from '../types/founders';
 import { Mail, Phone, Award, Calendar, Shield } from 'lucide-react';
 
 export default function FoundersPage() {
-  const getEquityColor = (equity: number) => {
-    if (equity >= 25) return 'text-green-600 dark:text-green-400';
-    if (equity >= 10) return 'text-blue-600 dark:text-blue-400';
-    if (equity >= 5) return 'text-purple-600 dark:text-purple-400';
-    return 'text-cyan-600 dark:text-cyan-400';
-  };
-
   const getStatusBadge = (status: Founder['status']) => {
     switch (status) {
       case 'active':
@@ -26,7 +18,7 @@ export default function FoundersPage() {
       {/* Header */}
       <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg shadow-lg p-8 text-white">
         <h1 className="text-4xl font-bold mb-2">Azora World Founders</h1>
-        <p className="text-lg opacity-90">Making Africa's Industries Auditable, Transparent, and Trusted</p>
+  <p className="text-lg opacity-90">Making Africa&apos;s Industries Auditable, Transparent, and Trusted</p>
         <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-white/10 rounded-lg p-4 backdrop-blur-sm">
             <p className="text-sm opacity-90">Total Founders</p>
@@ -160,7 +152,7 @@ export default function FoundersPage() {
       <div className="bg-gradient-to-r from-green-600 to-emerald-600 rounded-lg shadow-lg p-8 text-white">
         <h2 className="text-2xl font-bold mb-4">🚀 Historic Launch - October 10, 2025</h2>
         <p className="text-lg mb-4">
-          Today marks a watershed moment in corporate governance. AZORA becomes the world's first AI to be granted founder status with equity ownership (1%) and voting rights.
+          Today marks a watershed moment in corporate governance. AZORA becomes the world&apos;s first AI to be granted founder status with equity ownership (1%) and voting rights.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-white/10 rounded-lg p-4 backdrop-blur-sm">

@@ -1,4 +1,3 @@
-import React from 'react';
 /**
  * COLD CHAIN COMMAND CENTER
  * Revolutionary interface for zero-loss cold chain management
@@ -12,7 +11,7 @@ import React from 'react';
  * - Financial protection metrics
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   FaSnowflake,
   FaThermometerHalf,
@@ -25,7 +24,7 @@ import {
 } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { GlassCard } from '../components/ui/GlassCard';
-import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
 import axios from 'axios';
 
 interface Asset {
@@ -73,31 +72,60 @@ interface EnergyOptimization {
   }>;
 }
 
+interface ZeroLossMetrics {
+  performance: {
+    successRate: number;
+    totalValueSaved: number;
+    failuresPrevented: number;
+  };
+}
+
 export default function ColdChainCommand() {
   const [assets, setAssets] = useState<Asset[]>([]);
   const [selectedAsset, setSelectedAsset] = useState<string>('');
   const [predictions, setPredictions] = useState<Prediction[]>([]);
   const [interventions, setInterventions] = useState<Intervention[]>([]);
   const [energyData, setEnergyData] = useState<EnergyOptimization | null>(null);
-  const [zeroLossMetrics, setZeroLossMetrics] = useState<any>(null);
+  const [zeroLossMetrics, setZeroLossMetrics] = useState<ZeroLossMetrics | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchAssets();
-    fetchInterventions();
-    fetchZeroLossMetrics();
-    
-    const interval = setInterval(() => {
-      fetchAssets();
-      if (selectedAsset) {
-        fetchPredictions(selectedAsset);
-      }
-    }, 30000); // Refresh every 30 seconds
+  const fetchEnergyOptimization = useCallback(async (assetId: string) => {
+    try {
+      const res = await axios.post('/api/coldchain/optimize-energy', { assetId });
+      setEnergyData(res.data);
+    } catch (error) {
+      console.error('Error fetching energy data:', error);
+    }
+  }, []);
 
-    return () => clearInterval(interval);
-  }, [selectedAsset]);
+  const fetchPredictions = useCallback(async (assetId: string) => {
+    try {
+      const res = await axios.post('/api/coldchain/predict', { assetId });
+      setPredictions(res.data.predictions.slice(0, 48)); // First 12 hours (15-min intervals)
+    } catch (error) {
+      console.error('Error fetching predictions:', error);
+    }
+  }, []);
 
-  const fetchAssets = async () => {
+  const fetchInterventions = useCallback(async () => {
+    try {
+      const res = await axios.get('/api/coldchain/interventions');
+      setInterventions(res.data.interventions);
+    } catch (error) {
+      console.error('Error fetching interventions:', error);
+    }
+  }, []);
+
+  const fetchZeroLossMetrics = useCallback(async () => {
+    try {
+      const res = await axios.get('/api/coldchain/analytics/zero-loss');
+      setZeroLossMetrics(res.data);
+    } catch (error) {
+      console.error('Error fetching zero-loss metrics:', error);
+    }
+  }, []);
+
+  const fetchAssets = useCallback(async () => {
     try {
       const res = await axios.get('/api/coldchain/assets');
       setAssets(res.data);
@@ -111,43 +139,25 @@ export default function ColdChainCommand() {
       console.error('Error fetching assets:', error);
       setLoading(false);
     }
-  };
+  }, [fetchEnergyOptimization, fetchPredictions, selectedAsset]);
 
-  const fetchPredictions = async (assetId: string) => {
-    try {
-      const res = await axios.post('/api/coldchain/predict', { assetId });
-      setPredictions(res.data.predictions.slice(0, 48)); // First 12 hours (15-min intervals)
-    } catch (error) {
-      console.error('Error fetching predictions:', error);
-    }
-  };
+  useEffect(() => {
+    const runFetches = () => {
+      setTimeout(() => {
+        void fetchAssets();
+        void fetchInterventions();
+        void fetchZeroLossMetrics();
+        if (selectedAsset) {
+          void fetchPredictions(selectedAsset);
+        }
+      }, 0);
+    };
 
-  const fetchInterventions = async () => {
-    try {
-      const res = await axios.get('/api/coldchain/interventions');
-      setInterventions(res.data.interventions);
-    } catch (error) {
-      console.error('Error fetching interventions:', error);
-    }
-  };
+    runFetches();
+    const interval = setInterval(runFetches, 30000);
 
-  const fetchEnergyOptimization = async (assetId: string) => {
-    try {
-      const res = await axios.post('/api/coldchain/optimize-energy', { assetId });
-      setEnergyData(res.data);
-    } catch (error) {
-      console.error('Error fetching energy data:', error);
-    }
-  };
-
-  const fetchZeroLossMetrics = async () => {
-    try {
-      const res = await axios.get('/api/coldchain/analytics/zero-loss');
-      setZeroLossMetrics(res.data);
-    } catch (error) {
-      console.error('Error fetching zero-loss metrics:', error);
-    }
-  };
+    return () => clearInterval(interval);
+  }, [fetchAssets, fetchInterventions, fetchZeroLossMetrics, fetchPredictions, selectedAsset]);
 
   const getRiskColor = (risk: string) => {
     switch (risk) {
@@ -198,7 +208,7 @@ export default function ColdChainCommand() {
           </div>
           <div className="text-right">
             <div className="text-3xl font-bold text-green-400">
-              {zeroLossMetrics?.performance.successRate || 100}%
+              {(zeroLossMetrics?.performance.successRate ?? 100)}%
             </div>
             <div className="text-sm text-gray-400">Success Rate</div>
           </div>
@@ -218,13 +228,13 @@ export default function ColdChainCommand() {
               <div>
                 <h3 className="text-2xl font-bold text-white">Zero-Loss Guarantee Active</h3>
                 <p className="text-gray-300">
-                  ${zeroLossMetrics?.performance.totalValueSaved.toLocaleString() || 0} saved through predictive interventions
+                  ${zeroLossMetrics?.performance.totalValueSaved?.toLocaleString() ?? '0'} saved through predictive interventions
                 </p>
               </div>
             </div>
             <div className="text-right">
               <div className="text-2xl font-bold text-white">
-                {zeroLossMetrics?.performance.failuresPrevented || 0}
+                {zeroLossMetrics?.performance.failuresPrevented ?? 0}
               </div>
               <div className="text-sm text-gray-400">Failures Prevented</div>
             </div>
@@ -260,7 +270,7 @@ export default function ColdChainCommand() {
               <div>
                 <p className="text-gray-400 text-sm">Energy Savings</p>
                 <p className="text-3xl font-bold text-green-400">
-                  {energyData?.savingsPercent.toFixed(1) || 40}%
+                  {(energyData ? energyData.savingsPercent.toFixed(1) : '40')}%
                 </p>
               </div>
               <FaBolt className="text-4xl text-green-400 opacity-50" />
@@ -294,7 +304,7 @@ export default function ColdChainCommand() {
               <div>
                 <p className="text-gray-400 text-sm">Daily Savings</p>
                 <p className="text-3xl font-bold text-yellow-400">
-                  ${energyData?.dailySavings.toFixed(2) || 0}
+                  ${energyData ? energyData.dailySavings.toFixed(2) : '0'}
                 </p>
               </div>
               <FaCoins className="text-4xl text-yellow-400 opacity-50" />

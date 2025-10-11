@@ -1,27 +1,121 @@
-import React from 'react';
+/* global File, HTMLInputElement */
+import React, { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
 /**
  * Founder Onboarding Wizard
- * 
+ *
  * Complete onboarding flow for founders including contract signing.
  * Triggered on first login for founders who haven't completed onboarding.
- * 
+ *
  * Copyright (c) 2025 Sizwe Ngwenya (Azora World)
  */
-
-import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import SignaturePad from '../../components/signature/SignaturePad';
 
-interface FounderData {
+interface FounderDetails {
   name: string;
   email: string;
   role: string;
-  equity: string;
+  equity: number;
   idNumber: string;
 }
 
-const steps = [
+interface FounderApiResponse {
+  isFounder: boolean;
+  needsOnboarding: boolean;
+  user: {
+    name: string;
+    email: string;
+    role: string;
+    equityPercentage?: number;
+  };
+}
+
+interface OnboardingInitiationResponse {
+  onboarding: {
+    id: string;
+  };
+}
+
+interface ContractSigner {
+  name: string;
+  email: string;
+  role: string;
+}
+
+interface GeneratedContract {
+  id: string;
+  contractText: string;
+}
+
+interface GeneratedContractResponse {
+  contract: GeneratedContract;
+}
+
+interface SignedContractResponse {
+  success: boolean;
+}
+
+interface DocumentUploads {
+  id: File | null;
+  proofOfAddress: File | null;
+  taxCert: File | null;
+}
+
+type StepUpdater = (stepName: string, stepData: Record<string, unknown>) => Promise<void>;
+
+interface StepDefinition {
+  id: number;
+  name: string;
+  icon: string;
+}
+
+type StepAction = () => void | Promise<void>;
+
+interface WelcomeStepProps {
+  founderData: FounderDetails;
+  onNext: StepAction;
+}
+
+interface PersonalInfoStepProps {
+  founderData: FounderDetails;
+  setFounderData: Dispatch<SetStateAction<FounderDetails>>;
+  onNext: StepAction;
+  onBack: () => void;
+}
+
+interface DocumentsStepProps {
+  onNext: (uploads: DocumentUploads) => void | Promise<void>;
+  onBack: () => void;
+}
+
+interface DocumentUploadFieldProps {
+  label: string;
+  accept: string;
+  onChange: (file: File) => void;
+}
+
+interface ContractSigningStepProps {
+  title?: string;
+  contractType: string;
+  founderData: FounderDetails;
+  onNext: (contractId: string) => void | Promise<void>;
+  onBack: () => void;
+}
+
+interface AcknowledgmentStepProps {
+  title: string;
+  content: string;
+  onNext: StepAction;
+  onBack: () => void;
+}
+
+interface CompletionStepProps {
+  founderData: FounderDetails;
+  onComplete: StepAction;
+}
+
+const steps: StepDefinition[] = [
   { id: 1, name: 'Welcome', icon: '🎉' },
   { id: 2, name: 'Personal Info', icon: '👤' },
   { id: 3, name: 'Documents', icon: '📄' },
@@ -34,28 +128,44 @@ const steps = [
 
 export default function FounderOnboarding() {
   const navigate = useNavigate();
-  const [currentStep, setCurrentStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState(1);
   const [onboardingId, setOnboardingId] = useState<string | null>(null);
-  const [founderData, setFounderData] = useState({
+  const [founderData, setFounderData] = useState<FounderDetails>({
     name: '',
     email: '',
     role: 'Founder',
     equity: 0,
     idNumber: ''
   });
-  const [contracts, setContracts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Check if user is founder and initialize onboarding
-  useEffect(() => {
-    checkFounderStatus();
+  const initiateOnboarding = useCallback(async (email: string, data: FounderDetails) => {
+    if (typeof globalThis.fetch !== 'function') {
+      throw new Error('Fetch API is unavailable');
+    }
+
+    try {
+      const response = await globalThis.fetch('http://localhost:4070/api/onboarding/founder/initiate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          founderData: data,
+        }),
+      });
+
+      const dataResponse = (await response.json()) as OnboardingInitiationResponse;
+      setOnboardingId(dataResponse.onboarding.id);
+    } catch (err) {
+      console.error('Failed to initiate onboarding:', err);
+    }
   }, []);
 
-  const checkFounderStatus = async () => {
+  const checkFounderStatus = useCallback(async () => {
     try {
       // Get user email from auth context or localStorage
-      const userEmail = localStorage.getItem('userEmail') || 'sizwe.ngwenya@azora.world';
+      const userEmail = globalThis.localStorage?.getItem('userEmail') || 'sizwe.ngwenya@azora.world';
       
       // Check if email is @azora.world
       if (!userEmail.toLowerCase().endsWith('@azora.world')) {
@@ -65,8 +175,14 @@ export default function FounderOnboarding() {
       }
 
       // Check onboarding status
-      const response = await fetch(`http://localhost:4070/api/onboarding/check/${encodeURIComponent(userEmail)}`);
-      const data = await response.json();
+      if (typeof globalThis.fetch !== 'function') {
+        throw new Error('Fetch API is unavailable');
+      }
+
+      const response = await globalThis.fetch(
+        `http://localhost:4070/api/onboarding/check/${encodeURIComponent(userEmail)}`
+      );
+      const data = (await response.json()) as FounderApiResponse;
 
       if (!data.isFounder) {
         setError('Access denied: Not a founder');
@@ -74,17 +190,26 @@ export default function FounderOnboarding() {
         return;
       }
 
-      // Set founder data from backend
-      setFounderData(prev => ({
-        ...prev,
+      const normalizedFounder: Omit<FounderDetails, 'idNumber'> = {
         name: data.user.name,
         email: data.user.email,
         role: data.user.role,
-        equity: data.user.equityPercentage || 0
-      }));
+        equity: data.user.equityPercentage ?? 0,
+      };
 
-      if (data.needsOnboarding) {
-        await initiateOnboarding(userEmail);
+      let onboardingPayload: FounderDetails | null = null;
+      setFounderData(prev => {
+        const updated: FounderDetails = {
+          ...prev,
+          ...normalizedFounder,
+          idNumber: prev.idNumber,
+        };
+        onboardingPayload = updated;
+        return updated;
+      });
+
+      if (data.needsOnboarding && onboardingPayload) {
+        await initiateOnboarding(userEmail, onboardingPayload);
       } else {
         navigate('/dashboard');
       }
@@ -95,33 +220,24 @@ export default function FounderOnboarding() {
       setLoading(false);
       console.error(err);
     }
-  };
+  }, [initiateOnboarding, navigate]);
 
-  const initiateOnboarding = async (email: string) => {
-    try {
-      const response = await fetch('http://localhost:4070/api/onboarding/founder/initiate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: email,
-          founderData: founderData
-        })
-      });
-      
-      const data = await response.json();
-      setOnboardingId(data.onboarding.id);
-    } catch (err) {
-      console.error('Failed to initiate onboarding:', err);
-    }
-  };
+  // Check if user is founder and initialize onboarding
+  useEffect(() => {
+    void checkFounderStatus();
+  }, [checkFounderStatus]);
 
   const nextStep = () => setCurrentStep(prev => Math.min(prev + 1, 8));
   const prevStep = () => setCurrentStep(prev => Math.max(prev - 1, 1));
 
-  const updateStep = async (stepName: string, stepData: any) => {
+  const updateStep: StepUpdater = async (stepName, stepData) => {
     if (!onboardingId) return;
 
-    await fetch(`http://localhost:4070/api/onboarding/${onboardingId}/step/${stepName}`, {
+    if (typeof globalThis.fetch !== 'function') {
+      throw new Error('Fetch API is unavailable');
+    }
+
+    await globalThis.fetch(`http://localhost:4070/api/onboarding/${onboardingId}/step/${stepName}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(stepData)
@@ -214,7 +330,7 @@ export default function FounderOnboarding() {
             )}
             {currentStep === 3 && (
               <DocumentsStep
-                onNext={async (uploads: any) => {
+                onNext={async (uploads: DocumentUploads) => {
                   await updateStep('documents', { uploads });
                   nextStep();
                 }}
@@ -222,7 +338,8 @@ export default function FounderOnboarding() {
               />
             )}
             {currentStep === 4 && (
-                            <ContractSigningStep
+              <ContractSigningStep
+                title="Founder Contract"
                 contractType="Founder Contract"
                 founderData={founderData}
                 onNext={async (contractId: string) => {
@@ -233,7 +350,8 @@ export default function FounderOnboarding() {
               />
             )}
             {currentStep === 5 && (
-                            <ContractSigningStep
+              <ContractSigningStep
+                title="Financial Discipline Statement"
                 contractType="Financial Discipline Statement"
                 founderData={founderData}
                 onNext={async (contractId: string) => {
@@ -285,7 +403,7 @@ export default function FounderOnboarding() {
 // STEP COMPONENTS
 // ============================================================================
 
-function WelcomeStep({ founderData, onNext }: any) {
+function WelcomeStep({ founderData, onNext }: WelcomeStepProps) {
   return (
     <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 text-white">
       <h1 className="text-4xl font-bold mb-4">
@@ -343,16 +461,16 @@ function WelcomeStep({ founderData, onNext }: any) {
       </div>
       
       <button
-        onClick={onNext}
+        onClick={() => { void onNext(); }}
         className="w-full bg-gradient-to-r from-green-400 to-blue-500 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:scale-105 transition"
       >
-        Let's Begin! 🚀
+        Let&apos;s Begin! 🚀
       </button>
     </div>
   );
 }
 
-function PersonalInfoStep({ founderData, setFounderData, onNext, onBack }: any) {
+function PersonalInfoStep({ founderData, setFounderData, onNext, onBack }: PersonalInfoStepProps) {
   return (
     <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 text-white">
       <h2 className="text-3xl font-bold mb-6">👤 Personal Information</h2>
@@ -363,7 +481,7 @@ function PersonalInfoStep({ founderData, setFounderData, onNext, onBack }: any) 
           <input
             type="text"
             value={founderData.name}
-            onChange={(e) => setFounderData({ ...founderData, name: e.target.value })}
+            onChange={(e) => setFounderData(prev => ({ ...prev, name: e.target.value }))}
             className="w-full bg-white/10 border border-white/30 rounded-lg px-4 py-3 text-white"
           />
         </div>
@@ -373,7 +491,7 @@ function PersonalInfoStep({ founderData, setFounderData, onNext, onBack }: any) 
           <input
             type="text"
             value={founderData.idNumber}
-            onChange={(e) => setFounderData({ ...founderData, idNumber: e.target.value })}
+            onChange={(e) => setFounderData(prev => ({ ...prev, idNumber: e.target.value }))}
             placeholder="e.g., 9501015800083"
             className="w-full bg-white/10 border border-white/30 rounded-lg px-4 py-3 text-white"
           />
@@ -384,7 +502,7 @@ function PersonalInfoStep({ founderData, setFounderData, onNext, onBack }: any) 
           <input
             type="email"
             value={founderData.email}
-            onChange={(e) => setFounderData({ ...founderData, email: e.target.value })}
+            onChange={(e) => setFounderData(prev => ({ ...prev, email: e.target.value }))}
             className="w-full bg-white/10 border border-white/30 rounded-lg px-4 py-3 text-white"
           />
         </div>
@@ -408,7 +526,7 @@ function PersonalInfoStep({ founderData, setFounderData, onNext, onBack }: any) 
           Back
         </button>
         <button
-          onClick={onNext}
+          onClick={() => { void onNext(); }}
           disabled={!founderData.idNumber}
           className="flex-1 bg-gradient-to-r from-green-400 to-blue-500 text-white px-6 py-3 rounded-lg hover:scale-105 transition disabled:opacity-50"
         >
@@ -419,11 +537,11 @@ function PersonalInfoStep({ founderData, setFounderData, onNext, onBack }: any) 
   );
 }
 
-function DocumentsStep({ onNext, onBack }: any) {
-  const [uploads, setUploads] = useState<any>({
+function DocumentsStep({ onNext, onBack }: DocumentsStepProps) {
+  const [uploads, setUploads] = useState<DocumentUploads>({
     id: null,
     proofOfAddress: null,
-    taxCert: null
+    taxCert: null,
   });
 
   return (
@@ -434,19 +552,19 @@ function DocumentsStep({ onNext, onBack }: any) {
         <DocumentUploadField
           label="ID Document (Front & Back)"
           accept=".pdf,.jpg,.png"
-          onChange={(file: File) => setUploads({ ...uploads, id: file })}
+          onChange={(file: File) => setUploads(prev => ({ ...prev, id: file }))}
         />
         
         <DocumentUploadField
           label="Proof of Address (Last 3 months)"
           accept=".pdf,.jpg,.png"
-          onChange={(file: File) => setUploads({ ...uploads, proofOfAddress: file })}
+          onChange={(file: File) => setUploads(prev => ({ ...prev, proofOfAddress: file }))}
         />
         
         <DocumentUploadField
           label="Tax Number Certificate"
           accept=".pdf"
-          onChange={(file: File) => setUploads({ ...uploads, taxCert: file })}
+          onChange={(file: File) => setUploads(prev => ({ ...prev, taxCert: file }))}
         />
       </div>
       
@@ -458,7 +576,7 @@ function DocumentsStep({ onNext, onBack }: any) {
           Back
         </button>
         <button
-          onClick={() => onNext(uploads)}
+          onClick={() => { void onNext(uploads); }}
           disabled={!uploads.id || !uploads.proofOfAddress || !uploads.taxCert}
           className="flex-1 bg-gradient-to-r from-green-400 to-blue-500 text-white px-6 py-3 rounded-lg hover:scale-105 transition disabled:opacity-50"
         >
@@ -469,7 +587,7 @@ function DocumentsStep({ onNext, onBack }: any) {
   );
 }
 
-function DocumentUploadField({ label, accept, onChange }: any) {
+function DocumentUploadField({ label, accept, onChange }: DocumentUploadFieldProps) {
   const [file, setFile] = useState<File | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -496,17 +614,17 @@ function DocumentUploadField({ label, accept, onChange }: any) {
   );
 }
 
-function ContractSigningStep({ title, contractType, founderData, onNext, onBack }: any) {
-  const [contract, setContract] = useState<any>(null);
+function ContractSigningStep({ title, contractType, founderData, onNext, onBack }: ContractSigningStepProps) {
+  const [contract, setContract] = useState<GeneratedContract | null>(null);
   const [hasRead, setHasRead] = useState(false);
   const [showSignature, setShowSignature] = useState(false);
 
-  useEffect(() => {
-    generateContract();
-  }, []);
+  const fetchContract = useCallback(async (): Promise<GeneratedContract> => {
+    if (typeof globalThis.fetch !== 'function') {
+      throw new Error('Fetch API is unavailable');
+    }
 
-  const generateContract = async () => {
-    const response = await fetch('http://localhost:4070/api/onboarding/contracts/generate', {
+    const response = await globalThis.fetch('http://localhost:4070/api/onboarding/contracts/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -520,37 +638,63 @@ function ContractSigningStep({ title, contractType, founderData, onNext, onBack 
           start_date: new Date().toLocaleDateString(),
           signing_date: new Date().toLocaleDateString(),
           signing_location: 'Johannesburg, South Africa',
-          role_responsibilities: 'Vision, Strategy, AI Architecture, Product Design'
+          role_responsibilities: 'Vision, Strategy, AI Architecture, Product Design',
         },
         signers: [
           { name: 'Sizwe Ngwenya', email: 'sizwe.ngwenya@azora.world', role: 'Founder & CEO' },
-          { name: founderData.name, email: founderData.email, role: founderData.role }
-        ]
-      })
+          { name: founderData.name, email: founderData.email, role: founderData.role },
+        ] satisfies ContractSigner[],
+      }),
     });
 
-    const data = await response.json();
-    setContract(data.contract);
-  };
+    const data = (await response.json()) as GeneratedContractResponse;
+    return data.contract;
+  }, [contractType, founderData.email, founderData.equity, founderData.idNumber, founderData.name, founderData.role]);
 
-  const handleSign = async (signature: string) => {
-    const response = await fetch(`http://localhost:4070/api/onboarding/contracts/${contract.id}/sign`, {
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadContract = async () => {
+      try {
+        const generated = await fetchContract();
+        if (isMounted) {
+          setContract(generated);
+        }
+      } catch (err) {
+        console.error('Failed to generate contract:', err);
+      }
+    };
+
+    void loadContract();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [fetchContract]);
+
+  const handleSign = useCallback(async (signature: string) => {
+    if (!contract) return;
+    if (typeof globalThis.fetch !== 'function') {
+      throw new Error('Fetch API is unavailable');
+    }
+
+    const response = await globalThis.fetch(`http://localhost:4070/api/onboarding/contracts/${contract.id}/sign`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         signerEmail: founderData.email,
         signatureImage: signature,
-        ipAddress: '102.65.123.45', // Get real IP
+        ipAddress: '102.65.123.45', // TODO: replace with real IP detection
         location: 'Johannesburg, South Africa',
-        userAgent: navigator.userAgent
-      })
+        userAgent: globalThis.navigator?.userAgent ?? 'unknown',
+      }),
     });
 
-    const data = await response.json();
+    const data = (await response.json()) as SignedContractResponse;
     if (data.success) {
-      onNext(contract.id);
+      await onNext(contract.id);
     }
-  };
+  }, [contract, founderData.email, onNext]);
 
   if (!contract) {
     return <div className="text-white text-center">Generating contract...</div>;
@@ -558,7 +702,7 @@ function ContractSigningStep({ title, contractType, founderData, onNext, onBack 
 
   return (
     <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 text-white">
-      <h2 className="text-3xl font-bold mb-6">📝 {title}</h2>
+      <h2 className="text-3xl font-bold mb-6">📝 {title ?? contractType}</h2>
       
       {!showSignature ? (
         <>
@@ -611,7 +755,7 @@ function ContractSigningStep({ title, contractType, founderData, onNext, onBack 
   );
 }
 
-function AcknowledgmentStep({ title, content, onNext, onBack }: any) {
+function AcknowledgmentStep({ title, content, onNext, onBack }: AcknowledgmentStepProps) {
   const [acknowledged, setAcknowledged] = useState(false);
 
   return (
@@ -644,7 +788,7 @@ function AcknowledgmentStep({ title, content, onNext, onBack }: any) {
           Back
         </button>
         <button
-          onClick={onNext}
+          onClick={() => { void onNext(); }}
           disabled={!acknowledged}
           className="flex-1 bg-gradient-to-r from-green-400 to-blue-500 text-white px-6 py-3 rounded-lg hover:scale-105 transition disabled:opacity-50"
         >
@@ -655,7 +799,7 @@ function AcknowledgmentStep({ title, content, onNext, onBack }: any) {
   );
 }
 
-function CompletionStep({ founderData, onComplete }: any) {
+function CompletionStep({ founderData, onComplete }: CompletionStepProps) {
   return (
     <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 text-white text-center">
       <div className="text-6xl mb-6">🎊</div>
@@ -686,14 +830,14 @@ function CompletionStep({ founderData, onComplete }: any) {
       </div>
       
       <button
-        onClick={onComplete}
+        onClick={() => { void onComplete(); }}
         className="w-full bg-gradient-to-r from-green-400 to-blue-500 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:scale-105 transition"
       >
         Go to Dashboard 🚀
       </button>
       
       <p className="text-sm text-gray-400 mt-6">
-        Welcome to Azora World! Let's build something amazing. 🇿🇦
+  Welcome to Azora World! Let&apos;s build something amazing. 🇿🇦
       </p>
     </div>
   );

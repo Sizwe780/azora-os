@@ -37,7 +37,7 @@ const ConstitutionWidget: React.ComponentType = () => {
                   className={`text-xs font-semibold px-2 py-1 rounded-full ${
                     r.enforced ? 'bg-green-500/20 text-green-300' : 'bg-slate-500/20 text-slate-300'
                   }`}
-                  onClick={() => handleToggle(r.id, r.enforced)}
+                  onClick={() => handleToggle(r.id, Boolean(r.enforced))}
                 >
                   {r.enforced ? 'Enforced' : 'Inactive'}
                 </button>

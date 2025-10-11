@@ -30,7 +30,7 @@ function correlate(tillId) {
   if (delta >= 1) {
     const alert = {
       alertId: `ALERT-${Date.now()}`,
-      tenant: process.env.TENANT || "woolworths",
+      tenant: process.env.TENANT || "retail-partner",
       storeId: process.env.STORE_ID || "NMB-STORE-001",
       type: "POS_UNDERSCAN",
       severity: delta >= 2 ? "critical" : "warning",

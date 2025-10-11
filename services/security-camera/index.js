@@ -14,7 +14,7 @@ function emit() {
     const cam = cameras[Math.floor(Math.random()*2)];
     const event = {
       eventId: `CAM-${Date.now()}`,
-      tenant: process.env.TENANT || "woolworths",
+      tenant: process.env.TENANT || "retail-partner",
       storeId: process.env.STORE_ID || "NMB-STORE-001",
       type: "CAM_BAGGING_ITEMS",
       cameraId: cam.cameraId,

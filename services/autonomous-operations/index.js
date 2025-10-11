@@ -1,7 +1,7 @@
 /**
- * TESLA AUTOPILOT × 10 - AUTONOMOUS OPERATIONS ENGINE
+ * EV LEADER AUTOPILOT × 10 - AUTONOMOUS OPERATIONS ENGINE
  * 
- * Self-driving logistics that makes Tesla's Full Self-Driving look basic
+ * Self-driving logistics that makes EV Leader's Full Self-Driving look basic
  * - Multi-modal fusion (vision, lidar, radar, GPS, traffic, weather, predictive)
  * - Swarm intelligence (entire fleet coordinat as one superintelligence)
  * - Predictive maintenance (fix issues before they become problems)
@@ -483,7 +483,7 @@ app.post('/autonomous/optimize-all', (req, res) => {
 app.get('/health', (req, res) => {
   res.json({ 
     status: 'operational',
-    service: 'Tesla Autopilot × 10 - Autonomous Operations',
+    service: 'EV Leader Autopilot × 10 - Autonomous Operations',
     fleet_size: autonomousFleet.size,
     autopilot_version: '10.0',
     swarm_intelligence: 'active',
@@ -495,7 +495,7 @@ app.get('/health', (req, res) => {
 initializeFleet();
 
 app.listen(PORT, () => {
-  console.log(`🚗 Tesla × 10 Autonomous Operations online on port ${PORT}`);
+  console.log(`🚗 EV Leader × 10 Autonomous Operations online on port ${PORT}`);
   console.log(`🤖 ${autonomousFleet.size} vehicles under full autonomous control`);
   console.log('🧠 Swarm intelligence coordinating fleet operations');
   console.log('⚡ Self-healing systems enabled');

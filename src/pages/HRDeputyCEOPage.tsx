@@ -1,11 +1,11 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Users, Brain, CheckCircle, AlertTriangle, TrendingUp, 
-  Globe, Target, Award, FileText, Clock, Activity,
+  Globe, Target, Award, FileText, Activity,
   UserPlus, UserMinus, Briefcase, BarChart3, Shield,
-  Zap, Eye, MessageSquare, Settings
+  Zap, Eye
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -52,6 +52,39 @@ interface DashboardStats {
   };
 }
 
+interface DashboardResponse {
+  success: boolean;
+  stats: DashboardStats;
+}
+
+interface EmployeesResponse {
+  success: boolean;
+  employees: Employee[];
+}
+
+interface FoundersResponse {
+  success: boolean;
+  founders: Employee[];
+}
+
+interface TasksResponse {
+  success: boolean;
+  tasks: Task[];
+}
+
+interface PerformanceResponse {
+  success: boolean;
+  metrics: PerformanceMetrics;
+}
+
+interface ReviewResponse {
+  success: boolean;
+}
+
+interface OnboardingResponse {
+  success: boolean;
+}
+
 export default function HRDeputyCEOPage() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [stats, setStats] = useState<DashboardStats | null>(null);
@@ -59,7 +92,6 @@ export default function HRDeputyCEOPage() {
   const [founders, setFounders] = useState<Employee[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [selectedEmployee, setSelectedEmployee] = useState<string | null>(null);
-  const [performanceData, setPerformanceData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   // New onboarding form
@@ -72,31 +104,33 @@ export default function HRDeputyCEOPage() {
     employmentType: 'full-time'
   });
 
-  useEffect(() => {
-    loadDashboardData();
-  }, []);
+  const loadDashboardData = useCallback(async () => {
+    if (typeof globalThis.fetch !== 'function') {
+      console.error('Fetch API unavailable in this environment');
+      setLoading(false);
+      return;
+    }
 
-  const loadDashboardData = async () => {
     try {
       setLoading(true);
       
       // Load dashboard stats
-      const statsRes = await fetch('http://localhost:4091/api/hr-ai/dashboard');
-      const statsData = await statsRes.json();
+      const statsRes = await globalThis.fetch('http://localhost:4091/api/hr-ai/dashboard');
+      const statsData = (await statsRes.json()) as DashboardResponse;
       if (statsData.success) {
         setStats(statsData.stats);
       }
 
       // Load employees
-      const empRes = await fetch('http://localhost:4091/api/hr-ai/employees');
-      const empData = await empRes.json();
+      const empRes = await globalThis.fetch('http://localhost:4091/api/hr-ai/employees');
+      const empData = (await empRes.json()) as EmployeesResponse;
       if (empData.success) {
         setEmployees(empData.employees);
       }
 
       // Load founders
-      const foundersRes = await fetch('http://localhost:4091/api/hr-ai/founders');
-      const foundersData = await foundersRes.json();
+      const foundersRes = await globalThis.fetch('http://localhost:4091/api/hr-ai/founders');
+      const foundersData = (await foundersRes.json()) as FoundersResponse;
       if (foundersData.success) {
         setFounders(foundersData.founders);
       }
@@ -123,12 +157,35 @@ export default function HRDeputyCEOPage() {
         }
       });
     }
-  };
+  }, []);
 
-  const loadEmployeeTasks = async (employeeId: string) => {
+  useEffect(() => {
+    if (typeof globalThis.setTimeout !== 'function') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      void loadDashboardData();
+      return;
+    }
+
+    const timeoutId = globalThis.setTimeout(() => {
+      void loadDashboardData();
+    }, 0);
+
+    return () => {
+      if (typeof globalThis.clearTimeout === 'function') {
+        globalThis.clearTimeout(timeoutId);
+      }
+    };
+  }, [loadDashboardData]);
+
+  const loadEmployeeTasks = useCallback(async (employeeId: string) => {
+    if (typeof globalThis.fetch !== 'function') {
+      console.error('Fetch API unavailable in this environment');
+      return;
+    }
+
     try {
-      const res = await fetch(`http://localhost:4091/api/hr-ai/tasks/${employeeId}`);
-      const data = await res.json();
+      const res = await globalThis.fetch(`http://localhost:4091/api/hr-ai/tasks/${employeeId}`);
+      const data = (await res.json()) as TasksResponse;
       if (data.success) {
         setTasks(data.tasks);
       }
@@ -136,34 +193,45 @@ export default function HRDeputyCEOPage() {
       console.error('Error loading tasks:', error);
       toast.error('Failed to load tasks');
     }
-  };
+  }, []);
 
-  const loadEmployeePerformance = async (employeeId: string) => {
+  const loadEmployeePerformance = useCallback(async (employeeId: string) => {
+    if (typeof globalThis.fetch !== 'function') {
+      console.error('Fetch API unavailable in this environment');
+      return;
+    }
+
     try {
-      const res = await fetch(`http://localhost:4091/api/hr-ai/performance/${employeeId}`);
-      const data = await res.json();
+      const res = await globalThis.fetch(`http://localhost:4091/api/hr-ai/performance/${employeeId}`);
+      const data = (await res.json()) as PerformanceResponse;
       if (data.success) {
-        setPerformanceData(data.performance);
+        return data.metrics;
       }
     } catch (error) {
       console.error('Error loading performance:', error);
     }
-  };
+    return null;
+  }, []);
 
   const conductPerformanceReview = async (employeeId: string) => {
+    if (typeof globalThis.fetch !== 'function') {
+      console.error('Fetch API unavailable in this environment');
+      return;
+    }
+
     try {
       toast.loading('HR AI Deputy CEO conducting performance review...');
-      const res = await fetch(`http://localhost:4091/api/hr-ai/performance/${employeeId}/review`, {
+      const res = await globalThis.fetch(`http://localhost:4091/api/hr-ai/performance/${employeeId}/review`, {
         method: 'POST'
       });
-      const data = await res.json();
+      const data = (await res.json()) as ReviewResponse;
       
       if (data.success) {
         toast.success('Performance review completed!');
-        loadEmployeePerformance(employeeId);
-        loadDashboardData();
+        await Promise.all([loadEmployeePerformance(employeeId), loadDashboardData()]);
       }
     } catch (error) {
+      console.error('Failed to conduct review:', error);
       toast.error('Failed to conduct review');
     }
   };
@@ -171,14 +239,19 @@ export default function HRDeputyCEOPage() {
   const startOnboarding = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (typeof globalThis.fetch !== 'function') {
+      console.error('Fetch API unavailable in this environment');
+      return;
+    }
+
     try {
       toast.loading('HR AI Deputy CEO starting onboarding...');
-      const res = await fetch('http://localhost:4091/api/hr-ai/onboarding/start', {
+      const res = await globalThis.fetch('http://localhost:4091/api/hr-ai/onboarding/start', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(onboardingForm)
       });
-      const data = await res.json();
+  const data = (await res.json()) as OnboardingResponse;
       
       if (data.success) {
         toast.success('Automated onboarding started!');
@@ -190,30 +263,11 @@ export default function HRDeputyCEOPage() {
           salary: '',
           employmentType: 'full-time'
         });
-        loadDashboardData();
+        await loadDashboardData();
       }
     } catch (error) {
+      console.error('Failed to start onboarding:', error);
       toast.error('Failed to start onboarding');
-    }
-  };
-
-  const assignTask = async (employeeId: string, taskData: any) => {
-    try {
-      toast.loading('HR AI Deputy CEO assigning task...');
-      const res = await fetch('http://localhost:4091/api/hr-ai/tasks/assign', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ employeeId, taskData })
-      });
-      const data = await res.json();
-      
-      if (data.success) {
-        toast.success('Task assigned!');
-        loadEmployeeTasks(employeeId);
-        loadDashboardData();
-      }
-    } catch (error) {
-      toast.error('Failed to assign task');
     }
   };
 
@@ -472,6 +526,27 @@ export default function HRDeputyCEOPage() {
                     Review Performance
                   </button>
                 </div>
+
+                {selectedEmployee === founder.id && (
+                  <div className="mt-4 bg-white/5 border border-white/10 rounded-lg p-4">
+                    <h5 className="text-white font-semibold mb-3">Active Tasks</h5>
+                    {tasks.length === 0 ? (
+                      <p className="text-gray-400 text-sm">No tasks assigned yet.</p>
+                    ) : (
+                      <div className="space-y-2">
+                        {tasks
+                          .filter((task) => task.employeeId === founder.id)
+                          .map((task) => (
+                            <div key={task.id} className="bg-white/5 border border-white/10 rounded-md p-3">
+                              <p className="text-white text-sm font-semibold">{task.task}</p>
+                              <p className="text-gray-400 text-xs mt-1 capitalize">Priority: {task.priority}</p>
+                              <p className="text-gray-400 text-xs">Status: {task.status}</p>
+                            </div>
+                          ))}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             ))}
           </div>

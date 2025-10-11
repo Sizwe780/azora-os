@@ -9,7 +9,7 @@ import TrackingMap from './TrackingMap'; // The AI-powered map
 type MissionStep = {
   id: string;
   action: string;
-  params: Record<string, any>;
+  params: Record<string, string | number | boolean | Array<string | number> | null | undefined>;
   status: 'pending' | 'approved' | 'executing' | 'complete' | 'rejected';
 };
 

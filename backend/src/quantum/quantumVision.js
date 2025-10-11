@@ -8,10 +8,12 @@ class QuantumVision {
   }
 
   getInsights(imageBuffer) {
+    const signalSize = imageBuffer ? imageBuffer.length : 0;
     // Quantum AI vision analysis pipeline
+  const normalizedScore = Math.min(1, Math.random() + signalSize / 1000000);
     return {
-      quantumScore: Math.random(),
-      notes: 'Quantum vision analysis complete',
+      quantumScore: normalizedScore,
+      notes: `Quantum vision analysis complete (${signalSize} bytes processed)`,
     };
   }
 }

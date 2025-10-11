@@ -1,22 +1,60 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Brain, Zap, TrendingUp, Globe, Shield, Cpu, Activity, Award, Flag } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
+
+interface EvolutionHistoryItem {
+  generation: number;
+  bestFitness: number;
+}
+
+interface PopulationMember {
+  id: string;
+  fitness: number;
+  layers: number;
+  age: number;
+  mutations: number;
+}
+
+interface EvolutionStats {
+  generation: number;
+  bestFitness: number;
+  populationSize: number;
+  mutationRate: number;
+  evolutionHistory: EvolutionHistoryItem[];
+  currentPopulation: PopulationMember[];
+}
+
+interface RecentPatch {
+  type: string;
+  description?: string;
+  timestamp?: string;
+}
+
+interface ImprovementStats {
+  totalImprovements: number;
+  totalMetrics: number;
+  totalPatches: number;
+  isLearning: boolean;
+  recentPatches: RecentPatch[];
+}
+
+interface SouthAfricaInfo {
+  supportedLanguages: string[];
+  provinces: string[];
+  paymentMethods: string | string[];
+  compliance: {
+    bbbee: string | number;
+  };
+}
 
 export default function AIEvolution() {
-  const [evolutionStats, setEvolutionStats] = useState<any>(null);
-  const [improvementStats, setImprovementStats] = useState<any>(null);
-  const [saInfo, setSaInfo] = useState<any>(null);
+  const [evolutionStats, setEvolutionStats] = useState<EvolutionStats | null>(null);
+  const [improvementStats, setImprovementStats] = useState<ImprovementStats | null>(null);
+  const [saInfo, setSaInfo] = useState<SouthAfricaInfo | null>(null);
   const [isEvolving, setIsEvolving] = useState(false);
   const [isImproving, setIsImproving] = useState(false);
 
-  useEffect(() => {
-    fetchStats();
-    const interval = setInterval(fetchStats, 10000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const fetchStats = async () => {
+  const fetchStats = useCallback(async () => {
     try {
       const [evolution, improvement, sa] = await Promise.all([
         fetch('http://localhost:4060/evolution/stats').then(r => r.json()),
@@ -29,7 +67,19 @@ export default function AIEvolution() {
     } catch (error) {
       console.error('Stats error:', error);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    const scheduleFetch = () => {
+      setTimeout(() => {
+        void fetchStats();
+      }, 0);
+    };
+
+    scheduleFetch();
+    const interval = setInterval(scheduleFetch, 10000);
+    return () => clearInterval(interval);
+  }, [fetchStats]);
 
   const handleEvolve = async () => {
     setIsEvolving(true);
@@ -276,7 +326,7 @@ export default function AIEvolution() {
             Evolution Progress
           </h2>
           <div className="h-64 flex items-end gap-2">
-            {evolutionStats.evolutionHistory.map((gen: any, idx: number) => (
+            {evolutionStats.evolutionHistory.map((gen, idx) => (
               <div
                 key={idx}
                 className="flex-1 bg-gradient-to-t from-purple-500 to-pink-500 rounded-t-lg relative group"
@@ -309,7 +359,7 @@ export default function AIEvolution() {
             Neural Architecture Population
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-            {evolutionStats.currentPopulation.slice(0, 10).map((arch: any, idx: number) => (
+            {evolutionStats.currentPopulation.slice(0, 10).map((arch, idx) => (
               <motion.div
                 key={arch.id}
                 initial={{ opacity: 0, scale: 0.8 }}

@@ -13,6 +13,7 @@ class PredictiveAnalyticsService {
       quantumScore: Math.random(),
       riskLevel: 'low',
       notes: 'Quantum loss prevention analysis complete',
+      inputSample: data,
     };
   }
 

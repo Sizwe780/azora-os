@@ -1,6 +1,6 @@
 import React from 'react';
 // src/components/azora/TrackingMap.tsx
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, CircleMarker } from 'react-leaflet';
 import { io, Socket } from 'socket.io-client';
 import 'leaflet/dist/leaflet.css';
@@ -9,7 +9,8 @@ import axios from 'axios'; // For calling our new AI service
 
 // --- Icon Fix & Setup ---
 // Fix for default marker icons in webpack/vite
-delete (L.Icon.Default.prototype as any)._getIconUrl;
+const defaultIconPrototype = L.Icon.Default.prototype as unknown as { _getIconUrl?: () => string };
+delete defaultIconPrototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
   iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
@@ -48,15 +49,34 @@ interface ClientToServerEvents {
 }
 
 // --- Component ---
-const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
-  process.env.VITE_SOCKET_URL || window.location.origin
-);
+const socketEnv = (typeof import.meta !== 'undefined' && 'env' in import.meta
+  ? (import.meta as ImportMeta).env
+  : undefined) as Record<string, string | undefined> | undefined;
+
+const socketUrl = socketEnv?.VITE_SOCKET_URL ?? window.location.origin;
+
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(socketUrl);
 
 export default function TrackingMap() {
   const [drivers, setDrivers] = useState<DriverPoint[]>([]);
   const [predictedRisks, setPredictedRisks] = useState<Risk[]>([]);
   const [optimalRoute, setOptimalRoute] = useState<L.LatLngExpression[]>([]);
   const [emergency, setEmergency] = useState<{ location: L.LatLngTuple; authority: Responder; responders: Responder[] } | null>(null);
+
+  const predictAndSetRoute = useCallback(async (driver: DriverPoint) => {
+    try {
+      const route = {
+        start: { lat: driver.lat, lon: driver.lon },
+        destination: { lat: -29.9, lon: 31.0 },
+        waypoints: [[driver.lat, driver.lon], [-29.9, 31.0]],
+      };
+      const res = await axios.post('/api/ai-orchestrator/map/predict-risk', { route });
+      setPredictedRisks(res.data.risks);
+      setOptimalRoute(res.data.optimalRoute.map((p: { lat: number; lon: number }) => [p.lat, p.lon]));
+    } catch (error) {
+      console.error('Failed to get route prediction:', error);
+    }
+  }, []);
 
   // --- AI & Real-time Handlers ---
   useEffect(() => {
@@ -85,30 +105,19 @@ export default function TrackingMap() {
       socket.off('dispatch:update', handleDispatchUpdate);
       socket.off('emergency:alert', handleEmergencyAlert);
     };
-  }, []);
+  }, [predictAndSetRoute]);
 
-  const predictAndSetRoute = async (driver: DriverPoint) => {
-    try {
-      const route = {
-        start: { lat: driver.lat, lon: driver.lon },
-        // In a real app, destination would come from the job/dispatch system
-        destination: { lat: -29.9, lon: 31.0 },
-        waypoints: [[driver.lat, driver.lon], [-29.9, 31.0]],
-      };
-      const res = await axios.post('/api/ai-orchestrator/map/predict-risk', { route });
-      setPredictedRisks(res.data.risks);
-      setOptimalRoute(res.data.optimalRoute.map((p: { lat: number; lon: number }) => [p.lat, p.lon]));
-    } catch (error) {
-      console.error("Failed to get route prediction:", error);
-    }
-  };
-
-  const triggerEmergency = (driverId: string) => {
+  const triggerEmergency = useCallback((driverId: string) => {
     const driver = drivers.find(d => d.driverId === driverId);
     if (driver) {
       socket.emit('emergency:trigger', { driverId, location: { lat: driver.lat, lon: driver.lon } });
     }
-  };
+  }, [drivers]);
+
+  const sortedDrivers = useMemo(
+    () => [...drivers].sort((a, b) => (b.updatedAt ?? 0) - (a.updatedAt ?? 0)),
+    [drivers]
+  );
 
   // --- Rendering ---
   return (
@@ -123,7 +132,7 @@ export default function TrackingMap() {
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="&copy; OpenStreetMap" />
         
         {/* Live Drivers */}
-        {drivers.map((d) => (
+  {sortedDrivers.map((d) => (
           <Marker key={d.driverId} position={[d.lat, d.lon]}>
             <Popup>
               <strong>Driver:</strong> {d.driverId}<br/>

@@ -1,4 +1,4 @@
-import React from 'react';
+import { type ComponentType } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   FaHome, FaMoneyBillWave, FaAtom, FaMap, FaCog, FaTruck, FaStore, 
@@ -15,7 +15,7 @@ const CURRENT_USER_ID = 'user_001'; // Sizwe Ngwenya - CEO & CTO
 interface NavItem {
   path: string;
   label: string;
-  icon: any;
+  icon: ComponentType<{ className?: string }>;
   highlight?: boolean;
   newFeature?: boolean;
   saMarket?: boolean;
@@ -38,7 +38,7 @@ const navItems: NavItem[] = [
   { path: '/ceo-insights', label: 'CEO Insights', icon: FaLightbulb, requiresPermission: ['view_all_finances', 'manage_operations'] },
   
   // Specialized Services
-  { path: '/woolworths', label: 'Woolworths', icon: FaStore },
+  { path: '/retail-partner', label: 'Retail Partner', icon: FaStore },
   { path: '/coldchain', label: 'Cold Chain', icon: FaSnowflake },
   { path: '/safety', label: 'Safety', icon: FaShieldAlt },
   

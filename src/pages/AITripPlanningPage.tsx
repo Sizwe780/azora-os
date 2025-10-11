@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
+import type { ElementRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, Send, Mic, MapPin, Calendar, Package, TrendingUp } from 'lucide-react';
 import axios from 'axios';
@@ -47,7 +48,7 @@ export default function AITripPlanningPage() {
   const [listening, setListening] = useState(false);
   const [tripPlan, setTripPlan] = useState<TripPlan | null>(null);
   const [loading, setLoading] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<ElementRef<'div'> | null>(null);
 
   useEffect(() => {
     scrollToBottom();
@@ -93,6 +94,7 @@ export default function AITripPlanningPage() {
         generateTripPlan(messageText);
       }
     } catch (error) {
+      console.error('Error sending chat message:', error);
       // Demo AI response
       const demoResponse = generateDemoResponse(messageText);
       const aiMessage: Message = {
@@ -139,6 +141,7 @@ export default function AITripPlanningPage() {
       });
       setTripPlan(response.data.plan);
     } catch (error) {
+      console.error('Error generating trip plan:', error);
       // Demo trip plan
       setTripPlan({
         destination: 'Durban, KwaZulu-Natal',
@@ -166,7 +169,13 @@ export default function AITripPlanningPage() {
     toast.success('🎤 Listening...');
     
     // Simulate voice recognition (in production, use Web Speech API)
-    setTimeout(() => {
+    if (typeof globalThis.setTimeout !== 'function') {
+      console.error('setTimeout is not available in this environment');
+      setListening(false);
+      return;
+    }
+
+    globalThis.setTimeout(() => {
       setListening(false);
       setInputMessage('Start trip to Durban');
       toast.success('Voice recognized!');
@@ -401,7 +410,7 @@ export default function AITripPlanningPage() {
             >
               <h3 className="text-xl font-bold text-white mb-4">Easy Trip Start</h3>
               <p className="text-white/70 mb-6">
-                Try saying: "Start trip to Durban" or click a quick action to see AI trip planning in action!
+                Try saying: &quot;Start trip to Durban&quot; or click a quick action to see AI trip planning in action!
               </p>
               <div className="space-y-3">
                 <div className="p-4 bg-white/5 rounded-lg border border-white/10">

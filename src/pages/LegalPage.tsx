@@ -42,10 +42,16 @@ export default function LegalPage() {
 
   useEffect(() => {
     const fetchLegal = async () => {
+      if (typeof globalThis.fetch !== 'function') {
+        console.error('Fetch API unavailable in this environment');
+        setLoading(false);
+        return;
+      }
+
       try {
-        const response = await fetch('/api/hr-ai/legal/compliance');
+        const response = await globalThis.fetch('/api/hr-ai/legal/compliance');
         if (response.ok) {
-          const result = await response.json();
+          const result = (await response.json()) as LegalData;
           setData(result);
         }
       } catch (error) {

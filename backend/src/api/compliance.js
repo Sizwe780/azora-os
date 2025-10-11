@@ -6,10 +6,10 @@ const router = express.Router();
 const complianceService = require('../services/compliance/complianceService');
 
 // POST /api/compliance/report-incident
-router.post('/report-incident', (req, res) => {
+router.post('/report-incident', async (req, res) => {
   try {
     const { reporter, type, description, corridor } = req.body;
-    const incident = complianceService.reportIncident({ reporter, type, description, corridor });
+    const incident = await complianceService.reportIncident({ reporter, type, description, corridor });
     res.json(incident);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -17,10 +17,10 @@ router.post('/report-incident', (req, res) => {
 });
 
 // GET /api/compliance/incidents/:corridor
-router.get('/incidents/:corridor', (req, res) => {
+router.get('/incidents/:corridor', async (req, res) => {
   try {
     const corridor = req.params.corridor;
-    const incidents = complianceService.getIncidents(corridor);
+    const incidents = await complianceService.getIncidents(corridor);
     res.json(incidents);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -28,10 +28,10 @@ router.get('/incidents/:corridor', (req, res) => {
 });
 
 // POST /api/compliance/record-training
-router.post('/record-training', (req, res) => {
+router.post('/record-training', async (req, res) => {
   try {
-    const { user, module, status } = req.body;
-    const record = complianceService.recordTraining({ user, module, status });
+    const { user, module, status, corridor } = req.body;
+    const record = await complianceService.recordTraining({ user, module, status, corridor });
     res.json(record);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -39,10 +39,10 @@ router.post('/record-training', (req, res) => {
 });
 
 // GET /api/compliance/training/:user
-router.get('/training/:user', (req, res) => {
+router.get('/training/:user', async (req, res) => {
   try {
     const user = req.params.user;
-    const records = complianceService.getTrainingRecords(user);
+    const records = await complianceService.getTrainingRecords(user);
     res.json(records);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -50,9 +50,9 @@ router.get('/training/:user', (req, res) => {
 });
 
 // GET /api/compliance/audit-logs
-router.get('/audit-logs', (req, res) => {
+router.get('/audit-logs', async (req, res) => {
   try {
-    const logs = complianceService.getAuditLogs();
+    const logs = await complianceService.getAuditLogs();
     res.json(logs);
   } catch (err) {
     res.status(500).json({ error: err.message });

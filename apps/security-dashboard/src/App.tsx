@@ -8,7 +8,7 @@ export default function App() {
   async function resolve(id:string){ await fetch(`http://localhost:${import.meta.env.VITE_CORE_PORT || 4022}/alerts/${id}/resolve`, { method:"POST" }); load(); }
   const list = alerts.filter(a => filter==="all" ? true : a.severity===filter).slice().reverse();
   return (<div className="container">
-    <header className="header"><h1>Azora Security — Woolworths</h1><p>Live shrink alerts with audit trails</p></header>
+    <header className="header"><h1>Azora Security — Retail Partner</h1><p>Live shrink alerts with audit trails</p></header>
     <div className="controls"><button className={filter==="all"?"active":""} onClick={()=>setFilter("all")}>All</button><button className={filter==="warning"?"active":""} onClick={()=>setFilter("warning")}>Warning</button><button className={filter==="critical"?"active":""} onClick={()=>setFilter("critical")}>Critical</button></div>
     <ul className="list">{list.map(a => (<li key={a.alertId} className={`item ${a.severity}`}>
       <div className="row"><div className="title">{a.type} — {a.tillId}</div><div className="meta">{new Date(a.ts).toLocaleTimeString()} • Cam {a.cameraId}</div></div>

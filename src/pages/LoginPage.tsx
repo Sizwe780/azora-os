@@ -9,7 +9,8 @@ export default function LoginPage() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     // In a real app, you'd validate credentials here.
-    sessionStorage.setItem('azora-auth', 'true');
+    const storage = globalThis.sessionStorage;
+    storage?.setItem('azora-auth', 'true');
     navigate('/');
   };
 

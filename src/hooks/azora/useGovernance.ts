@@ -11,8 +11,14 @@ export function useGovernance(userId: string) {
     const [error, setError] = useState<string | null>(null);
 
     const vote = (proposalId: string, amount: number) => {
+        if (amount <= 0) {
+            setError('Vote amount must be greater than zero');
+            return;
+        }
+
         console.log(`User ${userId} voting ${amount} on proposal ${proposalId}`);
         setStatus('loading');
+        setError(null);
         setTimeout(() => {
             setProposals(prev => prev.map(p => p.id === proposalId ? { ...p, totalStaked: p.totalStaked + amount } : p));
             setStatus('idle');

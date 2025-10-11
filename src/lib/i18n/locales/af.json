@@ -1,0 +1,83 @@
+{
+  "common": {
+    "loading": "Laai...",
+    "error": "'n Fout het voorgekom",
+    "success": "Sukses",
+    "cancel": "Kanselleer",
+    "confirm": "Bevestig",
+    "save": "Stoor",
+    "delete": "Verwyder",
+    "edit": "Wysig",
+    "add": "Voeg by",
+    "search": "Soek",
+    "filter": "Filter",
+    "sort": "Sorteer",
+    "export": "Eksporteer",
+    "import": "Importeer",
+    "refresh": "Verfris",
+    "back": "Terug",
+    "next": "Volgende",
+    "previous": "Vorige",
+    "close": "Sluit",
+    "open": "Maak oop",
+    "yes": "Ja",
+    "no": "Nee"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "tracking": "Opsporing",
+    "ai": "KI",
+    "evolution": "Evolusie",
+    "safety": "Veiligheid",
+    "settings": "Instellings",
+    "logout": "Teken uit",
+    "profile": "Profiel"
+  },
+  "dashboard": {
+    "title": "Azora OS Dashboard",
+    "welcome": "Welkom by Azora OS",
+    "subtitle": "Afrika se Eerste Outonome KI Platform",
+    "metrics": "Sleutel Metrieke",
+    "alerts": "Aktiewe Waarskuwings",
+    "recentActivity": "Onlangse Aktiwiteit"
+  },
+  "tracking": {
+    "title": "Vloot Opsporing",
+    "activeVehicles": "Aktiewe Voertuie",
+    "totalDistance": "Totale Afstand",
+    "averageSpeed": "Gemiddelde Spoed",
+    "fuelEfficiency": "Brandstof Doeltreffendheid",
+    "realTimeUpdates": "Intydse Opdaterings"
+  },
+  "ai": {
+    "title": "KI Operasies",
+    "neuralNetwork": "Neurale Netwerk Status",
+    "predictions": "KI Voorspellings",
+    "optimization": "Roete Optimisering",
+    "analytics": "KI Analise",
+    "quantumProcessing": "Kwantum Verwerking"
+  },
+  "safety": {
+    "title": "Veiligheid & Sekuriteit",
+    "alerts": "Veiligheid Waarskuwings",
+    "incidents": "Voorvalle",
+    "compliance": "Nakoming Status",
+    "monitoring": "Intydse Monitering",
+    "emergencyResponse": "Noodreaksie"
+  },
+  "errors": {
+    "networkError": "Netwerk verbinding fout",
+    "serverError": "Bediener fout het voorgekom",
+    "validationError": "Kontroleer asseblief jou invoer",
+    "unauthorized": "Ongeautoriseerde toegang",
+    "notFound": "Bladsy nie gevind nie",
+    "timeout": "Versoek het uitgetel"
+  },
+  "validation": {
+    "required": "Hierdie veld is verpligtend",
+    "email": "Voer asseblief 'n geldige e-pos adres in",
+    "phone": "Voer asseblief 'n geldige telefoon nommer in",
+    "password": "Wagwoord moet ten minste 8 karakters wees",
+    "confirmPassword": "Wagwoorde stem nie ooreen nie"
+  }
+}

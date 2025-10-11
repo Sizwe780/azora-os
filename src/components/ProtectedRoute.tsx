@@ -1,11 +1,10 @@
-import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { type ReactNode } from 'react';
 import { canAccessRoute, getFounderById } from '../types/founders';
 
 interface ProtectedRouteProps {
   userId: string;
   route: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export function ProtectedRoute({ userId, route, children }: ProtectedRouteProps) {
@@ -53,43 +52,4 @@ export function ProtectedRoute({ userId, route, children }: ProtectedRouteProps)
   }
 
   return <>{children}</>;
-}
-
-interface WithUserProps {
-  userId?: string;
-  [key: string]: any;
-}
-
-export function withUser<P extends WithUserProps>(
-  Component: React.ComponentType<P>,
-  defaultUserId: string = 'user_001'
-) {
-  return function WithUserComponent(props: P) {
-    // In production, get userId from authentication context
-    // For now, use the passed userId or default to CEO
-    const userId = props.userId || defaultUserId;
-    
-    return <Component {...props} userId={userId} />;
-  };
-}
-
-export function withFounderData<P extends WithUserProps>(
-  Component: React.ComponentType<P & { founder: any }>
-) {
-  return function WithFounderDataComponent(props: P) {
-    const userId = props.userId || 'user_001';
-    const founder = getFounderById(userId);
-    
-    if (!founder) {
-      return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-          <div className="bg-red-50 dark:bg-red-900/20 border-2 border-red-500 rounded-lg p-8">
-            <p className="text-red-900 dark:text-red-400 font-semibold">Founder not found</p>
-          </div>
-        </div>
-      );
-    }
-    
-    return <Component {...props} founder={founder} />;
-  };
 }

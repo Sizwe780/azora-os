@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   FaHome, FaMoneyBillWave, FaAtom, FaMap, FaCog, FaTruck, 
@@ -6,6 +5,7 @@ import {
   FaHeadset, FaLightbulb, FaGavel, FaWallet, FaEnvelope, FaUsers 
 } from 'react-icons/fa';
 import { Navigation, Brain, Zap } from 'lucide-react';
+import { type ComponentType } from 'react';
 import { hasPermission, Permission } from '../../types/founders';
 
 // For demo purposes, we'll use the CEO (Sizwe Ngwenya) as the default user
@@ -15,7 +15,7 @@ const CURRENT_USER_ID = 'user_001'; // Sizwe Ngwenya - CEO & CTO
 interface NavItem {
   path: string;
   label: string;
-  icon: any;
+  icon: ComponentType<{ className?: string }>;
   highlight?: boolean;
   newFeature?: boolean;
   saMarket?: boolean;

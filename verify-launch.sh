@@ -17,6 +17,10 @@ RED='\033[0;31m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
+# Documentation directories
+DOCS_OVERVIEW_DIR="docs/overview"
+DOCS_REFERENCE_DIR="docs/reference"
+
 # Counters
 PASSED=0
 FAILED=0
@@ -47,8 +51,9 @@ else
 fi
 
 # Check FOUNDER.md
-if [ -f "FOUNDER.md" ]; then
-    if grep -q "Sizwe Ngwenya" FOUNDER.md; then
+FOUNDER_DOC="$DOCS_OVERVIEW_DIR/FOUNDER.md"
+if [ -f "$FOUNDER_DOC" ]; then
+    if grep -q "Sizwe Ngwenya" "$FOUNDER_DOC"; then
         check "FOUNDER.md with author info" 0
     else
         check "FOUNDER.md with author info" 1
@@ -58,14 +63,27 @@ else
 fi
 
 # Check TERMS.md
-if [ -f "TERMS.md" ]; then
-    if grep -q "Limitation of Liability" TERMS.md; then
+TERMS_DOC="$DOCS_REFERENCE_DIR/TERMS.md"
+if [ -f "$TERMS_DOC" ]; then
+    if grep -q "Limitation of Liability" "$TERMS_DOC"; then
         check "TERMS.md with legal protection" 0
     else
         check "TERMS.md with legal protection" 1
     fi
 else
     check "TERMS.md exists" 1
+fi
+
+# Check AI_OWNERSHIP.md
+AI_OWNERSHIP_DOC="$DOCS_REFERENCE_DIR/AI_OWNERSHIP.md"
+if [ -f "$AI_OWNERSHIP_DOC" ]; then
+    if grep -q "AZORA" "$AI_OWNERSHIP_DOC"; then
+        check "AI_OWNERSHIP.md present" 0
+    else
+        check "AI_OWNERSHIP.md present" 1
+    fi
+else
+    check "AI_OWNERSHIP.md exists" 1
 fi
 
 # Check README.md
@@ -198,7 +216,7 @@ else
 fi
 
 # Check for POPIA compliance
-if grep -q "POPIA" AI_OWNERSHIP.md || grep -q "POPIA" TERMS.md; then
+if grep -q "POPIA" "$AI_OWNERSHIP_DOC" 2>/dev/null || grep -q "POPIA" "$TERMS_DOC" 2>/dev/null; then
     check "POPIA compliance documented" 0
 else
     check "POPIA compliance documented" 1

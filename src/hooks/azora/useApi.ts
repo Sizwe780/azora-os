@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 
 export function useApi<T>(query: string) {
   const [data, setData] = useState<T | null>(null);
@@ -24,6 +23,7 @@ export function useApi<T>(query: string) {
             setData(null);
         }
       } catch (err) {
+        console.error('useApi failed to fetch data for query', query, err);
         setError('Failed to fetch data');
       } finally {
         setLoading(false);

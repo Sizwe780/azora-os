@@ -2,7 +2,7 @@
   "name": "autonomous-operations",
   "version": "10.0.0",
   "type": "module",
-  "description": "Tesla Autopilot × 10 - Revolutionary autonomous operations that actually work",
+  "description": "EV Leader Autopilot × 10 - Revolutionary autonomous operations that actually work",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"

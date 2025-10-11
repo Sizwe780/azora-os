@@ -1,18 +1,10 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { FaShieldAlt, FaGlobe, FaBolt, FaChartLine, FaLock, FaUsers, FaRocket, FaCheckCircle } from 'react-icons/fa';
 
 export default function LandingPage() {
   const navigate = useNavigate();
-  const [scrollY, setScrollY] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   return (
     <div className="relative min-h-screen bg-black text-white overflow-hidden">
@@ -124,7 +116,7 @@ export default function LandingPage() {
                 THE SOVEREIGN<br />IMMUNE SYSTEM
               </h1>
               <p className="text-xl md:text-2xl text-white/80 mb-8 max-w-3xl mx-auto">
-                We don't audit corruption. We make it impossible.
+                We don&apos;t audit corruption. We make it impossible.
               </p>
               <p className="text-lg md:text-xl text-white/60 mb-12 max-w-2xl mx-auto">
                 Constitutional integrity as code. Built in South Africa by Sizwe Ngwenya and team.
@@ -218,7 +210,7 @@ export default function LandingPage() {
                 The Azora Solution
               </h2>
               <p className="text-xl text-white/80 max-w-3xl mx-auto">
-                We built the world's first Sovereign Immune System. Not compliance software.
+                We built the world&apos;s first Sovereign Immune System. Not compliance software.
                 Constitutional law as code. Rules that cannot be broken.
               </p>
             </motion.div>
@@ -233,7 +225,7 @@ export default function LandingPage() {
                 {
                   icon: <FaShieldAlt className="text-5xl text-purple-400" />,
                   title: "Compliance as Default",
-                  description: "The system prevents rule-breaking. Humans don't have to enforce it."
+                  description: "The system prevents rule-breaking. Humans don&apos;t have to enforce it."
                 },
                 {
                   icon: <FaBolt className="text-5xl text-yellow-400" />,

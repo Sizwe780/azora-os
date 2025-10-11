@@ -1,4 +1,3 @@
-import React from 'react';
 /**
  * UNIVERSAL SAFETY COMMAND CENTER
  * Ensuring everyone lives in peace and is safe
@@ -13,7 +12,7 @@ import React from 'react';
  * - Predictive incident prevention
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   FaShieldAlt,
   FaHeartbeat,
@@ -29,7 +28,6 @@ import {
 import { motion } from 'framer-motion';
 import { GlassCard } from '../components/ui/GlassCard';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import axios from 'axios';
 
 interface SafetyMetrics {
   overallStatus: string;
@@ -75,13 +73,7 @@ export default function UniversalSafetyCommand() {
   const [wellnessAlerts, setWellnessAlerts] = useState<WellnessAlert[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchSafetyData();
-    const interval = setInterval(fetchSafetyData, 15000); // Update every 15 seconds
-    return () => clearInterval(interval);
-  }, []);
-
-  const fetchSafetyData = async () => {
+  const fetchSafetyData = useCallback(async () => {
     try {
       // TODO: Replace with real API calls to safety monitoring service
       const response = await fetch('/api/safety/metrics');
@@ -96,7 +88,19 @@ export default function UniversalSafetyCommand() {
       console.error('Error fetching safety data:', error);
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    const scheduleFetch = () => {
+      setTimeout(() => {
+        void fetchSafetyData();
+      }, 0);
+    };
+
+    scheduleFetch();
+    const interval = setInterval(scheduleFetch, 15000); // Update every 15 seconds
+    return () => clearInterval(interval);
+  }, [fetchSafetyData]);
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
@@ -119,8 +123,8 @@ export default function UniversalSafetyCommand() {
   };
 
   // TODO: Replace with real chart data from API
-  const safetyTrendData = [];
-  const safetyDistribution = [];
+  const safetyTrendData: Array<{ hour: string; incidents: number; wellness: number; threats: number }> = [];
+  const safetyDistribution: Array<{ name: string; value: number; color: string }> = [];
 
   if (loading) {
     return (

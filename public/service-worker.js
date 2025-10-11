@@ -1,3 +1,6 @@
+/* eslint-env serviceworker */
+/* global self, caches, clients, Response, URL, location, fetch */
+
 /**
  * Azora OS Service Worker
  * Offline-first Progressive Web App
@@ -17,13 +20,6 @@ const CORE_ASSETS = [
   '/src/App.tsx',
   '/src/index.css',
   '/manifest.json',
-];
-
-// AI and tracking endpoints that work offline
-const API_CACHE_PATTERNS = [
-  '/api/v1/ai/cache',
-  '/api/v1/tracking/offline',
-  '/api/v1/routes/cache',
 ];
 
 // Install service worker and cache core assets

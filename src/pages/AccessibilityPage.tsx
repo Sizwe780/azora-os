@@ -1,5 +1,4 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mic, Keyboard, Eye, Type, Contrast, ZoomIn, Users, Volume2 } from 'lucide-react';
 import axios from 'axios';
@@ -49,7 +48,6 @@ export default function AccessibilityPage() {
     keyboardOnly: false,
     screenReaderEnabled: false
   });
-  const [showShortcuts, setShowShortcuts] = useState(false);
 
   const startVoiceCommand = async () => {
     setListening(true);
@@ -61,13 +59,20 @@ export default function AccessibilityPage() {
       // const recognition = new (window as any).webkitSpeechRecognition();
       
       // Demo: simulate voice recognition
-      setTimeout(() => {
+      if (typeof globalThis.setTimeout !== 'function') {
+        console.error('setTimeout is not available in this environment');
+        setListening(false);
+        return;
+      }
+
+      globalThis.setTimeout(() => {
         const demoCommand = 'Show trips';
         setRecognizedCommand(demoCommand);
-        executeVoiceCommand(demoCommand);
+        void executeVoiceCommand(demoCommand);
         setListening(false);
       }, 2000);
     } catch (error) {
+      console.error('Voice recognition failed:', error);
       toast.error('Voice recognition not available');
       setListening(false);
     }
@@ -89,6 +94,7 @@ export default function AccessibilityPage() {
         // Navigate to trips
       }
     } catch (error) {
+      console.error('Failed to execute voice command:', error);
       toast.success(`✓ Executed: ${command} (Demo Mode)`);
     }
   };
@@ -104,18 +110,20 @@ export default function AccessibilityPage() {
       });
       toast.success('Settings saved!');
     } catch (error) {
+      console.error('Failed to persist settings:', error);
       toast.success('Settings applied! (Demo Mode)');
     }
-
-    // Apply settings to DOM
-    applyAccessibilitySettings(updated);
   };
 
-  const applyAccessibilitySettings = (settings: AccessibilitySettings) => {
+  useEffect(() => {
+    if (typeof document === 'undefined') {
+      return;
+    }
+
     const root = document.documentElement;
 
-    // Text size
-    const textSizeMap = {
+    // Text size adjustments
+    const textSizeMap: Record<AccessibilitySettings['textSize'], string> = {
       small: '14px',
       medium: '16px',
       large: '18px',
@@ -123,23 +131,19 @@ export default function AccessibilityPage() {
     };
     root.style.fontSize = textSizeMap[settings.textSize];
 
-    // High contrast
     if (settings.highContrast) {
       root.classList.add('high-contrast');
     } else {
       root.classList.remove('high-contrast');
     }
 
-    // Reduced motion
-    if (settings.reducedMotion) {
-      root.style.setProperty('--motion-duration', '0s');
-    } else {
-      root.style.setProperty('--motion-duration', '0.3s');
-    }
+    root.style.setProperty('--motion-duration', settings.reducedMotion ? '0s' : '0.3s');
+    root.style.setProperty('--azora-zoom', `${settings.magnification}%`);
 
-    // Magnification
-    root.style.zoom = `${settings.magnification}%`;
-  };
+    if (typeof document.body !== 'undefined') {
+      document.body.style.zoom = `${settings.magnification}%`;
+    }
+  }, [settings]);
 
   const speak = async (text: string) => {
     try {
@@ -148,10 +152,19 @@ export default function AccessibilityPage() {
         language: 'en-US'
       });
     } catch (error) {
+      console.error('Failed to use remote TTS:', error);
       // Fallback to browser TTS
-      if ('speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(text);
-        window.speechSynthesis.speak(utterance);
+      const speechEngine = typeof globalThis !== 'undefined'
+        ? (globalThis as { speechSynthesis?: { speak: (utterance: unknown) => void } }).speechSynthesis
+        : undefined;
+      const UtteranceCtor = typeof globalThis !== 'undefined'
+        ? (globalThis as { SpeechSynthesisUtterance?: new (text: string) => unknown }).SpeechSynthesisUtterance
+        : undefined;
+
+      if (speechEngine && typeof UtteranceCtor === 'function') {
+        const utterance = new UtteranceCtor(text);
+        // Browser speech synthesis expects specific utterance shape.
+        speechEngine.speak(utterance);
       }
     }
   };
@@ -202,7 +215,7 @@ export default function AccessibilityPage() {
                   animate={{ opacity: 1, y: 0 }}
                   className="text-green-400 mt-2 font-semibold"
                 >
-                  "{ recognizedCommand}"
+                  &quot;{recognizedCommand}&quot;
                 </motion.p>
               )}
             </div>
@@ -219,7 +232,7 @@ export default function AccessibilityPage() {
                   className="p-4 bg-white/5 hover:bg-white/10 rounded-lg text-left transition-all border border-white/10 group"
                 >
                   <p className="text-white font-semibold mb-1 group-hover:text-purple-400 transition-colors">
-                    "{cmd.command}"
+                    &quot;{cmd.command}&quot;
                   </p>
                   <p className="text-white/60 text-sm">{cmd.description}</p>
                 </motion.button>
@@ -254,7 +267,9 @@ export default function AccessibilityPage() {
             </div>
 
             <button
-              onClick={() => setShowShortcuts(true)}
+              onClick={() => {
+                void speak('Keyboard shortcuts panel opened. Refer to on-screen list for navigation.');
+              }}
               className="w-full mt-6 px-6 py-3 bg-purple-500 hover:bg-purple-600 text-white rounded-lg transition-all"
             >
               Press ? to show all shortcuts
@@ -327,7 +342,7 @@ export default function AccessibilityPage() {
                 </label>
                 <select
                   value={settings.colorBlindMode}
-                  onChange={(e) => updateSettings({ colorBlindMode: e.target.value as any })}
+                  onChange={(e) => updateSettings({ colorBlindMode: e.target.value as AccessibilitySettings['colorBlindMode'] })}
                   className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                 >
                   <option value="none" className="bg-slate-800">None</option>

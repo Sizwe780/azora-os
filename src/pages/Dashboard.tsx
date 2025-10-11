@@ -11,17 +11,17 @@ import { useAlerting } from '../hooks/useAlerting';
 import { CommandCenter } from '../app/CommandCenter';
 import { AZORAFounderWidget } from '../app/AZORAFounderWidget';
 
-const GovernanceProposalsWidget = lazy(() => import('../app/GovernanceProposalsWidget.tsx').then(mod => ({ default: mod.default as unknown as React.ComponentType<any> })));
-const GovernanceProposalForm = lazy(() => import('../app/GovernanceProposalForm.tsx').then(mod => ({ default: mod.default as unknown as React.ComponentType<any> })));
-const ConstitutionWidget = lazy(() => import('../app/ConstitutionWidget.tsx').then(mod => ({ default: mod.default as unknown as React.ComponentType<any> })));
-const ProtocolUpgradeWidget = lazy(() => import('../app/ProtocolUpgradeWidget.tsx').then(mod => ({ default: mod.default as unknown as React.ComponentType<any> })));
-const InterNationWidget = lazy(() => import('../app/FederationWidget.tsx').then(mod => ({ default: mod.default as unknown as React.ComponentType<any> })));
-const InviteNationForm = lazy(() => import('../app/InviteNationForm.tsx').then(mod => ({ default: mod.default as unknown as React.ComponentType<any> })));
-const ReputationBridgeWidget = lazy(() => import('../app/ReputationBridgeWidget.tsx').then(mod => ({ default: mod.default as unknown as React.ComponentType<any> })));
-const CrossNationProposalsWidget = lazy(() => import('../app/CrossNationProposalsWidget.tsx').then(mod => ({ default: mod.default as unknown as React.ComponentType<any> })));
-const LeaderboardWidget = lazy(() => import('../app/LeaderboardWidget.tsx').then(mod => ({ default: mod.default as unknown as React.ComponentType<any> })));
-const ReputationMilestonesWidget = lazy(() => import('../app/ReputationMilestonesWidget.tsx').then(mod => ({ default: mod.default as unknown as React.ComponentType<any> })));
-const DelegateReputationWidget = lazy(() => import('../app/DelegateReputationWidget.tsx').then(mod => ({ default: mod.default as unknown as React.ComponentType<any> })));
+const GovernanceProposalsWidget = lazy(() => import('../app/GovernanceProposalsWidget'));
+const GovernanceProposalForm = lazy(() => import('../app/GovernanceProposalForm'));
+const ConstitutionWidget = lazy(() => import('../app/ConstitutionWidget'));
+const ProtocolUpgradeWidget = lazy(() => import('../app/ProtocolUpgradeWidget'));
+const InterNationWidget = lazy(() => import('../app/FederationWidget'));
+const InviteNationForm = lazy(() => import('../app/InviteNationForm'));
+const ReputationBridgeWidget = lazy(() => import('../app/ReputationBridgeWidget'));
+const CrossNationProposalsWidget = lazy(() => import('../app/CrossNationProposalsWidget'));
+const LeaderboardWidget = lazy(() => import('../app/LeaderboardWidget'));
+const ReputationMilestonesWidget = lazy(() => import('../app/ReputationMilestonesWidget'));
+const DelegateReputationWidget = lazy(() => import('../app/DelegateReputationWidget'));
 
 export default function Dashboard({ userId = 'demo_user' }: { userId?: string }) {
   useAlerting();

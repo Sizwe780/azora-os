@@ -1,10 +1,44 @@
-import React from 'react';
-import { useState, useRef } from 'react';
+import { Fragment, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle, Circle, Upload, FileText, Pencil } from 'lucide-react';
-const SignatureCanvas = require('react-signature-canvas').default;
+import { CheckCircle, Upload, FileText } from 'lucide-react';
+import SignatureCanvas, { type SignatureCanvasHandle } from 'react-signature-canvas';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+
+interface PersonalInfo {
+  firstName: string;
+  lastName: string;
+  idNumber: string;
+  dateOfBirth: string;
+  phone: string;
+  email: string;
+  address: string;
+}
+
+interface EmploymentDetails {
+  position: string;
+  department: string;
+  startDate: string;
+  salary: string;
+  employmentType: string;
+}
+
+interface BankTaxInfo {
+  bankName: string;
+  accountNumber: string;
+  branchCode: string;
+  taxNumber: string;
+}
+
+interface EmergencyContact {
+  name: string;
+  relationship: string;
+  phone: string;
+  alternatePhone: string;
+}
+
+type StepPayload = PersonalInfo | EmploymentDetails | BankTaxInfo | EmergencyContact;
+type StepName = 'personalInfo' | 'employmentDetails' | 'bankTax' | 'emergencyContact';
 
 const STEPS = [
   { id: 1, name: 'Personal Info', icon: '👤' },
@@ -20,10 +54,10 @@ const STEPS = [
 export default function EmployeeOnboardingPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [flowId, setFlowId] = useState<string | null>(null);
-  const signatureRef = useRef<typeof SignatureCanvas>(null);
+  const signatureRef = useRef<SignatureCanvasHandle | null>(null);
 
   // Form state
-  const [personalInfo, setPersonalInfo] = useState({
+  const [personalInfo, setPersonalInfo] = useState<PersonalInfo>({
     firstName: '',
     lastName: '',
     idNumber: '',
@@ -33,7 +67,7 @@ export default function EmployeeOnboardingPage() {
     address: ''
   });
 
-  const [employmentDetails, setEmploymentDetails] = useState({
+  const [employmentDetails, setEmploymentDetails] = useState<EmploymentDetails>({
     position: 'Driver',
     department: 'Operations',
     startDate: '',
@@ -41,14 +75,14 @@ export default function EmployeeOnboardingPage() {
     employmentType: 'Full-time'
   });
 
-  const [bankTaxInfo, setBankTaxInfo] = useState({
+  const [bankTaxInfo, setBankTaxInfo] = useState<BankTaxInfo>({
     bankName: '',
     accountNumber: '',
     branchCode: '',
     taxNumber: ''
   });
 
-  const [emergencyContact, setEmergencyContact] = useState({
+  const [emergencyContact, setEmergencyContact] = useState<EmergencyContact>({
     name: '',
     relationship: '',
     phone: '',
@@ -74,7 +108,7 @@ export default function EmployeeOnboardingPage() {
     }
   };
 
-  const saveStep = async (stepData: any, stepName: string) => {
+  const saveStep = async (stepData: StepPayload, stepName: StepName) => {
     if (!flowId) {
       await startOnboarding();
     }
@@ -136,6 +170,7 @@ export default function EmployeeOnboardingPage() {
       });
       setContract(response.data.contractText);
     } catch (error) {
+      console.error('Failed to generate contract:', error);
       // Demo contract
       setContract(`
 EMPLOYMENT CONTRACT
@@ -167,6 +202,7 @@ Employee accepts all terms and conditions.
       });
       toast.success('Signature saved! Onboarding complete!');
     } catch (error) {
+      console.error('Failed to save signature:', error);
       toast.error('Failed to save signature');
     }
   };
@@ -198,7 +234,7 @@ Employee accepts all terms and conditions.
       <div className="mb-8">
         <div className="flex justify-between items-center mb-4">
           {STEPS.map((step, index) => (
-            <React.Fragment key={step.id}>
+            <Fragment key={step.id}>
               <div className="flex flex-col items-center">
                 <motion.div
                   whileHover={{ scale: 1.1 }}
@@ -225,7 +261,7 @@ Employee accepts all terms and conditions.
                   }`}
                 />
               )}
-            </React.Fragment>
+              </Fragment>
           ))}
         </div>
         <div className="text-center text-white/70">
@@ -429,7 +465,7 @@ Employee accepts all terms and conditions.
               <div className="border-2 border-dashed border-white/30 rounded-lg p-12 text-center hover:border-purple-500 cursor-pointer transition-all">
                 <Upload className="w-16 h-16 text-white/50 mx-auto mb-4" />
                 <p className="text-white mb-2">Drag & drop files here or click to browse</p>
-                <p className="text-white/50 text-sm">ID, Driver's License, Certificates, etc.</p>
+                <p className="text-white/50 text-sm">ID, Driver&apos;s License, Certificates, etc.</p>
                 <input
                   type="file"
                   multiple

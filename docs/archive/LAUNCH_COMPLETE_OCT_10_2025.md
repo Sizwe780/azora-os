@@ -20,7 +20,7 @@ Mukundi # 🚀 AZORA WORLD - OCTOBER 10, 2025 LAUNCH COMPLETE
 
 ### 2. Email System ✅
 - **Provider:** domains.co.za email hosting
-- **Domain:** azora.world (purchased from GoDaddy)
+- **Domain:** azora.world (purchased from Domain Provider)
 - **All 5 founders** have @azora.world email accounts
 - **Full IMAP/SMTP integration** (backend + frontend)
 - **Email client UI** with compose, inbox, filters, search

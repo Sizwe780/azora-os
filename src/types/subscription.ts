@@ -52,6 +52,12 @@ export interface PricingTier {
   perAssetPrice?: number;             // e.g., R50K/aircraft
 }
 
+type MetadataPrimitive = string | number | boolean | null | Date;
+
+export type MetadataValue = MetadataPrimitive | MetadataPrimitive[] | { [key: string]: MetadataValue };
+
+export type SubscriptionMetadata = Record<string, MetadataValue>;
+
 export interface Subscription {
   id: string;
   userId: string;
@@ -90,7 +96,7 @@ export interface Subscription {
   paymentMethod?: 'card' | 'eft' | 'invoice';
   
   // Metadata
-  metadata: Record<string, any>;
+  metadata: SubscriptionMetadata;
 }
 
 export interface SubscriptionEvent {
@@ -101,7 +107,7 @@ export interface SubscriptionEvent {
         'upgraded' | 'downgraded' | 'cancelled' | 'renewed' |
         'payment_succeeded' | 'payment_failed';
   timestamp: Date;
-  metadata: Record<string, any>;
+  metadata: SubscriptionMetadata;
 }
 
 // Pricing tiers configuration

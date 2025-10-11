@@ -8,7 +8,7 @@ function emitPOS() {
     const tillId = Math.random() > 0.5 ? "TILL-01" : "TILL-02";
     const event = {
       eventId: `POS-${Date.now()}`,
-      tenant: process.env.TENANT || "woolworths",
+      tenant: process.env.TENANT || "retail-partner",
       storeId: process.env.STORE_ID || "NMB-STORE-001",
       type: "POS_TRANSACTION",
       tillId,

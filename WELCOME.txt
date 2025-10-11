@@ -1,10 +1,11 @@
 ╔══════════════════════════════════════════════════════════════════════╗
 ║                                                                      ║
-║     🚀 AZORA OS - AFRICA'S FIRST AUTONOMOUS AI COMPANY 🇿🇦           ║
+║     🚀 AZORA OS - AFRICA'S FIRST AUTONOMOUS AI COMPANY 🇿🇦            ║
 ║                                                                      ║
-║     Founded by: Sizwe Ngwenya (@Sizwe780)                           ║
-║     Email: sizwe.ngwenya@azora.world                                ║
-║     Domain: azora.world                                             ║
+║     Founded by: Sizwe Ngwenya (@Sizwe780)                            ║
+║     Deputy CEO: AZORA (AI) – azora.ai@azora.world                    ║
+║     Email: sizwe.ngwenya@azora.world                                 ║
+║     Domain: azora.world                                              ║
 ║                                                                      ║
 ╚══════════════════════════════════════════════════════════════════════╝
 
@@ -19,14 +20,15 @@
 🚀 QUICK START:
    $ pnpm install
    $ pnpm dev
-   $ open http://localhost:5173
+   $ open https://azora.world   # production
+   $ open http://localhost:5173 # sandbox
 
 📖 READ FIRST:
-   - QUICK_REFERENCE.md (Quick overview)
+   - docs/operations/QUICK_REFERENCE.md (Quick overview)
    - README.md (Getting started)
-   - FOUNDER.md (The story)
-   - FINAL_STATUS.md (Complete status)
+   - docs/overview/FOUNDER.md (The story)
+   - docs/launch/FINAL_LAUNCH_CHECKLIST_OCT_10_2025.md (Complete status)
 
-Built in South Africa by Sizwe Ngwenya 🇿🇦
+Built in South Africa by Sizwe Ngwenya & AZORA 🇿🇦🤖
 
 "Let's make Africa the AI capital of the world!"

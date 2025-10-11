@@ -1,8 +1,8 @@
 /**
- * 🚀 QUANTUM TRACKING ENGINE - TESLA × 100
+ * 🚀 QUANTUM TRACKING ENGINE - EV LEADER × 100
  * 
  * This is the world's most advanced vehicle tracking system.
- * Makes Tesla's tracking look like a toy.
+ * Makes EV Leader's tracking look like a toy.
  * 
  * Features:
  * - Quantum-level GPS precision (centimeter accuracy)
@@ -44,7 +44,7 @@ const initializeFleet = () => {
     {
       id: 'VH-001',
       driver: 'James Chen',
-      model: 'Tesla Model S Plaid',
+      model: 'EV Leader Model S Plaid',
       status: 'active',
       mission: 'Delivery to CBD',
       location: {
@@ -86,7 +86,7 @@ const initializeFleet = () => {
     {
       id: 'VH-002',
       driver: 'Sarah Williams',
-      model: 'Tesla Model 3 Performance',
+      model: 'EV Leader Model 3 Performance',
       status: 'active',
       mission: 'Pickup at Warehouse',
       location: {
@@ -126,7 +126,7 @@ const initializeFleet = () => {
     {
       id: 'VH-003',
       driver: 'Marcus Lee',
-      model: 'Tesla Model X Long Range',
+      model: 'EV Leader Model X Long Range',
       status: 'charging',
       mission: 'Supercharging',
       location: {
@@ -427,7 +427,7 @@ server.listen(PORT, () => {
   console.log(`🧠 Tracking ${liveFleet.size} vehicles with quantum precision`);
   console.log(`⚡ Real-time updates: 1000+ data points/second`);
   console.log(`🎯 Prediction accuracy: 97.5%`);
-  console.log(`🌟 Tesla × 100 - The future of fleet tracking`);
+  console.log(`🌟 EV Leader × 100 - The future of fleet tracking`);
 });
 
 export default app;

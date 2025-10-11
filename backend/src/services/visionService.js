@@ -21,6 +21,10 @@ class VisionService {
 
   async streamVideo(videoStream) {
     // Edge streaming and real-time detection pipeline
+    if (!videoStream) {
+      return { status: 'idle', quantum: false };
+    }
+
     return { status: 'streaming', quantum: true };
   }
 }

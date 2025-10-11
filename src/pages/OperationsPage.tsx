@@ -1,5 +1,5 @@
 import React from 'react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Activity, CheckCircle, XCircle, Clock, TrendingUp } from 'lucide-react';
 
 interface SystemHealth {
@@ -23,25 +23,33 @@ export default function OperationsPage() {
   const [data, setData] = useState<OperationsData | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchOperations = async () => {
-      try {
-        const response = await fetch('/api/hr-ai/operations/status');
-        if (response.ok) {
-          const result = await response.json();
-          setData(result);
-        }
-      } catch (error) {
-        console.error('Failed to fetch operations data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchOperations = useCallback(async () => {
+    if (typeof globalThis.fetch !== 'function') {
+      console.error('Fetch API unavailable in this environment');
+      setLoading(false);
+      return;
+    }
 
-    fetchOperations();
-    const interval = setInterval(fetchOperations, 30000); // Every 30 seconds
-    return () => clearInterval(interval);
+    try {
+      const response = await globalThis.fetch('/api/hr-ai/operations/status');
+      if (response.ok) {
+        const result = (await response.json()) as OperationsData;
+        setData(result);
+      }
+    } catch (error) {
+      console.error('Failed to fetch operations data:', error);
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    void fetchOperations();
+    const interval = setInterval(() => {
+      void fetchOperations();
+    }, 30000);
+    return () => clearInterval(interval);
+  }, [fetchOperations]);
 
   if (loading) {
     return (

@@ -19,10 +19,18 @@ const NotificationContext = createContext<NotificationContextType | undefined>(u
 export function NotificationProvider({ children }: { children: React.ReactNode }) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
-  const notify = useCallback((notification: Omit<Notification, 'id'>) => {
-    const id = crypto.randomUUID();
-    setNotifications(prev => [...prev, { id, ...notification }]);
+  const generateId = useCallback(() => {
+    const cryptoApi = globalThis.crypto;
+    if (cryptoApi?.randomUUID) {
+      return cryptoApi.randomUUID();
+    }
+    return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
   }, []);
+
+  const notify = useCallback((notification: Omit<Notification, 'id'>) => {
+    const id = generateId();
+    setNotifications(prev => [...prev, { id, ...notification }]);
+  }, [generateId]);
 
   const dismiss = useCallback((id: string) => {
     setNotifications(prev => prev.filter(n => n.id !== id));
@@ -50,6 +58,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
 }
 
 // Custom hook for usage in components
+// eslint-disable-next-line react-refresh/only-export-components
 export function useNotify() {
   const context = useContext(NotificationContext);
   if (!context) throw new Error('useNotify must be used within NotificationProvider');

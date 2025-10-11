@@ -11,6 +11,48 @@ export default defineConfig({
     minify: 'esbuild',
     // Adjust the chunk size warning limit (in kB)
     chunkSizeWarningLimit: 600,
+    // Enable code splitting
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Vendor chunks
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'ui-vendor': ['framer-motion', 'lucide-react', 'react-icons'],
+          'maps-vendor': ['leaflet', 'react-leaflet'],
+          'charts-vendor': ['recharts'],
+          // Feature chunks
+          'ai-features': [
+            './src/pages/QuantumAI',
+            './src/pages/AIEvolution',
+            './src/pages/AITripPlanningPage'
+          ],
+          'tracking-features': [
+            './src/pages/QuantumTracking',
+            './src/pages/DriverCommandCenter'
+          ],
+          'enterprise-features': [
+            './src/pages/AdminPortalPage',
+            './src/pages/EmployeeOnboardingPage',
+            './src/pages/DocumentVaultPage'
+          ]
+        }
+      }
+    },
+    // Optimize dependencies
+    commonjsOptions: {
+      include: [/node_modules/],
+    },
+  },
+  // Performance optimizations
+  optimizeDeps: {
+    include: [
+      'react',
+      'react-dom',
+      'react-router-dom',
+      'framer-motion',
+      'lucide-react',
+      'leaflet'
+    ],
   },
   // Optional: Add a server proxy if your FastAPI backend and Vite dev server run on different ports
   // This helps avoid CORS issues during development.

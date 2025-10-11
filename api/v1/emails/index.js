@@ -32,9 +32,6 @@ const EMAIL_CONFIG = {
   },
 };
 
-// In-memory email storage (in production, use a database)
-const emailStore = new Map();
-
 // Initialize email transporter
 const transporter = nodemailer.createTransport(EMAIL_CONFIG.smtp);
 
@@ -143,7 +140,6 @@ router.post('/send', async (req, res) => {
 router.post('/:emailId/read', async (req, res) => {
   try {
     const { emailId } = req.params;
-    const { userId } = req.body;
 
     // Mark as read in IMAP
     const client = new ImapFlow(EMAIL_CONFIG.imap);
@@ -166,7 +162,7 @@ router.post('/:emailId/read', async (req, res) => {
 router.post('/:emailId/star', async (req, res) => {
   try {
     const { emailId } = req.params;
-    const { userId, starred } = req.body;
+    const { starred } = req.body;
 
     // Toggle star in IMAP
     const client = new ImapFlow(EMAIL_CONFIG.imap);
@@ -195,7 +191,6 @@ router.post('/:emailId/star', async (req, res) => {
 router.delete('/:emailId', async (req, res) => {
   try {
     const { emailId } = req.params;
-    const { userId } = req.body;
 
     // Move to trash in IMAP
     const client = new ImapFlow(EMAIL_CONFIG.imap);
@@ -237,7 +232,7 @@ async function extractBody(message) {
 }
 
 // Mock emails for development
-function getMockEmails(userId, filter) {
+function getMockEmails(userId) {
   const userEmail = getUserEmail(userId);
   
   return [

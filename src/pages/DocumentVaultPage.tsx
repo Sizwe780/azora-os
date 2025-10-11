@@ -1,4 +1,3 @@
-import React from 'react';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FileText, Upload, Download, Search, Shield, CheckCircle, AlertTriangle, QrCode } from 'lucide-react';
@@ -16,6 +15,14 @@ interface Document {
   qrCode: string;
 }
 
+interface BorderReadiness {
+  borderPost: string;
+  ready: boolean;
+  requiredDocs: string[];
+  missingDocs: string[];
+  expiringDocs: string[];
+}
+
 const BORDER_POSTS = [
   { name: 'Beitbridge (ZW)', code: 'BBG' },
   { name: 'Lebombo/Ressano Garcia (MZ)', code: 'LEB' },
@@ -31,7 +38,7 @@ export default function DocumentVaultPage() {
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [selectedDoc, setSelectedDoc] = useState<Document | null>(null);
-  const [borderReadiness, setBorderReadiness] = useState<any>(null);
+  const [borderReadiness, setBorderReadiness] = useState<BorderReadiness | null>(null);
 
   useEffect(() => {
     fetchDocuments();
@@ -91,6 +98,7 @@ export default function DocumentVaultPage() {
       toast.success('Document uploaded successfully!');
       fetchDocuments();
     } catch (error) {
+      console.error('Failed to upload document:', error);
       toast.error('Failed to upload document');
     } finally {
       setUploading(false);
@@ -111,6 +119,7 @@ export default function DocumentVaultPage() {
         toast.error('❌ Missing documents for this border');
       }
     } catch (error) {
+      console.error('Border readiness check failed:', error);
       // Demo readiness check
       setBorderReadiness({
         borderPost: selectedBorder,
@@ -130,10 +139,11 @@ export default function DocumentVaultPage() {
 
   const validateDocument = async (docId: string) => {
     try {
-      const response = await axios.post(`http://localhost:4087/api/documents/${docId}/validate`);
+      await axios.post(`http://localhost:4087/api/documents/${docId}/validate`);
       toast.success('Document validated successfully!');
       fetchDocuments();
     } catch (error) {
+      console.error('Failed to validate document:', error);
       toast.error('Failed to validate document');
     }
   };

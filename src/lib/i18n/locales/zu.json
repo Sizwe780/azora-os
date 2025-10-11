@@ -1,0 +1,83 @@
+{
+  "common": {
+    "loading": "Iyalayisha...",
+    "error": "Kwenzeke iphutha",
+    "success": "Impumelelo",
+    "cancel": "Khansela",
+    "confirm": "Qinisekisa",
+    "save": "Gcina",
+    "delete": "Susa",
+    "edit": "Hlela",
+    "add": "Engeza",
+    "search": "Sesha",
+    "filter": "Hlunga",
+    "sort": "Hlunga",
+    "export": "Thumela ngaphandle",
+    "import": "Ngenisa ngaphakathi",
+    "refresh": "Vuselela",
+    "back": "Emuva",
+    "next": "Okulandelayo",
+    "previous": "Okudlule",
+    "close": "Vala",
+    "open": "Vula",
+    "yes": "Yebo",
+    "no": "Cha"
+  },
+  "navigation": {
+    "dashboard": "Ideshibhodi",
+    "tracking": "Ukuphepha",
+    "ai": "I-AI",
+    "evolution": "Ukuthuthuka",
+    "safety": "Ukuphepha",
+    "settings": "Izilungiselelo",
+    "logout": "Phuma",
+    "profile": "Iphrofayili"
+  },
+  "dashboard": {
+    "title": "Ideshibhodi ye-Azora OS",
+    "welcome": "Siyakwamukela ku-Azora OS",
+    "subtitle": "Uhlelo lokuqala lwe-AI oluzimele lwa-Afrika",
+    "metrics": "Izibalo ezibalulekile",
+    "alerts": "Izexwayiso ezisebenzayo",
+    "recentActivity": "Umsebenzi wakamuva"
+  },
+  "tracking": {
+    "title": "Ukuphepha kwezimoto",
+    "activeVehicles": "Izimoto ezisebenzayo",
+    "totalDistance": "Ibanga eliphelele",
+    "averageSpeed": "Isivinini esijwayelekile",
+    "fuelEfficiency": "Ukusebenza kahle kukaphethiloli",
+    "realTimeUpdates": "Izibuyekezo zesikhathi sangempela"
+  },
+  "ai": {
+    "title": "Ukusebenza kwe-AI",
+    "neuralNetwork": "Isimo senethiwekhi ye-neural",
+    "predictions": "Izibikezelo ze-AI",
+    "optimization": "Ukuthuthukiswa komzila",
+    "analytics": "Ukuhlaziya kwe-AI",
+    "quantumProcessing": "Ukucubungula kwe-quantum"
+  },
+  "safety": {
+    "title": "Ukuphepha nokuvikeleka",
+    "alerts": "Izexwayiso zokuphepha",
+    "incidents": "Izehlakalo",
+    "compliance": "Isimo sokuthobela",
+    "monitoring": "Ukuqapha kwesikhathi sangempela",
+    "emergencyResponse": "Impendulo yezimo eziphuthumayo"
+  },
+  "errors": {
+    "networkError": "Iphutha lokuxhumana nenethiwekhi",
+    "serverError": "Kwenzeke iphutha leseva",
+    "validationError": "Sicela uhlole okufakile",
+    "unauthorized": "Ukufinyelela okungagunyaziwe",
+    "notFound": "Ikhasi alitholakali",
+    "timeout": "Isicelo siphelelwe yisikhathi"
+  },
+  "validation": {
+    "required": "Le nsimu iyadingeka",
+    "email": "Sicela ufake ikheli le-imeyili elivumelekile",
+    "phone": "Sicela ufake inombolo yefoni evumelekile",
+    "password": "Iphasiwedi kufanele ibe nezinhlamvu ezingu-8 okungenani",
+    "confirmPassword": "Amaphasiwedi awafani"
+  }
+}

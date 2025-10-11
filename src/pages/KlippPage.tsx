@@ -3,7 +3,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { GlassCard } from '../components/ui/GlassCard';
-import { FaTasks, FaDollarSign, FaClock, FaCheckCircle } from 'react-icons/fa';
+import { FaDollarSign, FaClock, FaCheckCircle } from 'react-icons/fa';
 
 // --- Type Definitions ---
 type KlippTask = {
@@ -63,9 +63,9 @@ export default function KlippPage() {
         skills: ['smartphone_camera', 'walking', 'communication'],
       });
       setTasks(res.data);
-    } catch (err) {
+    } catch (error) {
       setError('Could not fetch tasks. The network may be busy. Please try again later.');
-      console.error(err);
+      console.error(error);
     } finally {
       setIsLoading(false);
     }
@@ -86,7 +86,8 @@ export default function KlippPage() {
       });
       setActiveTask(null); // Go back to the task list
       fetchTasks(); // Refresh tasks
-    } catch (err) {
+    } catch (error) {
+      console.error('Failed to submit task:', error);
       setError('Failed to submit task.');
     }
   };

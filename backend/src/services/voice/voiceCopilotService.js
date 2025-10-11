@@ -26,11 +26,13 @@ class VoiceCopilotService {
       return {
         response: 'Stock levels for aisle 3: 12 units.',
         action: 'show_stock',
+        language: lang,
       };
     }
     return {
       response: 'Query not recognized.',
       action: null,
+      language: lang,
     };
   }
 }

@@ -10,7 +10,7 @@ const DemoInterface: React.FC = () => {
   return (
     <div className="container">
       <div className="header">
-        <h1>Azora Copilot — Woolworths</h1>
+        <h1>Azora Copilot — Retail Partner</h1>
         <p>Voice Copilot & WRewards Demo (Scenario 1)</p>
       </div>
 
@@ -62,7 +62,7 @@ const DemoInterface: React.FC = () => {
         </h3>
         <ul style={{ margin: 0, paddingLeft: '1.25rem', color: 'var(--muted)', fontSize: '0.875rem', lineHeight: 1.6 }}>
           <li>Visually engaging popup with animations</li>
-          <li>Woolworths brand colors and styling</li>
+          <li>Retail Partner brand colors and styling</li>
           <li>Auto-dismiss after 8 seconds</li>
           <li>Copy-to-clipboard for coupon codes</li>
           <li>Responsive tablet-friendly design</li>
@@ -73,7 +73,7 @@ const DemoInterface: React.FC = () => {
       <div className="card" style={{ background: 'rgba(76, 175, 80, 0.1)', borderColor: 'rgba(76, 175, 80, 0.3)' }}>
         <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--text)' }}>
           <strong>Scenario 1 Context:</strong> Customer earns WRewards coupons by engaging with Voice Copilot 
-          for product recommendations, dietary preferences, and shopping assistance in the Woolworths Apparel section.
+          for product recommendations, dietary preferences, and shopping assistance in the Retail Partner Apparel section.
         </p>
       </div>
     </div>

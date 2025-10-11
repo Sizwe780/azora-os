@@ -53,7 +53,69 @@ export default function LedgerPage() {
       {/* Filters */}
       <GlassCard className="p-4">
         <div className="flex flex-wrap gap-4 items-end">
-            {/* Filter inputs */}
+          <div className="flex flex-col">
+            <label className="text-xs font-semibold text-white/70" htmlFor="ledger-type-filter">Type</label>
+            <input
+              id="ledger-type-filter"
+              value={typeFilter}
+              onChange={(event) => setTypeFilter(event.target.value)}
+              className="bg-white/10 border border-white/20 rounded px-3 py-2 text-sm text-white"
+              placeholder="e.g. payment"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label className="text-xs font-semibold text-white/70" htmlFor="ledger-from">From</label>
+            <input
+              id="ledger-from"
+              type="date"
+              value={from}
+              onChange={(event) => setFrom(event.target.value)}
+              className="bg-white/10 border border-white/20 rounded px-3 py-2 text-sm text-white"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label className="text-xs font-semibold text-white/70" htmlFor="ledger-to">To</label>
+            <input
+              id="ledger-to"
+              type="date"
+              value={to}
+              onChange={(event) => setTo(event.target.value)}
+              className="bg-white/10 border border-white/20 rounded px-3 py-2 text-sm text-white"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label className="text-xs font-semibold text-white/70" htmlFor="ledger-company">Company ID</label>
+            <input
+              id="ledger-company"
+              value={companyId}
+              onChange={(event) => setCompanyId(event.target.value)}
+              className="bg-white/10 border border-white/20 rounded px-3 py-2 text-sm text-white"
+              placeholder="Company UID"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label className="text-xs font-semibold text-white/70" htmlFor="ledger-driver">Driver ID</label>
+            <input
+              id="ledger-driver"
+              value={driverId}
+              onChange={(event) => setDriverId(event.target.value)}
+              className="bg-white/10 border border-white/20 rounded px-3 py-2 text-sm text-white"
+              placeholder="Driver UID"
+            />
+          </div>
+          <button
+            type="button"
+            className="ml-auto px-3 py-2 bg-indigo-600 hover:bg-indigo-500 text-sm font-semibold rounded text-white"
+            onClick={() => {
+              setTypeFilter('');
+              setFrom('');
+              setTo('');
+              setCompanyId('');
+              setDriverId('');
+            }}
+          >
+            Clear Filters
+          </button>
         </div>
       </GlassCard>
 

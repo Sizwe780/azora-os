@@ -11,7 +11,7 @@ async function emitAudit(event: string, payload: any) {
 
 async function execute(action: any) {
   if (action.type === "REPLENISH_TASK") {
-    await fetch("http://assistant:4000/assistant/tasks/NMB-STORE-001", { headers: { "X-Tenant": "woolworths" } });
+    await fetch("http://assistant:4000/assistant/tasks/NMB-STORE-001", { headers: { "X-Tenant": "retail-partner" } });
   }
   if (action.type === "POS_UNDERSCAN") {
     await fetch("http://security-core:4022/alerts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(action.payload) });

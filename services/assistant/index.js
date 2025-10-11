@@ -11,7 +11,7 @@ app.use(express.json());
 
 client.collectDefaultMetrics({ prefix: "azora_assistant_" });
 const reqCounter = new client.Counter({ name: "azora_assistant_requests_total", help: "Assistant requests", labelNames: ["route","tenant"] });
-app.use((req, res, next) => { res.on("finish", () => reqCounter.inc({ route: req.path, tenant: req.headers["x-tenant"] || "woolworths" })); next(); });
+app.use((req, res, next) => { res.on("finish", () => reqCounter.inc({ route: req.path, tenant: req.headers["x-tenant"] || "retail-partner" })); next(); });
 
 function audit(event, payload) {
   const ts = new Date().toISOString();
@@ -21,7 +21,7 @@ function audit(event, payload) {
 }
 
 app.post("/assistant/query", (req, res) => {
-  const { tenant = "woolworths", storeId, userId, role, query } = req.body || {};
+  const { tenant = "retail-partner", storeId, userId, role, query } = req.body || {};
   let answer = "Ask about products, locations, tasks, or SOPs.";
   let sources = [];
   let actions = [];
@@ -54,7 +54,7 @@ app.post("/assistant/query", (req, res) => {
 });
 
 app.get("/assistant/tasks/:storeId", (req, res) => {
-  const tenant = req.headers["x-tenant"] || "woolworths";
+  const tenant = req.headers["x-tenant"] || "retail-partner";
   const storeId = req.params.storeId;
   res.json(tasks.filter(t => t.tenant === tenant && t.storeId === storeId && t.status !== "DONE"));
 });

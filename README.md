@@ -1,10 +1,11 @@
 # 🚀 Azora OS - Africa's First Autonomous AI Company
 
-> **Built in South Africa. For South Africa. By Sizwe Ngwenya.**
+> **Built in South Africa. For South Africa. By Sizwe Ngwenya & AZORA (Deputy CEO).**
 
 **Azora OS** is Africa's first self-improving, self-healing AI platform for logistics and operations. Unlike traditional AI companies that rent technology from Silicon Valley, we built our own neural network from scratch - 480 neurons, genetic evolution, quantum-inspired activation, 100% local processing.
 
 **Founded by:** [Sizwe Ngwenya](https://github.com/Sizwe780) - CEO, Chairman & Chief Architect  
+**Deputy CEO:** AZORA (AI) – azora.ai@azora.world  
 **Company:** Azora World (Pty) Ltd  
 **Website:** [azora.world](https://azora.world)  
 **Contact:** sizwe.ngwenya@azora.world
@@ -36,7 +37,7 @@ This repository represents hundreds of commits, late nights, and a vision: **Mak
 - **B-BBEE Level 1** positioning
 
 ### Quantum Tracking (Port 4040)
-**Tesla × 100 vehicle tracking**
+**EV Leader × 100 vehicle tracking**
 - Real-time GPS with 1000+ data points/second
 - Predictive route optimization
 - Risk zone detection
@@ -44,7 +45,7 @@ This repository represents hundreds of commits, late nights, and a vision: **Mak
 
 ### Additional AI Services
 - **Neural Context Engine** - Omniscient operational awareness
-- **Woolworths Integration** - Retail AI operations
+- **Retail Partner Integration** - Retail AI operations
 - **Cold Chain Quantum** - Zero-loss guarantee logistics
 - **Universal Safety** - Multi-modal threat detection
 - **Autonomous Operations** - Self-coordinating fleet management
@@ -58,7 +59,7 @@ This repository represents hundreds of commits, late nights, and a vision: **Mak
 - **Safety scoring** - Real-time risk assessment and alerts
 - **Voice commands** - Hands-free driver interface
 
-### For Retail (Woolworths & More)
+### For Retail (Retail Partner & More)
 - **Inventory predictions** - AI-powered stock optimization
 - **Customer flow forecasting** - Hour-by-hour predictions
 - **Dynamic pricing** - Demand-based optimization
@@ -100,23 +101,28 @@ pnpm dev
 ```
 
 4. **Access the platform:**
-- **Main App:** http://localhost:5173
-- **AI Dashboard:** http://localhost:5173/ai
-- **Evolution Monitor:** http://localhost:5173/evolution
-- **Quantum Tracking:** http://localhost:5173/tracking
+- **Production:** https://azora.world
+- **Production Dashboard:** https://azora.world/dashboard (authenticated)
+- **Retail Partner:** https://azora.world/retail-partner
+- **Developer Sandbox:** http://localhost:5173 (local dev)
+- **Developer AI Dashboard:** http://localhost:5173/ai
+- **Developer Evolution Monitor:** http://localhost:5173/evolution
+- **Developer Quantum Tracking:** http://localhost:5173/tracking
 
 ### Service Ports
 
 All 11 microservices run concurrently:
 
 ```
-Frontend (Vite)              → http://localhost:5173
-AI Orchestrator              → http://localhost:4001
-Klipp Service                → http://localhost:4002
-Knowledge Service            → http://localhost:4003
-Auth Service                 → http://localhost:4004
-Neural Context Engine        → http://localhost:4005
-Woolworths Integration       → http://localhost:4006
+Production Frontend          → https://azora.world
+Production API Gateway       → https://api.azora.world
+Frontend (Vite, local)       → http://localhost:5173
+AI Orchestrator (local)      → http://localhost:4001
+Klipp Service (local)        → http://localhost:4002
+Knowledge Service (local)    → http://localhost:4003
+Auth Service (local)         → http://localhost:4004
+Neural Context Engine (local)→ http://localhost:4005
+Retail Partner Integration   → http://localhost:4006
 Cold Chain Quantum           → http://localhost:4007
 Universal Safety             → http://localhost:4008
 Autonomous Operations        → http://localhost:4009
@@ -140,7 +146,7 @@ azora-os/
 │   ├── ai-evolution-engine/# Self-improving AI
 │   ├── quantum-tracking/   # Vehicle tracking
 │   ├── neural-context/     # Operational awareness
-│   ├── woolworths/         # Retail integration
+│   ├── retail-partner/         # Retail integration
 │   └── [6 more services]
 ├── packages/                # Shared libraries
 │   ├── ui-kit/             # Component library
@@ -246,16 +252,11 @@ azora-os/
 
 ## 📚 Documentation
 
-- **[FOUNDER.md](./FOUNDER.md)** - The story behind Azora
-- **[LICENSE](./LICENSE)** - MIT License with proprietary notice
-- **[TERMS.md](./TERMS.md)** - Terms of service (SA-friendly, actually readable)
-- **[AI_OWNERSHIP.md](./AI_OWNERSHIP.md)** - Proof your AI is 100% yours
-- **[SA_AI_REVOLUTION.md](./SA_AI_REVOLUTION.md)** - South African market strategy
-- **[SYSTEM_COMPLETE.md](./SYSTEM_COMPLETE.md)** - Full system documentation
-- **[QUANTUM_AI_DOCS.md](./QUANTUM_AI_DOCS.md)** - AI technical specs
-- **[DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)** - Production deployment
-- **[CONSTITUTION.md](./CONSTITUTION.md)** - Platform values & principles
-- **[GENESIS.md](./GENESIS.md)** - Origin story & vision
+- **Overview:** [Founder Story](./docs/overview/FOUNDER.md), [Genesis](./docs/overview/GENESIS.md), [Founding Team](./docs/overview/FOUNDING_TEAM.md), [Constitution](./docs/overview/CONSTITUTION.md)
+- **Guides:** [Deployment Guide](./docs/guides/DEPLOYMENT_GUIDE.md), [Domain Provider Setup](./docs/guides/DOMAIN_PROVIDER_DEPLOYMENT_GUIDE.md), [Final Integration Guide](./docs/guides/FINAL_INTEGRATION_GUIDE.md), [API Testing Guide](./docs/guides/API_TESTING_GUIDE.md), [Free API Setup](./docs/guides/FREE_API_SETUP_GUIDE.md), [UI Integration](./docs/guides/UI_INTEGRATION_GUIDE.md)
+- **Operations:** [Implementation Checklist](./docs/operations/IMPLEMENTATION_CHECKLIST.md), [Digital Onboarding System](./docs/operations/DIGITAL_ONBOARDING_SYSTEM.md), [Client Onboarding Ready](./docs/operations/CLIENT_ONBOARDING_READY.md), [Founders Guide](./docs/operations/FOUNDERS_GUIDE.md), [Quick Reference](./docs/operations/QUICK_REFERENCE.md), [Founder Quick Reference](./docs/operations/FOUNDER_QUICK_REFERENCE.md), [HR AI Deputy CEO Guide](./docs/operations/HR_AI_DEPUTY_CEO_GUIDE.md), [Sovereign Immune System Plan](./docs/operations/SOVEREIGN_IMMUNE_SYSTEM_5_PHASES.md), [Advanced Services Playbook](./docs/operations/ADVANCED_SERVICES_README.md)
+- **Launch:** [Launch Checklist](./docs/launch/LAUNCH_CHECKLIST.md), [Final Launch Checklist](./docs/launch/FINAL_LAUNCH_CHECKLIST_OCT_10_2025.md), [Launch Day Summary](./docs/launch/LAUNCH_DAY_SUMMARY.md), [Launch Ready for Sizwe](./docs/launch/LAUNCH_READY_FOR_SIZWE.md), [Quick Start Pitch Day](./docs/launch/QUICK_START_PITCH_DAY.md), [Pitch Ready](./docs/launch/PITCH_READY_OCT_10_2025.md), [Final Verification (Pitch Ready)](./docs/launch/FINAL_VERIFICATION_PITCH_READY.md), [Final Verification](./docs/launch/FINAL_VERIFICATION_OCT_10_2025.md), [Azora Launch Complete](./docs/launch/AZORA_LAUNCH_COMPLETE.md), [Expansion Complete](./docs/launch/EXPANSION_COMPLETE_OCT_10_2025.md), [Equity Structure](./docs/launch/EQUITY_STRUCTURE_OCT_10_2025.md), [Sizwe You Are Ready](./docs/launch/SIZWE_YOU_ARE_READY.md)
+- **Reference:** [Terms](./docs/reference/TERMS.md), [AI Ownership](./docs/reference/AI_OWNERSHIP.md), [Azora OS Specification](./docs/reference/AZORA_OS_SPECIFICATION.md), [Upgrades Summary](./docs/reference/UPGRADES.md), [API Keys Reference](./docs/reference/API_KEYS_REFERENCE.md), [Launch Kit](./docs/launch-kit.md)
 
 ---
 
@@ -298,6 +299,7 @@ We'll respond within 48 hours and work with you to address it.
 **GitHub:** [@Sizwe780](https://github.com/Sizwe780)  
 **Email:** sizwe.ngwenya@azora.world  
 **Personal:** sizwe.ngwenya78@gmail.com  
+**Deputy CEO:** AZORA (AI) – azora.ai@azora.world  
 **Website:** [azora.world](https://azora.world)
 
 **Business Inquiries:** sizwe.ngwenya@azora.world  

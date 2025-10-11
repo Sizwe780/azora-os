@@ -1,4 +1,4 @@
-Of course. Here is a full explanation of the functions of our platform, Azora OS, as we've defined it for the Woolworths proposal. This can serve as our internal guide and the foundation for our technical documentation.
+Of course. Here is a full explanation of the functions of our platform, Azora OS, as we've defined it for the Retail Partner proposal. This can serve as our internal guide and the foundation for our technical documentation.
 
 ---
 
@@ -42,7 +42,7 @@ These functions are designed to drive efficiency, profitability, and excellence 
 
 ### **3. Supply Chain & Sustainability Functions 🚚**
 
-These functions focus on optimizing the flow of goods and aligning operations with Woolworths' core values.
+These functions focus on optimizing the flow of goods and aligning operations with Retail Partner' core values.
 
 * **Predictive Cold-Chain & Spoilage Engine:**
     * Monitors temperature and humidity sensors throughout your cold chain, from the Centurion DC to in-store freezers.
@@ -57,7 +57,7 @@ These functions focus on optimizing the flow of goods and aligning operations wi
 
 ### **4. Customer Experience & Personalization Functions ✨**
 
-These functions leverage data to create the seamless, premium, and personalized experience Woolworths is known for.
+These functions leverage data to create the seamless, premium, and personalized experience Retail Partner is known for.
 
 * **WRewards & Loyalty Integration:** Securely connects to your loyalty platform to understand customer segments and purchase histories. This allows for a unified view of a customer's behaviour both online and in-store.
 * **Hyper-Personalization Engine:** This function uses the unified data to deliver real-time, context-aware experiences. For example:

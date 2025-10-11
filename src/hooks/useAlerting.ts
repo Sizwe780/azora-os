@@ -19,5 +19,5 @@ export function useAlerting() {
     if (metrics.federationTraffic > 100) {
       push({ type: 'info', message: '🌐 Federation traffic surge detected' });
     }
-  }, [metrics]);
+  }, [metrics, push]);
 }

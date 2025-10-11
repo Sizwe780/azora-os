@@ -1,9 +1,9 @@
 import React from 'react';
-// src/pages/WoolworthsDashboard.tsx
+// src/pages/RetailPartnerDashboard.tsx
 /**
- * WOOLWORTHS ELITE DASHBOARD
+ * RETAIL PARTNER ELITE DASHBOARD
  * 
- * Complete integration with Woolworths operations.
+ * Complete integration with flagship retail operations.
  * AI-powered inventory management, customer flow prediction,
  * dynamic pricing, and employee wellness monitoring.
  */
@@ -31,36 +31,50 @@ type WellnessData = {
   recommendation: string;
 };
 
-export default function WoolworthsDashboard() {
+type CustomerFlowPoint = {
+  hour: string;
+  predictedCustomers: number;
+  confidence?: number;
+};
+
+export default function RetailPartnerDashboard() {
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
-  const [customerFlow, setCustomerFlow] = useState<any[]>([]);
+  const [customerFlow, setCustomerFlow] = useState<CustomerFlowPoint[]>([]);
   const [wellness, setWellness] = useState<WellnessData | null>(null);
   const [aiInsight, setAiInsight] = useState('');
 
   useEffect(() => {
-    fetchAllData();
-    const interval = setInterval(fetchAllData, 30000); // Refresh every 30s
-    return () => clearInterval(interval);
+    let isMounted = true;
+
+    const fetchAllData = async () => {
+      try {
+        const [invRes, flowRes, wellnessRes] = await Promise.all([
+          axios.get<{ items: InventoryItem[]; aiInsight: string }>('/api/retail-partner/inventory'),
+          axios.get<{ predictions: CustomerFlowPoint[] }>('/api/retail-partner/customer-flow/predict'),
+          axios.get<WellnessData>('/api/retail-partner/employee/wellness/dashboard'),
+        ]);
+
+        if (!isMounted) return;
+
+        setInventory(invRes.data.items);
+        setAiInsight(invRes.data.aiInsight);
+        setCustomerFlow(flowRes.data.predictions);
+        setWellness(wellnessRes.data);
+      } catch (error) {
+        console.error('Error fetching Retail Partner data:', error);
+      }
+    };
+
+    void fetchAllData();
+    const interval = setInterval(() => {
+      void fetchAllData();
+    }, 30000); // Refresh every 30s
+
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
   }, []);
-
-  const fetchAllData = async () => {
-    try {
-      // Fetch inventory
-      const invRes = await axios.get('/api/woolworths/inventory');
-      setInventory(invRes.data.items);
-      setAiInsight(invRes.data.aiInsight);
-
-      // Fetch customer flow prediction
-      const flowRes = await axios.get('/api/woolworths/customer-flow/predict');
-      setCustomerFlow(flowRes.data.predictions);
-
-      // Fetch employee wellness
-      const wellnessRes = await axios.get('/api/woolworths/employee/wellness/dashboard');
-      setWellness(wellnessRes.data);
-    } catch (error) {
-      console.error('Error fetching Woolworths data:', error);
-    }
-  };
 
   const lowStockItems = inventory.filter(item => item.stock < item.suggestedReorder * 0.5);
   const nextHourFlow = customerFlow[0]?.predictedCustomers || 0;
@@ -69,14 +83,14 @@ export default function WoolworthsDashboard() {
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
       {/* Hero */}
       <div className="text-center">
-        <h1 className="text-5xl font-bold text-cyan-300 mb-2">🛒 Woolworths Elite</h1>
+        <h1 className="text-5xl font-bold text-cyan-300 mb-2">🛒 Retail Partner Elite</h1>
         <p className="text-white/70">AI-Powered Operations Control Center</p>
       </div>
 
       {/* AI Brain Insight */}
       <GlassCard className="p-6 border-purple-400/50 text-center">
         <FaBrain className="text-5xl text-purple-400 mx-auto mb-3 animate-pulse" />
-        <h3 className="text-2xl font-bold mb-2">Aura's Current Insight</h3>
+        <h3 className="text-2xl font-bold mb-2">Aura&apos;s Current Insight</h3>
         <p className="text-xl text-purple-300">{aiInsight || 'Analyzing operations...'}</p>
       </GlassCard>
 

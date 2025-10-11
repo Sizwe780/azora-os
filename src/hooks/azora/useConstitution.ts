@@ -1,27 +1,63 @@
 // Minimal stub for useConstitution hook.
 // Fill in with actual logic later if needed.
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import React from "react";
+type ConstitutionRule = {
+  appliesTo: React.ReactNode | Iterable<React.ReactNode>;
+  enforced: unknown;
+  id: string;
+  title: string;
+  description: string;
+  enabled: boolean;
+};
 
-// If you want rules/logs, provide dummy arrays or real logic
+type ConstitutionLog = {
+  triggeredBy: React.ReactNode | Iterable<React.ReactNode>;
+  actionTaken: React.ReactNode | Iterable<React.ReactNode>;
+  ruleId: string;
+  id: string;
+  message: string;
+  timestamp: string;
+};
+
+
 export function useConstitution() {
-  // Example state and dummy data
   const [constitution, setConstitution] = useState<string>("No constitution loaded.");
+  const [rules, setRules] = useState<ConstitutionRule[]>(() => []);
+  const [logs, setLogs] = useState<ConstitutionLog[]>(() => []);
+  const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
+  const [error, setError] = useState<string | null>(null);
 
-  // If your UI expects rules/logs, provide defaults—even if empty arrays
-  const rules: any[] = [];
-  const logs: any[] = [];
-  const status = "idle";
-  const error = "";
-  const toggle = (ruleId: string, p0: boolean) => {};
-
-  return {
-    constitution,
-    setConstitution,
-    rules,
-    logs,
-    status,
-    error,
-    toggle,
+  const toggle = (ruleId: string, enabled: boolean) => {
+    setRules(prev => prev.map(rule => (rule.id === ruleId ? { ...rule, enabled } : rule)));
+    setLogs(prev => [
+      ...prev,
+      {
+        id: `${ruleId}-${Date.now()}`,
+        ruleId,
+        message: `Rule ${ruleId} ${enabled ? "enabled" : "disabled"}`,
+        timestamp: new Date().toISOString(),
+        triggeredBy: null,
+        actionTaken: null,
+      },
+    ]);
   };
+
+  const api = useMemo(
+    () => ({
+      constitution,
+      setConstitution,
+      rules,
+      logs,
+      status,
+      setStatus,
+      error,
+      setError,
+      toggle,
+    }),
+    [constitution, rules, logs, status, error]
+  );
+
+  return api;
 }

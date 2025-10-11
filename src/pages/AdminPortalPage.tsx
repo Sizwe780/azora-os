@@ -1,7 +1,7 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Users, LayoutDashboard, Star, Send, Trash2, Archive, Plus, Edit, Shield } from 'lucide-react';
+import { Mail, Users, LayoutDashboard, Star, Send, Trash2, Plus, Edit, Shield } from 'lucide-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
@@ -54,15 +54,7 @@ export default function AdminPortalPage() {
     password: ''
   });
 
-  useEffect(() => {
-    if (activeTab === 'email') {
-      fetchEmails();
-    } else if (activeTab === 'users') {
-      fetchUsers();
-    }
-  }, [activeTab, selectedFolder]);
-
-  const fetchEmails = async () => {
+  const fetchEmails = useCallback(async () => {
     try {
       setLoading(true);
       const response = await axios.get(`http://localhost:4085/api/admin/email/user123/${selectedFolder}`);
@@ -86,9 +78,9 @@ export default function AdminPortalPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedFolder]);
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     try {
       setLoading(true);
       const response = await axios.get('http://localhost:4085/api/admin/users');
@@ -109,7 +101,21 @@ export default function AdminPortalPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (activeTab === 'email') {
+      void fetchEmails();
+    } else if (activeTab === 'users') {
+      void fetchUsers();
+    }
+  }, [activeTab, fetchEmails, fetchUsers]);
+
+  useEffect(() => {
+    if (activeTab === 'email') {
+      void fetchEmails();
+    }
+  }, [activeTab, fetchEmails, selectedFolder]);
 
   const sendEmail = async () => {
     try {
@@ -120,8 +126,9 @@ export default function AdminPortalPage() {
       toast.success('Email sent successfully!');
       setComposing(false);
       setEmailForm({ to: '', subject: '', body: '' });
-      fetchEmails();
+      await fetchEmails();
     } catch (error) {
+      console.error('Failed to send email:', error);
       toast.error('Failed to send email');
     }
   };
@@ -130,8 +137,9 @@ export default function AdminPortalPage() {
     try {
       await axios.post(`http://localhost:4085/api/admin/email/${emailId}/star`);
       toast.success('Email starred');
-      fetchEmails();
+      await fetchEmails();
     } catch (error) {
+      console.error('Failed to star email:', error);
       toast.error('Failed to star email');
     }
   };
@@ -142,8 +150,9 @@ export default function AdminPortalPage() {
       toast.success('User created successfully!');
       setShowUserModal(false);
       setUserForm({ name: '', email: '', role: 'Driver', password: '' });
-      fetchUsers();
+      await fetchUsers();
     } catch (error) {
+      console.error('Failed to create user:', error);
       toast.error('Failed to create user');
     }
   };

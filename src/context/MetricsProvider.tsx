@@ -38,6 +38,7 @@ export function MetricsProvider({ children }: { children: React.ReactNode }) {
   return <MetricsContext.Provider value={{ metrics, update, updateMetricsFromJobs }}>{children}</MetricsContext.Provider>;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useMetrics() {
   return useContext(MetricsContext);
 }

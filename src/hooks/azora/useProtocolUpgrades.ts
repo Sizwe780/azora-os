@@ -11,8 +11,14 @@ export function useProtocolUpgrades(userId: string) {
     const [error, setError] = useState<string | null>(null);
 
     const stake = (proposalId: string, amount: number) => {
+        if (amount <= 0) {
+            setError('Stake amount must be greater than zero');
+            return;
+        }
+
         console.log(`User ${userId} staking ${amount} on protocol upgrade ${proposalId}`);
         setStatus('loading');
+        setError(null);
         setTimeout(() => {
             setProposals(prev => prev.map(p => p.id === proposalId ? { ...p, totalStaked: p.totalStaked + amount } : p));
             setStatus('idle');

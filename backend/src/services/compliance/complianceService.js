@@ -1,44 +1,61 @@
 // Compliance and Safety Reporting Service
 // Incident reporting, training modules, immutable audit logs
+const Incident = require('../../models/Incident');
+const AuditLog = require('../../models/AuditLog');
+const TrainingRecord = require('../../models/TrainingRecord');
 
 class ComplianceService {
-  constructor() {
-    this.incidents = [];
-    this.trainingRecords = [];
-    this.auditLogs = [];
+  async reportIncident({ reporter, type, description, corridor }) {
+    const payload = {
+      userId: reporter,
+      details: `${type}: ${description}`,
+      corridor,
+      status: 'reported',
+    };
+
+    const incident = await Incident.create(payload);
+    await this.logAudit({
+      userId: reporter,
+      action: 'incident_reported',
+      details: `${corridor} | ${type}`,
+    });
+
+    return incident.toObject();
   }
 
-  reportIncident({ reporter, type, description, corridor }) {
-    const incident = { reporter, type, description, corridor, timestamp: Date.now() };
-    this.incidents.push(incident);
-    this.logAudit(incident);
-    return incident;
+  async getIncidents(corridor) {
+    const filter = corridor ? { corridor } : {};
+    const incidents = await Incident.find(filter).sort({ timestamp: -1 }).lean();
+    return incidents;
   }
 
-  getIncidents(corridor) {
-    return this.incidents.filter(i => i.corridor === corridor);
+  async recordTraining({ user, module, status, corridor }) {
+    const record = await TrainingRecord.create({ user, module, status, corridor });
+    await this.logAudit({
+      userId: user,
+      action: 'training_recorded',
+      details: `${module} -> ${status}`,
+    });
+    return record.toObject();
   }
 
-  recordTraining({ user, module, status }) {
-    const record = { user, module, status, timestamp: Date.now() };
-    this.trainingRecords.push(record);
-    this.logAudit(record);
-    return record;
+  async getTrainingRecords(user) {
+    const filter = user ? { user } : {};
+    const records = await TrainingRecord.find(filter).sort({ createdAt: -1 }).lean();
+    return records;
   }
 
-  getTrainingRecords(user) {
-    return this.trainingRecords.filter(r => r.user === user);
+  async logAudit(entry) {
+    await AuditLog.create({
+      userId: entry.userId || null,
+      action: entry.action,
+      details: entry.details,
+    });
   }
 
-  logAudit(entry) {
-    // Immutable audit log with blockchain anchoring
-    this.auditLogs.push(entry);
-    // For now, just print
-    console.log('Audit log:', entry);
-  }
-
-  getAuditLogs() {
-    return this.auditLogs;
+  async getAuditLogs() {
+    const logs = await AuditLog.find().sort({ timestamp: -1 }).lean();
+    return logs;
   }
 }
 

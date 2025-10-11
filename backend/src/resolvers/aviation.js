@@ -1,7 +1,4 @@
 const AviationChecklist = require('../models/AviationChecklist');
-const { PubSub } = require('apollo-server-express');
-const pubsub = new PubSub();
-
 module.exports = {
   Mutation: {
     startPreflight: async (_, { userId }, { user }) => {

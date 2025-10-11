@@ -1,17 +1,47 @@
 // Compliance logic for checklists, incidents, and reporting
 const AviationChecklist = require('../models/AviationChecklist');
 const DefenseDrill = require('../models/DefenseDrill');
+const Incident = require('../models/Incident');
+const AuditLog = require('../models/AuditLog');
 
 async function logChecklistCompletion(userId, checklistId, corridor) {
-  // Save completion event (mock)
-  // In production, add audit log and notification
-  return { userId, checklistId, corridor, status: 'completed', timestamp: Date.now() };
+  const Model = corridor === 'defense' ? DefenseDrill : AviationChecklist;
+  const checklist = await Model.findOne({ _id: checklistId, userId });
+
+  if (!checklist) {
+    throw new Error(`Checklist ${checklistId} not found for user ${userId}`);
+  }
+
+  checklist.status = 'completed';
+  checklist.timestamp = new Date();
+  await checklist.save();
+
+  const audit = await AuditLog.create({
+    userId,
+    action: 'checklist_completed',
+    details: `${corridor} checklist ${checklistId} marked complete`,
+  });
+
+  return {
+    checklist: checklist.toObject(),
+    audit: audit.toObject(),
+  };
 }
 
 async function reportIncident(userId, details, corridor) {
-  // Save incident report (mock)
-  // In production, add to DB and trigger workflow
-  return { userId, details, corridor, status: 'reported', timestamp: Date.now() };
+  const incident = await Incident.create({
+    userId,
+    details,
+    corridor,
+  });
+
+  await AuditLog.create({
+    userId,
+    action: 'incident_reported',
+    details: `${corridor} incident: ${details}`,
+  });
+
+  return incident.toObject();
 }
 
 module.exports = { logChecklistCompletion, reportIncident };

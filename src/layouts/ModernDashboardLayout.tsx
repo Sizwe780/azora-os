@@ -2,7 +2,6 @@ import React from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ThemeToggle } from '../components/ui/ThemeToggle';
-import { GlassCard } from '../components/ui/GlassCard';
 import BeamsBackground from '../app/BeamsBackground';
 
 const sidebarOptions = [

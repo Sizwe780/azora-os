@@ -3,15 +3,15 @@ import React from 'react';
  * 🎯 QUANTUM TRACKING COMMAND CENTER
  * 
  * The most advanced fleet tracking interface ever built.
- * Makes Tesla's interface look like a calculator from the 90s.
+ * Makes EV Leader's interface look like a calculator from the 90s.
  */
 
 import { useState, useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, Circle } from 'react-leaflet';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Activity, Battery, Navigation, Zap, TrendingUp, AlertTriangle,
-  Target, Gauge, Thermometer, Wind, Cloud, MapPin, Users, Cpu
+  Activity, Battery, Navigation, Zap, TrendingUp,
+  Target, Gauge, Thermometer, MapPin, Users, Cpu
 } from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
 
@@ -67,11 +67,11 @@ export default function QuantumTracking() {
   const [swarmData, setSwarmData] = useState<SwarmData | null>(null);
   const [predictions, setPredictions] = useState<{ [vehicleId: string]: Prediction[] }>({});
   const [isConnected, setIsConnected] = useState(false);
-  const wsRef = useRef<WebSocket | null>(null);
+  const wsRef = useRef<globalThis.WebSocket | null>(null);
 
   // Connect to WebSocket for real-time updates
   useEffect(() => {
-    const ws = new WebSocket('ws://localhost:4040');
+  const ws = new window.WebSocket('ws://localhost:4040');
     
     ws.onopen = () => {
       console.log('🔗 Connected to Quantum Tracking Engine');
@@ -102,13 +102,13 @@ export default function QuantumTracking() {
     wsRef.current = ws;
     
     return () => {
-      if (ws.readyState === WebSocket.OPEN) {
+      if (ws.readyState === window.WebSocket.OPEN) {
         ws.close();
       }
     };
   }, []);
 
-  const getStatusColor = (status: any) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
       case 'active': return 'text-green-400 bg-green-500/20';
       case 'charging': return 'text-yellow-400 bg-yellow-500/20';
@@ -136,7 +136,7 @@ export default function QuantumTracking() {
             <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 text-transparent bg-clip-text">
               Quantum Tracking Command Center
             </h1>
-            <p className="text-gray-400 mt-2">Tesla × 100 - Real-time fleet intelligence</p>
+            <p className="text-gray-400 mt-2">EV Leader × 100 - Real-time fleet intelligence</p>
           </div>
           
           <div className="flex items-center gap-4">

@@ -1,7 +1,7 @@
-const tf = require('@tensorflow/tfjs-node');
 const kyber = require('node-pqcrypto/kyber');
 const dilithium = require('node-pqcrypto/dilithium');
 const axios = require('axios');
+const { Buffer } = require('node:buffer');
 const config = require('../config');
 
 class OntologicalTwinShield {
@@ -20,9 +20,13 @@ class OntologicalTwinShield {
   }
 
   async embed(features) {
+    const featureVector = Array.isArray(features?.vector) ? features.vector : [];
+    const numQubits = Math.max(4, featureVector.length || 8);
+    const reps = Math.max(1, Math.min(4, Math.round(numQubits / 4)));
+
     const res = await axios.post(`${config.quantum.url}/submit_circuit`, {
       name: 'risk_ising',
-      params: { num_qubits: 8, reps: 2 }
+      params: { num_qubits: numQubits, reps, payload: featureVector }
     });
     this.state.embeddingHandle = res.data.provenance;
     return res.data.embedding;

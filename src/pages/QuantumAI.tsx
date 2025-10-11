@@ -1,52 +1,140 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Brain, Sparkles, Activity, Zap, TrendingUp, RefreshCw, Send, Award } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
+
+interface QuantumMindStats {
+  total_neurons: number;
+  architecture: string;
+  layers: number;
+  training_iterations: number;
+  quantum_coherence: number;
+  learning_rate: number;
+}
+
+interface MemoryStats {
+  long_term: number;
+  short_term: number;
+  total_capacity: number;
+}
+
+interface StatsResponse {
+  quantum_mind: QuantumMindStats;
+  memory: MemoryStats;
+}
+
+interface HealthMetrics {
+  quantum_coherence: number;
+  memory_health: number;
+  neuron_activation: number;
+}
+
+interface HealthAnomaly {
+  type: string;
+  severity: string;
+}
+
+interface HealthResponse {
+  status: 'healthy' | 'warning' | 'critical';
+  health: HealthMetrics;
+  anomalies: HealthAnomaly[];
+}
+
+interface GenerationResponse {
+  response: string;
+  confidence: number;
+  tokens_generated: number;
+  creativity_score: number;
+}
+
+interface HistoryEntry {
+  prompt: string;
+  response: GenerationResponse;
+  timestamp: number;
+}
 
 export default function QuantumAI() {
   const [prompt, setPrompt] = useState('');
-  const [response, setResponse] = useState<any>(null);
-  const [stats, setStats] = useState<any>(null);
-  const [health, setHealth] = useState<any>(null);
+  const [response, setResponse] = useState<GenerationResponse | null>(null);
+  const [stats, setStats] = useState<StatsResponse | null>(null);
+  const [health, setHealth] = useState<HealthResponse | null>(null);
   const [loading, setLoading] = useState(false);
-  const [history, setHistory] = useState<any[]>([]);
+  const [history, setHistory] = useState<HistoryEntry[]>([]);
 
-  useEffect(() => {
-    fetchStats();
-    fetchHealth();
-    const interval = setInterval(() => {
-      fetchStats();
-      fetchHealth();
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
+  const getStats = useCallback(async (): Promise<StatsResponse | null> => {
+    if (typeof globalThis.fetch !== 'function') {
+      console.error('Fetch API unavailable in this environment');
+      return null;
+    }
 
-  const fetchStats = async () => {
     try {
-      const res = await fetch('http://localhost:4050/stats');
-      const data = await res.json();
-      setStats(data);
+      const res = await globalThis.fetch('http://localhost:4050/stats');
+      if (!res.ok) return null;
+      const data = (await res.json()) as StatsResponse;
+      return data;
     } catch (error) {
       console.error('Stats error:', error);
+      return null;
     }
-  };
+  }, []);
 
-  const fetchHealth = async () => {
+  const getHealth = useCallback(async (): Promise<HealthResponse | null> => {
+    if (typeof globalThis.fetch !== 'function') {
+      console.error('Fetch API unavailable in this environment');
+      return null;
+    }
+
     try {
-      const res = await fetch('http://localhost:4050/health/diagnosis');
-      const data = await res.json();
-      setHealth(data);
+      const res = await globalThis.fetch('http://localhost:4050/health/diagnosis');
+      if (!res.ok) return null;
+      const data = (await res.json()) as HealthResponse;
+      return data;
     } catch (error) {
       console.error('Health error:', error);
+      return null;
     }
-  };
+  }, []);
+
+  const refreshStats = useCallback(async () => {
+    const latest = await getStats();
+    if (latest) {
+      setStats(latest);
+    }
+  }, [getStats]);
+
+  const refreshHealth = useCallback(async () => {
+    const latest = await getHealth();
+    if (latest) {
+      setHealth(latest);
+    }
+  }, [getHealth]);
+
+  useEffect(() => {
+    const hydrate = async () => {
+      await Promise.all([refreshStats(), refreshHealth()]);
+    };
+
+    void hydrate();
+
+    const interval = setInterval(() => {
+      void hydrate();
+    }, 5000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [refreshHealth, refreshStats]);
 
   const handleGenerate = async () => {
     if (!prompt.trim()) return;
 
     setLoading(true);
+    if (typeof globalThis.fetch !== 'function') {
+      console.error('Fetch API unavailable in this environment');
+      return;
+    }
+
     try {
-      const res = await fetch('http://localhost:4050/generate', {
+      const res = await globalThis.fetch('http://localhost:4050/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -58,7 +146,7 @@ export default function QuantumAI() {
       });
       const data = await res.json();
       setResponse(data);
-      setHistory(prev => [{ prompt, response: data, timestamp: Date.now() }, ...prev].slice(0, 10));
+      setHistory(prev => [{ prompt, response: data as GenerationResponse, timestamp: Date.now() }, ...prev].slice(0, 10));
     } catch (error) {
       console.error('Generation error:', error);
     }
@@ -66,26 +154,36 @@ export default function QuantumAI() {
   };
 
   const handleRating = async (input: string, output: string, rating: number) => {
+    if (typeof globalThis.fetch !== 'function') {
+      console.error('Fetch API unavailable in this environment');
+      return;
+    }
+
     try {
-      await fetch('http://localhost:4050/learn', {
+      await globalThis.fetch('http://localhost:4050/learn', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ input, output, rating })
       });
-      fetchStats(); // Refresh stats after learning
+      await refreshStats();
     } catch (error) {
       console.error('Learning error:', error);
     }
   };
 
   const handleHeal = async () => {
+    if (typeof globalThis.fetch !== 'function') {
+      console.error('Fetch API unavailable in this environment');
+      return;
+    }
+
     try {
-      await fetch('http://localhost:4050/heal', {
+      await globalThis.fetch('http://localhost:4050/heal', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'quantum_recalibration' })
       });
-      fetchHealth();
+      await refreshHealth();
     } catch (error) {
       console.error('Healing error:', error);
     }
@@ -339,8 +437,8 @@ export default function QuantumAI() {
                 {health.anomalies.length > 0 && (
                   <div className="mt-4 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-xl">
                     <p className="text-sm text-yellow-200 mb-2">Recent Anomalies:</p>
-                    {health.anomalies.map((anomaly: any, i: number) => (
-                      <div key={i} className="text-xs text-yellow-300">
+                    {health.anomalies.map((anomaly, index) => (
+                      <div key={anomaly.type.concat('-', String(index))} className="text-xs text-yellow-300">
                         • {anomaly.type} ({anomaly.severity})
                       </div>
                     ))}

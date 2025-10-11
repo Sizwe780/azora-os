@@ -16,6 +16,11 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
+# Documentation directories
+DOCS_GUIDES_DIR="docs/guides"
+DOCS_LAUNCH_DIR="docs/launch"
+DOCS_OPERATIONS_DIR="docs/operations"
+
 # Test counter
 TESTS_PASSED=0
 TESTS_FAILED=0
@@ -67,7 +72,7 @@ echo ""
 test_service "AI Orchestrator" 4001
 test_service "Klipp Service" 4002
 test_service "Neural Context Engine" 4003
-test_service "Woolworths Integration" 4004
+test_service "Retail Partner Integration" 4004
 test_service "Cold Chain Quantum" 4005
 test_service "Universal Safety" 4006
 test_service "Autonomous Operations" 4007
@@ -171,8 +176,8 @@ else
     ((TESTS_FAILED++))
 fi
 
-echo -n "Checking SOUTHERN_AFRICA_SUPPORT.md... "
-if [ -f "SOUTHERN_AFRICA_SUPPORT.md" ]; then
+echo -n "Checking ${DOCS_OPERATIONS_DIR}/FOUNDERS_GUIDE.md... "
+if [ -f "${DOCS_OPERATIONS_DIR}/FOUNDERS_GUIDE.md" ]; then
     echo -e "${GREEN}✓ Exists${NC}"
     ((TESTS_PASSED++))
 else
@@ -180,8 +185,8 @@ else
     ((TESTS_FAILED++))
 fi
 
-echo -n "Checking FOUNDERS_GUIDE.md... "
-if [ -f "FOUNDERS_GUIDE.md" ]; then
+echo -n "Checking ${DOCS_OPERATIONS_DIR}/QUICK_REFERENCE.md... "
+if [ -f "${DOCS_OPERATIONS_DIR}/QUICK_REFERENCE.md" ]; then
     echo -e "${GREEN}✓ Exists${NC}"
     ((TESTS_PASSED++))
 else
@@ -189,8 +194,8 @@ else
     ((TESTS_FAILED++))
 fi
 
-echo -n "Checking LAUNCH_CHECKLIST_4PM.md... "
-if [ -f "LAUNCH_CHECKLIST_4PM.md" ]; then
+echo -n "Checking ${DOCS_LAUNCH_DIR}/LAUNCH_CHECKLIST.md... "
+if [ -f "${DOCS_LAUNCH_DIR}/LAUNCH_CHECKLIST.md" ]; then
     echo -e "${GREEN}✓ Exists${NC}"
     ((TESTS_PASSED++))
 else
@@ -198,8 +203,8 @@ else
     ((TESTS_FAILED++))
 fi
 
-echo -n "Checking UI_INTEGRATION_GUIDE.md... "
-if [ -f "UI_INTEGRATION_GUIDE.md" ]; then
+echo -n "Checking ${DOCS_GUIDES_DIR}/UI_INTEGRATION_GUIDE.md... "
+if [ -f "${DOCS_GUIDES_DIR}/UI_INTEGRATION_GUIDE.md" ]; then
     echo -e "${GREEN}✓ Exists${NC}"
     ((TESTS_PASSED++))
 else

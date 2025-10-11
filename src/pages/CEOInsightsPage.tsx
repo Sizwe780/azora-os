@@ -1,6 +1,6 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
-import { Lightbulb, TrendingUp, Globe, AlertTriangle, Target } from 'lucide-react';
+import { Lightbulb, TrendingUp, Globe, Target } from 'lucide-react';
 
 interface Insight {
   id: string;

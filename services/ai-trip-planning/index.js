@@ -46,7 +46,7 @@ function azoraAI(prompt, context = {}) {
     
     'fuel_reminder': `Your fuel level is at 25%. There's a Shell station with good diesel prices in 18km. If you refuel there, you'll have enough fuel for all remaining deliveries today plus your return trip tomorrow. Shall I add it to your route?`,
     
-    'delivery_prep': `You're 10 minutes from your next delivery at Shoprite Distribution Centre. Here's what you need to know: Gate 4 is for commercial vehicles, they require your delivery note and driver's license at security, the offloading bay is on the east side, and they typically take 30-45 minutes to offload. I've already sent them your ETA notification.`
+    'delivery_prep': `You're 10 minutes from your next delivery at Regional Distribution Hub Distribution Centre. Here's what you need to know: Gate 4 is for commercial vehicles, they require your delivery note and driver's license at security, the offloading bay is on the east side, and they typically take 30-45 minutes to offload. I've already sent them your ETA notification.`
   };
   
   // Determine response type based on context

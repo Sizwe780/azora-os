@@ -1,5 +1,4 @@
-import React from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Mail, Send, Inbox, Star, Trash2, RefreshCw, Plus, Search, Paperclip } from 'lucide-react';
 import { Email, getEmailAccount, hasPermission } from '../types/founders';
 
@@ -17,7 +16,6 @@ export default function EmailPage({ userId }: EmailPageProps) {
   
   const emailAccount = getEmailAccount(userId);
   const canSend = hasPermission(userId, 'send_emails');
-  const canViewAll = hasPermission(userId, 'view_all_emails');
 
   // Compose email form state
   const [composeForm, setComposeForm] = useState({
@@ -28,14 +26,8 @@ export default function EmailPage({ userId }: EmailPageProps) {
     body: '',
   });
 
-  useEffect(() => {
-    fetchEmails();
-    // Auto-refresh every 30 seconds
-    const interval = setInterval(fetchEmails, 30000);
-    return () => clearInterval(interval);
-  }, [userId, filter]);
-
-  const fetchEmails = async () => {
+  const fetchEmails = useCallback(async () => {
+    setLoading(true);
     try {
       const response = await fetch(`/api/emails/${userId}?filter=${filter}`);
       if (response.ok) {
@@ -47,11 +39,23 @@ export default function EmailPage({ userId }: EmailPageProps) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filter, userId]);
+
+  useEffect(() => {
+    const scheduleFetch = () => {
+      setTimeout(() => {
+        void fetchEmails();
+      }, 0);
+    };
+
+    scheduleFetch();
+    const interval = setInterval(scheduleFetch, 30000);
+    return () => clearInterval(interval);
+  }, [fetchEmails]);
 
   const sendEmail = async () => {
     if (!canSend || !emailAccount) {
-      alert('You do not have permission to send emails');
+      window.alert('You do not have permission to send emails');
       return;
     }
 
@@ -71,16 +75,16 @@ export default function EmailPage({ userId }: EmailPageProps) {
       });
 
       if (response.ok) {
-        alert('Email sent successfully!');
+        window.alert('Email sent successfully!');
         setComposing(false);
         setComposeForm({ to: '', cc: '', bcc: '', subject: '', body: '' });
         fetchEmails();
       } else {
-        alert('Failed to send email');
+        window.alert('Failed to send email');
       }
     } catch (error) {
       console.error('Failed to send email:', error);
-      alert('Error sending email');
+      window.alert('Error sending email');
     }
   };
 
@@ -115,7 +119,7 @@ export default function EmailPage({ userId }: EmailPageProps) {
   };
 
   const deleteEmail = async (emailId: string) => {
-    if (!confirm('Are you sure you want to delete this email?')) return;
+    if (!window.confirm('Are you sure you want to delete this email?')) return;
     
     try {
       await fetch(`/api/emails/${emailId}`, {

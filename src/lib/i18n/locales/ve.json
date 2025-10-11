@@ -1,0 +1,83 @@
+{
+  "common": {
+    "loading": "Zwo laisa...",
+    "error": "Vhukhakhi ho itea",
+    "success": "Vhukhakhi",
+    "cancel": "Khansela",
+    "confirm": "Khwaṱhisedza",
+    "save": "Vhulunga",
+    "delete": "Thutha",
+    "edit": "Lulamisa",
+    "add": "Engedza",
+    "search": "Ṱola",
+    "filter": "Filitara",
+    "sort": "Vhaisa",
+    "export": "Rumela nnḓa",
+    "import": "Ḓivhea nnḓa",
+    "refresh": "Tshinyeledza",
+    "back": "Murahu",
+    "next": "Zwi tevhelaho",
+    "previous": "Zwi fhira",
+    "close": "Vala",
+    "open": "Vula",
+    "yes": "Ee",
+    "no": "Hai"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "tracking": "U landzela",
+    "ai": "AI",
+    "evolution": "U tshimbila",
+    "safety": "Vhusimamilaho",
+    "settings": "Nzudzanyo",
+    "logout": "Buda",
+    "profile": "Mbonalelo"
+  },
+  "dashboard": {
+    "title": "Dashboard ya Azora OS",
+    "welcome": "Ni a tanganedzwa kha Azora OS",
+    "subtitle": "Tshanda tsha u thoma tsha AI tshi ḓiitire tsha Afrika",
+    "metrics": "Mbonalelo ya ndeme",
+    "alerts": "Zwibumabumelo zwi khou šoma",
+    "recentActivity": "Mushumo wa maḓuvha"
+  },
+  "tracking": {
+    "title": "U landzela zwitirhisiwa",
+    "activeVehicles": "Zwitirhisiwa zwi khou šoma",
+    "totalDistance": "Malo a vhothe",
+    "averageSpeed": "Vhuimo ha u famba",
+    "fuelEfficiency": "U šoma zwavhuḓi ha mafutha",
+    "realTimeUpdates": "Zwintshuxo zwa tshifhinga tsha nnyi"
+  },
+  "ai": {
+    "title": "Mishumo ya AI",
+    "neuralNetwork": "Vhuimo ha netiweke ya neural",
+    "predictions": "Zwikombiso zwa AI",
+    "optimization": "U andisa ndila",
+    "analytics": "Zwihlahlulelo zwa AI",
+    "quantumProcessing": "U šoma ha quantum"
+  },
+  "safety": {
+    "title": "Vhusimamilaho na Vhusimamilaho",
+    "alerts": "Zwibumabumelo zwa vhusimamilaho",
+    "incidents": "Zwithu zwi itaho",
+    "compliance": "Vhuimo ha u tevhela",
+    "monitoring": "U langa nga tshifhinga tsha nnyi",
+    "emergencyResponse": "Mbudzaho ya tshifhinga tsha khombo"
+  },
+  "errors": {
+    "networkError": "Vhukhakhi ha u hlanganisa netiweke",
+    "serverError": "Vhukhakhi ho itea kha seva",
+    "validationError": "Ni khou humbelwa uri ni langeni zwine na zwi dzhenisa",
+    "unauthorized": "U dzhena u si tendelwe",
+    "notFound": "Pheji a i wanali",
+    "timeout": "Khumbelo yo fhela nga tshifhinga"
+  },
+  "validation": {
+    "required": "Fhethu he li a ṱhogea",
+    "email": "Ni khou humbelwa uri ni dzhenise adirese ya imeile yo teaho",
+    "phone": "Ni khou humbelwa uri ni dzhenise nomboro ya founu yo teaho",
+    "password": "Phasiwede i tea u vha na maletere a 8 lwa bonyane",
+    "confirmPassword": "Zwiphasiwedi a zwi fani"
+  }
+}

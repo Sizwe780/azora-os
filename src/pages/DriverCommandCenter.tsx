@@ -73,6 +73,7 @@ export default function DriverCommandCenter() {
       });
       setAuraMessage(res.data.prediction.message);
     } catch (error) {
+      console.error('Request break error:', error);
       setAuraMessage('Finding the perfect coffee stop for you...');
     }
   };

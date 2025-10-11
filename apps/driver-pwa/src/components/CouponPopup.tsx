@@ -15,8 +15,8 @@ interface CouponPopupProps {
   visible: boolean;
 }
 
-const woolworthsGreen = '#007A33';
-const woolworthsYellow = '#FFD600';
+const retail-partnerGreen = '#007A33';
+const retail-partnerYellow = '#FFD600';
 
 export const CouponPopup: React.FC<CouponPopupProps> = ({ coupon, onClose, visible }) => {
   const [show, setShow] = useState(visible);
@@ -26,21 +26,21 @@ export const CouponPopup: React.FC<CouponPopupProps> = ({ coupon, onClose, visib
 
   // Animation: fade-in/out
   return (
-    <div className={`woolworths-coupon-modal ${show ? 'show' : 'hide'}`}>  
-      <div className="woolworths-coupon-content">
-        <button className="woolworths-coupon-close" onClick={onClose} aria-label="Close">×</button>
-        <div className="woolworths-coupon-header">
+    <div className={`retail-partner-coupon-modal ${show ? 'show' : 'hide'}`}>  
+      <div className="retail-partner-coupon-content">
+        <button className="retail-partner-coupon-close" onClick={onClose} aria-label="Close">×</button>
+        <div className="retail-partner-coupon-header">
           {coupon.brandLogoUrl && (
-            <img src={coupon.brandLogoUrl} alt="Woolworths Logo" className="woolworths-logo" />
+            <img src={coupon.brandLogoUrl} alt="Retail Partner Logo" className="retail-partner-logo" />
           )}
-          <h2 style={{ color: woolworthsGreen }}>{coupon.title}</h2>
+          <h2 style={{ color: retail-partnerGreen }}>{coupon.title}</h2>
         </div>
-        <div className="woolworths-coupon-body">
+        <div className="retail-partner-coupon-body">
           <p>{coupon.description}</p>
-          <div className="woolworths-coupon-rewards" style={{ color: woolworthsYellow }}>
+          <div className="retail-partner-coupon-rewards" style={{ color: retail-partnerYellow }}>
             {coupon.rewards}
           </div>
-          <div className="woolworths-coupon-expiry">
+          <div className="retail-partner-coupon-expiry">
             Expires: <span>{coupon.expiry}</span>
           </div>
         </div>
