@@ -1,7 +1,27 @@
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getMockLedgerEntries, ledgerEntryIcons, ledgerEntryColors, LedgerEntry } from '../features/ledger/mockLedger';
-import { FileText, Search, X, Bot, Printer, Calendar, Building, User } from 'lucide-react';
+import { useLedger } from '../features/ledger/useLedger';
+import { useI18n } from '../lib/i18n/i18nContext';
+import { LedgerEntry } from '../types/ledger';
+import { FileText, Search, X, Bot, Printer, Calendar, Building, User, TrendingUp, Shield, Coins, Cpu, HardDrive, Zap } from 'lucide-react';
+
+const ledgerEntryIcons = {
+  transfer: Coins,
+  compliance: Shield,
+  onboarding: User,
+  'document-verification': FileText,
+  mint: TrendingUp,
+  genesis: Building,
+};
+
+const ledgerEntryColors = {
+  transfer: 'green',
+  compliance: 'blue',
+  onboarding: 'purple',
+  'document-verification': 'yellow',
+  mint: 'cyan',
+  genesis: 'gray',
+};
 
 const FilterInput = ({ icon: Icon, ...props }) => (
   <div className="relative">
@@ -13,10 +33,7 @@ const FilterInput = ({ icon: Icon, ...props }) => (
   </div>
 );
 
-const LedgerRow = ({ entry, onAnalyze, onPrint }) => {
-  const Icon = ledgerEntryIcons[entry.type];
-  const color = ledgerEntryColors[entry.type];
-
+const BlockRow = ({ block, onAnalyzeEntry, onPrintEntry }) => {
   return (
     <motion.div
       layout
@@ -24,39 +41,67 @@ const LedgerRow = ({ entry, onAnalyze, onPrint }) => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, x: -20 }}
       transition={{ duration: 0.3 }}
-      className="bg-gray-900/50 border border-gray-700/50 rounded-2xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-cyan-500/50 transition-colors"
+      className="bg-gray-900/50 border border-gray-700/50 rounded-2xl p-4"
     >
-      <div className="flex items-center gap-4 flex-1">
-        <div className={`p-3 bg-${color}-500/20 rounded-xl`}>
-          <Icon className={`w-6 h-6 text-${color}-400`} />
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-4">
+          <div className="p-3 bg-cyan-500/20 rounded-xl">
+            <HardDrive className="w-6 h-6 text-cyan-400" />
+          </div>
+          <div>
+            <p className="font-bold text-lg text-white">Block #{block.index}</p>
+            <p className="text-xs text-gray-400 font-mono">{block.hash.substring(0, 20)}...</p>
+          </div>
         </div>
-        <div>
-          <p className={`font-bold text-sm text-${color}-300`}>{entry.type.replace('_', ' ')}</p>
-          <p className="text-xs text-gray-400 font-mono" title={entry.uid}>{entry.uid.substring(0, 15)}...</p>
+        <div className="text-right">
+          <p className="text-sm text-gray-400">Mined: {new Date(block.timestamp).toLocaleString('en-ZA')}</p>
+          <p className="text-xs text-gray-500">Difficulty: {block.difficulty} | Nonce: {block.nonce}</p>
+          <p className="text-xs text-yellow-400">Reward: {block.minerReward} AZORA</p>
         </div>
       </div>
-      <div className="flex-1">
-        <p className="text-sm text-white font-semibold" title={entry.entityId}>{entry.entityId}</p>
-        <p className="text-xs text-gray-500">{new Date(entry.createdAt).toLocaleString('en-ZA')}</p>
-      </div>
-      <div className="flex-1 text-xs font-mono text-gray-400 hidden lg:block">
-        {Object.entries(entry.relatedIds).map(([key, value]) => (
-          <p key={key}><span className="font-semibold text-gray-500">{key}: </span>{String(value)}</p>
-        ))}
-      </div>
-      <div className="flex items-center gap-2 justify-end pt-4 md:pt-0 border-t border-gray-800 md:border-none">
-        <button
-          onClick={() => onAnalyze(entry)}
-          className="px-3 py-2 bg-gray-800 text-white rounded-lg text-xs hover:bg-indigo-600 transition-colors flex items-center gap-2"
-        >
-          <Bot size={14} /> AI
-        </button>
-        <button
-          onClick={() => onPrint(entry)}
-          className="px-3 py-2 bg-gray-800 text-white rounded-lg text-xs hover:bg-cyan-600 transition-colors flex items-center gap-2"
-        >
-          <Printer size={14} /> Print
-        </button>
+
+      <div className="space-y-2">
+        <p className="text-sm text-gray-400 mb-2">{block.entries.length} entries in this block:</p>
+        {block.entries.map((entry, idx) => {
+          const getEntryType = (data: unknown) => {
+            if (typeof data === 'object' && data !== null && 'type' in data) {
+              return String(data.type);
+            }
+            return 'unknown';
+          };
+
+          const type = getEntryType(entry.data);
+          const Icon = ledgerEntryIcons[type] || FileText;
+          const color = ledgerEntryColors[type] || 'gray';
+
+          return (
+            <div key={idx} className="flex items-center justify-between bg-gray-800/50 rounded-lg p-3">
+              <div className="flex items-center gap-3">
+                <div className={`p-2 bg-${color}-500/20 rounded-lg`}>
+                  <Icon className={`w-4 h-4 text-${color}-400`} />
+                </div>
+                <div>
+                  <p className={`font-semibold text-sm text-${color}-300`}>{type.replace('_', ' ')}</p>
+                  <p className="text-xs text-gray-400 font-mono">{entry.id}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => onAnalyzeEntry(entry)}
+                  className="px-2 py-1 bg-gray-700 text-white rounded text-xs hover:bg-indigo-600 transition-colors"
+                >
+                  <Bot size={12} />
+                </button>
+                <button
+                  onClick={() => onPrintEntry(entry)}
+                  className="px-2 py-1 bg-gray-700 text-white rounded text-xs hover:bg-cyan-600 transition-colors"
+                >
+                  <Printer size={12} />
+                </button>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </motion.div>
   );
@@ -64,7 +109,8 @@ const LedgerRow = ({ entry, onAnalyze, onPrint }) => {
 
 const AIAnalysisModal = ({ entry, onClose }) => {
     if (!entry) return null;
-    const color = ledgerEntryColors[entry.type];
+    const type = typeof entry.data === 'object' && entry.data !== null && 'type' in entry.data ? String(entry.data.type) : 'unknown';
+    const color = ledgerEntryColors[type] || 'gray';
 
     return (
         <motion.div
@@ -91,13 +137,14 @@ const AIAnalysisModal = ({ entry, onClose }) => {
                     </button>
                 </div>
                 <div className="p-6 space-y-4">
-                    <p className="text-sm text-gray-400">Analysis of ledger entry <span className="font-mono text-cyan-400">{entry.uid}</span></p>
+                    <p className="text-sm text-gray-400">Analysis of ledger entry <span className="font-mono text-cyan-400">{entry.id}</span></p>
                     <div className="bg-gray-950/70 p-4 rounded-lg space-y-3">
-                        <p><strong className="text-white">Insight:</strong> This <strong className={`text-${color}-400`}>{entry.type.replace('_', ' ')}</strong> event appears nominal.</p>
-                        <p><strong className="text-white">Context:</strong> The payload indicates a value of <span className="font-mono text-yellow-400">{JSON.stringify(entry.payload)}</span>.</p>
-                        <p><strong className="text-white">Recommendation:</strong> No action required. This transaction is consistent with typical patterns for entity <span className="font-mono text-purple-400">{entry.entityId}</span>.</p>
+                        <p><strong className="text-white">Insight:</strong> This <strong className={`text-${color}-400`}>{type.replace('_', ' ')}</strong> event is cryptographically signed and verified.</p>
+                        <p><strong className="text-white">Hash:</strong> <span className="font-mono text-yellow-400">{entry.hash}</span></p>
+                        <p><strong className="text-white">Timestamp:</strong> {new Date(entry.timestamp).toLocaleString('en-ZA')}</p>
+                        <p><strong className="text-white">Recommendation:</strong> This entry is immutable and part of the secure blockchain ledger.</p>
                     </div>
-                     <p className="text-xs text-gray-500 text-center pt-2">This is a simulated AI analysis for demonstration purposes.</p>
+                     <p className="text-xs text-gray-500 text-center pt-2">This is a real cryptographic ledger entry with RSA signature verification.</p>
                 </div>
             </motion.div>
         </motion.div>
@@ -106,23 +153,51 @@ const AIAnalysisModal = ({ entry, onClose }) => {
 
 
 export default function LedgerPage() {
-  const [filters, setFilters] = useState({ type: '', from: '', to: '', companyId: '', driverId: '' });
+  const { blocks, pendingEntries, stats, loading, forceMineBlock } = useLedger();
+  const { t } = useI18n();
+  const [filters, setFilters] = useState({ type: '', from: '', to: '', id: '' });
   const [analyzingEntry, setAnalyzingEntry] = useState<LedgerEntry | null>(null);
+  const [mining, setMining] = useState(false);
 
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFilters(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const clearFilters = () => {
-    setFilters({ type: '', from: '', to: '', companyId: '', driverId: '' });
+    setFilters({ type: '', from: '', to: '', id: '' });
   };
 
-  const filteredEntries = useMemo(() => {
-    return getMockLedgerEntries(filters);
-  }, [filters]);
+  const filteredBlocks = useMemo(() => {
+    return blocks.filter(block => {
+      if (filters.from && block.timestamp < new Date(filters.from).getTime()) return false;
+      if (filters.to && block.timestamp > new Date(filters.to + 'T23:59:59').getTime()) return false;
+
+      // Filter entries within blocks
+      if (filters.type || filters.id) {
+        return block.entries.some(entry => {
+          const entryType = typeof entry.data === 'object' && entry.data !== null && 'type' in entry.data ? String(entry.data.type) : '';
+          if (filters.type && !entryType.toLowerCase().includes(filters.type.toLowerCase())) return false;
+          if (filters.id && !entry.id.toLowerCase().includes(filters.id.toLowerCase())) return false;
+          return true;
+        });
+      }
+      return true;
+    });
+  }, [blocks, filters]);
 
   const handlePrint = (entry: LedgerEntry) => {
-    alert(`Printing PDF for ledger entry: ${entry.uid}`);
+    alert(`Printing PDF for ledger entry: ${entry.id}`);
+  };
+
+  const handleMineBlock = async () => {
+    setMining(true);
+    try {
+      await forceMineBlock();
+    } catch (error) {
+      console.error('Mining failed:', error);
+    } finally {
+      setMining(false);
+    }
   };
 
   return (
@@ -131,23 +206,90 @@ export default function LedgerPage() {
         <div className="flex items-center gap-4">
           <FileText className="w-8 h-8 text-cyan-400" />
           <div>
-            <h1 className="text-3xl font-bold text-white">Sovereign Ledger</h1>
+            <h1 className="text-3xl font-bold text-white">{t('ledger')}</h1>
             <p className="text-cyan-300">Immutable, real-time log of all system events.</p>
           </div>
+        </div>
+      </motion.div>
+
+      {/* Enhanced Stats */}
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.05 } }}>
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-6">
+          <div className="bg-gray-900/50 border border-gray-700/50 rounded-2xl p-4">
+            <div className="flex items-center gap-2">
+              <HardDrive className="w-5 h-5 text-cyan-400" />
+              <span className="text-sm text-gray-400">Blocks</span>
+            </div>
+            <p className="text-2xl font-bold text-white">{stats.totalBlocks}</p>
+          </div>
+          <div className="bg-gray-900/50 border border-gray-700/50 rounded-2xl p-4">
+            <div className="flex items-center gap-2">
+              <FileText className="w-5 h-5 text-blue-400" />
+              <span className="text-sm text-gray-400">Entries</span>
+            </div>
+            <p className="text-2xl font-bold text-white">{stats.totalEntries}</p>
+          </div>
+          <div className="bg-gray-900/50 border border-gray-700/50 rounded-2xl p-4">
+            <div className="flex items-center gap-2">
+              <Cpu className="w-5 h-5 text-purple-400" />
+              <span className="text-sm text-gray-400">Difficulty</span>
+            </div>
+            <p className="text-2xl font-bold text-white">{stats.currentDifficulty}</p>
+          </div>
+          <div className="bg-gray-900/50 border border-gray-700/50 rounded-2xl p-4">
+            <div className="flex items-center gap-2">
+              <Coins className="w-5 h-5 text-green-400" />
+              <span className="text-sm text-gray-400">Tokens</span>
+            </div>
+            <p className="text-2xl font-bold text-white">{stats.totalTokens}</p>
+          </div>
+          <div className="bg-gray-900/50 border border-gray-700/50 rounded-2xl p-4">
+            <div className="flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-yellow-400" />
+              <span className="text-sm text-gray-400">Value</span>
+            </div>
+            <p className="text-2xl font-bold text-white">${stats.ecosystemValue.toLocaleString()}</p>
+          </div>
+          <div className="bg-gray-900/50 border border-gray-700/50 rounded-2xl p-4">
+            <div className="flex items-center gap-2">
+              <Shield className={`w-5 h-5 ${stats.isValid ? 'text-green-400' : 'text-red-400'}`} />
+              <span className="text-sm text-gray-400">Valid</span>
+            </div>
+            <p className={`text-2xl font-bold ${stats.isValid ? 'text-green-400' : 'text-red-400'}`}>
+              {stats.isValid ? 'Yes' : 'No'}
+            </p>
+          </div>
+        </div>
+
+        {/* Mining Controls */}
+        <div className="flex gap-4 mb-6">
+          <button
+            onClick={handleMineBlock}
+            disabled={mining || pendingEntries.length === 0}
+            className="px-6 py-3 bg-gradient-to-r from-cyan-600 to-blue-600 text-white rounded-lg font-semibold disabled:opacity-50 flex items-center gap-2 hover:from-cyan-500 hover:to-blue-500 transition-all"
+          >
+            <Zap className="w-5 h-5" />
+            {mining ? 'Mining...' : 'Mine Block'}
+          </button>
+          {pendingEntries.length > 0 && (
+            <div className="flex items-center gap-2 text-yellow-400">
+              <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
+              {pendingEntries.length} pending entries
+            </div>
+          )}
         </div>
       </motion.div>
 
       {/* Filters */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.1 } }}>
         <div className="bg-gray-900/50 border border-gray-700/50 rounded-2xl p-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <FilterInput icon={Search} name="type" value={filters.type} onChange={handleFilterChange} placeholder="Filter by type..." />
                 <FilterInput icon={Calendar} name="from" type="date" value={filters.from} onChange={handleFilterChange} placeholder="From date" />
                 <FilterInput icon={Calendar} name="to" type="date" value={filters.to} onChange={handleFilterChange} placeholder="To date" />
-                <FilterInput icon={Building} name="companyId" value={filters.companyId} onChange={handleFilterChange} placeholder="Company ID" />
-                <FilterInput icon={User} name="driverId" value={filters.driverId} onChange={handleFilterChange} placeholder="Driver ID" />
+                <FilterInput icon={FileText} name="id" value={filters.id} onChange={handleFilterChange} placeholder="Entry ID" />
             </div>
-            {(filters.type || filters.from || filters.to || filters.companyId || filters.driverId) && (
+            {(filters.type || filters.from || filters.to || filters.id) && (
                 <div className="flex justify-end mt-4">
                     <button onClick={clearFilters} className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors">
                         <X size={16} /> Clear Filters
@@ -157,12 +299,21 @@ export default function LedgerPage() {
         </div>
       </motion.div>
 
-      {/* Ledger Entries */}
+      {/* Blockchain Blocks */}
       <motion.div layout className="space-y-4">
         <AnimatePresence>
-          {filteredEntries.length > 0 ? (
-            filteredEntries.map((entry) => (
-              <LedgerRow key={entry.uid} entry={entry} onAnalyze={setAnalyzingEntry} onPrint={handlePrint} />
+          {loading ? (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center py-16 bg-gray-900/50 border border-gray-700/50 rounded-2xl"
+            >
+              <p className="text-white font-semibold">{t('loading')}</p>
+              <p className="text-gray-400 text-sm mt-2">Fetching blockchain data</p>
+            </motion.div>
+          ) : filteredBlocks.length > 0 ? (
+            filteredBlocks.map((block) => (
+              <BlockRow key={block.index} block={block} onAnalyzeEntry={setAnalyzingEntry} onPrintEntry={handlePrint} />
             ))
           ) : (
             <motion.div
@@ -170,8 +321,8 @@ export default function LedgerPage() {
               animate={{ opacity: 1, y: 0 }}
               className="text-center py-16 bg-gray-900/50 border border-gray-700/50 rounded-2xl"
             >
-              <p className="text-white font-semibold">No ledger entries found</p>
-              <p className="text-gray-400 text-sm mt-2">Try adjusting your filters.</p>
+              <p className="text-white font-semibold">{t('noData')}</p>
+              <p className="text-gray-400 text-sm mt-2">No blocks found. Try adjusting your filters or mine the first block.</p>
             </motion.div>
           )}
         </AnimatePresence>

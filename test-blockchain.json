@@ -1,0 +1,33 @@
+{
+  "chain": [
+    {
+      "index": 0,
+      "timestamp": 1760228442465,
+      "entries": [
+        {
+          "id": "genesis",
+          "timestamp": 1760228442463,
+          "data": {
+            "type": "genesis",
+            "message": "Azora Blockchain Genesis Block"
+          },
+          "previousHash": "0",
+          "hash": "bdf3758c91ddd734e62a63aab0ce7c453376d7fcc9f4a06f6917dedcedb5abaf",
+          "signature": "30a07c6a7f2718f295609ecfc8c7802cbb3db44ce86051a4cb2e2e331c3c8a64b11a616b9420b2c0eed825ca96035d5cb1cf6d58914d8e53fb2058d2d1ebc23d11f76ff4a84cb05ec3df0c13b5c7e70ada782f10309f7f76e83bd2adaeeced21f13a742c2c2da0b6eb32b563ab0d24277cb3948e70a26453b13b829382350fa8691ce4d1a74b7aa59fd37af3e61fa02f3458931b7f1457e7b18f7d940cac49e73b325601503d53c17f11596f0f7a306386b2ee1d7a4188f2e1b5be3dc2de3e23f46d422120c522295ed53075543a222d4f41b707718b43b864e3f4c5de710ae452aa72c5f9127d5c90d6bb9459a5b8737740fd38ad5329e21f8ec9e7557e27fd",
+          "publicKey": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnIsB15fGwuD69IqgJtNw\nPN8/Rvlzcgk+WiHT/Va2T/lUEWjfBAdGkt3YwGeNhKWBFMQjeydB+CrtDrpB2nfm\nmdUJIlazjgbSrRXWrYNcn/7oSUyivWPE6x/DbOC978oq79wyABxLRY+Yg0eGq/US\nNXUA1Eiu8d65CsPgmIprycqY5CydfR6Kkwxtd2XslR6X90LCIRVkDxYkRU/KSdHk\n6nq0UjZ4RALbgIornuZszw3X+T4ALNbos1sq/SWupd02gbIpz8uKET2echcSrw0L\nRDvu88gqZzfrXnCIk6GgB10JBs8Kgq/YeWm1ouS8bzcB9OCDJ63zYSfTK/C2KNu3\nxQIDAQAB\n-----END PUBLIC KEY-----\n",
+          "nonce": 0,
+          "difficulty": 1,
+          "merkleRoot": "23e9ce229a6acdd31dcecadecbed4eb03c2bfa36d9999510caa3badb251c4382"
+        }
+      ],
+      "previousHash": "0",
+      "hash": "bdf3758c91ddd734e62a63aab0ce7c453376d7fcc9f4a06f6917dedcedb5abaf",
+      "nonce": 0,
+      "difficulty": 1,
+      "merkleRoot": "23e9ce229a6acdd31dcecadecbed4eb03c2bfa36d9999510caa3badb251c4382",
+      "minerReward": 100
+    }
+  ],
+  "tokens": [],
+  "difficulty": 4
+}

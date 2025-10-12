@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ThemeToggle } from '../components/ui/ThemeToggle';
 import BeamsBackground from '../app/BeamsBackground';
+import VoiceControl from '../components/ui/VoiceControl';
 
 const sidebarOptions = [
   { label: 'Dashboard', icon: '🏠', href: '#dashboard' },
@@ -44,6 +45,20 @@ const suiteFeatures = [
 export function ModernDashboardLayout({ children }: { children: React.ReactNode }) {
   const [activePanel, setActivePanel] = useState('Dashboard');
   const navigate = useNavigate();
+
+  const handleVoiceCommand = (command: string) => {
+    const lowerCaseCommand = command.toLowerCase();
+    console.log('Voice command received:', lowerCaseCommand);
+
+    const option = sidebarOptions.find(opt => lowerCaseCommand.includes(opt.label.toLowerCase()));
+
+    if (option) {
+      console.log('Navigating to:', option.href);
+      handleNavigation(option.href);
+    } else if (lowerCaseCommand.includes('log out')) {
+      handleNavigation('/login');
+    }
+  };
 
   const handleLogout = () => {
     sessionStorage.removeItem('azora-auth');
@@ -104,6 +119,7 @@ export function ModernDashboardLayout({ children }: { children: React.ReactNode 
           )}
         </div>
       </main>
+      <VoiceControl onCommand={handleVoiceCommand} />
     </div>
   );
 }

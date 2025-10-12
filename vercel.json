@@ -10,14 +10,8 @@
   },
   "routes": [
     {
-      "src": "/api/(.*)",
-      "headers": {
-        "Access-Control-Allow-Credentials": "true",
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET,OPTIONS,PATCH,DELETE,POST,PUT",
-        "Access-Control-Allow-Headers": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version"
-      },
-      "continue": true
+      "src": "/api/v1/ledger",
+      "dest": "/api/v1/ledger/index.ts"
     },
     {
       "src": "/api/ai-orchestrator/(.*)",

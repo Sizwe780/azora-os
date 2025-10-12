@@ -7,12 +7,14 @@ import EmailList from '../components/email/EmailList';
 import EmailView from '../components/email/EmailView';
 import ComposeModal from '../components/email/ComposeModal';
 
-const EmailPage = () => {
+const EmailPage = ({ userId }: { userId: string }) => {
   const [emails, setEmails] = useState<Email[]>(mockEmails);
   const [selectedEmailId, setSelectedEmailId] = useState<string | null>('1');
   const [composing, setComposing] = useState(false);
   const [activeFolder, setActiveFolder] = useState<FolderName>('inbox');
   const [searchQuery, setSearchQuery] = useState('');
+
+  console.log('Email page loaded for user:', userId);
 
   const filteredEmails = useMemo(() => {
     let filtered = emails;

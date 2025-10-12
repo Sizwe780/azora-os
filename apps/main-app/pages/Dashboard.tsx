@@ -15,7 +15,8 @@ import ServiceModuleCard from '../components/dashboard/ServiceModuleCard';
 import QuickActionButton from '../components/dashboard/QuickActionButton';
 import RecentActivityFeed from '../components/dashboard/RecentActivityFeed';
 
-export default function Dashboard() {
+export default function Dashboard({ userId }: { userId: string }) {
+  console.log('Dashboard loaded for user:', userId);
   return (
     <>
       <Helmet>

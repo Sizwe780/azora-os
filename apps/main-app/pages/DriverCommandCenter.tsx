@@ -59,10 +59,10 @@ export default function DriverCommandCenter() {
   };
 
   const statCards = [
-    { icon: DollarSign, title: "Earned Today", value: `$${stats.earnings.toFixed(2)}`, color: 'green' },
-    { icon: Zap, title: "Deliveries", value: stats.deliveries.toString(), color: 'cyan' },
-    { icon: Heart, title: "Energy Level", value: `${stats.energyLevel.toFixed(0)}%`, color: 'yellow' },
-    { icon: Shield, title: "Safety Score", value: stats.safetyScore.toString(), color: 'purple' },
+    { icon: DollarSign, title: "Earned Today", value: `$${stats.earnings.toFixed(2)}`, color: 'green' as 'green' | 'purple' | 'cyan' | 'yellow' },
+    { icon: Zap, title: "Deliveries", value: stats.deliveries.toString(), color: 'cyan' as 'green' | 'purple' | 'cyan' | 'yellow' },
+    { icon: Heart, title: "Energy Level", value: `${stats.energyLevel.toFixed(0)}%`, color: 'yellow' as 'green' | 'purple' | 'cyan' | 'yellow' },
+    { icon: Shield, title: "Safety Score", value: stats.safetyScore.toString(), color: 'purple' as 'green' | 'purple' | 'cyan' | 'yellow' },
   ];
 
   return (
@@ -95,9 +95,34 @@ export default function DriverCommandCenter() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {coPilotActions.map((action, index) => (
-            <ActionCard key={action.id} action={action} index={index} onClick={handleActionClick} />
-          ))}
+          {coPilotActions.map((action, index) => {
+            // Assign icons based on action id or type
+            let icon;
+            switch (action.id) {
+              case 'earnings':
+                icon = DollarSign;
+                break;
+              case 'energy':
+                icon = Zap;
+                break;
+              case 'health':
+                icon = Heart;
+                break;
+              case 'safety':
+                icon = Shield;
+                break;
+              default:
+                icon = User;
+            }
+            return (
+              <ActionCard
+                key={action.id}
+                action={{ ...action, icon }}
+                index={index}
+                onClick={handleActionClick}
+              />
+            );
+          })}
         </div>
         
         <RouteInfoPanel routeInfo={routeInfo} />

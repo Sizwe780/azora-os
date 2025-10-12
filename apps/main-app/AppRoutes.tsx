@@ -16,6 +16,7 @@ const UniversalSafetyCommand = lazy(() => import('./pages/UniversalSafetyCommand
 const QuantumTracking = lazy(() => import('./pages/QuantumTracking'));
 const QuantumAI = lazy(() => import('./pages/QuantumAI'));
 const AIEvolution = lazy(() => import('./pages/AIEvolution'));
+const LiveTripTrackingPage = lazy(() => import('./pages/LiveTripTrackingPage'));
 
 // Enterprise Services Pages
 const AdminPortalPage = lazy(() => import('./pages/AdminPortalPage'));
@@ -83,6 +84,7 @@ export default function AppRoutes() {
                   <Route path="/genesis-chamber" element={<GenesisChamberPage />} />
                   <Route path="/ledger" element={<LedgerPage />} />
                   <Route path="/settings" element={<Settings />} />
+                  <Route path="/live-trip" element={<LiveTripTrackingPage />} />
 
                   {/* Dashboard Pages - Role-based access */}
                   <Route

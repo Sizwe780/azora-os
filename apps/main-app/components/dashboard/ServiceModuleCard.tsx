@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { ServiceModuleData } from '../../features/dashboard/mockDashboardData';
-import { CheckCircle, AlertTriangle, Tool } from 'lucide-react';
+import { CheckCircle, AlertTriangle, Wrench } from 'lucide-react';
 
 const statusConfig = {
   operational: {
@@ -14,7 +14,7 @@ const statusConfig = {
     label: 'Degraded',
   },
   maintenance: {
-    icon: Tool,
+    icon: Wrench,
     color: 'blue',
     label: 'Maintenance',
   },

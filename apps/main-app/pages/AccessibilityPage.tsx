@@ -67,6 +67,7 @@ export default function AccessibilityPage() {
               selected={settings.textSize}
               onSelect={(value) => selectSetting('textSize', value)}
             />
+// ... existing code ...
             <SettingOptions<ColorBlindModeType>
               icon={Eye}
               title="Color Vision"
@@ -75,7 +76,11 @@ export default function AccessibilityPage() {
               onSelect={(value) => selectSetting('colorBlindMode', value)}
             />
             <SettingToggle icon={Contrast} title="High Contrast Mode" enabled={settings.highContrast} onToggle={() => toggleSetting('highContrast')} />
-            <SettingToggle icon={motion.div} title="Reduced Motion" enabled={settings.reduceMotion} onToggle={() => toggleSetting('reduceMotion')} />
+            <SettingToggle icon={Type} title="Reduced Motion" enabled={settings.reduceMotion} onToggle={() => toggleSetting('reduceMotion')} />
+          </motion.div>
+
+          <motion.div variants={itemVariants} className="bg-gray-900/50 border border-gray-800 rounded-2xl p-6">
+            <h3 className="text-2xl font-bold text-white mb-4">Interaction</h3>
           </motion.div>
 
           <motion.div variants={itemVariants} className="bg-gray-900/50 border border-gray-800 rounded-2xl p-6">

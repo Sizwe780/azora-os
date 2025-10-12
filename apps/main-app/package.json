@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@types/leaflet": "^1.9.21",
+    "@types/react-speech-recognition": "^3.9.6",
+    "leaflet": "^1.9.4",
+    "react-leaflet": "^5.0.0",
+    "react-speech-recognition": "^4.0.1"
+  }
+}

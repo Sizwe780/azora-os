@@ -1,8 +1,7 @@
-import React from 'react';
-import { Icon } from 'lucide-react';
+import React, { ElementType } from 'react';
 
 interface SettingOptionsProps<T extends string> {
-  icon: Icon;
+  icon: ElementType;
   title: string;
   options: T[];
   selected: T;

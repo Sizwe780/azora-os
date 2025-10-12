@@ -19,19 +19,26 @@ const FinancePage = () => {
       <Helmet>
         <title>Finance Command Center | Azora</title>
       </Helmet>
-      <div className="p-4 sm:p-6 lg:p-8 text-white min-h-screen bg-transparent">
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
+      <div className="p-4 sm:p-6 lg:p-8 text-white min-h-screen bg-gray-950">
+        <div className="absolute inset-0 -z-10 h-full w-full bg-gray-950 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]"></div>
+        <div className="absolute top-0 left-0 -z-10 h-1/3 w-full bg-gradient-to-b from-cyan-500/20 to-transparent"></div>
+
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }} 
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
             <div>
-              <h1 className="text-3xl font-bold text-white">Finance Command Center</h1>
-              <p className="text-gray-400 mt-1">Real-time financial overview of Azora operations.</p>
+              <h1 className="text-4xl font-bold text-white tracking-tight">Finance Command Center</h1>
+              <p className="text-cyan-200/80 mt-2">Real-time financial overview of Azora operations.</p>
             </div>
-            <div className="mt-4 sm:mt-0 flex items-center bg-gray-800/60 border border-gray-700/30 rounded-lg p-1 space-x-1">
+            <div className="mt-4 sm:mt-0 flex items-center bg-gray-950/70 border border-cyan-500/20 rounded-lg p-1 space-x-1 backdrop-blur-md">
               {(['monthly', 'quarterly', 'annually'] as Period[]).map(p => (
                 <button
                   key={p}
                   onClick={() => setPeriod(p)}
-                  className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors ${period === p ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-700/50'}`}
+                  className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-all duration-300 ${period === p ? 'bg-cyan-500 text-white shadow-md shadow-cyan-500/20' : 'text-cyan-200/80 hover:bg-cyan-500/10'}`}
                 >
                   {p.charAt(0).toUpperCase() + p.slice(1)}
                 </button>

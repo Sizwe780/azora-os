@@ -43,9 +43,9 @@ export const JobCard = ({ job }: { job: Job }) => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3 }}
-      className={`bg-black/20 backdrop-blur-lg border border-gray-700/50 rounded-2xl overflow-hidden shadow-lg hover:border-blue-500/50 transition-all duration-300 ${priorityStyles[job.priority]}`}
+      className={`bg-black/20 backdrop-blur-lg border border-gray-700/50 rounded-2xl overflow-hidden shadow-lg hover:border-blue-500/50 transition-all duration-300`}
     >
-      <div className="p-5">
+      <div className={`p-5 border-l-4 ${priorityStyles[job.priority]}`}>
         <div className="flex justify-between items-start">
           <div>
             <h3 className="font-bold text-xl text-white">{job.title}</h3>

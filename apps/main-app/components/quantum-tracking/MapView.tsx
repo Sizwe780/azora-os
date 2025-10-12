@@ -1,6 +1,6 @@
 import React from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, Circle } from 'react-leaflet';
-import { Vehicle, leafletIcon } from '../features/quantum-tracking/mockQuantum';
+import { Vehicle, leafletIcon } from '../../features/quantum-tracking/mockQuantum';
 import 'leaflet/dist/leaflet.css';
 
 interface MapViewProps {

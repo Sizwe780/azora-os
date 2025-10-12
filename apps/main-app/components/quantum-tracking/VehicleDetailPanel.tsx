@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Battery, Gauge, Thermometer, Zap } from 'lucide-react';
-import { Vehicle } from '../features/quantum-tracking/mockQuantum';
+import { Vehicle } from '../../features/quantum-tracking/mockQuantum';
 
 interface VehicleDetailPanelProps {
   vehicle: Vehicle | null;

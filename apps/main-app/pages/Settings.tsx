@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Settings as SettingsIcon, Bell, Lock, Palette } from 'lucide-react';
+import { Settings as SettingsIcon, Bell, Lock, Palette, Globe } from 'lucide-react';
 
 import { SettingsData, getMockSettingsData } from '../features/settings/mockSettings';
 import ProfilePanel from '../components/settings/ProfilePanel';
 import SettingsSection from '../components/settings/SettingsSection';
 import { Toggle, Select, NumberInput } from '../components/settings/FormControls';
+import { useI18n } from '../lib/i18n/i18nContext';
 
 const pageVariants = {
   hidden: { opacity: 0 },
@@ -23,6 +24,7 @@ const itemVariants = {
 };
 
 export default function Settings() {
+  const { language, setLanguage, t } = useI18n();
   const [settings, setSettings] = useState<SettingsData | null>(null);
 
   useEffect(() => {
@@ -156,6 +158,19 @@ export default function Settings() {
             options={[
               { value: 'compact', label: 'Compact' },
               { value: 'comfortable', label: 'Comfortable' },
+            ]}
+          />
+          <Select 
+            label="Language"
+            value={language}
+            onChange={setLanguage}
+            options={[
+              { value: 'en', label: 'English' },
+              { value: 'af', label: 'Afrikaans' },
+              { value: 'zu', label: 'isiZulu' },
+              { value: 'xh', label: 'isiXhosa' },
+              { value: 'st', label: 'Sesotho' },
+              { value: 'tn', label: 'Setswana' },
             ]}
           />
         </SettingsSection>

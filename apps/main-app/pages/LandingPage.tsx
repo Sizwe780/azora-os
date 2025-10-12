@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
@@ -11,7 +10,8 @@ import { PricingCard } from '../components/landing/PricingCard';
 import { Footer } from '../components/landing/Footer';
 
 const AnimatedBackground = () => (
-    <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+    <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden">
+        <div className="absolute inset-0 h-full w-full bg-gray-950 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
         <motion.div
             className="absolute top-0 left-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl"
             animate={{ x: [-100, '100vw'], y: [0, '100vh'], rotate: [0, 180], scale: [1, 1.5, 1] }}
@@ -38,14 +38,14 @@ const FinalCTA = () => {
                     <h2 className="text-5xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-purple-400 to-yellow-400">
                         Ready to Make Corruption Impossible?
                     </h2>
-                    <p className="text-xl text-gray-300 mb-12">
+                    <p className="text-xl text-cyan-200/80 mb-12">
                         Join the sovereign immune system. Start your free trial today.
                     </p>
                     <motion.button
                         onClick={() => navigate('/onboarding')}
-                        whileHover={{ scale: 1.05, boxShadow: '0px 0px 40px rgba(45, 212, 191, 0.6)' }}
-                        whileTap={{ scale: 0.95 }}
-                        className="px-12 py-5 bg-gradient-to-r from-cyan-600 to-blue-600 rounded-lg font-bold text-2xl shadow-2xl shadow-cyan-500/30 flex items-center gap-3 mx-auto"
+                        whileHover={{ scale: 1.05, y: -2, boxShadow: '0px 10px 40px rgba(45, 212, 191, 0.5)' }}
+                        whileTap={{ scale: 0.98 }}
+                        className="px-12 py-5 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl font-bold text-2xl shadow-2xl shadow-cyan-500/30 flex items-center gap-3 mx-auto"
                     >
                         <Rocket />
                         Launch Free Trial
@@ -79,8 +79,8 @@ export default function LandingPage() {
                         viewport={{ once: true, amount: 0.5 }}
                         className="text-center mb-20"
                     >
-                        <h2 className="text-4xl md:text-5xl font-bold mb-4">The Azora Solution</h2>
-                        <p className="text-lg text-gray-400 max-w-3xl mx-auto">
+                        <h2 className="text-4xl md:text-5xl font-bold mb-4 text-cyan-100">The Azora Solution</h2>
+                        <p className="text-lg text-cyan-200/80 max-w-3xl mx-auto">
                             We built the world's first Sovereign Immune System. Not compliance software. Constitutional law as code. Rules that cannot be broken.
                         </p>
                     </motion.div>
@@ -105,8 +105,8 @@ export default function LandingPage() {
                         viewport={{ once: true, amount: 0.5 }}
                         className="text-center mb-20"
                     >
-                        <h2 className="text-4xl md:text-5xl font-bold mb-4">The 4-Phase Vision</h2>
-                        <p className="text-lg text-gray-400 max-w-3xl mx-auto">
+                        <h2 className="text-4xl md:text-5xl font-bold mb-4 text-cyan-100">The 4-Phase Vision</h2>
+                        <p className="text-lg text-cyan-200/80 max-w-3xl mx-auto">
                             From R90M to R50B+ in 10 years. This is how we build infrastructure for civilization, one phase at a time.
                         </p>
                     </motion.div>
@@ -129,8 +129,8 @@ export default function LandingPage() {
                         viewport={{ once: true, amount: 0.5 }}
                         className="text-center mb-20"
                     >
-                        <h2 className="text-4xl md:text-5xl font-bold mb-4">Special Launch Offer</h2>
-                        <p className="text-lg text-gray-400 max-w-3xl mx-auto">
+                        <h2 className="text-4xl md:text-5xl font-bold mb-4 text-cyan-100">Special Launch Offer</h2>
+                        <p className="text-lg text-cyan-200/80 max-w-3xl mx-auto">
                             Start your 2-week free trial today. Then get 75% off for 3 months. No commitment.
                         </p>
                     </motion.div>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Battery, Gauge, Target } from 'lucide-react';
-import { Vehicle } from '../features/quantum-tracking/mockQuantum';
+import { Vehicle } from '../../features/quantum-tracking/mockQuantum';
 
 interface FleetListProps {
   fleet: Vehicle[];

@@ -7,11 +7,18 @@ interface CashFlowChartProps {
   formatCurrency: (amount: number) => string;
 }
 
-const CustomTooltip = ({ active, payload, label, formatCurrency }) => {
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: any;
+  label?: string | number;
+  formatCurrency: (amount: number) => string;
+}
+
+const CustomTooltip = ({ active, payload, label = '', formatCurrency }: CustomTooltipProps) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-gray-900/80 backdrop-blur-sm border border-white/10 rounded-lg p-4">
-        <p className="label text-white font-semibold">{`${label}`}</p>
+      <div className="bg-gray-950/90 backdrop-blur-lg border border-cyan-500/30 rounded-lg p-4 shadow-lg">
+        <p className="label text-cyan-200 font-semibold">{String(label)}</p>
         <p className="text-purple-400">{`Net Cash Flow: ${formatCurrency(payload[0].value)}`}</p>
       </div>
     );
@@ -24,21 +31,21 @@ const CashFlowChart: React.FC<CashFlowChartProps> = ({ data, formatCurrency }) =
 
   return (
     <ResponsiveContainer width="100%" height={300}>
-      <AreaChart data={chartData}>
-        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" />
-        <XAxis dataKey="name" tick={{ fill: '#9CA3AF' }} />
-        <YAxis tickFormatter={(value) => formatCurrency(value, true)} tick={{ fill: '#9CA3AF' }} />
+      <AreaChart data={chartData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="rgba(0, 255, 255, 0.1)" />
+        <XAxis dataKey="name" tick={{ fill: '#9CA3AF' }} axisLine={{ stroke: 'rgba(0, 255, 255, 0.2)' }} tickLine={{ stroke: 'rgba(0, 255, 255, 0.2)' }} />
+        <YAxis tickFormatter={formatCurrency} tick={{ fill: '#9CA3AF' }} axisLine={{ stroke: 'rgba(0, 255, 255, 0.2)' }} tickLine={{ stroke: 'rgba(0, 255, 255, 0.2)' }} />
         <Tooltip 
-          content={<CustomTooltip formatCurrency={formatCurrency} />}
-          cursor={{ fill: 'rgba(100, 116, 139, 0.1)' }}
+          content={(props) => <CustomTooltip {...props} formatCurrency={formatCurrency} />}
+          cursor={{ fill: 'rgba(167, 139, 250, 0.1)' }}
         />
         <defs>
           <linearGradient id="colorCashflow" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.8}/>
-            <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0}/>
+            <stop offset="5%" stopColor="#A78BFA" stopOpacity={0.7}/>
+            <stop offset="95%" stopColor="#A78BFA" stopOpacity={0}/>
           </linearGradient>
         </defs>
-        <Area type="monotone" dataKey="cashflow" stroke="#8B5CF6" strokeWidth={2} fillOpacity={1} fill="url(#colorCashflow)" name="Net Cash Flow" />
+        <Area type="monotone" dataKey="cashflow" stroke="#A78BFA" strokeWidth={2} fillOpacity={1} fill="url(#colorCashflow)" name="Net Cash Flow" />
       </AreaChart>
     </ResponsiveContainer>
   );

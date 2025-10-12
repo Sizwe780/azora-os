@@ -2,7 +2,44 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Brain, Sparkles, Activity, Zap, TrendingUp, RefreshCw, Send, Award, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-// ... (interfaces remain the same)
+interface GenerationResponse {
+  response: string;
+  confidence: number;
+  tokens_generated: number;
+  creativity_score: number;
+}
+
+interface StatsResponse {
+  quantum_mind: {
+    total_neurons: number;
+    architecture: string;
+    layers: number;
+    training_iterations: number;
+    quantum_coherence: number;
+    learning_rate: number;
+  };
+  memory: {
+    long_term: number;
+    short_term: number;
+    total_capacity: number;
+  };
+}
+
+interface HealthResponse {
+  status: string;
+  health: {
+    quantum_coherence: number;
+    memory_health: number;
+    neuron_activation: number;
+  };
+  anomalies: any[];
+}
+
+interface HistoryEntry {
+  prompt: string;
+  response: GenerationResponse;
+  timestamp: number;
+}
 
 const StatCard = ({ icon: Icon, title, value, metric, color, children }) => (
   <div className={`bg-gray-900/50 border border-${color}-500/30 rounded-2xl p-6`}>
@@ -116,7 +153,7 @@ export default function QuantumAI() {
                 <p>Iterations: {(stats.quantum_mind.training_iterations / 1e6).toFixed(1)}M</p>
               </div>
             </StatCard>
-            <StatCard icon={Activity} title="Q-Coherence" value={`${(stats.quantum_mind.quantum_coherence * 100).toFixed(1)}%`} color="cyan">
+            <StatCard icon={Activity} title="Q-Coherence" value={`${(stats.quantum_mind.quantum_coherence * 100).toFixed(1)}%`} color="cyan" metric={undefined}>
               <div className="w-full bg-cyan-900/50 rounded-full h-2.5 mt-3">
                 <motion.div
                   className="bg-cyan-400 h-2.5 rounded-full"
@@ -125,7 +162,9 @@ export default function QuantumAI() {
                 />
               </div>
             </StatCard>
-            <StatCard icon={TrendingUp} title="LTM Storage" value={`${(stats.memory.long_term / 1e6).toFixed(1)}M`} metric="Vectors" color="green" />
+            <StatCard icon={TrendingUp} title="LTM Storage" value={`${(stats.memory.long_term / 1e6).toFixed(1)}M`} metric="Vectors" color="green">
+              <div />
+            </StatCard>
           </>
         )}
       </div>

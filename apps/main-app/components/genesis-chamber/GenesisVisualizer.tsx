@@ -13,7 +13,7 @@ const GenesisVisualizer = ({ proposal }: GenesisVisualizerProps) => (
     variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.1 } } }}
     initial="hidden"
     animate="visible"
-    className="grid grid-cols-1 lg:grid-cols-3 gap-6"
+    className="grid grid-cols-1 lg:grid-cols-3 gap-8"
   >
     <InfoCard icon={User} title="Target Operator" color="cyan">
       <p className="text-2xl text-cyan-300 font-semibold">{proposal.targetOperator.name}</p>
@@ -28,12 +28,12 @@ const GenesisVisualizer = ({ proposal }: GenesisVisualizerProps) => (
     </InfoCard>
 
     <InfoCard icon={BarChart} title="Projected Impact" color="yellow">
-      <p>1st Month Revenue: <span className="font-semibold text-yellow-300">{proposal.projectedImpact.firstMonthRevenue}</span></p>
-      <p>Time to Profitability: <span className="font-semibold text-yellow-300">{proposal.projectedImpact.timeToProfitability}</span></p>
+      <p className="text-gray-300">1st Month Revenue: <span className="font-semibold text-yellow-300">{proposal.projectedImpact.firstMonthRevenue}</span></p>
+      <p className="text-gray-300">Time to Profitability: <span className="font-semibold text-yellow-300">{proposal.projectedImpact.timeToProfitability}</span></p>
     </InfoCard>
 
     <InfoCard icon={Package} title="Asset Allocation" color="purple">
-      <ul className="list-disc list-inside space-y-1">
+      <ul className="list-disc list-inside space-y-1 text-purple-300">
         {proposal.genesisPackage.assetAllocation.map(a =>
           <li key={a.assetId}>{a.type} <span className="font-mono text-xs text-gray-500">({a.assetId})</span></li>
         )}
@@ -41,9 +41,9 @@ const GenesisVisualizer = ({ proposal }: GenesisVisualizerProps) => (
     </InfoCard>
 
     <InfoCard icon={Network} title="Network Orchestration" color="blue">
-      <ul className="list-disc list-inside space-y-1">
+      <ul className="list-disc list-inside space-y-1 text-blue-300">
         {proposal.genesisPackage.networkOrchestration.map(n =>
-          <li key={n.task}>{n.task} via <span className="font-semibold text-blue-300">{n.service}</span></li>
+          <li key={n.task}>{n.task} via <span className="font-semibold text-blue-200">{n.service}</span></li>
         )}
       </ul>
     </InfoCard>

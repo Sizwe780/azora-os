@@ -1,5 +1,6 @@
 import React from 'react';
-import { Landmark, Scale, CheckCircle } from 'lucide-react';
+import { Landmark, Scale, CheckCircle, LucideIcon } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface BalanceSheetOverviewProps {
   assets: number;
@@ -8,20 +9,34 @@ interface BalanceSheetOverviewProps {
   formatCurrency: (amount: number) => string;
 }
 
-const InfoBox: React.FC<{ icon: React.ElementType; title: string; value: string; color: string }> = ({ icon: Icon, title, value, color }) => (
-  <div className="bg-gray-800/50 p-6 rounded-lg border border-white/10">
-    <Icon className={`mx-auto w-8 h-8 ${color} mb-2`}/>
-    <p className="text-sm text-gray-400">{title}</p>
-    <p className="text-2xl font-bold text-white">{value}</p>
-  </div>
+const InfoBox: React.FC<{ icon: LucideIcon; title: string; value: string; color: string }> = ({ icon: Icon, title, value, color }) => (
+  <motion.div 
+    className="bg-cyan-500/10 p-6 rounded-lg border border-cyan-500/20 text-center"
+    whileHover={{ scale: 1.05, backgroundColor: 'rgba(34, 211, 238, 0.15)' }}
+    transition={{ type: 'spring', stiffness: 300 }}
+  >
+    <div className="flex justify-center items-center mb-4">
+      <div className="p-3 bg-cyan-500/10 rounded-full border border-cyan-500/30">
+        <Icon className={`w-8 h-8 ${color}`}/>
+      </div>
+    </div>
+    <p className="text-sm text-cyan-200/80">{title}</p>
+    <p className="text-3xl font-bold text-white">{value}</p>
+  </motion.div>
 );
 
 const BalanceSheetOverview: React.FC<BalanceSheetOverviewProps> = ({ assets, liabilities, equity, formatCurrency }) => {
+  const items = [
+    { icon: Landmark, title: "Total Assets", value: formatCurrency(assets), color: "text-blue-300" },
+    { icon: Scale, title: "Total Liabilities", value: formatCurrency(liabilities), color: "text-red-300" },
+    { icon: CheckCircle, title: "Net Equity", value: formatCurrency(equity), color: "text-green-300" },
+  ];
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-      <InfoBox icon={Landmark} title="Total Assets" value={formatCurrency(assets)} color="text-blue-400" />
-      <InfoBox icon={Scale} title="Total Liabilities" value={formatCurrency(liabilities)} color="text-red-400" />
-      <InfoBox icon={CheckCircle} title="Net Equity" value={formatCurrency(equity)} color="text-green-400" />
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {items.map((item, index) => (
+        <InfoBox key={index} {...item} />
+      ))}
     </div>
   );
 };

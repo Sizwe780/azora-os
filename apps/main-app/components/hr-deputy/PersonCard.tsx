@@ -1,21 +1,19 @@
 import { motion } from 'framer-motion';
 import { Person, Task } from '../../features/hr-deputy/mockData';
-import { ICONS } from '../../features/hr-deputy/mockData';
-
-const { Eye, BarChart3 } = ICONS;
+import { Eye, BarChart3 } from 'lucide-react';
 
 const getScoreColor = (score: number) => {
-    if (score >= 0.9) return 'text-green-400';
-    if (score >= 0.8) return 'text-blue-400';
-    if (score >= 0.7) return 'text-yellow-400';
-    return 'text-red-400';
+    if (score >= 0.9) return 'text-green-300';
+    if (score >= 0.8) return 'text-blue-300';
+    if (score >= 0.7) return 'text-yellow-300';
+    return 'text-red-300';
 };
 
 const getScoreBg = (score: number) => {
-    if (score >= 0.9) return 'bg-green-500/10 border-green-500/30';
-    if (score >= 0.8) return 'bg-blue-500/10 border-blue-500/30';
-    if (score >= 0.7) return 'bg-yellow-500/10 border-yellow-500/30';
-    return 'bg-red-500/10 border-red-500/30';
+    if (score >= 0.9) return 'bg-green-500/10 border-green-500/20';
+    if (score >= 0.8) return 'bg-blue-500/10 border-blue-500/20';
+    if (score >= 0.7) return 'bg-yellow-500/10 border-yellow-500/20';
+    return 'bg-red-500/10 border-red-500/20';
 };
 
 interface PersonCardProps {
@@ -28,12 +26,12 @@ interface PersonCardProps {
 const PersonCard = ({ person, tasks, onSelect, isSelected }: PersonCardProps) => (
     <motion.div
         variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
-        className="bg-gray-900/30 border border-gray-700/50 rounded-xl p-5 backdrop-blur-sm"
+        className="bg-gray-950/50 border border-cyan-500/20 rounded-xl p-5 backdrop-blur-lg shadow-lg shadow-cyan-500/5"
     >
         <div className="flex items-start justify-between mb-4">
             <div>
                 <h4 className="text-xl font-bold text-white">{person.name}</h4>
-                <p className="text-gray-400">{person.role}</p>
+                <p className="text-cyan-200/80">{person.role}</p>
                 {person.equity && (
                     <p className="text-purple-400 text-sm mt-1 font-semibold">{person.equity}% Equity</p>
                 )}
@@ -46,24 +44,30 @@ const PersonCard = ({ person, tasks, onSelect, isSelected }: PersonCardProps) =>
             </div>
         </div>
         <div className="flex gap-3 mt-4">
-            <button
+            <motion.button
                 onClick={() => onSelect(person.id)}
-                className="flex-1 bg-blue-600/30 hover:bg-blue-500/40 border border-blue-500/50 text-blue-300 py-2 px-4 rounded-lg transition-all flex items-center justify-center gap-2"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`flex-1 py-2 px-4 rounded-lg transition-all flex items-center justify-center gap-2 text-sm font-semibold ${isSelected ? 'bg-cyan-500 text-white shadow-md shadow-cyan-500/20' : 'bg-cyan-500/10 text-cyan-300 border border-cyan-500/20 hover:bg-cyan-500/20'}`}
             >
                 <Eye className="w-4 h-4" />
                 Details
-            </button>
-            <button className="flex-1 bg-purple-600/30 hover:bg-purple-500/40 border border-purple-500/50 text-purple-300 py-2 px-4 rounded-lg transition-all flex items-center justify-center gap-2">
+            </motion.button>
+            <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="flex-1 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 text-purple-300 py-2 px-4 rounded-lg transition-all flex items-center justify-center gap-2 text-sm font-semibold"
+            >
                 <BarChart3 className="w-4 h-4" />
                 Review
-            </button>
+            </motion.button>
         </div>
         {isSelected && (
             <motion.div
                 initial={{ opacity: 0, height: 0, marginTop: 0 }}
                 animate={{ opacity: 1, height: 'auto', marginTop: '1rem' }}
                 exit={{ opacity: 0, height: 0, marginTop: 0 }}
-                className="bg-gray-900/50 border border-gray-700/50 rounded-lg p-4"
+                className="bg-cyan-500/5 border border-cyan-500/10 rounded-lg p-4"
             >
                 <h5 className="text-white font-semibold mb-3">Active Tasks</h5>
                 {tasks && tasks.length > 0 ? (

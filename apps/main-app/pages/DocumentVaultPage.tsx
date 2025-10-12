@@ -43,8 +43,8 @@ export default function DocumentVaultPage() {
     ), [documents, searchQuery]);
 
   const stats = [
-    { icon: CheckCircle, label: 'Certified Documents', value: documents.filter(d => d.status === 'certified').length.toString(), color: 'green', index: 0 },
-    { icon: QrCode, label: 'UID Watermarked', value: documents.filter(d => d.watermarked).length.toString(), color: 'blue', index: 1 },
+    { icon: CheckCircle, label: 'Certified Documents', value: documents.filter(d => d.status === 'certified').length.toString(), color: 'green' as 'green' | 'blue', index: 0 },
+    { icon: QrCode, label: 'UID Watermarked', value: documents.filter(d => d.watermarked).length.toString(), color: 'blue' as 'green' | 'blue', index: 1 },
   ];
 
   return (

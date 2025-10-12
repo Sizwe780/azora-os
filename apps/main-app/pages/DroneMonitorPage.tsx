@@ -53,10 +53,10 @@ const DroneMonitorPage = () => {
   };
 
   const statCards = [
-    { icon: Drone, title: "Total Drones", value: stats.total.toString(), color: 'blue' },
-    { icon: statusConfig.active.icon, title: "Active", value: stats.active.toString(), color: 'green' },
-    { icon: statusConfig.charging.icon, title: "Charging", value: stats.charging.toString(), color: 'yellow' },
-    { icon: statusConfig.offline.icon, title: "Offline/Maint.", value: stats.offline.toString(), color: 'red' },
+    { icon: Drone, title: "Total Drones", value: stats.total.toString(), color: 'blue' as 'blue' | 'green' | 'yellow' | 'red' },
+    { icon: statusConfig.active.icon, title: "Active", value: stats.active.toString(), color: 'green' as 'blue' | 'green' | 'yellow' | 'red' },
+    { icon: statusConfig.charging.icon, title: "Charging", value: stats.charging.toString(), color: 'yellow' as 'blue' | 'green' | 'yellow' | 'red' },
+    { icon: statusConfig.offline.icon, title: "Offline/Maint.", value: stats.offline.toString(), color: 'red' as 'blue' | 'green' | 'yellow' | 'red' },
   ];
 
   return (
@@ -106,7 +106,8 @@ const DroneMonitorPage = () => {
             <BatteryChart drones={drones} />
           </div>
         </div>
-      </motion.div>
+      </div>
+      {/* Close the main container div */}
 
       <AnimatePresence>
         {selectedLog && (
