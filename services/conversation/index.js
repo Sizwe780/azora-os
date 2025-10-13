@@ -1,7 +1,7 @@
-const express = require("express");
-const cors = require("cors");
-const client = require("prom-client");
-const fetch = require("node-fetch");
+import express from "express";
+import cors from "cors";
+import client from "prom-client";
+import fetch from "node-fetch";
 
 const app = express();
 app.use(cors());

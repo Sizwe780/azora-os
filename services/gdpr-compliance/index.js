@@ -17,8 +17,6 @@ import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import crypto from 'crypto';
-import fs from 'fs';
-import path from 'path';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 
@@ -866,7 +864,7 @@ app.get('/gdpr/dashboard', (req, res) => {
         activeDPIAs: Array.from(GDPR_DATA.dpia.values()).filter(d => d.status === 'in-progress').length
       },
       recentActivity: GDPR_DATA.auditLog.slice(-10),
-      complianceStatus: this.getComplianceStatus(),
+      complianceStatus: getComplianceStatus(),
       timestamp: new Date().toISOString()
     };
 

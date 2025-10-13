@@ -1,7 +1,7 @@
-const express = require("express");
-const cors = require("cors");
-const client = require("prom-client");
-const { products, inventories, planograms } = require("../../packages/data/src/seed");
+import express from "express";
+import cors from "cors";
+import client from "prom-client";
+import { products, inventories, planograms } from "../../packages/data/src/seed.js";
 
 const app = express();
 app.use(cors());

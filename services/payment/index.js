@@ -1,7 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const Stripe = require('stripe');
-const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+const Paystack = require('paystack-api')(process.env.PAYSTACK_SECRET_KEY);
 
 const app = express();
 app.use(express.json());
@@ -9,29 +8,56 @@ app.use(express.json());
 const PORT = process.env.PORT || 3005;
 
 app.get('/api/v1/payment/health', (req, res) => {
-    res.status(200).json({ status: 'ok', service: 'payment' });
+    res.status(200).json({ status: 'ok', service: 'payment', provider: 'paystack' });
 });
 
-// Create a subscription
-app.post('/api/v1/payment/subscriptions', async (req, res) => {
+// Initialize a transaction
+app.post('/api/v1/payment/initialize', async (req, res) => {
     try {
-        const { customerId, priceId } = req.body;
-        const subscription = await stripe.subscriptions.create({
-            customer: customerId,
-            items: [{ price: priceId }],
-            expand: ['latest_invoice.payment_intent'],
+        const { email, amount, reference, callback_url } = req.body;
+        const response = await Paystack.transaction.initialize({
+            email,
+            amount: amount * 100, // Paystack expects amount in kobo (multiply by 100)
+            reference,
+            callback_url
         });
-        res.json(subscription);
+        res.json(response);
     } catch (error) {
         res.status(400).json({ error: { message: error.message } });
     }
 });
 
-// Get subscription details
-app.get('/api/v1/payment/subscriptions/:id', async (req, res) => {
+// Verify a transaction
+app.get('/api/v1/payment/verify/:reference', async (req, res) => {
     try {
-        const subscription = await stripe.subscriptions.retrieve(req.params.id);
-        res.json(subscription);
+        const { reference } = req.params;
+        const response = await Paystack.transaction.verify(reference);
+        res.json(response);
+    } catch (error) {
+        res.status(400).json({ error: { message: error.message } });
+    }
+});
+
+// Create a subscription plan
+app.post('/api/v1/payment/plans', async (req, res) => {
+    try {
+        const { name, amount, interval } = req.body;
+        const response = await Paystack.plan.create({
+            name,
+            amount: amount * 100, // Paystack expects amount in kobo
+            interval
+        });
+        res.json(response);
+    } catch (error) {
+        res.status(400).json({ error: { message: error.message } });
+    }
+});
+
+// List transactions
+app.get('/api/v1/payment/transactions', async (req, res) => {
+    try {
+        const response = await Paystack.transaction.list();
+        res.json(response);
     } catch (error) {
         res.status(400).json({ error: { message: error.message } });
     }

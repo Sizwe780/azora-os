@@ -319,11 +319,11 @@ class CorruptionService {
    * Detect conflicts of interest
    */
   private async detectConflictOfInterest(
-    tender: Tender,
-    bids: Bid[]
+    _tender: Tender,
+    _bids: Bid[]
   ): Promise<{ detected: boolean; score: number; patterns: CorruptionPattern[] }> {
     const patterns: CorruptionPattern[] = [];
-    let score = 0;
+    const score = 0;
 
     // TODO: Implement comprehensive conflict of interest detection
     // - Check supplier/bidder relationships with procurement officials
@@ -335,7 +335,7 @@ class CorruptionService {
     // For now, return placeholder
     return {
       detected: false,
-      score: 0,
+      score,
       patterns,
     };
   }

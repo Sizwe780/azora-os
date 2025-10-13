@@ -50,4 +50,4 @@ const tasks = [
   }
 ];
 
-module.exports = { products, inventories, planograms, sops, tasks };
+export { products, inventories, planograms, sops, tasks };

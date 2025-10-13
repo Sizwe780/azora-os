@@ -225,22 +225,25 @@ class BlockchainService {
       const filter = this.contract.filters.TenderAnchored(tenderId);
       const events = await this.contract.queryFilter(filter);
 
-      const trail: BlockchainAnchor[] = events.map((event) => ({
-        id: `audit_${event.transactionHash}_${event.index}`,
-        entityType: 'tender',
-        entityId: tenderId,
-        hash: event.args?.dataHash || '',
-        transactionId: event.transactionHash,
-        blockNumber: event.blockNumber,
-        blockTimestamp: new Date(),
-        network: 'polygon',
-        data: {},
-        dataHash: event.args?.dataHash || '',
-        anchoredAt: new Date(),
-        anchoredBy: 'system',
-        verified: true,
-        verifiedAt: new Date(),
-      }));
+      const trail: BlockchainAnchor[] = events.map((event) => {
+        const eventLog = event as ethers.EventLog;
+        return {
+          id: `audit_${eventLog.transactionHash}_${eventLog.index}`,
+          entityType: 'tender',
+          entityId: tenderId,
+          hash: eventLog.args?.dataHash || '',
+          transactionId: eventLog.transactionHash,
+          blockNumber: eventLog.blockNumber,
+          blockTimestamp: new Date(),
+          network: 'polygon',
+          data: {},
+          dataHash: eventLog.args?.dataHash || '',
+          anchoredAt: new Date(),
+          anchoredBy: 'system',
+          verified: true,
+          verifiedAt: new Date(),
+        };
+      });
 
       return trail;
     } catch (error) {
