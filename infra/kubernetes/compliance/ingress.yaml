@@ -1,0 +1,65 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: compliance-ingress
+  namespace: azora-compliance
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - compliance.azora-os.com
+    secretName: compliance-tls
+  rules:
+  - host: compliance.azora-os.com
+    http:
+      paths:
+      - path: /api/dashboard
+        pathType: Prefix
+        backend:
+          service:
+            name: compliance-dashboard
+            port:
+              number: 4086
+      - path: /api/reports
+        pathType: Prefix
+        backend:
+          service:
+            name: automated-reporting
+            port:
+              number: 4087
+      - path: /api/iot
+        pathType: Prefix
+        backend:
+          service:
+            name: quantum-iot-integration
+            port:
+              number: 4088
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: compliance-ui
+            port:
+              number: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: compliance-ui
+  namespace: azora-compliance
+  labels:
+    app: compliance-ui
+spec:
+  selector:
+    app: compliance-ui
+  ports:
+  - name: http
+    port: 3000
+    targetPort: 3000
+    protocol: TCP
+  type: ClusterIP

@@ -1,0 +1,67 @@
+/* tailwindcss: enable */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  .btn-primary {
+  /* tailwindcss: enable */
+  @apply bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors;
+  }
+
+  .btn-secondary {
+  /* tailwindcss: enable */
+  @apply bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors;
+  }
+
+  .card {
+  /* tailwindcss: enable */
+  @apply bg-white rounded-lg shadow-sm border border-gray-200 p-6;
+  }
+
+  .status-compliant {
+  /* tailwindcss: enable */
+  @apply bg-green-100 text-green-800 border-green-200;
+  }
+
+  .status-needs-attention {
+  /* tailwindcss: enable */
+  @apply bg-yellow-100 text-yellow-800 border-yellow-200;
+  }
+
+  .status-non-compliant {
+  /* tailwindcss: enable */
+  @apply bg-red-100 text-red-800 border-red-200;
+  }
+
+  .status-unreachable {
+  /* tailwindcss: enable */
+  @apply bg-gray-100 text-gray-800 border-gray-200;
+  }
+
+  .severity-critical {
+  /* tailwindcss: enable */
+  @apply bg-red-500;
+  }
+
+  .severity-high {
+  /* tailwindcss: enable */
+  @apply bg-orange-500;
+  }
+
+  .severity-medium {
+  /* tailwindcss: enable */
+  @apply bg-yellow-500;
+  }
+
+  .severity-low {
+  /* tailwindcss: enable */
+  @apply bg-green-500;
+  }
+}

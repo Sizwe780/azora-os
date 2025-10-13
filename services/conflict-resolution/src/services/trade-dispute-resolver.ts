@@ -11,9 +11,6 @@
 import { logger } from '../utils/logger';
 import {
   Conflict,
-  ConflictType,
-  ConflictSeverity,
-  ConflictStatus,
   Actor,
   IntentAnalysis,
   SimulationResult,
@@ -375,7 +372,7 @@ Implementation:
    */
   async generateAgreement(
     conflict: Conflict,
-    simulation: SimulationResult
+    _simulation: SimulationResult
   ): Promise<Agreement> {
     const agreement: Agreement = {
       id: `agreement_${conflict.id}`,

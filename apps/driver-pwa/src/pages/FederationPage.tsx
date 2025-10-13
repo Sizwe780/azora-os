@@ -1,6 +1,6 @@
 import React from 'react';
 import Heading from '../components/atoms/Heading';
-import { useApi } from '../../hooks/azora/useApi';
+import { useApi } from '../hooks/azora/useApi';
 
 type Nation = { id: string; name: string; citizens: number; reputation: number };
 

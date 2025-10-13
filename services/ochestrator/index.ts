@@ -5,11 +5,11 @@ import fetch from "node-fetch";
 
 const app = express(); app.use(cors()); app.use(express.json());
 
-async function emitAudit(event: string, payload: any) {
+async function emitAudit(event: string, payload: Record<string, unknown>) {
   await fetch("http://security-core:4022/audit", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ event, payload }) });
 }
 
-async function execute(action: any) {
+async function execute(action: Record<string, unknown>) {
   if (action.type === "REPLENISH_TASK") {
     await fetch("http://assistant:4000/assistant/tasks/NMB-STORE-001", { headers: { "X-Tenant": "retail-partner" } });
   }

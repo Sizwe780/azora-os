@@ -74,7 +74,7 @@ class MeshNode extends EventEmitter {
   }
 
   // Fine-tunes a model based on personal feedback (stub)
-  trainModel(modelName, feedback) {
+  trainModel(modelName, _feedback) {
     this.log('info', `Training model '${modelName}' with new feedback.`);
     // In a real implementation, this would trigger a federated learning job
     // For now, we'll just log it and reward the user.

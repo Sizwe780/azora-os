@@ -42,7 +42,7 @@ export interface Actor {
   interests: string[];
   positions: string[];
   redLines: string[];        // Non-negotiable constraints
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
 }
 
 export interface ActorRelationship {

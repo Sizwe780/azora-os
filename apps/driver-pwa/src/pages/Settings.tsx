@@ -1,15 +1,16 @@
 import React from 'react';
-import { Card } from '../components/ui/Card';
-import { NotificationSettings } from '../components/azora/NotificationSettings';
+import { Card } from '../components/atoms/Card';
+import { NotificationSettings, NotificationSubscription } from '../components/azora/NotificationSettings';
 
 const SettingsPage = () => {
   // Use React's state to manage the subscription settings so the UI updates
-  const [subscription, setSubscription] = React.useState({
+  const [subscription, setSubscription] = React.useState<NotificationSubscription>({
+    id: 'user-notification-settings',
     channels: { push: true, email: false, discord: true },
   });
 
   // This function will be passed to the NotificationSettings component
-  const handleUpdate = (newSub: any) => {
+  const handleUpdate = (newSub: NotificationSubscription) => {
     console.log("Updating subscription settings:", newSub);
     setSubscription(newSub);
   };

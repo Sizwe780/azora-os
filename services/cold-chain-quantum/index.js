@@ -22,7 +22,7 @@ app.use(bodyParser.json());
 // In-memory storage for cold chain units (would be database in production)
 const coldChainUnits = new Map();
 const alerts = [];
-const predictions = [];
+// const predictions = [];
 
 // Initialize sample cold chain units
 const initializeColdChain = () => {

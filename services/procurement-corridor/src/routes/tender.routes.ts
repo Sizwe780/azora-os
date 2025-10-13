@@ -2,6 +2,7 @@ import { Router, Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
 import tenderService from '../services/tender.service';
 import { AppError } from '../middleware/errorHandler';
+import { TenderStatus } from '../types/tender.types';
 
 const router = Router();
 
@@ -63,7 +64,7 @@ router.get('/', async (req: Request, res: Response, next: NextFunction) => {
     }
 
     const tenders = await tenderService.listTenders(req.user.organizationId, {
-      status: req.query.status as any,
+      status: req.query.status as TenderStatus | undefined,
       type: req.query.type as string,
     });
 

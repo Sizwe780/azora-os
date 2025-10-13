@@ -22,7 +22,6 @@ const PORT = 4085;
 
 const users = new Map(); // userId -> user profile
 const roles = new Map(); // roleId -> role definition
-const permissions = new Map(); // permissionId -> permission
 const emails = new Map(); // emailId -> email message
 const emailFolders = new Map(); // userId -> folders (inbox, sent, drafts)
 const auditLog = new Map(); // auditId -> audit entry
@@ -257,7 +256,7 @@ function getEmails(userId, folder = 'inbox') {
   return emailIds.map(id => emails.get(id)).filter(Boolean);
 }
 
-function markEmailAsRead(emailId, userId) {
+function markEmailAsRead(emailId, _userId) {
   const email = emails.get(emailId);
   if (!email) return { error: 'Email not found' };
   
@@ -336,8 +335,6 @@ function getAuditLog(filters = {}) {
 function getDashboardConfig(userId) {
   const user = users.get(userId);
   if (!user) return { error: 'User not found' };
-  
-  const role = roles.get(user.role);
   
   // Default widgets based on role
   const dashboardConfigs = {

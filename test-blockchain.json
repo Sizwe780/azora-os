@@ -28,6 +28,25 @@
       "minerReward": 100
     }
   ],
-  "tokens": [],
+  "tokens": [
+    [
+      "client-client123",
+      {
+        "id": "client-client123",
+        "owner": "client123",
+        "amount": 1000,
+        "minted": true
+      }
+    ],
+    [
+      "client-client456",
+      {
+        "id": "client-client456",
+        "owner": "client456",
+        "amount": 500,
+        "minted": true
+      }
+    ]
+  ],
   "difficulty": 4
 }

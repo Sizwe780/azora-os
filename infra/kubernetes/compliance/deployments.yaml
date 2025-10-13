@@ -1,0 +1,170 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: compliance-dashboard
+  namespace: azora-compliance
+  labels:
+    app: compliance-dashboard
+    component: monitoring
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: compliance-dashboard
+  template:
+    metadata:
+      labels:
+        app: compliance-dashboard
+        component: monitoring
+    spec:
+      containers:
+      - name: compliance-dashboard
+        image: azora/compliance-dashboard:latest
+        ports:
+        - containerPort: 4086
+          name: http
+        env:
+        - name: COMPLIANCE_DASHBOARD_PORT
+          value: "4086"
+        - name: GDPR_COMPLIANCE_PORT
+          value: "4080"
+        - name: HIPAA_COMPLIANCE_PORT
+          value: "4081"
+        - name: SOX_COMPLIANCE_PORT
+          value: "4082"
+        - name: CCPA_COMPLIANCE_PORT
+          value: "4083"
+        - name: PIPEDA_COMPLIANCE_PORT
+          value: "4084"
+        - name: LGPD_COMPLIANCE_PORT
+          value: "4085"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 4086
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 4086
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        volumeMounts:
+        - name: cache-volume
+          mountPath: /app/cache
+      volumes:
+      - name: cache-volume
+        emptyDir: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: automated-reporting
+  namespace: azora-compliance
+  labels:
+    app: automated-reporting
+    component: reporting
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: automated-reporting
+  template:
+    metadata:
+      labels:
+        app: automated-reporting
+        component: reporting
+    spec:
+      containers:
+      - name: automated-reporting
+        image: azora/automated-reporting:latest
+        ports:
+        - containerPort: 4087
+          name: http
+        env:
+        - name: AUTOMATED_REPORTING_PORT
+          value: "4087"
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 4087
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 4087
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        volumeMounts:
+        - name: reports-volume
+          mountPath: /app/reports
+      volumes:
+      - name: reports-volume
+        persistentVolumeClaim:
+          claimName: reports-pvc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quantum-iot-integration
+  namespace: azora-compliance
+  labels:
+    app: quantum-iot-integration
+    component: iot
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: quantum-iot-integration
+  template:
+    metadata:
+      labels:
+        app: quantum-iot-integration
+        component: iot
+    spec:
+      containers:
+      - name: quantum-iot-integration
+        image: azora/quantum-iot-integration:latest
+        ports:
+        - containerPort: 4088
+          name: http
+        env:
+        - name: QUANTUM_IOT_PORT
+          value: "4088"
+        - name: MQTT_BROKER
+          value: "mqtt://mqtt-broker:1883"
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 4088
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 4088
+          initialDelaySeconds: 5
+          periodSeconds: 5

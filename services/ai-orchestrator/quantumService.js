@@ -11,7 +11,7 @@ async function hybridScore(context) {
   try {
     const res = await axios.post(`${QUANTUM_URL}/simulate`, { features });
     return res.data;
-  } catch (err) {
+  } catch {
     return { error: 'quantum_service_unavailable' };
   }
 }

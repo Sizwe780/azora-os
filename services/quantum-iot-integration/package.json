@@ -1,0 +1,33 @@
+{
+  "name": "quantum-iot-integration",
+  "version": "1.0.0",
+  "description": "Quantum-resistant IoT integration service for Azora OS compliance monitoring",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "jest",
+    "lint": "eslint src/**/*.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.7.2",
+    "mqtt": "^5.1.3",
+    "crypto": "^1.0.1",
+    "node-forge": "^1.3.1",
+    "axios": "^1.6.0",
+    "winston": "^3.11.0",
+    "helmet": "^7.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.1",
+    "eslint": "^8.54.0"
+  },
+  "keywords": ["quantum", "iot", "compliance", "security", "azora-os"],
+  "author": "Azora OS",
+  "license": "MIT"
+}

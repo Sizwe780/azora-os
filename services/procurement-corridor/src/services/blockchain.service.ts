@@ -38,7 +38,7 @@ class BlockchainService {
    */
   async anchorTender(
     tenderId: string,
-    data: Record<string, any>
+    data: Record<string, unknown>
   ): Promise<BlockchainAnchor> {
     try {
       logger.info(`Anchoring tender ${tenderId} to blockchain`);
@@ -95,7 +95,7 @@ class BlockchainService {
   async anchorBid(
     bidId: string,
     tenderId: string,
-    data: Record<string, any>
+    data: Record<string, unknown>
   ): Promise<BlockchainAnchor> {
     try {
       logger.info(`Anchoring bid ${bidId} for tender ${tenderId}`);
@@ -145,7 +145,7 @@ class BlockchainService {
     awardId: string,
     tenderId: string,
     bidId: string,
-    data: Record<string, any>
+    data: Record<string, unknown>
   ): Promise<BlockchainAnchor> {
     try {
       logger.info(`Anchoring award ${awardId} for tender ${tenderId}`);

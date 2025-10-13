@@ -68,7 +68,7 @@ model Job {
 
 model Invoice {
   id          String   @id @default(cuid())
-  companyId   String   @index
+  companyId   String
   subId       String?
   amountCents Int
   vatCents    Int
@@ -80,24 +80,28 @@ model Invoice {
   createdAt   DateTime @default(now())
 
   company     Company  @relation(fields: [companyId], references: [id])
+  @@index([companyId])
 }
 
 model Settlement {
   id            String   @id @default(cuid())
   jobId         String
-  ownerCompany  String   @index
-  subcontractor String   @index
+  ownerCompany  String
+  subcontractor String
   amountCents   Int
   feeCents      Int
   status        String   // pending|paid
   createdAt     DateTime @default(now())
 
   // Relations are optional here if jobs can cross-tenant
+  company       Company? @relation(fields: [ownerCompany], references: [id])
+  @@index([ownerCompany])
+  @@index([subcontractor])
 }
 
 model Subscription {
   id               String   @id @default(cuid())
-  companyId        String   @index
+  companyId        String
   plan             String   // starter|growth|enterprise
   status           String   // active|past_due|canceled
   currentPeriodEnd DateTime
@@ -108,6 +112,7 @@ model Subscription {
   updatedAt        DateTime @updatedAt
 
   company          Company  @relation(fields: [companyId], references: [id])
+  @@index([companyId])
 }
 
 model AuditEvent {

@@ -1,0 +1,205 @@
+# Azora OS Compliance Ecosystem - Scaling Configuration
+# Configuration for horizontal and vertical scaling
+
+# Horizontal Pod Autoscaling (HPA) Configuration
+hpa:
+  compliance-dashboard:
+    minReplicas: 3
+    maxReplicas: 20
+    cpuTarget: 70
+    memoryTarget: 80
+    customMetrics:
+      - name: http_requests_per_second
+        target: 100
+
+  automated-reporting:
+    minReplicas: 2
+    maxReplicas: 10
+    cpuTarget: 60
+    memoryTarget: 75
+    customMetrics:
+      - name: report_generation_rate
+        target: 10
+
+  quantum-iot-integration:
+    minReplicas: 3
+    maxReplicas: 15
+    cpuTarget: 75
+    memoryTarget: 85
+    customMetrics:
+      - name: active_iot_connections
+        target: 1000
+
+# Vertical Pod Autoscaling (VPA) Recommendations
+vpa:
+  compliance-dashboard:
+    minCpu: 500m
+    maxCpu: 2000m
+    minMemory: 512Mi
+    maxMemory: 2Gi
+
+  automated-reporting:
+    minCpu: 200m
+    maxCpu: 1000m
+    minMemory: 256Mi
+    maxMemory: 1Gi
+
+  quantum-iot-integration:
+    minCpu: 300m
+    maxCpu: 1500m
+    minMemory: 256Mi
+    maxMemory: 1Gi
+
+# Cluster Autoscaling
+clusterAutoscaling:
+  enabled: true
+  minNodes: 3
+  maxNodes: 10
+  scaleUpThreshold: 0.8
+  scaleDownThreshold: 0.3
+
+# Database Scaling
+database:
+  readReplicas: 3
+  connectionPoolSize: 50
+  maxConnections: 1000
+
+# Redis Cluster Configuration
+redis:
+  clusterMode: true
+  shardCount: 3
+  replicaCount: 1
+
+# Load Balancing
+loadBalancer:
+  algorithm: least_connections
+  sessionAffinity: none
+  maxConnections: 10000
+
+# CDN Configuration
+cdn:
+  enabled: true
+  provider: cloudflare
+  cacheTtl: 3600
+  regions:
+    - us-east-1
+    - eu-west-1
+    - ap-southeast-1
+
+# Multi-region Deployment
+multiRegion:
+  enabled: true
+  regions:
+    primary: us-east-1
+    secondary:
+      - eu-west-1
+      - ap-southeast-1
+  failover:
+    automatic: true
+    rto: 300  # Recovery Time Objective: 5 minutes
+    rpo: 60   # Recovery Point Objective: 1 minute
+
+# Performance Optimization
+performance:
+  compression:
+    enabled: true
+    algorithm: gzip
+    level: 6
+
+  caching:
+    redisTtl: 3600
+    cdnTtl: 7200
+    browserCacheTtl: 86400
+
+  connectionPooling:
+    maxIdle: 10
+    maxOpen: 100
+    idleTimeout: 300
+
+# Resource Quotas
+resourceQuotas:
+  namespace: azora-compliance
+  limits:
+    cpu: 20
+    memory: 40Gi
+    pods: 50
+    services: 20
+    persistentvolumeclaims: 10
+
+# Network Policies
+networkPolicies:
+  - name: deny-all
+    podSelector: {}
+    policyTypes:
+      - Ingress
+      - Egress
+
+  - name: allow-internal
+    podSelector:
+      matchLabels:
+        app: compliance-dashboard
+    ingress:
+      - from:
+          - namespaceSelector:
+              matchLabels:
+                name: azora-compliance
+        ports:
+          - protocol: TCP
+            port: 4086
+
+# Service Mesh Configuration (Istio)
+serviceMesh:
+  enabled: true
+  trafficPolicies:
+    compliance-dashboard:
+      loadBalancer:
+        simple: LEAST_CONN
+      outlierDetection:
+        consecutiveErrors: 5
+        interval: 10s
+        baseEjectionTime: 30s
+
+  circuitBreaker:
+    maxConnections: 100
+    maxPendingRequests: 50
+    maxRequests: 1000
+    maxRetries: 3
+
+# Monitoring and Alerting
+monitoring:
+  prometheus:
+    scrapeInterval: 15s
+    evaluationInterval: 15s
+
+  alertManager:
+    rules:
+      - name: HighCPUUsage
+        condition: cpu_usage > 90
+        duration: 5m
+        severity: critical
+
+      - name: HighMemoryUsage
+        condition: memory_usage > 95
+        duration: 5m
+        severity: critical
+
+      - name: ServiceDown
+        condition: up == 0
+        duration: 1m
+        severity: critical
+
+# Backup and Disaster Recovery
+backup:
+  schedule: "0 2 * * *"
+  retention: 30
+  regions:
+    - us-east-1
+    - eu-west-2
+  encryption: true
+
+disasterRecovery:
+  rto: 300
+  rpo: 60
+  failoverRegions:
+    - eu-west-1
+    - ap-southeast-1

@@ -71,7 +71,7 @@ function processVoiceCommand(speech, context = {}) {
   const normalizedSpeech = speech.toLowerCase().trim();
   
   // Find matching command
-  for (const [id, command] of voiceCommands.entries()) {
+  for (const [, command] of voiceCommands.entries()) {
     for (const phrase of command.phrases) {
       if (normalizedSpeech.includes(phrase)) {
         return executeVoiceCommand(command, context);
@@ -166,7 +166,7 @@ function initializeKeyboardShortcuts() {
 // SCREEN READER SUPPORT
 // ============================================================================
 
-function generateScreenReaderText(element, context = {}) {
+function generateScreenReaderText(element, _context = {}) {
   const ariaDescriptions = {
     button: (el) => `${el.label} button. ${el.disabled ? 'Disabled.' : 'Press Enter to activate.'}`,
     link: (el) => `${el.label} link. Press Enter to navigate.`,

@@ -1,0 +1,84 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run security tests
+      run: npm run test:security
+
+    - name: Run compliance dashboard tests
+      run: |
+        cd services/compliance-dashboard
+        npm install
+        npm test
+
+    - name: Run automated reporting tests
+      run: |
+        cd services/automated-compliance-reporting
+        npm install
+        npm test
+
+    - name: Run integration tests
+      run: npm run test:integration
+
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Use Node.js 18.x
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18.x
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run ESLint
+      run: npm run lint
+
+  docker:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build compliance dashboard Docker image
+      run: |
+        cd services/compliance-dashboard
+        docker build -t azora/compliance-dashboard:test .
+
+    - name: Build automated reporting Docker image
+      run: |
+        cd services/automated-compliance-reporting
+        docker build -t azora/automated-reporting:test .
+
+    - name: Test Docker images
+      run: |
+        docker run --rm azora/compliance-dashboard:test npm test -- --grep "Health"
+        docker run --rm azora/automated-reporting:test npm test -- --grep "Health"

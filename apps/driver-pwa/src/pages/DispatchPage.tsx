@@ -1,7 +1,7 @@
 import React from 'react';
 import Card from '../components/atoms/Card';
 import Heading from '../components/atoms/Heading';
-import TrackingMap from '../../components/TrackingMap';
+import TrackingMap from '../components/TrackingMap';
 import Jobs from './Jobs';
 
 export default function DispatchPage() {

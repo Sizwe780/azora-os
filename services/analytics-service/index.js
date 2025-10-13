@@ -22,7 +22,7 @@ const PORT = 4084;
 
 const fleetData = new Map(); // fleetId -> fleet analytics data
 const vehicleData = new Map(); // vehicleId -> vehicle analytics
-const driverData = new Map(); // driverId -> driver analytics
+// const driverData = new Map(); // driverId -> driver analytics
 const reports = new Map(); // reportId -> custom report
 const forecasts = new Map(); // forecastId -> predictive forecast
 
@@ -227,25 +227,28 @@ function generateRevenueForecasts(fleetId, forecastPeriod) {
   const growthFactor = 1 + (forecast.historical.growthRate / 100);
   
   switch (forecastPeriod) {
-    case 'next_month':
+    case 'next_month': {
       forecast.predictions.realistic = Math.round(baseRevenue * growthFactor);
       forecast.predictions.optimistic = Math.round(forecast.predictions.realistic * 1.15);
       forecast.predictions.pessimistic = Math.round(forecast.predictions.realistic * 0.85);
       break;
+    }
       
-    case 'next_quarter':
+    case 'next_quarter': {
       const quarterlyRevenue = baseRevenue * 3;
       forecast.predictions.realistic = Math.round(quarterlyRevenue * growthFactor);
       forecast.predictions.optimistic = Math.round(forecast.predictions.realistic * 1.15);
       forecast.predictions.pessimistic = Math.round(forecast.predictions.realistic * 0.85);
       break;
+    }
       
-    case 'next_year':
+    case 'next_year': {
       const yearlyRevenue = baseRevenue * 12;
       forecast.predictions.realistic = Math.round(yearlyRevenue * Math.pow(growthFactor, 12));
       forecast.predictions.optimistic = Math.round(forecast.predictions.realistic * 1.2);
       forecast.predictions.pessimistic = Math.round(forecast.predictions.realistic * 0.8);
       break;
+    }
   }
   
   // Add recommendations
@@ -430,7 +433,7 @@ function generateCustomReport(reportConfig) {
 // ============================================================================
 
 function generateBenchmarkReport(fleetId) {
-  const fleet = fleetData.get(fleetId);
+  // const fleet = fleetData.get(fleetId);
   
   const benchmark = {
     fleetId,

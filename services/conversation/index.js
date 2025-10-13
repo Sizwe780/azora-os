@@ -39,7 +39,7 @@ async function readSOP(tenant, tag) {
 }
 
 app.post("/conversation/turn", async (req, res) => {
-  const { tenant = "retail-partner", storeId = "NMB-STORE-001", userId, role, text } = req.body || {};
+  const { tenant = "retail-partner", storeId = "NMB-STORE-001", text } = req.body || {};
   const { i, q } = intent(text);
   let ans = "Ask me about product locations, replenishment, SOPs, or routes.";
   let sources = [];

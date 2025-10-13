@@ -1,7 +1,7 @@
 import React from 'react';
 import Card from '../components/atoms/Card';
 import Heading from '../components/atoms/Heading';
-import { useApi } from '../../hooks/azora/useApi';
+import { useApi } from '../hooks/azora/useApi';
 
 type KPIs = { citizens: number; activeProposals: number; reputation: number; federations: number };
 

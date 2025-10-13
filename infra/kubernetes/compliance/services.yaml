@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: compliance-dashboard
+  namespace: azora-compliance
+  labels:
+    app: compliance-dashboard
+spec:
+  selector:
+    app: compliance-dashboard
+  ports:
+  - name: http
+    port: 4086
+    targetPort: 4086
+    protocol: TCP
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: automated-reporting
+  namespace: azora-compliance
+  labels:
+    app: automated-reporting
+spec:
+  selector:
+    app: automated-reporting
+  ports:
+  - name: http
+    port: 4087
+    targetPort: 4087
+    protocol: TCP
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: quantum-iot-integration
+  namespace: azora-compliance
+  labels:
+    app: quantum-iot-integration
+spec:
+  selector:
+    app: quantum-iot-integration
+  ports:
+  - name: http
+    port: 4088
+    targetPort: 4088
+    protocol: TCP
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mqtt-broker
+  namespace: azora-compliance
+  labels:
+    app: mqtt-broker
+spec:
+  selector:
+    app: mqtt-broker
+  ports:
+  - name: mqtt
+    port: 1883
+    targetPort: 1883
+    protocol: TCP
+  - name: websocket
+    port: 9001
+    targetPort: 9001
+    protocol: TCP
+  type: ClusterIP

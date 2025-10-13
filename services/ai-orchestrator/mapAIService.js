@@ -1,5 +1,5 @@
 // services/ai-orchestrator/mapAIService.js
-const axios = require('axios');
+// const axios = require('axios');
 
 // In-memory storage of authorities and historical risk data
 const AUTHORITIES_DB = [
@@ -47,7 +47,7 @@ function findNearbyResponders(location, allMembers = []) {
     return distA - distB;
   };
 
-  const authorities = [...MOCK_AUTHORITIES_DB].sort(sortByDistance);
+  const authorities = [...AUTHORITIES_DB].sort(sortByDistance);
   const nearbyMembers = allMembers.filter(m => m.status === 'active').sort(sortByDistance);
 
   return {

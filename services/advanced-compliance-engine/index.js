@@ -12,7 +12,6 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const crypto = require('crypto');
 
 const app = express();
 app.use(bodyParser.json());
@@ -206,8 +205,8 @@ const COMPLIANCE_RULEBOOK = {
 
 const logsheets = new Map(); // logsheetId -> AzoraLogsheet
 const tremcards = new Map(); // tremcardId -> TREMCARD data
-const inspections = new Map(); // inspectionId -> pre/post trip inspection
-const complianceReports = new Map(); // reportId -> comprehensive compliance report
+// const _inspections = new Map(); // inspectionId -> pre/post trip inspection
+// const _complianceReports = new Map(); // reportId -> comprehensive compliance report
 
 // ============================================================================
 // AZORA LOGSHEET CLASS
@@ -383,9 +382,8 @@ function checkDriverFatigueAndHOS(activityLog) {
   
   let totalDrivingHours = 0;
   let continuousDrivingHours = 0;
-  let lastBreakTime = null;
   
-  activityLog.forEach((activity, index) => {
+  activityLog.forEach((activity, _index) => {
     if (activity.status === 'driving') {
       const durationHours = activity.duration / 60; // Convert minutes to hours
       totalDrivingHours += durationHours;
@@ -405,7 +403,6 @@ function checkDriverFatigueAndHOS(activityLog) {
       const breakDuration = activity.duration; // in minutes
       if (breakDuration >= rules.MIN_BREAK_AFTER_CONTINUOUS_DRIVING_MINS) {
         continuousDrivingHours = 0; // Reset continuous driving counter
-        lastBreakTime = activity.timestamp;
       }
     }
   });

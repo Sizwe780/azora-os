@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: compliance-config
+  namespace: azora-compliance
+data:
+  # Database configuration
+  DATABASE_URL: "postgresql://compliance:password@compliance-db:5432/compliance"
+
+  # Redis configuration
+  REDIS_URL: "redis://compliance-redis:6379"
+
+  # Monitoring configuration
+  PROMETHEUS_ENABLED: "true"
+  GRAFANA_ENABLED: "true"
+
+  # Security configuration
+  JWT_SECRET: "your-jwt-secret-here"
+  ENCRYPTION_KEY: "your-encryption-key-here"
+
+  # Compliance settings
+  COMPLIANCE_CHECK_INTERVAL: "300"  # 5 minutes
+  REPORT_RETENTION_DAYS: "365"
+  ALERT_RETENTION_DAYS: "90"
+
+  # IoT settings
+  MQTT_RECONNECT_INTERVAL: "5000"
+  DEVICE_TIMEOUT: "300000"  # 5 minutes
+  MAX_DEVICE_CONNECTIONS: "1000"
+
+  # Logging
+  LOG_LEVEL: "info"
+  LOG_FORMAT: "json"
+
+  # Performance
+  CONNECTION_POOL_SIZE: "10"
+  CACHE_TTL: "3600"  # 1 hour
+  RATE_LIMIT_REQUESTS: "100"
+  RATE_LIMIT_WINDOW: "60"  # 1 minute

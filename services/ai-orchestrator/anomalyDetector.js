@@ -1,5 +1,5 @@
 // Simple anomaly detector stub
-async function detect(context) {
+async function detect(_context) {
   // Replace with real ML model
   const score = Math.random();
   return { anomalyScore: score, flagged: score > 0.7 };

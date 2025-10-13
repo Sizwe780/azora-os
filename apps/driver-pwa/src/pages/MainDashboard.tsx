@@ -1,7 +1,7 @@
 import React from "react";
 import GlassPanel from "../components/atoms/GlassPanel";
 // Import your actual widgets/components here:
-import ProfileCard from "../../components/molecules/ProfileCard";
+import ProfileCard from "../components/molecules/ProfileCard";
 import AdvisorPanel from "../components/AdvisorPanel";
 import FederationWidget from "../components/FederationWidget";
 import { ReputationEconomyWidget } from "../components/ReputationEconomyWidget";

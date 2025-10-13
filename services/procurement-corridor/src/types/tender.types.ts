@@ -113,7 +113,7 @@ export interface Bid {
   blockchainTxId?: string;
   
   // Metadata
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
 }
 
 export interface BidDocument {
@@ -209,7 +209,7 @@ export interface BlockchainAnchor {
   network: 'ethereum' | 'polygon' | 'testnet';
   
   // Data
-  data: Record<string, any>;
+  data: Record<string, unknown>;
   dataHash: string;
   
   // Metadata

@@ -1,6 +1,6 @@
 // src/pages/DownloadCenterPage.tsx
 import React, { useState } from 'react';
-import { useApi } from '../../hooks/azora/useApi';
+import { useApi } from '../hooks/azora/useApi';
 import Card from '../components/atoms/Card';
 import Heading from '../components/atoms/Heading';
 
