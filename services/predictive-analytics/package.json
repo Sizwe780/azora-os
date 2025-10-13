@@ -1,0 +1,29 @@
+{
+  "name": "predictive-analytics",
+  "version": "1.0.0",
+  "description": "AI-powered predictive analytics for demand forecasting and route optimization",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "jest",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "cors": "^2.8.5",
+    "@tensorflow/tfjs-node": "^4.15.0",
+    "natural": "^6.12.0",
+    "winston": "^3.18.3",
+    "dotenv": "^17.2.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0",
+    "jest": "^29.0.0",
+    "eslint": "^9.0.0"
+  },
+  "keywords": ["ai", "machine-learning", "predictive-analytics", "tensorflow", "azora-os"],
+  "author": "Azora OS Team",
+  "license": "SEE LICENSE IN LICENSE"
+}

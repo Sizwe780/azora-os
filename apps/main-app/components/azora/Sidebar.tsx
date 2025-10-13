@@ -2,7 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, Settings, Users, Brain, Zap, Navigation, 
   Shield, Snowflake, Truck, BarChart, LifeBuoy, Landmark,
-  FileText, Briefcase, Mail, UserCircle
+  FileText, Briefcase, Mail, UserCircle, Route, Network
 } from 'lucide-react';
 import { type ComponentType } from 'react';
 import { hasPermission, Permission } from '../../types/founders';
@@ -28,6 +28,10 @@ const navSections: NavSection[] = [
       { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
       { path: '/ai', label: 'Quantum AI', icon: Brain },
       { path: '/evolution', label: 'AI Evolution', icon: Zap },
+      { path: '/demand-forecasting', label: 'Demand Forecasting', icon: BarChart },
+      { path: '/route-optimization', label: 'Route Optimization', icon: Route },
+      { path: '/anomaly-detection', label: 'Anomaly Detection', icon: Shield },
+      { path: '/fleet-clustering', label: 'Fleet Clustering', icon: Network },
     ],
   },
   {

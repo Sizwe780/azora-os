@@ -110,6 +110,10 @@ export default defineConfig({
         target: 'http://localhost:4000', // Main backend
         changeOrigin: true,
       },
+      '/api/ai-ml': {
+        target: 'http://localhost:4010', // AI/ML Engine
+        changeOrigin: true,
+      },
     },
   },
 })

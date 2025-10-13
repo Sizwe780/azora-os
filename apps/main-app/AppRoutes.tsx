@@ -17,6 +17,10 @@ const QuantumTracking = lazy(() => import('./pages/QuantumTracking'));
 const QuantumAI = lazy(() => import('./pages/QuantumAI'));
 const AIEvolution = lazy(() => import('./pages/AIEvolution'));
 const LiveTripTrackingPage = lazy(() => import('./pages/LiveTripTrackingPage'));
+const DemandForecasting = lazy(() => import('./pages/DemandForecasting'));
+const RouteOptimization = lazy(() => import('./pages/RouteOptimization'));
+const AnomalyDetection = lazy(() => import('./pages/AnomalyDetection'));
+const FleetClustering = lazy(() => import('./pages/FleetClustering'));
 
 // Enterprise Services Pages
 const AdminPortalPage = lazy(() => import('./pages/AdminPortalPage'));
@@ -78,6 +82,10 @@ export default function AppRoutes() {
                   <Route path="/tracking" element={<QuantumTracking />} />
                   <Route path="/ai" element={<QuantumAI />} />
                   <Route path="/evolution" element={<AIEvolution />} />
+                  <Route path="/demand-forecasting" element={<DemandForecasting />} />
+                  <Route path="/route-optimization" element={<RouteOptimization />} />
+                  <Route path="/anomaly-detection" element={<AnomalyDetection />} />
+                  <Route path="/fleet-clustering" element={<FleetClustering />} />
                   <Route path="/coldchain" element={<ColdChainCommand />} />
                   <Route path="/safety" element={<UniversalSafetyCommand />} />
                   <Route path="/klipp" element={<KlippPage />} />

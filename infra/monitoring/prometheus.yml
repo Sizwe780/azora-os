@@ -1,0 +1,66 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'ai-ml-engine'
+    static_configs:
+      - targets: ['ai-ml-engine:4055']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'ai-orchestrator'
+    static_configs:
+      - targets: ['ai-orchestrator:4001']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'neural-context-engine'
+    static_configs:
+      - targets: ['neural-context-engine:4005']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'auth-service'
+    static_configs:
+      - targets: ['auth:4004']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'store-service'
+    static_configs:
+      - targets: ['store:4002']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'quantum-microservice'
+    static_configs:
+      - targets: ['quantum_microservice:5000']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'shield-service'
+    static_configs:
+      - targets: ['shield_service:5001']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'main-app'
+    static_configs:
+      - targets: ['main-app:5175']
+    scrape_interval: 10s
+    metrics_path: '/metrics'
+
+  - job_name: 'backend'
+    static_configs:
+      - targets: ['backend:3000']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
