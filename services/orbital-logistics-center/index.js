@@ -372,7 +372,7 @@ class SpaceXAutonomousCoordinator {
   }
 
   // Generate coordination commands
-  generateCoordinationCommands(formations, mission) {
+  generateCoordinationCommands(formations, _mission) {
     const commands = {
       adjustments: [],
       optimizations: []
@@ -650,22 +650,22 @@ class QuantumOptimizationEngine {
     return R * c;
   }
 
-  checkTimeCompatibility(location, vehicle) {
+  checkTimeCompatibility(_location, _vehicle) {
     // Simplified time compatibility check
     return true; // In production: check against vehicle schedule
   }
 
-  checkTimeViolations(solution, timeWindows) {
+  checkTimeViolations(_solution, _timeWindows) {
     // Simplified time violation calculation
     return 0; // In production: calculate actual violations
   }
 
-  checkCapacityViolations(solution, capacityConstraints) {
+  checkCapacityViolations(_solution, _capacityConstraints) {
     // Simplified capacity violation calculation
     return 0; // In production: calculate actual violations
   }
 
-  calculateRouteEfficiency(solution) {
+  calculateRouteEfficiency(_solution) {
     // Simplified efficiency calculation
     return 0.8; // 80% efficiency
   }
@@ -681,9 +681,9 @@ class QuantumOptimizationEngine {
   }
 
   // Design other quantum circuits (simplified)
-  designSchedulingCircuit(problem) { return { qubits: 10, gates: [], measurements: [] }; }
-  designAllocationCircuit(problem) { return { qubits: 8, gates: [], measurements: [] }; }
-  designGenericCircuit(problem) { return { qubits: 5, gates: [], measurements: [] }; }
+  designSchedulingCircuit(_problem) { return { qubits: 10, gates: [], measurements: [] }; }
+  designAllocationCircuit(_problem) { return { qubits: 8, gates: [], measurements: [] }; }
+  designGenericCircuit(_problem) { return { qubits: 5, gates: [], measurements: [] }; }
 }
 
 // ============================================================================
@@ -776,7 +776,7 @@ class SatelliteImageryService {
   }
 
   // Get weather conditions from satellite
-  async getWeatherConditions(start, end) {
+  async getWeatherConditions(_start, _end) {
     // Simulate weather satellite data
     const conditions = {
       precipitation: Math.random() < 0.3, // 30% chance of rain
@@ -790,10 +790,10 @@ class SatelliteImageryService {
   }
 
   // Simplified detection functions
-  detectRoads(start, end) { return Math.random() > 0.3; }
-  detectRivers(start, end) { return Math.random() > 0.7; }
-  analyzeVegetation(start, end) { return { density: Math.random(), type: 'mixed' }; }
-  detectUrbanAreas(start, end) { return Math.random() > 0.6; }
+  detectRoads(_start, _end) { return Math.random() > 0.3; }
+  detectRivers(_start, _end) { return Math.random() > 0.7; }
+  analyzeVegetation(_start, _end) { return { density: Math.random(), type: 'mixed' }; }
+  detectUrbanAreas(_start, _end) { return Math.random() > 0.6; }
 }
 
 // ============================================================================

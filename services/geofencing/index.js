@@ -12,8 +12,6 @@ app.use(express.json());
 
 // In-memory storage (production: database + spatial index)
 const geofences = new Map();
-const activeTriggers = new Map();
-const locationHistory = new Map();
 
 // ============================================================================
 // GEOFENCING ENGINE
@@ -148,7 +146,7 @@ class Geofence {
     return { violation: false, currentSpeed, limit };
   }
 
-  async checkTimeRestriction(action, context) {
+  async checkTimeRestriction(action, _context) {
     const now = new Date();
     const currentHour = now.getHours();
 
@@ -173,7 +171,7 @@ class Geofence {
     };
   }
 
-  async performComplianceCheck(action, context) {
+  async performComplianceCheck(action, _context) {
     // Simulate compliance check
     const checks = action.checks || ['popia', 'gdpr', 'safety'];
     const results = {};

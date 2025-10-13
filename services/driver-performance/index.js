@@ -12,9 +12,6 @@ app.use(express.json());
 
 // In-memory storage (production: database)
 const driverProfiles = new Map();
-const performanceMetrics = new Map();
-const achievements = new Map();
-const incentives = new Map();
 
 // ============================================================================
 // DRIVER PERFORMANCE ENGINE
@@ -194,7 +191,7 @@ class DriverPerformance {
 // ============================================================================
 
 // OpenWeatherMap API (free tier)
-async function getWeatherBonus(driverLocation) {
+async function getWeatherBonus(_driverLocation) {
   try {
     // Simulate weather API call (free tier available)
     const weatherConditions = ['clear', 'rainy', 'stormy', 'foggy'];
@@ -216,24 +213,6 @@ async function getWeatherBonus(driverLocation) {
   } catch (error) {
     console.error('Weather API error:', error);
     return { condition: 'unknown', bonus: 0 };
-  }
-}
-
-// OpenRouteService API (free tier for routing)
-async function getRouteOptimizationBonus(routeData) {
-  try {
-    // Simulate route optimization API
-    const optimization = Math.random() * 0.3; // Up to 30% improvement
-    const bonus = Math.round(optimization * 200); // Up to R60 bonus
-
-    return {
-      optimization: (optimization * 100).toFixed(1) + '%',
-      bonus,
-      description: `Route optimization bonus for ${optimization * 100}% efficiency improvement`
-    };
-  } catch (error) {
-    console.error('Route API error:', error);
-    return { optimization: '0%', bonus: 0 };
   }
 }
 

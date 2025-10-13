@@ -94,7 +94,6 @@ class SpaceXMissionControl {
 
     // Calculate direct path
     const totalDistance = this.calculateDistance(origin, destination);
-    const segmentLength = totalDistance / 10; // 10 segments
 
     // Create formation-based waypoints
     for (let i = 1; i < 10; i++) {
@@ -125,7 +124,7 @@ class SpaceXMissionControl {
   }
 
   // Calculate speed for each segment
-  calculateSegmentSpeed(segmentIndex, totalDistance) {
+  calculateSegmentSpeed(segmentIndex, _totalDistance) {
     // Start slow, accelerate, maintain, decelerate (like rocket profile)
     const profile = [40, 60, 80, 100, 110, 110, 100, 80, 60, 40, 0];
     return profile[segmentIndex] || 80;
@@ -378,7 +377,7 @@ class AutonomousCoordinationEngine {
         }
         break;
 
-      case 'diamond':
+      case 'diamond': {
         // Diamond formation (like fighter jets)
         const diamondPositions = [
           { role: 'lead', coordinates: { x: 0, y: 0 } },
@@ -388,6 +387,7 @@ class AutonomousCoordinationEngine {
         ];
         positions.push(...diamondPositions.slice(0, vehicleCount));
         break;
+      }
 
       case 'echelon':
         // Staggered line formation
@@ -399,7 +399,7 @@ class AutonomousCoordinationEngine {
         }
         break;
 
-      case 'box':
+      case 'box': {
         // Square formation
         const boxSize = Math.ceil(Math.sqrt(vehicleCount));
         for (let i = 0; i < vehicleCount; i++) {
@@ -411,6 +411,7 @@ class AutonomousCoordinationEngine {
           });
         }
         break;
+      }
 
       case 'pair':
         // Side by side formation
@@ -483,7 +484,7 @@ class AutonomousCoordinationEngine {
 
   // Optimize routes in real-time
   optimizeRoutes(mission, currentConditions) {
-    const { traffic, weather, vehicleHealth } = currentConditions;
+    const { traffic, weather } = currentConditions;
 
     const optimization = {
       routeAdjustments: [],
@@ -549,8 +550,8 @@ class AutonomousCoordinationEngine {
   }
 
   // Helper methods
-  findAlternativeRoute(mission, traffic) { return { waypoints: [], distance: 0 }; }
-  calculateOptimizationEfficiency(optimization) { return 0.92; }
+  findAlternativeRoute(_mission, _traffic) { return { waypoints: [], distance: 0 }; }
+  calculateOptimizationEfficiency(_optimization) { return 0.92; }
 }
 
 // ============================================================================
@@ -688,8 +689,8 @@ class AIDecisionEngine {
     return 'low';
   }
 
-  identifyStakeholders(situation) { return ['drivers', 'customers', 'company']; }
-  identifyConstraints(situation) { return ['time', 'safety', 'regulations']; }
+  identifyStakeholders(_situation) { return ['drivers', 'customers', 'company']; }
+  identifyConstraints(_situation) { return ['time', 'safety', 'regulations']; }
 }
 
 // ============================================================================

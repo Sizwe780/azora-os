@@ -10,8 +10,6 @@
 
 import express from 'express';
 import crypto from 'crypto';
-import { webcrypto } from 'crypto';
-import axios from 'axios';
 
 const app = express();
 app.use(express.json({ limit: '50mb' }));
@@ -21,15 +19,6 @@ const PORT = 3009;
 // ============================================================================
 // CRYPTOGRAPHIC CONSTANTS
 // ============================================================================
-
-const ALGORITHMS = {
-  AES_256_GCM: 'aes-256-gcm',
-  RSA_OAEP: 'rsa-oaep',
-  ECDSA_P256: 'ecdsa-p256',
-  ED25519: 'ed25519',
-  SHA3_512: 'sha3-512',
-  ARGON2: 'argon2id'
-};
 
 const SECURITY_LEVELS = {
   STANDARD: 'standard',     // AES-256, RSA-2048
@@ -93,7 +82,7 @@ class QuantumResistantCrypto {
   /**
    * Decapsulate quantum-resistant key
    */
-  async decapsulateKey(privateKey, ciphertext) {
+  async decapsulateKey(_privateKey, _ciphertext) {
     // Simulate Kyber decapsulation
     const sharedSecret = crypto.randomBytes(32);
     return sharedSecret.toString('hex');
@@ -176,7 +165,7 @@ class ZeroKnowledgeProofs {
     return hash.digest('hex');
   }
 
-  simulateZKPVerification(proof) {
+  simulateZKPVerification(_proof) {
     // Simplified verification - in production, use actual ZKP verification
     return Math.random() > 0.1; // 90% success rate for simulation
   }
@@ -466,7 +455,7 @@ class SecureBlockchainLedger {
   }
 
   // Security implementation methods
-  async signTransaction(transaction, level) {
+  async signTransaction(transaction, _level) {
     const sign = crypto.createSign('SHA256');
     sign.update(JSON.stringify({
       id: transaction.id,
@@ -531,7 +520,7 @@ class SecureBlockchainLedger {
     return await mpc.reconstructSecret(session.id, shares.slice(0, 2)); // Use 2 out of 3
   }
 
-  async addQuantumResistance(transaction) {
+  async addQuantumResistance(_transaction) {
     const quantumCrypto = new QuantumResistantCrypto();
     return await quantumCrypto.generateQuantumKeyPair();
   }
@@ -569,17 +558,19 @@ class SecureBlockchainLedger {
           return { verified: true, method: 'single_signature' };
         case SECURITY_LEVELS.HIGH:
           return { verified: transaction.signatures?.length >= 2, method: 'multi_signature' };
-        case SECURITY_LEVELS.INTELLIGENCE:
+        case SECURITY_LEVELS.INTELLIGENCE: {
           const zkpValid = transaction.zeroKnowledgeProof ?
             await new ZeroKnowledgeProofs().verifyProof(transaction.zeroKnowledgeProof.id) : false;
           return { verified: zkpValid, method: 'zero_knowledge_proof' };
-        case SECURITY_LEVELS.MAXIMUM:
+        }
+        case SECURITY_LEVELS.MAXIMUM: {
           const quantumValid = transaction.quantumKey ? true : false;
           const thresholdValid = transaction.thresholdSignature ? true : false;
           return {
             verified: quantumValid && thresholdValid,
             method: 'quantum_resistant_threshold'
           };
+        }
         default:
           return { verified: false, reason: 'Unknown security level' };
       }
@@ -679,7 +670,7 @@ class HomomorphicEncryption {
   /**
    * Perform homomorphic addition
    */
-  async addHomomorphically(ciphertext1, ciphertext2, publicKey) {
+  async addHomomorphically(ciphertext1, ciphertext2, _publicKey) {
     // Simulate homomorphic addition: E(a) * E(b) = E(a+b) mod n²
     const combined = crypto.createHash('sha256')
       .update(ciphertext1 + ciphertext2)
@@ -695,7 +686,7 @@ class HomomorphicEncryption {
   /**
    * Perform homomorphic multiplication by constant
    */
-  async multiplyByConstant(ciphertext, constant, publicKey) {
+  async multiplyByConstant(ciphertext, constant, _publicKey) {
     // Simulate homomorphic multiplication: E(a)^k = E(a*k) mod n²
     const result = crypto.createHash('sha256')
       .update(ciphertext + constant.toString())

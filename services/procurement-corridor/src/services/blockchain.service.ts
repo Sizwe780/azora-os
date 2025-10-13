@@ -225,7 +225,7 @@ class BlockchainService {
       const filter = this.contract.filters.TenderAnchored(tenderId);
       const events = await this.contract.queryFilter(filter);
 
-      const trail: BlockchainAnchor[] = events.map((event) => {
+      const trail: BlockchainAnchor[] = events.map((event: any) => {
         const eventLog = event as ethers.EventLog;
         return {
           id: `audit_${eventLog.transactionHash}_${eventLog.index}`,

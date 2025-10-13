@@ -19,8 +19,6 @@
 
 import express from 'express';
 import bodyParser from 'body-parser';
-import fs from 'fs/promises';
-import path from 'path';
 
 const app = express();
 const PORT = 4050;
@@ -224,7 +222,7 @@ class QuantumDeepMind {
 
   async learn(feedback) {
     // Self-learning from user feedback
-    const { input, output, rating } = feedback;
+    const { input, rating } = feedback;
     const error = 1 - (rating / 5); // Convert 1-5 rating to error signal
     
     const encoded = this.encode(input);

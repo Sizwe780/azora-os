@@ -274,7 +274,7 @@ class TransportationManagementSystem {
     try {
       const trackingResponse = await axios.get(`${SERVICES.orbitalLogisticsCenter}/api/tracking/${shipmentId}`);
       updates.tracking = trackingResponse.data;
-    } catch (error) {
+    } catch {
       updates.tracking = { status: 'unavailable' };
     }
 
@@ -282,7 +282,7 @@ class TransportationManagementSystem {
     try {
       const networkResponse = await axios.get(`${SERVICES.globalSatelliteNetwork}/api/network/status/${shipmentId}`);
       updates.satelliteNetwork = networkResponse.data;
-    } catch (error) {
+    } catch {
       updates.satelliteNetwork = { status: 'unavailable' };
     }
 
@@ -290,7 +290,7 @@ class TransportationManagementSystem {
     try {
       const alertsResponse = await axios.get(`${SERVICES.predictiveMaintenance}/api/alerts/${shipmentId}`);
       updates.predictiveAlerts = alertsResponse.data;
-    } catch (error) {
+    } catch {
       updates.predictiveAlerts = { alerts: [] };
     }
 
@@ -322,7 +322,7 @@ class TransportationManagementSystem {
         details
       });
       response.actions.push('fleet_ai_alerted');
-    } catch (error) {
+    } catch {
       response.actions.push('fleet_ai_failed');
     }
 
@@ -333,7 +333,7 @@ class TransportationManagementSystem {
         priority: 'high'
       });
       response.actions.push('satellite_monitoring_activated');
-    } catch (error) {
+    } catch {
       response.actions.push('satellite_monitoring_failed');
     }
 
@@ -346,9 +346,9 @@ class TransportationManagementSystem {
           type: emergencyType
         });
         response.actions.push('drone_assessment_dispatched');
-      } catch (error) {
-        response.actions.push('drone_assessment_failed');
-      }
+    } catch {
+      response.actions.push('drone_assessment_failed');
+    }
     }
 
     return response;
@@ -455,7 +455,7 @@ app.get('/api/tms/dashboard', (req, res) => {
   };
 
   // Check service connectivity
-  Object.entries(SERVICES).forEach(([service, url]) => {
+  Object.entries(SERVICES).forEach(([service]) => {
     dashboard.serviceStatus[service] = 'checking';
   });
 

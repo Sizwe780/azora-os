@@ -5,8 +5,6 @@
 
 import express from 'express';
 import crypto from 'crypto';
-import fs from 'fs/promises';
-import path from 'path';
 
 const app = express();
 const PORT = process.env.PORT || 3007;
@@ -15,7 +13,6 @@ app.use(express.json({ limit: '50mb' }));
 
 // In-memory storage (production: database)
 const deliveries = new Map();
-const signatures = new Map();
 const complianceExports = new Map();
 
 // ============================================================================
@@ -167,7 +164,7 @@ app.get('/health', (req, res) => {
 
 // Create new delivery
 app.post('/deliveries', (req, res) => {
-  const { shipmentId, shipmentData } = req.body;
+  const { shipmentData } = req.body;
 
   const deliveryId = `POD_${Date.now()}_${crypto.randomBytes(4).toString('hex')}`;
   const delivery = new ProofOfDelivery(deliveryId, shipmentData);

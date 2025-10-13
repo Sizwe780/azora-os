@@ -26,7 +26,7 @@ export default defineConfig({
           // Vendor chunks
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
           'ui-vendor': ['framer-motion', 'lucide-react', 'react-icons'],
-          'maps-vendor': ['leaflet', 'react-leaflet'],
+          'maps-vendor': ['react-leaflet'],
           'charts-vendor': ['recharts'],
           // Feature chunks
             'ai-features': [
@@ -44,6 +44,11 @@ export default defineConfig({
               './apps/main-app/pages/DocumentVaultPage'
             ]
         }
+      },
+      external: (id) => {
+        // Don't externalize leaflet since it needs to be bundled
+        if (id.includes('leaflet')) return false;
+        return false;
       }
     },
     // Optimize dependencies
@@ -58,9 +63,9 @@ export default defineConfig({
       'react-dom',
       'react-router-dom',
       'framer-motion',
-      'lucide-react',
-      'leaflet'
+      'lucide-react'
     ],
+    exclude: ['leaflet'] // Exclude leaflet from pre-bundling
   },
   // Optional: Add a server proxy if your FastAPI backend and Vite dev server run on different ports
   // This helps avoid CORS issues during development.
