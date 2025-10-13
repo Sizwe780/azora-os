@@ -52,14 +52,16 @@ const MonitoringDashboard: React.FC = () => {
 
           return {
             ...service,
-            status: response.status === 200 ? 'healthy' : 'unhealthy',
+            status: 'healthy' as const,
             responseTime,
             uptime: response.data?.uptime
           };
         } catch (error) {
           return {
             ...service,
-            status: 'unhealthy' as const
+            status: 'unhealthy' as const,
+            responseTime: undefined,
+            uptime: undefined
           };
         }
       })
