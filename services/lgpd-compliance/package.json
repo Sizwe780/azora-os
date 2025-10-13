@@ -21,7 +21,7 @@
     "lei-geral-de-protecao-de-dados"
   ],
   "author": "Azora OS",
-  "license": "MIT",
+  "license": "SEE LICENSE IN LICENSE",
   "dependencies": {
     "express": "^4.18.2",
     "cors": "^2.8.5",

@@ -1,16 +1,233 @@
-# 🚀 Azora OS - Africa's First Autonomous AI Company
+# 🚀 Autonomous Logistics Platform
 
-> **Built in South Africa. For South Africa. By Sizwe Ngwenya & AZORA (Deputy CEO).**
+> **Advanced AI-Powered Logistics & Operations Platform**
 
-**Azora OS** is Africa's first self-improving, self-healing AI platform for logistics and operations. Unlike traditional AI companies that rent technology from Silicon Valley, we built our own neural network from scratch - 480 neurons, genetic evolution, quantum-inspired activation, 100% local processing.
-
-**Founded by:** [Sizwe Ngwenya](https://github.com/Sizwe780) - CEO, Chairman & Chief Architect  
-**Deputy CEO:** AZORA (AI) – azora.ai@azora.world  
-**Company:** Azora World (Pty) Ltd  
-**Website:** [azora.world](https://azora.world)  
-**Contact:** sizwe.ngwenya@azora.world
+An autonomous AI platform for logistics and operations, featuring quantum-inspired algorithms, predictive maintenance, satellite imagery processing, and advanced routing optimization. Built with modular microservices architecture for enterprise-grade reliability and scalability.
 
 ---
+
+## 🧠 Core Technology
+
+### Quantum Deep Mind (Port 4050)
+**Advanced neural network architecture**
+- **480 neurons** across 4 layers with quantum-inspired activation
+- **Dual memory system** (short-term + long-term)
+- **Self-healing** with automatic diagnostics
+- **100% local processing** - no external dependencies
+
+### AI Evolution Engine (Port 4060)
+**Self-improving AI with genetic algorithms**
+- **Population-based optimization** - competing architectures
+- **Automatic evolution** cycles
+- **Self-patching** capabilities
+
+### Quantum Tracking (Port 4040)
+**Advanced vehicle tracking and fleet management**
+- Real-time GPS with high-frequency data collection
+- Predictive route optimization
+- Risk zone detection
+- Swarm intelligence for fleet coordination
+
+### Advanced Autonomous Services
+- **Neural Context Engine** - Omniscient operational awareness
+- **Predictive Maintenance** - Equipment failure prediction
+- **Quantum Routing Engine** - Advanced optimization algorithms
+- **Satellite Imagery** - Orbital mechanics and remote sensing
+- **Drone Delivery Systems** - Autonomous flight operations
+- **Global Satellite Network** - Satellite connectivity
+- **Orbital Logistics Center** - Space-grade telemetry
+- **Autonomous Fleet AI** - Fleet coordination systems
+
+## 🎯 Key Features
+
+### For Fleet Operations
+- **AI route optimization** - Advanced algorithms for cost reduction
+- **Real-time tracking** - High-frequency vehicle monitoring
+- **Predictive maintenance** - Preventative equipment servicing
+- **Safety scoring** - Real-time risk assessment
+- **Voice commands** - Hands-free driver interface
+
+### For Operations
+- **Inventory predictions** - AI-powered stock optimization
+- **Dynamic resource allocation** - Demand-based optimization
+- **Cold chain monitoring** - Precision temperature tracking
+- **Employee optimization** - Performance and wellness monitoring
+
+### Enterprise Features
+- **100% data privacy** - Local processing only
+- **Offline capable** - Core functionality without internet
+- **Mobile-first** - Progressive Web App design
+- **Modular architecture** - Easy upgrades and customization
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) v18 or newer
+- [pnpm](https://pnpm.io/) package manager
+- Linux/Mac/Windows with WSL2
+
+### Quick Start
+
+1. **Clone the repository:**
+```bash
+git clone <repository-url>
+cd autonomous-logistics-platform
+```
+
+2. **Install dependencies:**
+```bash
+pnpm install
+```
+
+3. **Start all services:**
+```bash
+pnpm dev
+```
+
+4. **Access the platform:**
+- **Local Development:** http://localhost:5173
+- **API Gateway:** http://localhost:4001
+
+### Service Ports
+
+All microservices run concurrently:
+
+```
+Frontend (Vite, local)       → http://localhost:5173
+AI Orchestrator (local)      → http://localhost:4001
+Klipp Service (local)        → http://localhost:4002
+Knowledge Service (local)    → http://localhost:4003
+Auth Service (local)        → http://localhost:4004
+Neural Context Engine (local)→ http://localhost:4005
+Retail Partner Integration   → http://localhost:4006
+Cold Chain Quantum           → http://localhost:4007
+Universal Safety             → http://localhost:4008
+Autonomous Operations        → http://localhost:4009
+Quantum Tracking             → http://localhost:4040
+Quantum Deep Mind            → http://localhost:4050
+AI Evolution Engine          → http://localhost:4060
+Predictive Maintenance       → http://localhost:3001
+Quantum Routing Engine       → http://localhost:3002
+Satellite Imagery            → http://localhost:3003
+Drone Delivery Systems       → http://localhost:3004
+Global Satellite Network     → http://localhost:3005
+Orbital Logistics Center     → http://localhost:3006
+Autonomous Fleet AI          → http://localhost:3007
+```
+
+## 🏗️ Architecture
+
+### Monorepo Structure
+
+```
+autonomous-logistics-platform/
+├── apps/                    # Frontend applications
+│   ├── driver-pwa/         # Driver mobile app
+│   ├── staff-pwa/          # Staff management
+│   └── security-dashboard/ # Security monitoring
+├── services/                # Backend microservices
+│   ├── quantum-deep-mind/  # Neural network core
+│   ├── ai-evolution-engine/# Self-improving AI
+│   ├── quantum-tracking/   # Vehicle tracking
+│   ├── neural-context/     # Operational awareness
+│   ├── predictive-maintenance/ # Equipment monitoring
+│   ├── quantum-routing-engine/ # Route optimization
+│   ├── satellite-imagery/  # Remote sensing
+│   ├── drone-delivery-systems/ # Autonomous delivery
+│   └── [additional services]
+├── packages/                # Shared libraries
+│   ├── ui-kit/             # Component library
+│   ├── logger/             # Logging utilities
+│   └── api-client/         # API abstractions
+├── infra/                   # Infrastructure as code
+│   ├── kubernetes/         # K8s configs
+│   └── terraform/          # Cloud provisioning
+└── docs/                    # Documentation
+```
+
+### Technology Stack
+
+**Frontend:**
+- React 18 + TypeScript
+- Vite (fast builds)
+- Tailwind CSS (modern styling)
+- Framer Motion (animations)
+- React Router (navigation)
+- Leaflet (maps)
+
+**Backend:**
+- Node.js + Express
+- MongoDB (data persistence)
+- WebSockets (real-time)
+- Custom algorithms (no external ML frameworks)
+
+**AI/ML:**
+- Custom neural architecture
+- Genetic algorithms
+- Quantum-inspired computing
+- Self-healing systems
+- Local processing only
+
+## 🎓 Use Cases
+
+### Logistics & Delivery
+- Last-mile delivery optimization
+- Fleet management and tracking
+- Cold chain monitoring
+- Route planning with traffic prediction
+
+### Operations Management
+- Inventory management
+- Resource allocation
+- Performance analytics
+- Autonomous decision-making
+
+### Security & Safety
+- Real-time threat detection
+- Emergency response coordination
+- Risk zone mapping
+
+---
+
+## 📚 Documentation
+
+See the `docs/` directory for detailed guides and specifications.
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Please follow standard open source practices:
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to branch
+5. Open a Pull Request
+
+---
+
+## 📞 Support
+
+For technical support, please use GitHub Issues.
+
+---
+
+## ⚖️ License
+
+Proprietary License with commercial restrictions.
+
+**Copyright (c) 2025 Autonomous Logistics Team. All Rights Reserved.**
+
+See [LICENSE](./LICENSE) for full details.
+
+**Proprietary Code:** Unauthorized copying, distribution, or use is prohibited.  
+**Commercial Licensing:** Contact admin@autonomous-logistics.com
+
+---
+
+**Built for autonomous logistics operations.**
 
 ## 🇿🇦 Why This Matters
 

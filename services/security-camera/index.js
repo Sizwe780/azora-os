@@ -24,7 +24,9 @@ function emit() {
     };
     try {
       await fetch(`http://security-core:${process.env.SEC_CORE_PORT || 4022}/events/camera`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(event) });
-    } catch {}
+    } catch {
+      // Ignore fetch errors
+    }
   }, 7000);
 }
 

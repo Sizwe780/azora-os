@@ -1,0 +1,19 @@
+{
+  "name": "geofencing",
+  "version": "1.0.0",
+  "description": "Location-based geofencing service with automated triggers and zones",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
+    "test": "echo \"No tests specified\""
+  },
+  "author": "Autonomous Logistics Team",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

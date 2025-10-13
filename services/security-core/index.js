@@ -49,9 +49,12 @@ function correlate(tillId) {
 
 async function route(alert) {
   const webhook = process.env.SLACK_WEBHOOK_URL;
-  if (!webhook) return;
+  if (!webhook) {
+    // No webhook configured, skip routing
+    return;
+  }
   const text = `SEC ALERT: ${alert.type} at ${alert.tillId} (cam ${alert.cameraId}) — bagged ${alert.details.bagged}, scanned ${alert.details.scanned}, Δ=${alert.details.delta}. Severity: ${alert.severity}.`;
-  try { await fetch(webhook, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text }) }); } catch {}
+  try { await fetch(webhook, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text }) }); } catch (e) { console.error('Failed to send alert to Slack:', e); }
 }
 
 app.post("/events/camera", (req, res) => { cameraEvents.push(req.body); audit("camera.event", req.body); correlate(req.body.tillId); res.json({ ok: true }); });

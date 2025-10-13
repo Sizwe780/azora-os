@@ -1,6 +1,6 @@
-# AZORA OS PROPRIETARY LICENSE
+# AUTONOMOUS LOGISTICS PLATFORM LICENSE
 
-**Copyright (c) 2025 Azora World (Pty) Ltd. All Rights Reserved.**
+**Copyright (c) 2025 Autonomous Logistics Team. All Rights Reserved.**
 
 ---
 
@@ -8,47 +8,40 @@
 
 ### 1. OWNERSHIP AND COPYRIGHT
 
-This software and associated documentation files (the "Software") are the **exclusive intellectual property** of **Azora World (Pty) Ltd**, a South African private company, and are protected under South African copyright law, international copyright treaties, and all applicable laws.
+This software and associated documentation files (the "Software") are the **exclusive intellectual property** of **Autonomous Logistics Platform**, and are protected under applicable copyright law and international copyright treaties.
 
-**Founder & CEO**: Sizwe Ngwenya  
-**Company Registration**: Azora World (Pty) Ltd  
-**Jurisdiction**: Republic of South Africa
+**Administrator**: Platform Administrator
+**Organization**: Autonomous Logistics Platform
+**Jurisdiction**: International
 
 ### 2. PROHIBITED ACTIONS WITHOUT AUTHORIZATION
 
-Without **explicit written permission** from the **CEO (Sizwe Ngwenya)** or a **majority vote (>50%) of the Board of Directors**, the following actions are **STRICTLY PROHIBITED**:
+Without **explicit written permission** from the **Platform Administrator**, the following actions are **STRICTLY PROHIBITED**:
 
-❌ **Copying** the Software or any portion thereof  
-❌ **Modifying** the Software or creating derivative works  
-❌ **Distributing** the Software to third parties  
-❌ **Reverse engineering** the Software or attempting to extract source code  
-❌ **Sublicensing** or transferring rights to the Software  
-❌ **Commercial use** without a valid commercial license agreement  
-❌ **Removing** copyright notices, trademarks, or proprietary labels  
-❌ **Publishing** the Software or any part of it to public repositories  
-❌ **Forking** or creating unauthorized copies of the codebase  
+❌ **Copying** the Software or any portion thereof
+❌ **Modifying** the Software or creating derivative works
+❌ **Distributing** the Software to third parties
+❌ **Reverse engineering** the Software or attempting to extract source code
+❌ **Sublicensing** or transferring rights to the Software
+❌ **Commercial use** without a valid commercial license agreement
+❌ **Removing** copyright notices, trademarks, or proprietary labels
+❌ **Publishing** the Software or any part of it to public repositories
+❌ **Forking** or creating unauthorized copies of the codebase
 ❌ **Decompiling** or attempting to derive source code from compiled binaries
 
 ### 3. AUTHORIZATION REQUIREMENTS
 
-**CEO Approval:**
-- Email written approval from: sizwe.ngwenya@azora.world
+**Administrator Approval:**
 - Must include specific scope of authorization
 - Valid for specified time period only
 - Subject to NDA requirements
-
-**Board Approval:**
-- Requires majority vote (>50%) of Board of Directors
-- Must be documented in official Board minutes
-- Submitted to: board@azora.world
-- Minimum 7 business days review period
 
 ### 4. AUTHORIZED USE
 
 The Software may only be used by:
 
-1. **Authorized Azora World Employees** - For internal development and operations
-2. **Authorized Partners** - Under valid Partnership Agreements signed by the CEO
+1. **Authorized Team Members** - For internal development and operations
+2. **Authorized Partners** - Under valid Partnership Agreements
 3. **Licensed Customers** - Under valid Commercial License Agreements
 4. **Approved Contractors** - Under valid Non-Disclosure Agreements (NDAs)
 
@@ -56,17 +49,17 @@ The Software may only be used by:
 - ✅ Sign a Non-Disclosure Agreement (NDA)
 - ✅ Maintain strict confidentiality
 - ✅ Use the Software only for authorized purposes
-- ✅ Report any security vulnerabilities immediately to security@azora.world
+- ✅ Report any security vulnerabilities immediately
 - ✅ Return all copies upon termination of authorization
 
 ### 5. TRADE SECRETS AND CONFIDENTIAL INFORMATION
 
 The Software contains **trade secrets** and **confidential information** including:
 
-- 🔒 Proprietary algorithms for fleet optimization
+- 🔒 Proprietary algorithms for logistics optimization
 - 🔒 AI/ML models and training data
 - 🔒 Business logic and workflows
-- 🔒 Customer data structures
+- 🔒 Data structures
 - 🔒 Integration methodologies
 - 🔒 Security implementations
 - 🔒 Performance optimizations
@@ -77,19 +70,19 @@ The Software contains **trade secrets** and **confidential information** includi
 - Civil litigation for damages (actual + punitive)
 - Criminal prosecution under applicable laws
 - Immediate termination of all access
-- Pursuit of maximum legal remedies under South African law
+- Pursuit of maximum legal remedies
 
 ### 6. DEVELOPMENT RESTRICTIONS
 
-**Authorized developers** (Azora World employees and approved contractors) may develop under CEO direction, **BUT:**
+**Authorized developers** may develop under direction, **BUT:**
 
-**Require CEO/Board Approval:**
+**Require Approval:**
 - Major architectural changes
 - New service creation
 - Integration with external systems
 - Database schema modifications
 - Security protocol changes
-- API contract changes affecting clients
+- API contract changes
 
 **Can Proceed Without Approval:**
 - Bug fixes and patches
@@ -97,13 +90,13 @@ The Software contains **trade secrets** and **confidential information** includi
 - Documentation improvements
 - Unit test creation
 - Code refactoring (no functional changes)
-- UI/UX improvements (approved designs)
+- UI/UX improvements
 
 ### 7. OPEN SOURCE DEPENDENCIES
 
 This Software incorporates open source components which remain under their original licenses. **However:**
 
-- The **Azora OS platform** itself is proprietary
+- The **platform** itself is proprietary
 - Our **business logic** is proprietary and protected
 - Our **AI algorithms** are proprietary and trade secrets
 - Our **service architecture** is proprietary intellectual property
@@ -116,7 +109,7 @@ Use of open source components does **not** grant any rights to our proprietary c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
 
-**Azora World (Pty) Ltd makes NO warranties regarding:**
+**NO warranties regarding:**
 - Uninterrupted operation
 - Error-free performance
 - Compatibility with third-party systems
@@ -126,7 +119,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ### 9. LIMITATION OF LIABILITY
 
-**IN NO EVENT SHALL AZORA WORLD (PTY) LTD, ITS DIRECTORS, OFFICERS, EMPLOYEES, OR AGENTS BE LIABLE FOR:**
+**IN NO EVENT SHALL THE ORGANIZATION, ITS MEMBERS, OR AGENTS BE LIABLE FOR:**
 
 - Any direct, indirect, incidental, special, or consequential damages
 - Loss of profits, revenue, data, or business opportunities
@@ -145,14 +138,14 @@ This license **terminates automatically** if you:
 - Attempt unauthorized copying or modification
 - Disclose confidential information
 - Fail to maintain required NDAs
-- Are terminated as an employee or contractor
+- Are terminated as a member or contractor
 - File for bankruptcy or insolvency
 - Engage in competitive activities
 
 **Upon termination:**
 - ✅ All rights to use the Software cease **immediately**
 - ✅ You must **destroy all copies** in your possession
-- ✅ You must **return any company-provided equipment** within 48 hours
+- ✅ You must **return any provided equipment** within 48 hours
 - ✅ **Confidentiality obligations continue indefinitely**
 - ✅ You must provide **written certification of destruction**
 
@@ -165,7 +158,7 @@ This license **terminates automatically** if you:
 - 💰 Recovery of actual damages
 - 💰 Recovery of profits from unauthorized use
 - 💰 Recovery of attorneys' fees and costs
-- 💰 Statutory damages up to R1,000,000 per violation
+- 💰 Statutory damages
 
 **Criminal Prosecution:**
 - ⚖️ Copyright infringement charges
@@ -173,20 +166,15 @@ This license **terminates automatically** if you:
 - ⚖️ Computer fraud and abuse
 - ⚖️ Breach of confidence
 
-**Jurisdiction:**
-- 🏛️ South African courts have **exclusive jurisdiction**
-- 🏛️ Disputes resolved under **South African law**
-- 🏛️ Venue: **Gauteng Division, Pretoria High Court**
-
 ### 12. AUDIT RIGHTS
 
-Azora World (Pty) Ltd reserves the right to:
+The organization reserves the right to:
 
 - 🔍 Audit use of the Software by authorized users
 - 🔍 Request proof of compliance with license terms
-- 🔍 Inspect systems and logs upon **48 hours notice**
+- 🔍 Inspect systems and logs upon notice
 - 🔍 Revoke access immediately for non-compliance
-- 🔍 Engage third-party auditors at our discretion
+- 🔍 Engage third-party auditors
 
 **Failure to cooperate** with audits is grounds for immediate termination.
 
@@ -198,33 +186,27 @@ The Software may be subject to **export control laws**. You agree to:
 - Not export or re-export the Software to prohibited countries
 - Not provide access to prohibited parties
 - Obtain required export licenses before transfer
-- Notify Azora World of any export-related issues
 
 ### 14. DATA PROTECTION AND PRIVACY
 
 You agree to:
 
-- Comply with **POPIA** (Protection of Personal Information Act, South Africa)
-- Comply with **GDPR** (if applicable)
+- Comply with applicable data protection laws
 - Protect all customer and user data
-- Report data breaches within **24 hours** to security@azora.world
+- Report data breaches within 24 hours
 - Implement industry-standard security measures
 
 ### 15. AMENDMENTS
 
-Azora World (Pty) Ltd reserves the right to:
+The organization reserves the right to:
 
-- Modify this license at any time with **30 days notice**
+- Modify this license at any time with notice
 - Update terms for compliance with applicable laws
 - Require acceptance of new terms for continued use
 
-**Notice method:** Email to registered users or posting on https://azora.world
-
-Continued use after notice constitutes **acceptance** of amended terms.
-
 ### 16. INDEMNIFICATION
 
-You agree to **indemnify and hold harmless** Azora World (Pty) Ltd, its directors, officers, employees, and agents from any claims, damages, losses, liabilities, and expenses (including attorneys' fees) arising from:
+You agree to **indemnify and hold harmless** the organization, its members, and agents from any claims, damages, losses, liabilities, and expenses arising from:
 
 - Your use or misuse of the Software
 - Your violation of this license
@@ -233,19 +215,19 @@ You agree to **indemnify and hold harmless** Azora World (Pty) Ltd, its director
 
 ### 17. SEVERABILITY
 
-If any provision of this license is found **unenforceable**, the remaining provisions remain in **full force and effect**. The unenforceable provision shall be modified to the minimum extent necessary to make it enforceable.
+If any provision of this license is found **unenforceable**, the remaining provisions remain in **full force and effect**.
 
 ### 18. ENTIRE AGREEMENT
 
-This license constitutes the **entire agreement** between you and Azora World (Pty) Ltd regarding the Software and **supersedes all prior agreements**, whether written or oral.
+This license constitutes the **entire agreement** regarding the Software and **supersedes all prior agreements**.
 
 ### 19. NO WAIVER
 
-Failure to enforce any provision of this license does **not** constitute a waiver of that provision or any other provision.
+Failure to enforce any provision does **not** constitute a waiver of that provision.
 
 ### 20. SURVIVAL
 
-Sections 2, 5, 8, 9, 10, 11, 14, and 16 **survive termination** of this license.
+Sections 2, 5, 8, 9, 10, 11, 14, and 16 **survive termination**.
 
 ---
 
@@ -253,20 +235,9 @@ Sections 2, 5, 8, 9, 10, 11, 14, and 16 **survive termination** of this license.
 
 **For licensing inquiries or permission requests, contact:**
 
-**Sizwe Ngwenya**  
-Founder & CEO  
-Azora World (Pty) Ltd  
-📧 Email: sizwe.ngwenya@azora.world  
-🌐 Website: https://azora.world
-
-**Board of Directors Inquiries:**  
-📧 Email: board@azora.world
-
-**Legal Department:**  
-📧 Email: legal@azora.world
-
-**Security & Vulnerability Reports:**  
-📧 Email: security@azora.world
+**Platform Administrator**
+Autonomous Logistics Platform
+📧 Email: admin@autonomous-logistics.com
 
 ---
 
@@ -283,33 +254,24 @@ Azora World (Pty) Ltd
 
 ---
 
-## 🏢 COMPANY INFORMATION
+## 🏢 ORGANIZATION INFORMATION
 
-**Azora World (Pty) Ltd**  
-Founder & CEO: **Sizwe Ngwenya**  
-Founded: **2024**  
-Headquarters: **Johannesburg, South Africa**
+**Autonomous Logistics Platform**
+Administrator: **Platform Administrator**
+Founded: **2024**
 
-📧 Email: sizwe.ngwenya@azora.world  
-🌐 Website: https://azora.world  
-⚖️ Legal: legal@azora.world  
-🔒 Security: security@azora.world  
-📞 Support: support@azora.world
-
-**Jurisdiction:** Republic of South Africa  
-**Governing Law:** South African Law  
-**Registry:** South African Companies Registry
+📧 Email: admin@autonomous-logistics.com
 
 ---
 
-**© 2025 Azora World (Pty) Ltd. All Rights Reserved.**
+**© 2025 Autonomous Logistics Platform. All Rights Reserved.**
 
-**"Africa's Most Advanced Fleet Platform. Built for Trust."**
+**"Advanced Autonomous Logistics Platform"**
 
 ---
 
 ## ⚠️ FINAL WARNING
 
-**UNAUTHORIZED USE, COPYING, MODIFICATION, OR DISTRIBUTION OF THIS SOFTWARE IS STRICTLY PROHIBITED AND WILL BE PROSECUTED TO THE FULLEST EXTENT OF SOUTH AFRICAN AND INTERNATIONAL LAW.**
+**UNAUTHORIZED USE, COPYING, MODIFICATION, OR DISTRIBUTION OF THIS SOFTWARE IS STRICTLY PROHIBITED AND WILL BE PROSECUTED TO THE FULLEST EXTENT OF APPLICABLE LAW.**
 
 **THIS SOFTWARE IS MONITORED. UNAUTHORIZED ACCESS ATTEMPTS ARE LOGGED AND WILL BE REPORTED TO AUTHORITIES.**

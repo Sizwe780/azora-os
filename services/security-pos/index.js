@@ -17,7 +17,9 @@ function emitPOS() {
     };
     try {
       await fetch(`http://security-core:${process.env.SEC_CORE_PORT || 4022}/events/pos`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(event) });
-    } catch {}
+    } catch {
+      // Ignore fetch errors
+    }
   }, 8000);
 }
 

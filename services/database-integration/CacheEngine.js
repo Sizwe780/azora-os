@@ -297,18 +297,6 @@ export class CacheEngine {
     return await this.clear(pattern);
   }
 
-  // Set cache TTL for existing key
-  async expire(key, ttl) {
-    if (!this.dbManager.redis) return false;
-
-    try {
-      return await this.dbManager.redis.expire(key, ttl);
-    } catch (error) {
-      console.error('Cache expire error:', error);
-      return false;
-    }
-  }
-
   // Increment numeric value
   async increment(key, amount = 1) {
     if (!this.dbManager.redis) return null;
@@ -330,18 +318,6 @@ export class CacheEngine {
   // Decrement numeric value
   async decrement(key, amount = 1) {
     return await this.increment(key, -amount);
-  }
-
-  // Get all keys matching pattern
-  async getKeys(pattern = '*') {
-    if (!this.dbManager.redis) return [];
-
-    try {
-      return await this.dbManager.redis.keys(pattern);
-    } catch (error) {
-      console.error('Cache getKeys error:', error);
-      return [];
-    }
   }
 
   // Warm up cache with frequently accessed data

@@ -1,0 +1,35 @@
+{
+  "name": "global-satellite-network",
+  "version": "1.0.0",
+  "description": "Global Satellite Network Service - Advanced satellite connectivity for logistics operations using orbital mechanics and physics",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "echo \"Tests coming soon - Orbital-grade quality assurance\""
+  },
+  "keywords": [
+    "satellite",
+    "connectivity",
+    "orbital",
+    "physics",
+    "logistics",
+    "global",
+    "remote",
+    "azora",
+    "south-africa"
+  ],
+  "author": "Sizwe Ngwenya (Azora World)",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/azora-world/azora-os"
+  }
+}

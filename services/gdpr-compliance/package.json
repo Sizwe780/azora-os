@@ -9,7 +9,7 @@
   },
   "keywords": ["gdpr", "compliance", "privacy", "data-protection"],
   "author": "Sizwe Ngwenya <sizwe.ngwenya@azora.world>",
-  "license": "MIT",
+  "license": "SEE LICENSE IN LICENSE",
   "dependencies": {
     "express": "^4.21.2",
     "body-parser": "^2.2.0",

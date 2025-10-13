@@ -1,0 +1,33 @@
+{
+  "name": "quantum-routing-engine",
+  "version": "1.0.0",
+  "description": "Advanced routing optimization using quantum algorithms and physics-based traffic modeling",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "quantum-optimization",
+    "routing",
+    "qaoa",
+    "traffic-modeling",
+    "physics",
+    "logistics",
+    "azora"
+  ],
+  "author": "Sizwe Ngwenya (Azora World)",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sizwenya/azora-os"
+  }
+}

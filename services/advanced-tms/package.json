@@ -1,0 +1,22 @@
+{
+  "name": "advanced-tms",
+  "version": "1.0.0",
+  "description": "Advanced Transportation Management System with autonomous service integration",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
+    "test": "echo \"No tests specified\""
+  },
+  "author": "Autonomous Logistics Team",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "express": "^4.21.2",
+    "axios": "^1.12.2",
+    "crypto": "^1.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

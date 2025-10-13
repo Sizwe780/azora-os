@@ -1,0 +1,35 @@
+{
+  "name": "orbital-logistics-center",
+  "version": "1.0.0",
+  "description": "Orbital Logistics Center - Advanced space-grade telemetry and autonomous coordination using physics and mathematics",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "echo \"Tests coming soon - Space-grade quality assurance\""
+  },
+  "keywords": [
+    "orbital",
+    "logistics",
+    "telemetry",
+    "autonomous",
+    "physics",
+    "mathematics",
+    "space-grade",
+    "azora",
+    "south-africa"
+  ],
+  "author": "Sizwe Ngwenya (Azora World)",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/azora-world/azora-os"
+  }
+}

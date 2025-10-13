@@ -1,11 +1,10 @@
 /**
- * Azora OS - Digital Onboarding Service
- * 
+ * Digital Onboarding Service
+ *
  * Complete recruitment and contract management system with e-signatures.
  * Founder-first approach: Founders sign contracts on first login.
- * 
- * Copyright (c) 2025 Sizwe Ngwenya (Azora World)
- * Email: sizwe.ngwenya@azora.world
+ *
+ * @author Autonomous Logistics Team
  */
 
 const express = require('express');
@@ -38,10 +37,10 @@ FOUNDERS ONBOARDING CONTRACT
 
 This Agreement is entered into between:
 
-AZORA WORLD (PTY) LTD ("Company")
+AUTONOMOUS LOGISTICS PLATFORM ("Company")
 Registration Number: [TBD]
-Domain: azora.world
-Represented by: Sizwe Ngwenya, Founder & CEO
+Domain: autonomous-logistics.com
+Represented by: Platform Administrator, Founder & CEO
 
 AND
 
@@ -55,7 +54,7 @@ The Company hereby appoints the Founder as {{ROLE_TITLE}} effective from {{START
 
 2. EQUITY ALLOCATION
 
-The Founder is allocated {{EQUITY_PERCENTAGE}} equity in Azora World (Pty) Ltd.
+The Founder is allocated {{EQUITY_PERCENTAGE}} equity in Autonomous Logistics Platform.
 
 Vesting Schedule:
 - Duration: 4 years
@@ -91,9 +90,9 @@ Specific Responsibilities for {{ROLE_TITLE}}:
 
 5. INTELLECTUAL PROPERTY
 
-All work created by the Founder in connection with Azora is the EXCLUSIVE property of the Company.
+All work created by the Founder in connection with the platform is the EXCLUSIVE property of the Company.
 
-The Founder hereby assigns all rights, title, and interest in such work to Azora World (Pty) Ltd.
+The Founder hereby assigns all rights, title, and interest in such work to Autonomous Logistics Platform.
 
 6. CONFIDENTIALITY
 
@@ -103,7 +102,7 @@ No materials may be shared externally without written approval.
 
 7. GOVERNANCE
 
-- The Board is chaired by the Founder & CEO (Sizwe Ngwenya)
+- The Board is chaired by the Founder & CEO
 - Each Founder has one vote
 - The Chairperson holds a casting vote in case of deadlock
 
@@ -115,14 +114,14 @@ No materials may be shared externally without written approval.
 
 9. GOVERNING LAW
 
-This Agreement shall be governed by the laws of South Africa.
+This Agreement shall be governed by applicable law.
 
 SIGNED on {{SIGNING_DATE}} at {{SIGNING_LOCATION}}
 
 For the Company:
 _____________________________
-Sizwe Ngwenya
-Founder & CEO, Azora World (Pty) Ltd
+Platform Administrator
+Founder & CEO, Autonomous Logistics Platform
 
 For the Founder:
 _____________________________
@@ -196,8 +195,8 @@ function generateContractPDF(contractText, signatures, outputPath) {
     doc.pipe(stream);
     
     // Header
-    doc.fontSize(18).text('AZORA WORLD (PTY) LTD', { align: 'center' });
-    doc.fontSize(10).text('azora.world | sizwe.ngwenya@azora.world', { align: 'center' });
+    doc.fontSize(18).text('AUTONOMOUS LOGISTICS PLATFORM', { align: 'center' });
+    doc.fontSize(10).text('autonomous-logistics.com | admin@autonomous-logistics.com', { align: 'center' });
     doc.moveDown(2);
     
     // Contract text
@@ -205,7 +204,7 @@ function generateContractPDF(contractText, signatures, outputPath) {
     doc.moveDown(2);
     
     // Signatures
-    signatures.forEach((sig, index) => {
+    signatures.forEach((sig) => {
       doc.moveDown();
       doc.fontSize(10).text(`Signed by: ${sig.name}`);
       doc.text(`Role: ${sig.role}`);
@@ -362,6 +361,14 @@ function updateOnboardingStep(onboardingId, stepName, stepData) {
 }
 
 // ============================================================================
+// UTILITY FUNCTIONS
+// ============================================================================
+
+function isFounderEmail(email) {
+  return email.endsWith('@autonomous-logistics.com');
+}
+
+// ============================================================================
 // API ENDPOINTS
 // ============================================================================
 
@@ -427,7 +434,7 @@ app.post('/api/onboarding/founder/initiate', (req, res) => {
   
   // Verify founder by email domain
   if (!isFounderEmail(email)) {
-    return res.status(403).json({ error: 'Email must be @azora.world domain to be a founder' });
+    return res.status(403).json({ error: 'Email must be @autonomous-logistics.com domain to be a founder' });
   }
   
   let user = users.get(email);
@@ -661,13 +668,13 @@ app.get('/api/onboarding/signature/audit/:contractId', (req, res) => {
 // SEED DATA FOR FOUNDERS
 // ============================================================================
 
-// Seed Sizwe Ngwenya as founder
-const sizweUserId = 'sizwe_001';
-users.set(sizweUserId, {
-  id: sizweUserId,
-  name: 'Sizwe Ngwenya',
-  email: 'sizwe.ngwenya@azora.world',
-  github: 'Sizwe780',
+// Seed Platform Administrator as founder
+const adminUserId = 'admin_001';
+users.set(adminUserId, {
+  id: adminUserId,
+  name: 'Platform Administrator',
+  email: 'admin@autonomous-logistics.com',
+  github: 'platform-admin',
   role: {
     title: 'Founder, CEO & Chief Architect',
     department: 'Executive',
@@ -682,7 +689,7 @@ users.set(sizweUserId, {
   }
 });
 
-console.log('[Onboarding Service] Seeded founder: Sizwe Ngwenya');
+console.log('[Onboarding Service] Seeded founder: Platform Administrator');
 
 // ============================================================================
 // SERVER START
@@ -703,7 +710,7 @@ app.listen(PORT, () => {
   console.log('  ✅ Founder-first onboarding');
   console.log('  ✅ Audit trail & compliance');
   console.log('');
-  console.log('🇿🇦 Built by Sizwe Ngwenya for Azora World');
+  console.log('Built for autonomous logistics operations');
   console.log('Making employment instant and paperless!');
   console.log('');
 });

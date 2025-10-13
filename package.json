@@ -1,24 +1,22 @@
 {
-  "name": "azora-os-monorepo",
+  "name": "autonomous-logistics-platform",
   "version": "1.0.0",
   "private": true,
   "type": "module",
   "author": {
-    "name": "Sizwe Ngwenya",
-    "email": "sizwe.ngwenya@azora.world",
-    "url": "https://azora.world"
+    "name": "Autonomous Logistics Team"
   },
-  "description": "Africa's first self-improving autonomous AI platform for logistics and operations",
-  "homepage": "https://azora.world",
+  "description": "Advanced autonomous AI platform for logistics and operations",
+  "homepage": "./",
   "repository": {
     "type": "git",
-    "url": "https://github.com/azoraworld/azora-os.git"
+    "url": "."
   },
   "license": "SEE LICENSE IN LICENSE",
   "scripts": {
     "start": "docker compose up -d --build",
     "stop": "docker compose down",
-    "dev": "concurrently \"node services/ai-orchestrator/server.js\" \"node services/klipp-service/index.js\" \"node services/neural-context-engine/index.js\" \"node services/retail-partner-integration/index.js\" \"node services/cold-chain-quantum/index.js\" \"node services/universal-safety/index.js\" \"node services/autonomous-operations/index.js\" \"node services/quantum-tracking/index.js\" \"node services/quantum-deep-mind/index.js\" \"node services/ai-evolution-engine/index.js\" \"node services/onboarding-service/index.js\" \"node services/compliance-service/index.js\" \"node services/maintenance-service/index.js\" \"node services/driver-behavior-service/index.js\" \"node services/analytics-service/index.js\" \"node services/document-verification-service/index.js\" \"node services/advanced-compliance-engine/index.js\" \"node services/admin-portal/index.js\" \"node services/employee-onboarding/index.js\" \"node services/document-vault/index.js\" \"node services/traffic-routing/index.js\" \"node services/ai-trip-planning/index.js\" \"node services/accessibility/index.js\" \"node services/hr-ai-deputy/index.js\" \"vite\"",
+    "dev": "concurrently \"node services/ai-orchestrator/server.js\" \"node services/klipp-service/index.js\" \"node services/neural-context-engine/index.js\" \"node services/retail-partner-integration/index.js\" \"node services/cold-chain-quantum/index.js\" \"node services/universal-safety/index.js\" \"node services/autonomous-operations/index.js\" \"node services/quantum-tracking/index.js\" \"node services/quantum-deep-mind/index.js\" \"node services/ai-evolution-engine/index.js\" \"node services/onboarding-service/index.js\" \"node services/compliance-service/index.js\" \"node services/maintenance-service/index.js\" \"node services/driver-behavior-service/index.js\" \"node services/analytics-service/index.js\" \"node services/document-verification-service/index.js\" \"node services/advanced-compliance-engine/index.js\" \"node services/admin-portal/index.js\" \"node services/employee-onboarding/index.js\" \"node services/document-vault/index.js\" \"node services/traffic-routing/index.js\" \"node services/ai-trip-planning/index.js\" \"node services/accessibility/index.js\" \"node services/hr-ai-deputy/index.js\" \"node services/advanced-tms/index.js\" \"node services/crypto-ledger-security/index.js\" \"vite\"",
     "dev:frontend": "vite",
     "dev:services": "concurrently \"node services/ai-orchestrator/server.js\" \"node services/klipp-service/index.js\" \"node services/hr-ai-deputy/index.js\"",
     "build": "tsc && vite build",

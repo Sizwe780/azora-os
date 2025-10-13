@@ -1,0 +1,21 @@
+{
+  "name": "ai-unified",
+  "version": "1.0.0",
+  "description": "Unified AI service integrating multiple AI models and providers",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
+    "test": "echo \"No tests specified\""
+  },
+  "author": "Autonomous Logistics Team",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "express": "^4.21.2",
+    "cors": "^2.8.5"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

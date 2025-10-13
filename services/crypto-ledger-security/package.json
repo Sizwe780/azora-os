@@ -1,0 +1,29 @@
+{
+  "name": "crypto-ledger-security",
+  "version": "1.0.0",
+  "description": "Advanced cryptographic security service with quantum-resistant encryption and blockchain ledger",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
+    "test": "echo \"No tests specified\""
+  },
+  "keywords": [
+    "cryptography",
+    "blockchain",
+    "quantum-resistant",
+    "zero-knowledge-proofs",
+    "security",
+    "ledger"
+  ],
+  "author": "Autonomous Logistics Team",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "express": "^4.21.2",
+    "axios": "^1.12.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

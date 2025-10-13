@@ -331,12 +331,13 @@ class RestorativeAI {
         healing.result = 'Quantum coherence restored';
         break;
         
-      case 'neuron_stimulation':
+      case 'neuron_stimulation': {
         // Stimulate neurons with random inputs
         const stimulus = Array(512).fill(0).map(() => Math.random() * 2 - 1);
         this.mind.forward(stimulus);
         healing.result = 'Neurons activated';
         break;
+      }
         
       case 'memory_optimization':
         // Prune old memories

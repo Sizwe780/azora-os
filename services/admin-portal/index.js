@@ -5,7 +5,7 @@
  * user management, and administrative privileges.
  * 
  * Copyright (c) 2025 Sizwe Ngwenya (Azora World)
- * Email: sizwe.ngwenya@azora.world
+ * @author Autonomous Logistics Team
  */
 
 const express = require('express');
