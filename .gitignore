@@ -6,6 +6,7 @@ dist/
 *.log
 .env
 pnpm-lock.yaml
+coverage/
 
 # Proprietary implementations (keep interfaces)
 proprietary/quantum-crypto.js

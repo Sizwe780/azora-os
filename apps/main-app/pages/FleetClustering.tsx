@@ -254,7 +254,7 @@ const FleetClustering: React.FC = () => {
                           <div className="flex gap-2 text-xs">
                             {Object.entries(stat.status_distribution).map(([status, count]) => (
                               <span key={status} className={`${getStatusColor(status)}`}>
-                                {status}: {count}
+                                {status}: {count as number}
                               </span>
                             ))}
                           </div>
