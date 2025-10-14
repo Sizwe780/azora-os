@@ -2,9 +2,10 @@
 module.exports = {
     content: [
       "./src/**/*.{js,jsx,ts,tsx}",
-      "./public/index.html"
+      "./public/index.html",
+      "./apps/main-app/src/**/*.{js,jsx,ts,tsx}",  // Add this to include the app files
     ],
     darkMode: "class",
     theme: { extend: {} },
-    plugins: [],
+    plugins: [require("tailwindcss-animate")],  // Add the plugin here
   };

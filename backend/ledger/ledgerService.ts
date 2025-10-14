@@ -105,6 +105,9 @@ export class LedgerService {
   }
 }
 
+// Export default for compatibility with the import in api/v1/ledger/index.ts
+export default LedgerService;
+
 // Example usage:
 // const service = new LedgerService();
 // service.recordTransaction('tx001', 'clientA', 'clientB', 500);
