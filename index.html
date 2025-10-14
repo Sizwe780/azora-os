@@ -40,20 +40,20 @@
     <link rel="manifest" href="/manifest.json" />
     
     <!-- Apple Touch Icons -->
-  <link rel="apple-touch-icon" href="/azora-logo.png" />
+    <link rel="apple-touch-icon" href="/azora-logo.png" />
     
     <!-- Microsoft Tiles -->
     <meta name="msapplication-TileColor" content="#FFD700" />
     <meta name="msapplication-config" content="/browserconfig.xml" />
     
-  <!-- Security headers should be set via HTTP response headers in vercel.json -->
+    <!-- Security headers should be set via HTTP response headers in vercel.json -->
     
     <!-- Made in South Africa -->
     <meta name="geo.region" content="ZA" />
     <meta name="geo.placename" content="South Africa" />
     
-    <!-- Service Worker Registration -->
-    <script>
+    <!-- Service Worker Registration - Temporarily disabled to fix tracking error -->
+    <!-- <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           navigator.serviceWorker
@@ -67,14 +67,14 @@
             });
         });
       }
-    </script>
+    </script> -->
   </head>
   <body>
     <noscript>
       <div style="padding: 20px; text-align: center; font-family: system-ui, -apple-system, sans-serif;">
         <h1>🧠 Azora OS</h1>
         <p>JavaScript is required to run this application.</p>
-        <p>Built in South Africa by Sizwe Ngwenya 🇿🇦</p>
+        <p>Built in South Africa by Sizwe Ngwenya 🇿�</p>
       </div>
     </noscript>
     <div id="root"></div>
