@@ -8,9 +8,9 @@
  * Email: sizwe.ngwenya@azora.world
  */
 
-const express = require('express');
-const tf = require('@tensorflow/tfjs');
-const tfvis = require('@tensorflow/tfjs-vis');
+import express from 'express';
+import * as tf from '@tensorflow/tfjs';
+import * as tfvis from '@tensorflow/tfjs-vis';
 
 const app = express();
 app.use(express.json());
@@ -474,4 +474,4 @@ process.on('SIGINT', async () => {
   process.exit(0);
 });
 
-module.exports = app;
+export default app;

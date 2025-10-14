@@ -20,14 +20,8 @@
  * - SA-specific optimizations
  */
 
-const express = require('express');
-const bodyParser = require('body-parser');
-// const fs = require('fs/promises');
-// const path = require('path');
-// const { fileURLToPath } = require('url');
-
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = path.dirname(__filename);
+import express from 'express';
+import bodyParser from 'body-parser';
 
 const app = express();
 const PORT = process.env.AI_EVOLUTION_PORT || 4060;

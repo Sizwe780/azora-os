@@ -1,4 +1,4 @@
-version: '3.8'
+
 
 services:
   # ============================================================================
@@ -1062,7 +1062,6 @@ services:
       timeout: 10s
       retries: 3
 
-volumes:
 volumes:
   postgres_data:
   redis_data:
