@@ -7,7 +7,7 @@ const fs = require('fs').promises;
 const os = require('os');
 
 const app = express();
-const PORT = process.env.PORT || 4040;
+const PORT = process.env.PORT || 8098;
 
 // Create logs directory if it doesn't exist
 const logsDir = path.join(__dirname, 'logs');

@@ -16,7 +16,7 @@ const crypto = require('crypto');
 const app = express();
 app.use(bodyParser.json({ limit: '50mb' }));
 
-const PORT = 4085;
+const PORT = 8096;
 
 // ============================================================================
 // DATA STORES (3-WAY LEDGER SYSTEM)

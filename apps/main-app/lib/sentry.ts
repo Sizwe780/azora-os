@@ -1,10 +1,11 @@
 import * as Sentry from '@sentry/react'
 
 const initSentry = () => {
-  const dsn = process.env.VITE_SENTRY_DSN
+  // Use Vite's import.meta.env for frontend environment variables
+  const dsn = import.meta.env.VITE_SENTRY_DSN
 
   if (!dsn) {
-    if (process.env.NODE_ENV === 'development') {
+    if (import.meta.env.MODE === 'development') {
       console.warn('Sentry DSN not found. Error tracking disabled.')
     }
     return
@@ -14,10 +15,10 @@ const initSentry = () => {
     dsn,
     integrations: [Sentry.browserTracingIntegration()],
     tracesSampleRate: 1.0,
-    environment: process.env.NODE_ENV || 'development',
+    environment: import.meta.env.MODE || 'development',
     beforeSend(event) {
       // Filter out development errors in production
-      if (process.env.NODE_ENV === 'production' && event.exception) {
+      if (import.meta.env.MODE === 'production' && event.exception) {
         // You can add custom filtering logic here
         return event
       }

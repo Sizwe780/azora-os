@@ -9,10 +9,12 @@
  */
 
 import express from 'express';
+import cors from 'cors';
 import crypto from 'crypto';
 import axios from 'axios';
 
 const app = express();
+app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 
 const PORT = 3008;
@@ -22,13 +24,13 @@ const PORT = 3008;
 // ============================================================================
 
 const SERVICES = {
-  predictiveMaintenance: 'http://localhost:3001',
-  quantumRouting: 'http://localhost:3002',
-  satelliteImagery: 'http://localhost:3003',
-  droneDelivery: 'http://localhost:3004',
-  globalSatelliteNetwork: 'http://localhost:3005',
-  orbitalLogisticsCenter: 'http://localhost:3006',
-  autonomousFleetAI: 'http://localhost:3007'
+  predictiveMaintenance: 'http://localhost:3013',
+  quantumRouting: 'http://localhost:3018',
+  satelliteImagery: 'http://localhost:3015',
+  droneDelivery: 'http://localhost:3016',
+  globalSatelliteNetwork: 'http://localhost:3011',
+  orbitalLogisticsCenter: 'http://localhost:3010',
+  autonomousFleetAI: 'http://localhost:3012'
 };
 
 // ============================================================================
