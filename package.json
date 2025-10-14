@@ -26,6 +26,7 @@
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "test:security": "npm audit --audit-level=moderate",
     "lint:fix": "eslint . --ext ts,tsx --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -68,6 +69,7 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.65.0",
     "@prisma/client": "^6.17.1",
+    "@radix-ui/react-slot": "^1.2.3",
     "@sentry/react": "^10.19.0",
     "@sentry/tracing": "^7.120.4",
     "@tailwindcss/postcss": "^4.1.14",
@@ -79,6 +81,7 @@
     "axios": "^1.12.2",
     "bcryptjs": "^3.0.2",
     "body-parser": "^2.2.0",
+    "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cors": "^2.8.5",
     "date-fns": "^4.1.0",
@@ -114,6 +117,7 @@
     "socket.io-client": "^4.8.1",
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.1.14",
+    "tailwindcss-animate": "^1.0.7",
     "uuid": "^13.0.0",
     "winston": "^3.18.3",
     "ws": "^8.18.0"
