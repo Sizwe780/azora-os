@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🚀 Autonomous Logistics Platform
 
 > **Advanced AI-Powered Logistics & Operations Platform**
@@ -589,3 +590,6 @@ _"They said we couldn't build AI in Africa. So I built it just to prove them wro
 — Sizwe Ngwenya, Founder & CEO
 
 October 2025
+=======
+# azora-os
+>>>>>>> 0761ce55533ee773b87b51dd6b70fb66e3b1de98
