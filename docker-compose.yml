@@ -1,0 +1,1070 @@
+
+
+services:
+  # ============================================================================
+  # DATABASE SERVICES
+  # ============================================================================
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: azora_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  ai-ml-engine:
+    build:
+      context: ./services/ai-ml-engine
+      dockerfile: Dockerfile
+    ports:
+      - "4055:4055"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./services/ai-ml-engine:/app
+      - /app/node_modules
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4055/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  ai-orchestrator:
+    build:
+      context: ./services/ai-orchestrator
+      dockerfile: Dockerfile
+    ports:
+      - "4001:4001"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./services/ai-orchestrator:/app
+      - /app/node_modules
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  neural-context-engine:
+    build:
+      context: ./services/neural-context-engine
+      dockerfile: Dockerfile
+    ports:
+      - "4005:4005"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      ai-orchestrator:
+        condition: service_healthy
+    volumes:
+      - ./services/neural-context-engine:/app
+      - /app/node_modules
+
+  ai-evolution-engine:
+    build:
+      context: ./services/ai-evolution-engine
+      dockerfile: Dockerfile
+    ports:
+      - "4060:4060"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      neural-context-engine:
+        condition: service_healthy
+    volumes:
+      - ./services/ai-evolution-engine:/app
+      - /app/node_modules
+
+  # ============================================================================
+  # BUSINESS LOGIC SERVICES
+  # ============================================================================
+  assistant:
+    build:
+      context: ./services/assistant
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      ai-orchestrator:
+        condition: service_healthy
+    volumes:
+      - ./services/assistant:/app
+      - /app/node_modules
+
+  knowledge:
+    build:
+      context: ./services/knowledge
+      dockerfile: Dockerfile
+    ports:
+      - "4003:4003"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      neural-context-engine:
+        condition: service_healthy
+    volumes:
+      - ./services/knowledge:/app
+      - /app/node_modules
+
+  auth:
+    build:
+      context: ./services/auth
+      dockerfile: Dockerfile
+    ports:
+      - "4004:4004"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./services/auth:/app
+      - /app/node_modules
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4004/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  store:
+    build:
+      context: ./services/store
+      dockerfile: Dockerfile
+    ports:
+      - "4002:4002"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      auth:
+        condition: service_healthy
+    volumes:
+      - ./services/store:/app
+      - /app/node_modules
+
+  # ============================================================================
+  # REVOLUTIONARY QUANTUM SERVICES
+  # ============================================================================
+  cold-chain-quantum:
+    build:
+      context: ./services/cold-chain-quantum
+      dockerfile: Dockerfile
+    ports:
+      - "4007:4007"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      ai-orchestrator:
+        condition: service_healthy
+    volumes:
+      - ./services/cold-chain-quantum:/app
+      - /app/node_modules
+
+  universal-safety:
+    build:
+      context: ./services/universal-safety
+      dockerfile: Dockerfile
+    ports:
+      - "4008:4008"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      cold-chain-quantum:
+        condition: service_healthy
+    volumes:
+      - ./services/universal-safety:/app
+      - /app/node_modules
+
+  autonomous-operations:
+    build:
+      context: ./services/autonomous-operations
+      dockerfile: Dockerfile
+    ports:
+      - "4009:4009"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      universal-safety:
+        condition: service_healthy
+    volumes:
+      - ./services/autonomous-operations:/app
+      - /app/node_modules
+
+  quantum-tracking:
+    build:
+      context: ./services/quantum-tracking
+      dockerfile: Dockerfile
+    ports:
+      - "4040:4040"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      autonomous-operations:
+        condition: service_healthy
+    volumes:
+      - ./services/quantum-tracking:/app
+      - /app/node_modules
+
+  quantum-deep-mind:
+    build:
+      context: ./services/quantum-deep-mind
+      dockerfile: Dockerfile
+    ports:
+      - "4050:4050"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      quantum-tracking:
+        condition: service_healthy
+    volumes:
+      - ./services/quantum-deep-mind:/app
+      - /app/node_modules
+
+  # ============================================================================
+  # COMMUNICATION SERVICES
+  # ============================================================================
+  voice:
+    build:
+      context: ./services/voice
+      dockerfile: Dockerfile
+    ports:
+      - "4010:4010"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./services/voice:/app
+      - /app/node_modules
+
+  conversation:
+    build:
+      context: ./services/conversation
+      dockerfile: Dockerfile
+    ports:
+      - "4011:4011"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      voice:
+        condition: service_started
+    volumes:
+      - ./services/conversation:/app
+      - /app/node_modules
+
+  speaker:
+    build:
+      context: ./services/speaker
+      dockerfile: Dockerfile
+    ports:
+      - "4012:4012"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      conversation:
+        condition: service_started
+    volumes:
+      - ./services/speaker:/app
+      - /app/node_modules
+
+  # ============================================================================
+  # SECURITY SERVICES
+  # ============================================================================
+  security-core:
+    build:
+      context: ./services/security-core
+      dockerfile: Dockerfile
+    ports:
+      - "4022:4022"
+    environment:
+      - NODE_ENV=development
+      - TENANT=retail-partner
+      - STORE_ID=NMB-STORE-001
+    depends_on:
+      auth:
+        condition: service_healthy
+    volumes:
+      - ./services/security-core:/app
+      - /app/node_modules
+
+  security-camera:
+    build:
+      context: ./services/security-camera
+      dockerfile: Dockerfile
+    ports:
+      - "4020:4020"
+    environment:
+      - NODE_ENV=development
+      - TENANT=retail-partner
+      - STORE_ID=NMB-STORE-001
+    depends_on:
+      security-core:
+        condition: service_healthy
+    volumes:
+      - ./services/security-camera:/app
+      - /app/node_modules
+
+  security-pos:
+    build:
+      context: ./services/security-pos
+      dockerfile: Dockerfile
+    ports:
+      - "4021:4021"
+    environment:
+      - NODE_ENV=development
+      - TENANT=retail-partner
+      - STORE_ID=NMB-STORE-001
+    depends_on:
+      security-core:
+        condition: service_healthy
+    volumes:
+      - ./services/security-pos:/app
+      - /app/node_modules
+
+  # ============================================================================
+  # BUSINESS SERVICES
+  # ============================================================================
+  retail-partner-integration:
+    build:
+      context: ./services/retail-partner-integration
+      dockerfile: Dockerfile
+    ports:
+      - "4006:4006"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      store:
+        condition: service_healthy
+    volumes:
+      - ./services/retail-partner-integration:/app
+      - /app/node_modules
+
+  klipp-service:
+    build:
+      context: ./services/klipp-service
+      dockerfile: Dockerfile
+    ports:
+      - "4002:4002"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      retail-partner-integration:
+        condition: service_healthy
+    volumes:
+      - ./services/klipp-service:/app
+      - /app/node_modules
+
+  # ============================================================================
+  # OPERATIONAL SERVICES
+  # ============================================================================
+  procurement-corridor:
+    build:
+      context: ./services/procurement-corridor
+      dockerfile: Dockerfile
+    ports:
+      - "4032:4032"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      ai-orchestrator:
+        condition: service_healthy
+    volumes:
+      - ./services/procurement-corridor:/app
+      - /app/node_modules
+
+  traffic-routing:
+    build:
+      context: ./services/traffic-routing
+      dockerfile: Dockerfile
+    ports:
+      - "4033:4033"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      procurement-corridor:
+        condition: service_healthy
+    volumes:
+      - ./services/traffic-routing:/app
+      - /app/node_modules
+
+  ai-trip-planning:
+    build:
+      context: ./services/ai-trip-planning
+      dockerfile: Dockerfile
+    ports:
+      - "4034:4034"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      traffic-routing:
+        condition: service_healthy
+    volumes:
+      - ./services/ai-trip-planning:/app
+      - /app/node_modules
+
+  # ============================================================================
+  # COMPLIANCE & ADMIN SERVICES
+  # ============================================================================
+  gdpr-compliance:
+    build:
+      context: ./services/gdpr-compliance
+      dockerfile: Dockerfile
+    ports:
+      - "4080:4080"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./services/gdpr-compliance:/app
+      - /app/node_modules
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  hipaa-compliance:
+    build:
+      context: ./services/hipaa-compliance
+      dockerfile: Dockerfile
+    ports:
+      - "4081:4081"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./services/hipaa-compliance:/app
+      - /app/node_modules
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4081/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  sox-compliance:
+    build:
+      context: ./services/sox-compliance
+      dockerfile: Dockerfile
+    ports:
+      - "4082:4082"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./services/sox-compliance:/app
+      - /app/node_modules
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4082/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  ccpa-compliance:
+    build:
+      context: ./services/ccpa-compliance
+      dockerfile: Dockerfile
+    ports:
+      - "4083:4083"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./services/ccpa-compliance:/app
+      - /app/node_modules
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4083/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  pipeda-compliance:
+    build:
+      context: ./services/pipeda-compliance
+      dockerfile: Dockerfile
+    ports:
+      - "4084:4084"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./services/pipeda-compliance:/app
+      - /app/node_modules
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4084/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  lgpd-compliance:
+    build:
+      context: ./services/lgpd-compliance
+      dockerfile: Dockerfile
+    ports:
+      - "4085:4085"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./services/lgpd-compliance:/app
+      - /app/node_modules
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4085/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  compliance-service:
+    build:
+      context: ./services/compliance-service
+      dockerfile: Dockerfile
+    ports:
+      - "4035:4035"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      auth:
+        condition: service_healthy
+    volumes:
+      - ./services/compliance-service:/app
+      - /app/node_modules
+
+  advanced-compliance-engine:
+    build:
+      context: ./services/advanced-compliance-engine
+      dockerfile: Dockerfile
+    ports:
+      - "4036:4036"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      compliance-service:
+        condition: service_healthy
+    volumes:
+      - ./services/advanced-compliance-engine:/app
+      - /app/node_modules
+
+  hr-ai-deputy:
+    build:
+      context: ./services/hr-ai-deputy
+      dockerfile: Dockerfile
+    ports:
+      - "4037:4037"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      advanced-compliance-engine:
+        condition: service_healthy
+    volumes:
+      - ./services/hr-ai-deputy:/app
+      - /app/node_modules
+
+  employee-onboarding:
+    build:
+      context: ./services/employee-onboarding
+      dockerfile: Dockerfile
+    ports:
+      - "4038:4038"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      hr-ai-deputy:
+        condition: service_healthy
+    volumes:
+      - ./services/employee-onboarding:/app
+      - /app/node_modules
+
+  document-vault:
+    build:
+      context: ./services/document-vault
+      dockerfile: Dockerfile
+    ports:
+      - "4039:4039"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      employee-onboarding:
+        condition: service_healthy
+    volumes:
+      - ./services/document-vault:/app
+      - /app/node_modules
+
+  document-verification-service:
+    build:
+      context: ./services/document-verification-service
+      dockerfile: Dockerfile
+    ports:
+      - "4041:4041"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      document-vault:
+        condition: service_healthy
+    volumes:
+      - ./services/document-verification-service:/app
+      - /app/node_modules
+
+  # ============================================================================
+  # MONITORING & ANALYTICS SERVICES
+  # ============================================================================
+  analytics-service:
+    build:
+      context: ./services/analytics-service
+      dockerfile: Dockerfile
+    ports:
+      - "4042:4042"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./services/analytics-service:/app
+      - /app/node_modules
+
+  maintenance-service:
+    build:
+      context: ./services/maintenance-service
+      dockerfile: Dockerfile
+    ports:
+      - "4043:4043"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      analytics-service:
+        condition: service_healthy
+    volumes:
+      - ./services/maintenance-service:/app
+      - /app/node_modules
+
+  driver-behavior-service:
+    build:
+      context: ./services/driver-behavior-service
+      dockerfile: Dockerfile
+    ports:
+      - "4044:4044"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      maintenance-service:
+        condition: service_healthy
+    volumes:
+      - ./services/driver-behavior-service:/app
+      - /app/node_modules
+
+  # ============================================================================
+  # ORCHESTRATION & SIMULATION
+  # ============================================================================
+  orchestrator:
+    build:
+      context: ./services/ochestrator
+      dockerfile: Dockerfile
+    ports:
+      - "4030:4030"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      ai-orchestrator:
+        condition: service_healthy
+    volumes:
+      - ./services/ochestrator:/app
+      - /app/node_modules
+
+  simulator:
+    build:
+      context: ./services/simulator
+      dockerfile: Dockerfile
+    ports:
+      - "4031:4031"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      orchestrator:
+        condition: service_healthy
+    volumes:
+      - ./services/simulator:/app
+      - /app/node_modules
+
+  # ============================================================================
+  # FRONTEND APPLICATIONS
+  # ============================================================================
+  main-app:
+    build:
+      context: ./apps/main-app
+      dockerfile: Dockerfile
+    ports:
+      - "5175:5175"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      ai-orchestrator:
+        condition: service_healthy
+    volumes:
+      - ./apps/main-app:/app
+      - /app/node_modules
+
+  security-dashboard:
+    build:
+      context: ./apps/security-dashboard
+      dockerfile: Dockerfile
+    ports:
+      - "5176:5176"
+    environment:
+      - NODE_ENV=development
+      - TENANT=retail-partner
+      - STORE_ID=NMB-STORE-001
+    depends_on:
+      security-core:
+        condition: service_healthy
+    volumes:
+      - ./apps/security-dashboard:/app
+      - /app/node_modules
+
+  driver-pwa:
+    build:
+      context: ./apps/driver-pwa
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      auth:
+        condition: service_healthy
+    volumes:
+      - ./apps/driver-pwa:/app
+      - /app/node_modules
+
+  staff-pwa:
+    build:
+      context: ./apps/staff-pwa
+      dockerfile: Dockerfile
+    ports:
+      - "5177:5177"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      auth:
+        condition: service_healthy
+    volumes:
+      - ./apps/staff-pwa:/app
+      - /app/node_modules
+
+  # ============================================================================
+  # SPECIALIZED SERVICES
+  # ============================================================================
+  accessibility:
+    build:
+      context: ./services/accessibility
+      dockerfile: Dockerfile
+    ports:
+      - "4045:4045"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./services/accessibility:/app
+      - /app/node_modules
+
+  admin-portal:
+    build:
+      context: ./services/admin-portal
+      dockerfile: Dockerfile
+    ports:
+      - "4046:4046"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      auth:
+        condition: service_healthy
+    volumes:
+      - ./services/admin-portal:/app
+      - /app/node_modules
+
+  conflict-resolution:
+    build:
+      context: ./services/conflict-resolution
+      dockerfile: Dockerfile
+    ports:
+      - "4047:4047"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      ai-orchestrator:
+        condition: service_healthy
+    volumes:
+      - ./services/conflict-resolution:/app
+      - /app/node_modules
+
+  marketplace-service:
+    build:
+      context: ./services/marketplace-service
+      dockerfile: Dockerfile
+    ports:
+      - "4048:4048"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      klipp-service:
+        condition: service_healthy
+    volumes:
+      - ./services/marketplace-service:/app
+      - /app/node_modules
+
+  onboarding-service:
+    build:
+      context: ./services/onboarding-service
+      dockerfile: Dockerfile
+    ports:
+      - "4049:4049"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      employee-onboarding:
+        condition: service_healthy
+    volumes:
+      - ./services/onboarding-service:/app
+      - /app/node_modules
+
+  payment:
+    build:
+      context: ./services/payment
+      dockerfile: Dockerfile
+    ports:
+      - "4051:4051"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      store:
+        condition: service_healthy
+    volumes:
+      - ./services/payment:/app
+      - /app/node_modules
+
+  policy:
+    build:
+      context: ./services/policy
+      dockerfile: Dockerfile
+    ports:
+      - "4052:4052"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      compliance-service:
+        condition: service_healthy
+    volumes:
+      - ./services/policy:/app
+      - /app/node_modules
+
+  subscription:
+    build:
+      context: ./services/subscription
+      dockerfile: Dockerfile
+    ports:
+      - "4053:4053"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      payment:
+        condition: service_healthy
+    volumes:
+      - ./services/subscription:/app
+      - /app/node_modules
+
+  # ============================================================================
+  # QUANTUM MICROSERVICE
+  # ============================================================================
+  quantum_microservice:
+    build:
+      context: ./quantum_microservice
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./quantum_microservice:/app
+      - /app/node_modules
+
+  # ============================================================================
+  # SHIELD SERVICE
+  # ============================================================================
+  shield_service:
+    build:
+      context: ./shield_service
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5001"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      quantum_microservice:
+        condition: service_started
+    volumes:
+      - ./shield_service:/app
+      - /app/node_modules
+
+  # ============================================================================
+  # MAIN BACKEND
+  # ============================================================================
+  backend:
+    build:
+      context: ./
+      dockerfile: Dockerfile.backend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      ai-orchestrator:
+        condition: service_healthy
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    env_file:
+      - .env
+
+  # ============================================================================
+  # MONITORING & ANALYTICS INFRASTRUCTURE
+  # ============================================================================
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./infra/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3002:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./infra/monitoring/grafana/provisioning:/etc/grafana/provisioning
+      - ./infra/monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+    depends_on:
+      prometheus:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.11.0
+    ports:
+      - "5044:5044"
+      - "5000:5000/tcp"
+      - "5000:5000/udp"
+      - "9600:9600"
+    volumes:
+      - ./infra/monitoring/logstash/pipeline:/usr/share/logstash/pipeline:ro
+      - ./infra/monitoring/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9600"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.0
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5601/api/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:
+  elasticsearch_data:

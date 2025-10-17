@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
+    
+    <!-- Primary Meta Tags -->
+    <title>Azora OS - Africa's First Autonomous AI | Built in South Africa</title>
+    <meta name="title" content="Azora OS - Africa's First Autonomous AI" />
+    <meta name="description" content="Self-improving AI platform for logistics and operations. 100% local processing, R0 AI costs, POPIA compliant. Built in South Africa by Sizwe Ngwenya." />
+    <meta name="keywords" content="AI, South Africa, logistics, tracking, autonomous, self-improving, Azora, fleet management, POPIA" />
+    <meta name="author" content="Sizwe Ngwenya" />
+    <meta name="copyright" content="Azora World (Pty) Ltd" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://azora.world/" />
+    <meta property="og:title" content="Azora OS - Africa's First Autonomous AI" />
+    <meta property="og:description" content="Self-improving AI platform built in South Africa. 480 neurons, genetic evolution, 100% local processing." />
+    <meta property="og:image" content="https://azora.world/og-image.png" />
+    <meta property="og:locale" content="en_ZA" />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://azora.world/" />
+    <meta property="twitter:title" content="Azora OS - Africa's First Autonomous AI" />
+    <meta property="twitter:description" content="Self-improving AI platform built in South Africa" />
+    <meta property="twitter:image" content="https://azora.world/twitter-image.png" />
+    
+    <!-- PWA Meta Tags -->
+    <meta name="application-name" content="Azora OS" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Azora OS" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="theme-color" content="#FFD700" />
+    
+    <!-- Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+    
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" href="/azora-logo.png" />
+    
+    <!-- Microsoft Tiles -->
+    <meta name="msapplication-TileColor" content="#FFD700" />
+    <meta name="msapplication-config" content="/browserconfig.xml" />
+    
+    <!-- Security headers should be set via HTTP response headers in vercel.json -->
+    
+    <!-- Made in South Africa -->
+    <meta name="geo.region" content="ZA" />
+    <meta name="geo.placename" content="South Africa" />
+    
+    <!-- Service Worker Registration - Temporarily disabled to fix tracking error -->
+    <!-- <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker
+            .register('/service-worker.js')
+            .then((registration) => {
+              console.log('[Azora OS] Service Worker registered successfully:', registration.scope);
+              console.log('[Azora OS] 40% offline functionality enabled 🇿🇦');
+            })
+            .catch((error) => {
+              console.log('[Azora OS] Service Worker registration failed:', error);
+            });
+        });
+      }
+    </script> -->
+  </head>
+  <body>
+    <noscript>
+      <div style="padding: 20px; text-align: center; font-family: system-ui, -apple-system, sans-serif;">
+        <h1>🧠 Azora OS</h1>
+        <p>JavaScript is required to run this application.</p>
+        <p>Built in South Africa by Sizwe Ngwenya 🇿�</p>
+      </div>
+    </noscript>
+    <div id="root"></div>
+    <script type="module" src="/apps/main-app/main.tsx"></script>
+  </body>
+</html>

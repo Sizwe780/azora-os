@@ -1,0 +1,30 @@
+# Ignore service directories during Vercel build
+services/
+apps/driver-pwa/
+apps/staff-pwa/
+apps/security-dashboard/
+infra/
+prisma/
+ai-models/
+backend/
+
+# Ignore pnpm files completely
+pnpm-lock.yaml
+pnpm-workspace.yaml
+.pnpm-store/
+
+# Keep only root-level frontend files
+!src/
+!public/
+!index.html
+!package.json
+!package-lock.json
+!vite.config.js
+!tailwind.config.js
+!postcss.config.js
+!tsconfig.json
+!.npmrc
+!apps/
+!apps/driver-pwa/
+!apps/driver-pwa/src/
+!apps/driver-pwa/src/**

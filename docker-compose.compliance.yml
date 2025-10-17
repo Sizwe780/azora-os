@@ -1,0 +1,198 @@
+version: '3.8'
+
+services:
+  # Compliance Monitoring Dashboard
+  compliance-dashboard:
+    build: ./services/compliance-dashboard
+    ports:
+      - "4086:4086"
+    environment:
+      - COMPLIANCE_DASHBOARD_PORT=4086
+      - GDPR_COMPLIANCE_PORT=4080
+      - HIPAA_COMPLIANCE_PORT=4081
+      - SOX_COMPLIANCE_PORT=4082
+      - CCPA_COMPLIANCE_PORT=4083
+      - PIPEDA_COMPLIANCE_PORT=4084
+      - LGPD_COMPLIANCE_PORT=4085
+      - SA_COMPLIANCE_PORT=4090
+    depends_on:
+      - gdpr-compliance
+      - hipaa-compliance
+      - sox-compliance
+      - ccpa-compliance
+      - pipeda-compliance
+      - lgpd-compliance
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4086/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # Automated Compliance Reporting
+  automated-reporting:
+    build: ./services/automated-compliance-reporting
+    ports:
+      - "4087:4087"
+    environment:
+      - AUTOMATED_REPORTING_PORT=4087
+      - GDPR_COMPLIANCE_PORT=4080
+      - HIPAA_COMPLIANCE_PORT=4081
+      - SOX_COMPLIANCE_PORT=4082
+      - CCPA_COMPLIANCE_PORT=4083
+      - PIPEDA_COMPLIANCE_PORT=4084
+      - LGPD_COMPLIANCE_PORT=4085
+      - SA_COMPLIANCE_PORT=4090
+    volumes:
+      - ./reports:/app/reports
+    depends_on:
+      - compliance-dashboard
+      - gdpr-compliance
+      - hipaa-compliance
+      - sox-compliance
+      - ccpa-compliance
+      - pipeda-compliance
+      - lgpd-compliance
+      - south-african-compliance
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4087/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # Individual Compliance Services
+  gdpr-compliance:
+    build: ./services/gdpr-compliance
+    ports:
+      - "4080:4080"
+    environment:
+      - GDPR_COMPLIANCE_PORT=4080
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  hipaa-compliance:
+    build: ./services/hipaa-compliance
+    ports:
+      - "4081:4081"
+    environment:
+      - HIPAA_COMPLIANCE_PORT=4081
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4081/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  sox-compliance:
+    build: ./services/sox-compliance
+    ports:
+      - "4082:4082"
+    environment:
+      - SOX_COMPLIANCE_PORT=4082
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4082/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  ccpa-compliance:
+    build: ./services/ccpa-compliance
+    ports:
+      - "4083:4083"
+    environment:
+      - CCPA_COMPLIANCE_PORT=4083
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4083/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  pipeda-compliance:
+    build: ./services/pipeda-compliance
+    ports:
+      - "4084:4084"
+    environment:
+      - PIPEDA_COMPLIANCE_PORT=4084
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4084/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  lgpd-compliance:
+    build: ./services/lgpd-compliance
+    ports:
+      - "4085:4085"
+    environment:
+      - LGPD_COMPLIANCE_PORT=4085
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4085/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # South African Compliance Service
+  south-african-compliance:
+    build: ./services/south-african-compliance
+    ports:
+      - "4090:4090"
+    environment:
+      - SA_COMPLIANCE_PORT=4090
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4090/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # Quantum IoT Integration
+  quantum-iot-integration:
+    build: ./services/quantum-iot-integration
+    ports:
+      - "4088:4088"
+    environment:
+      - QUANTUM_IOT_PORT=4088
+      - MQTT_BROKER=mqtt://mqtt-broker:1883
+    depends_on:
+      - mqtt-broker
+      - compliance-dashboard
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4088/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # MQTT Broker for IoT Communication
+  mqtt-broker:
+    image: eclipse-mosquitto:2.0
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mqtt/config:/mosquitto/config
+      - ./mqtt/data:/mosquitto/data
+      - ./mqtt/log:/mosquitto/log
+    healthcheck:
+      test: ["CMD", "mosquitto_sub", "-t", "$$SYS/#", "-C", "1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+networks:
+  default:
+    driver: bridge
+
+volumes:
+  reports:
+    driver: local
