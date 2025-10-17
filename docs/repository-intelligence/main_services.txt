@@ -1,0 +1,11 @@
+services:
+  # ============================================================================
+  # DATABASE SERVICES
+  # ============================================================================
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: azora_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
