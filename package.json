@@ -34,8 +34,10 @@
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
     "verify:no-mocks": "node infrastructure/no-mock-validator.js",
-    "predeploy": "npm run verify:no-mocks",
-    "deploy": "./DEPLOY_PRODUCTION.sh"
+    "predeploy": "npm run check:constitutional && npm run verify:no-mocks",
+    "deploy": "./DEPLOY_PRODUCTION.sh",
+    "check:constitutional": "node infrastructure/constitutional-compliance-checker.js",
+    "deploy:production": "./DEPLOY_PRODUCTION_FINAL.sh"
   },
   "devDependencies": {
     "@eslint/js": "^9.37.0",
@@ -72,6 +74,7 @@
     "vitest": "^3.2.4"
   },
   "dependencies": {
+    "@abandonware/noble": "^1.9.2-26",
     "@anthropic-ai/sdk": "^0.65.0",
     "@prisma/client": "^6.17.1",
     "@radix-ui/react-slot": "^1.2.3",
@@ -85,6 +88,7 @@
     "axios": "^1.12.2",
     "bcryptjs": "^3.0.2",
     "body-parser": "^2.2.0",
+    "bonjour": "^3.5.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cors": "^2.8.5",
@@ -101,6 +105,7 @@
     "http-proxy-middleware": "^3.0.3",
     "i18next": "^25.6.0",
     "i18next-browser-languagedetector": "^8.2.0",
+    "idb": "^8.0.3",
     "ioredis": "^5.8.1",
     "jsonwebtoken": "^9.0.2",
     "leaflet": "^1.9.4",
@@ -134,7 +139,7 @@
     "tailwindcss-animate": "^1.0.7",
     "uuid": "^13.0.0",
     "winston": "^3.18.3",
-    "ws": "^8.18.0"
+    "ws": "^8.18.3"
   },
   "main": "eslint.config.js",
   "directories": {

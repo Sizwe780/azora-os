@@ -34,3 +34,43 @@
     depends_on:
       - tracing-recovery
     command: node /app/infrastructure/snapshot-scheduler.js
+
+  # Zero-Rating Service
+  zero-rating:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: azora-zero-rating
+    volumes:
+      - ./infrastructure/zero-rating:/app/infrastructure/zero-rating
+    environment:
+      - NODE_ENV=production
+      - REDIS_URL=redis://redis:6379
+      - ZERO_RATING_PORT=5001
+    ports:
+      - "5001:5001"
+    restart: always
+    depends_on:
+      - redis
+    command: node /app/infrastructure/zero-rating/zero-rating-manager.js
+
+  # 5G Network Manager
+  5g-manager:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: azora-5g-manager
+    volumes:
+      - ./infrastructure/5g-network:/app/infrastructure/5g-network
+    environment:
+      - NODE_ENV=production
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql://azora_user:${POSTGRES_PASSWORD}@postgres:5432/azora
+      - FIVE_G_PORT=5002
+    ports:
+      - "5002:5002"
+    restart: always
+    depends_on:
+      - redis
+      - postgres
+    command: node /app/infrastructure/5g-network/5g-manager.js

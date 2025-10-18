@@ -1,0 +1,14 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "🏛️  Running Constitutional Compliance Check..."
+node infrastructure/constitutional-compliance-checker.js
+
+if [ $? -ne 0 ]; then
+  echo ""
+  echo "❌ Constitutional violations detected!"
+  echo "Please fix all violations before committing."
+  exit 1
+fi
+
+echo "✅ Constitutionally compliant!"
