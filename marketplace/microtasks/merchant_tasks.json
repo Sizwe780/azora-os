@@ -1,0 +1,17 @@
+[
+  {
+    "task_id": "mkt-001",
+    "title": "Identify 5 campus-area merchants who accept digital payments",
+    "reward_azr": 2,
+    "requirements": ["name", "address", "phone", "photo"],
+    "locale": "JOH",
+    "notes": "Prioritize coffee shops and food stalls near university campuses."
+  },
+  {
+    "task_id": "mkt-002",
+    "title": "Submit merchant details for neighborhood shops in Nairobi",
+    "reward_azr": 2,
+    "requirements": ["name", "gps", "category", "photo"],
+    "locale": "NBO"
+  }
+]

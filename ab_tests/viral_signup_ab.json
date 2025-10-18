@@ -1,0 +1,11 @@
+{
+  "experiment": "viral_signup_bonus",
+  "variants": {
+    "A": { "signup_bonus_azr": 10, "streak_pack": false },
+    "B": { "signup_bonus_azr": 8, "streak_pack": true }
+  },
+  "allocation": { "A": 50, "B": 50 },
+  "auto_promote_after_hours": 72,
+  "success_metric": "7_day_retention",
+  "promote_allocation_to_winner_percent": 90
+}

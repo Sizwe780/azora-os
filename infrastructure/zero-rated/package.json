@@ -1,0 +1,15 @@
+{
+  "name": "@azora/zero-rated-proxy",
+  "version": "1.0.0",
+  "description": "Azora Zero-Rated Proxy - Free data access for all Africans",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "compression": "^1.7.4"
+  },
+  "author": "Sizwe Ngwenya <sizwe.ngwenya@azora.world>",
+  "license": "SEE LICENSE IN ../../LICENSE"
+}
