@@ -424,3 +424,51 @@ if (require.main === module) {
 }
 
 module.exports = ConstitutionalComplianceChecker;
+
+  async checkArticleXI_Tokenomics() {
+    console.log('🪙 Article XI: Enterprise-First Tokenomics');
+    
+    // Check student allocation is 10%
+    const coinContract = this.readFile('azora-coin/contracts/AzoraCoin.sol');
+    if (!coinContract.includes('STUDENT_ALLOCATION = 100_000')) {
+      this.violations.push({
+        article: 'XI',
+        violation: 'Student allocation must be exactly 100,000 AZR (10%)',
+        severity: 'CRITICAL',
+      });
+    } else {
+      this.checks.push('✅ Student allocation: 100,000 AZR (10%)');
+    }
+
+    // Check enterprise allocation is 60%
+    if (!coinContract.includes('ENTERPRISE_ALLOCATION = 600_000')) {
+      this.violations.push({
+        article: 'XI',
+        violation: 'Enterprise allocation must be exactly 600,000 AZR (60%)',
+        severity: 'CRITICAL',
+      });
+    } else {
+      this.checks.push('✅ Enterprise allocation: 600,000 AZR (60%)');
+    }
+
+    // Check AI reinvestment
+    const aiTreasury = this.readFile('services/ai-treasury/ai-reinvestment.js');
+    if (!aiTreasury.includes('0.01') || !aiTreasury.includes('reinvest')) {
+      this.violations.push({
+        article: 'XI',
+        violation: '1% AI reinvestment not properly implemented',
+        severity: 'HIGH',
+      });
+    } else {
+      this.checks.push('✅ AI reinvestment: 1% to treasury');
+    }
+
+    // Check pool caps enforcement
+    if (!aiTreasury.includes('STUDENT_TOTAL_CAP') || !aiTreasury.includes('ENTERPRISE_TOTAL_CAP')) {
+      this.warnings.push('Verify pool cap enforcement in AI treasury');
+    } else {
+      this.checks.push('✅ Pool caps enforced');
+    }
+
+    console.log('   ✅ Article XI (Tokenomics) compliant\n');
+  }

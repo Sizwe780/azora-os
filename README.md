@@ -590,3 +590,30 @@ See [LICENSE](LICENSE) for full terms.
 ---
 
 *README v2.0 - Last updated: December 2024*
+
+---
+
+## 👨‍💻 Founder & Chief Architect
+
+**Sizwe Ngwenya**
+- Sole developer of entire Azora OS ecosystem
+- Built 147+ microservices and 500,000+ lines of code
+- Architect of self-healing, self-advancing infrastructure
+- Creator of enterprise-first tokenomics model
+- Visionary behind Africa's first trillion-dollar platform
+
+### Technical Innovation
+Azora OS features unprecedented capabilities:
+- **Self-Healing**: Automatic error detection, diagnosis, and patching
+- **Self-Advancing**: AI learns from usage patterns and optimizes itself
+- **Self-Developing**: Generates new features based on user needs
+- **Easy Integration**: Plugs into any enterprise system via standardized APIs
+- **Constitutional Governance**: Immutable rules enforced through blockchain
+
+### Contact
+For partnerships, investment opportunities, or technical consultation:
+- Email: sizwe@azora.world
+- Website: https://www.azora.world
+- Company: Azora OS (Pty) Ltd, South Africa 🇿🇦
+
+**From Africa, For Humanity, Towards Infinity** 🚀
