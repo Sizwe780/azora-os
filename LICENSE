@@ -3,23 +3,53 @@ Version 1.0, October 18, 2025
 
 Copyright © 2025 Azora OS (Pty) Ltd. All Rights Reserved.
 
-FOUNDER & CHIEF ARCHITECT: Sizwe Ngwenya
+╔════════════════════════════════════════════════════════════════╗
+║                    FOUNDER & CHIEF ARCHITECT                   ║
+║                        SIZWE NGWENYA                           ║
+╚════════════════════════════════════════════════════════════════╝
 
-Domain: www.azora.world
-Website: https://www.azora.world
-Email: legal@azora.world
-Launch Date: October 18, 2025
+🎓 QUALIFICATIONS:
+   • BSc Physical Science & Mathematics
+   • Full-Stack Developer
+   • Creative Problem Solver
+   • Remote-Ready Professional
 
-This software and all associated intellectual property are PROPRIETARY and CONFIDENTIAL.
+📧 CONTACT INFORMATION:
+   • Email: sizwe@azora.world
+   • Cell: +27 73 234 7232
+   • LinkedIn: https://www.linkedin.com/in/sizwe-ngwenya-518314146/
+   • GitHub: https://github.com/Sizwe780
+   • Company Email: legal@azora.world
+
+🌐 COMPANY:
+   • Domain: www.azora.world
+   • Website: https://www.azora.world
+   • Launch Date: October 18, 2025
+   • Location: South Africa 🇿🇦
+
+═══════════════════════════════════════════════════════════════════
 
 INNOVATION:
-Azora OS is a self-healing, self-advancing, and self-developing operating system
-built entirely by Sizwe Ngwenya. The system features:
+Azora OS is a self-healing, self-advancing, and self-developing operating 
+system built entirely by Sizwe Ngwenya. The system features:
+
 • Autonomous error detection and patching
 • Self-learning AI models that improve over time
 • Automatic integration capabilities with any enterprise system
 • Constitutional governance enforced through code
 • Zero external dependencies (no AWS, Stripe, OpenAI, etc.)
+• Scalable, user-focused architecture
+• Building towards trillion-dollar valuation
+
+TECHNICAL STACK:
+• Frontend: React, TypeScript, Vite, TailwindCSS
+• Backend: Node.js, Express, Apollo GraphQL
+• Database: PostgreSQL, MongoDB, Redis
+• Blockchain: Custom Azora Mainnet
+• AI: Custom TensorFlow.js models
+• Infrastructure: Docker, Kubernetes, self-hosted
+
+═══════════════════════════════════════════════════════════════════
 
 PROHIBITED ACTIONS:
 You may NOT:
@@ -29,14 +59,41 @@ You may NOT:
 - Remove copyright notices or attributions
 - Use for competing products or services
 
+═══════════════════════════════════════════════════════════════════
+
 ENTERPRISE LICENSING:
 For licensing inquiries, partnerships, or integration opportunities:
-Email: legal@azora.world
-Phone: +27 (contact for number)
 
-For Sizwe Ngwenya's portfolio and consultation:
-Email: sizwe@azora.world
-LinkedIn: [to be added]
+Business Inquiries:
+  Email: legal@azora.world
+  Phone: +27 73 234 7232
+
+Technical Consultation:
+  Email: sizwe@azora.world
+  LinkedIn: https://www.linkedin.com/in/sizwe-ngwenya-518314146/
+  GitHub: https://github.com/Sizwe780
+
+═══════════════════════════════════════════════════════════════════
+
+⚖️ CONSTITUTIONAL COMPLIANCE
+
+Current Status: Building towards full compliance
+Run compliance check: ./CONSTITUTIONAL_COMPLIANCE_CHECK.sh
+View dashboard: http://localhost:5010
+
+═══════════════════════════════════════════════════════════════════
+
+Now run the complete setup:
+
+```bash
+chmod +x *.sh
+[FULL_SYSTEM_VALIDATION.sh](http://_vscodecontentref_/0)
+```
+
+═══════════════════════════════════════════════════════════════════
 
 ALL RIGHTS RESERVED.
 Any unauthorized use will be prosecuted to the fullest extent of the law.
+
+Built with ❤️ in South Africa 🇿🇦
+From Africa, For Humanity, Towards Infinity 🚀

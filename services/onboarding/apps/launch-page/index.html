@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azora OS - Launch Special: 1 Month FREE + 50% OFF</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            animation: fadeInDown 1s;
+        }
+        .promo-banner {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            margin: 40px 0;
+            backdrop-filter: blur(10px);
+            animation: slideInUp 1s;
+        }
+        .promo-banner h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #ffd700;
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s;
+        }
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+        .cta-button {
+            display: inline-block;
+            background: #ffd700;
+            color: #333;
+            padding: 20px 50px;
+            border-radius: 50px;
+            font-size: 1.5em;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s;
+            margin: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+        .pricing-table {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+        .pricing-card {
+            background: white;
+            color: #333;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        .pricing-card.popular {
+            transform: scale(1.05);
+            border: 3px solid #ffd700;
+        }
+        .price {
+            font-size: 3em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+        .original-price {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 1.5em;
+        }
+        .savings {
+            background: #4ade80;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 10px 0;
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .countdown {
+            font-size: 2em;
+            margin: 20px 0;
+            color: #ffd700;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Azora OS Launch Special 🚀</h1>
+            <p style="font-size: 1.5em;">Africa's First Trillion-Dollar Operating System</p>
+        </div>
+
+        <div class="promo-banner">
+            <h2>🎉 LAUNCH OFFER 🎉</h2>
+            <div style="font-size: 1.8em; margin: 20px 0;">
+                <div>✅ <strong>1 MONTH FREE TRIAL</strong></div>
+                <div>✅ <strong>50% OFF NEXT 2 MONTHS</strong></div>
+                <div>✅ <strong>ALL PREMIUM FEATURES</strong></div>
+                <div>✅ <strong>100 AZR COIN BONUS</strong></div>
+            </div>
+            <div class="countdown" id="countdown">
+                Limited Time Offer!
+            </div>
+            <p style="font-size: 1.2em;">No Credit Card Required for Trial</p>
+        </div>
+
+        <div style="text-align: center; margin: 40px 0;">
+            <a href="#signup" class="cta-button">START FREE TRIAL NOW</a>
+            <p style="margin-top: 20px; font-size: 1.2em;">
+                🇿🇦 Special South African Pricing Available!
+            </p>
+        </div>
+
+        <div class="pricing-table">
+            <div class="pricing-card">
+                <h3>Student</h3>
+                <div class="price">FREE</div>
+                <div class="savings">Earn While You Learn</div>
+                <ul style="text-align: left; margin: 20px 0;">
+                    <li>✅ 10% Token Allocation</li>
+                    <li>✅ All Premium Features</li>
+                    <li>✅ Learning Platform</li>
+                    <li>✅ Community Access</li>
+                </ul>
+            </div>
+
+            <div class="pricing-card">
+                <h3>Driver</h3>
+                <div class="original-price">R149/month</div>
+                <div class="price">R75</div>
+                <div class="savings">SAVE R74/month</div>
+                <ul style="text-align: left; margin: 20px 0;">
+                    <li>✅ GPS Tracking</li>
+                    <li>✅ Route Optimization</li>
+                    <li>✅ Earnings Dashboard</li>
+                    <li>✅ Priority Support</li>
+                </ul>
+            </div>
+
+            <div class="pricing-card popular">
+                <div style="background: #ffd700; color: #333; padding: 10px; border-radius: 10px; margin-bottom: 10px;">
+                    ⭐ MOST POPULAR
+                </div>
+                <h3>Business</h3>
+                <div class="original-price">R999/month</div>
+                <div class="price">R500</div>
+                <div class="savings">SAVE R499/month</div>
+                <ul style="text-align: left; margin: 20px 0;">
+                    <li>✅ Full Suite Access</li>
+                    <li>✅ Advanced Analytics</li>
+                    <li>✅ Team Management</li>
+                    <li>✅ API Integration</li>
+                    <li>✅ Custom Branding</li>
+                </ul>
+            </div>
+
+            <div class="pricing-card">
+                <h3>Enterprise</h3>
+                <div class="original-price">R4,999/month</div>
+                <div class="price">R2,500</div>
+                <div class="savings">SAVE R2,499/month</div>
+                <ul style="text-align: left; margin: 20px 0;">
+                    <li>✅ Everything in Business</li>
+                    <li>✅ Dedicated Support</li>
+                    <li>✅ Custom Development</li>
+                    <li>✅ 99.99% SLA</li>
+                    <li>✅ Training Included</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="features">
+            <div class="feature-card">
+                <h3>🤖 Self-Healing</h3>
+                <p>Automatic error detection and patching. No downtime, ever.</p>
+            </div>
+            <div class="feature-card">
+                <h3>🧠 Self-Learning AI</h3>
+                <p>AI models that improve over time. Gets smarter every day.</p>
+            </div>
+            <div class="feature-card">
+                <h3>🔒 Constitutional Governance</h3>
+                <p>Rules enforced through code. Transparent and fair.</p>
+            </div>
+            <div class="feature-card">
+                <h3>🌍 Built in Africa</h3>
+                <p>Proudly South African. For Africa, by Africans.</p>
+            </div>
+            <div class="feature-card">
+                <h3>💰 Azora Coin Integration</h3>
+                <p>Own blockchain. Earn as you use the platform.</p>
+            </div>
+            <div class="feature-card">
+                <h3>🚀 Zero External Dependencies</h3>
+                <p>No AWS, Stripe, or OpenAI. Fully self-sufficient.</p>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin: 60px 0;">
+            <h2 style="font-size: 2.5em; margin-bottom: 30px;">Ready to Transform Your Business?</h2>
+            <a href="mailto:sizwe.ngwenya@azora.world?subject=Launch Special - Free Trial" class="cta-button">
+                GET STARTED NOW
+            </a>
+            <p style="margin-top: 30px; font-size: 1.2em;">
+                Questions? Contact Sizwe: 
+                <a href="mailto:sizwe.ngwenya@azora.world" style="color: #ffd700;">
+                    sizwe.ngwenya@azora.world
+                </a>
+                <br>
+                📱 +27 73 234 7232
+            </p>
+        </div>
+
+        <div style="text-align: center; padding: 40px; background: rgba(0,0,0,0.3); border-radius: 20px; margin-top: 40px;">
+            <h3 style="margin-bottom: 20px;">Use Promo Codes for Extra Savings!</h3>
+            <div style="font-size: 1.2em;">
+                <div><strong>SIZWE2025</strong> - Founder Special: 1 Year FREE (sizwe.ngwenya@azora.world)</div>
+                <div><strong>LAUNCH50</strong> - 50% off 3 months</div>
+                <div><strong>EARLYBIRD</strong> - 75% off first month</div>
+                <div><strong>AFRICA25</strong> - 25% off 6 months (Africa only)</div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 60px; padding-bottom: 40px;">
+            <p style="font-size: 0.9em; opacity: 0.8;">
+                Built with ❤️ in South Africa 🇿🇦 by Sizwe Ngwenya<br>
+                From Africa, For Humanity, Towards Infinity 🚀
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Simple countdown timer
+        setInterval(() => {
+            const end = new Date('2025-12-31T23:59:59Z');
+            const now = new Date();
+            const diff = end - now;
+            
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            
+            document.getElementById('countdown').innerHTML = 
+                `Offer ends in ${days} days, ${hours} hours!`;
+        }, 1000);
+    </script>
+</body>
+</html>

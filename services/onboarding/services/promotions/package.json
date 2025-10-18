@@ -1,7 +1,7 @@
 {
-  "name": "@azora/sox-compliance",
+  "name": "@azora/promotions",
   "version": "1.0.0",
-  "description": "Sarbanes-Oxley compliance monitoring for Azora OS",
+  "description": "Launch promotional pricing for Azora OS",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -10,6 +10,6 @@
   "dependencies": {
     "express": "^4.18.2"
   },
-  "author": "Sizwe Ngwenya <sizwe@azora.world>",
+  "author": "Sizwe Ngwenya <sizwe.ngwenya@azora.world>",
   "license": "SEE LICENSE IN LICENSE"
 }

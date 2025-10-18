@@ -617,3 +617,102 @@ For partnerships, investment opportunities, or technical consultation:
 - Company: Azora OS (Pty) Ltd, South Africa 🇿🇦
 
 **From Africa, For Humanity, Towards Infinity** 🚀
+
+---
+
+## 👨‍💻 About the Founder
+
+**SIZWE NGWENYA**
+*Founder, CEO & Chief Architect*
+
+### 🎓 Background
+- **Education**: BSc Physical Science & Mathematics
+- **Role**: Full-Stack Developer-in-Training
+- **Approach**: Creative Problem Solver
+- **Work Style**: Remote-Ready Professional
+- **Achievement**: Sole developer of entire Azora OS ecosystem
+
+### 💼 What Sizwe Built
+
+**147+ Microservices** built from scratch:
+- Self-healing infrastructure
+- Self-advancing AI systems
+- Self-developing capabilities
+- 500,000+ lines of production code
+- Zero external dependencies
+- Constitutional governance system
+
+**Technical Innovation**:
+- Autonomous error detection & patching
+- Self-learning AI optimization
+- Easy enterprise integration
+- Scalable, user-focused solutions
+- Building towards trillion-dollar platform
+
+### 📞 Get in Touch
+
+**For Business & Partnerships:**
+- 📧 Email: legal@azora.world
+- 📱 Cell: +27 73 234 7232
+- 🌐 Website: https://www.azora.world
+
+**For Technical Consultation:**
+- 📧 Email: sizwe@azora.world
+- 💼 LinkedIn: [Sizwe Ngwenya](https://www.linkedin.com/in/sizwe-ngwenya-518314146/)
+- 🐙 GitHub: [@Sizwe780](https://github.com/Sizwe780)
+
+### 🌍 Vision
+
+*"Building scalable, user-focused web solutions that will transform Africa and the world."*
+
+Starting from South Africa 🇿🇦, Sizwe is creating technology that proves African innovation can compete globally and build trillion-dollar platforms.
+
+---
+
+## 🚀 Why Azora OS?
+
+Built by an African developer for the world, Azora OS represents:
+
+✅ **Self-Sufficiency**: No dependence on foreign tech giants
+✅ **Innovation**: Self-healing, self-advancing technology
+✅ **Scalability**: From startup to trillion-dollar platform
+✅ **Transparency**: Constitutional governance in code
+✅ **Empowerment**: Student earnings, enterprise solutions
+✅ **African Excellence**: Proudly built in South Africa
+
+---
+
+## 📊 Current Status
+
+- **Launch Date**: October 18, 2025
+- **Services**: 147+ microservices operational
+- **Code Base**: 500,000+ lines
+- **Architecture**: Production-ready
+- **Compliance**: Building towards full certification
+- **Market**: Ready for global expansion
+
+---
+
+## 🤝 Get Involved
+
+### For Investors
+Interested in Africa's first trillion-dollar tech platform?
+- 📧 Contact: legal@azora.world
+- 📱 Call: +27 73 234 7232
+
+### For Partners
+Want to integrate Azora into your enterprise?
+- 📧 Technical: sizwe@azora.world
+- 💼 LinkedIn: [Connect here](https://www.linkedin.com/in/sizwe-ngwenya-518314146/)
+
+### For Developers
+Inspired by the vision? Follow the journey:
+- 🐙 GitHub: [@Sizwe780](https://github.com/Sizwe780)
+- 🌐 Website: https://www.azora.world
+
+---
+
+**From Africa, For Humanity, Towards Infinity** 🚀
+
+*Built with passion and purpose by Sizwe Ngwenya in South Africa 🇿🇦*
+

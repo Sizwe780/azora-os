@@ -1,0 +1,69 @@
+�� OFFICIAL LAUNCH: Azora World & Azora Coin Minting Begins
+
+Launch Date: October 18, 2025
+Founder: Sizwe Ngwenya (sizwe.ngwenya@azora.world)
+
+🎉 LAUNCH FEATURES:
+- ✅ 1 Month FREE Trial (no credit card required)
+- ✅ 50% OFF next 2 months
+- ✅ All premium features included
+- ✅ 100 AZR Coin starter pack
+- ✅ Country-specific pricing (ZAR for South Africa 🇿🇦)
+- ✅ Multiple payment methods (EFT, SnapScan, Zapper, M-Pesa, etc.)
+
+🌍 SUPPORTED COUNTRIES:
+- 🇿🇦 South Africa (ZAR)
+- 🇺🇸 United States (USD)
+- 🇬🇧 United Kingdom (GBP)
+- 🇳🇬 Nigeria (NGN)
+- 🇰🇪 Kenya (KES)
+- 🌍 International (USD)
+
+🎁 PROMO CODES:
+- SIZWE2025: Founder 1 Year FREE (sizwe.ngwenya@azora.world)
+- LAUNCH50: 50% off 3 months
+- EARLYBIRD: 75% off first month
+- AFRICA25: 25% off 6 months (Africa only)
+
+🏗️ TECHNICAL ACHIEVEMENTS:
+- 128+ microservices implemented
+- 100% constitutional compliance
+- Zero external dependencies (no AWS, Stripe, OpenAI)
+- Self-healing infrastructure
+- Self-learning AI models
+- Custom payment processor (Azora Pay)
+- Own blockchain (Azora Mainnet)
+- Multi-currency support
+
+📊 SERVICES DEPLOYED:
+- Promotional Pricing Service (port 4095)
+- Azora Pay Payment Processor (port 5000)
+- User Onboarding Service (port 4070)
+- HR AI Deputy (port 4091)
+- Authentication Service (port 4004)
+
+💰 SOUTH AFRICAN PRICING:
+- Student: FREE (earn while learning)
+- Driver: R149/mo → R75/mo (50% off)
+- Business: R999/mo → R500/mo (50% off)
+- Enterprise: R4,999/mo → R2,500/mo (50% off)
+
+🎓 BUILT BY:
+Sizwe Ngwenya
+- BSc Physical Science & Mathematics
+- Full-Stack Developer
+- Creative Problem Solver
+- Solo developer of entire Azora OS ecosystem
+- 500,000+ lines of production code
+
+📞 CONTACT:
+- Email: sizwe.ngwenya@azora.world
+- Phone: +27 73 234 7232
+- LinkedIn: https://www.linkedin.com/in/sizwe-ngwenya-518314146/
+- GitHub: https://github.com/Sizwe780
+
+🌐 WEBSITE:
+https://www.azora.world
+
+From Africa, For Humanity, Towards Infinity 🚀
+Built with ❤️ in South Africa 🇿🇦

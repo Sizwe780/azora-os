@@ -1,7 +1,7 @@
 {
-  "name": "@azora/sox-compliance",
+  "name": "@azora/azora-pay",
   "version": "1.0.0",
-  "description": "Sarbanes-Oxley compliance monitoring for Azora OS",
+  "description": "Self-hosted payment processor for Azora OS",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",

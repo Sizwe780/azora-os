@@ -1,14 +1,15 @@
 {
-  "name": "@azora/sox-compliance",
+  "name": "@azora/onboarding",
   "version": "1.0.0",
-  "description": "Sarbanes-Oxley compliance monitoring for Azora OS",
+  "description": "Country-aware user onboarding for Azora OS",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js"
   },
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "express-validator": "^7.0.1"
   },
   "author": "Sizwe Ngwenya <sizwe@azora.world>",
   "license": "SEE LICENSE IN LICENSE"
