@@ -1,26 +1,22 @@
 {
-  "name": "@azora/south-african-compliance",
-  "version": "1.0.0",
-  "description": "South African regulatory compliance monitoring service",
-  "type": "module",
+  "name": "south-african-compliance",
+  "version": "1.1.0",
+  "description": "Comprehensive compliance monitoring for South African regulations",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "node index.js",
-    "dev": "node --watch index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon index.js"
   },
-  "keywords": [
-    "compliance",
-    "south-africa",
-    "popia",
-    "ect-act",
-    "consumer-protection",
-    "labour-law",
-    "financial-regulation"
-  ],
   "dependencies": {
+    "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "sqlite3": "^5.1.7",
+    "ws": "^8.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
   }
 }

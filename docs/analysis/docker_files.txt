@@ -1,0 +1,3 @@
+/workspaces/azora-os/docker-compose.yml
+/workspaces/azora-os/node_modules/natural/lib/natural/util/storage/docker-compose.yml
+/workspaces/azora-os/docker-compose.compliance.yml

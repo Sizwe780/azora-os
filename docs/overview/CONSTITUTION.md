@@ -417,4 +417,65 @@ Azora commits to advancing the UN Sustainable Development Goals, with particular
 
 ---
 
-*Adopted into the Azora Constitution. The Azora Coin program will operate in harmony with South African law, UN principles, and the development protocols herein.*
+# Azora OS Constitution
+
+This document serves as the foundational governance framework for Azora OS.
+
+## Article 1: Foundational Principles
+
+1. **Supply Limitation**: The total supply of Azora Coin shall never exceed 1,000,000 tokens.
+2. **Fair Procurement**: All procurement processes shall be fair, equitable, transparent, competitive and cost-effective.
+3. **Non-Discrimination**: No person shall be unfairly discriminated against.
+4. **Constitutional Supremacy**: This Constitution is the supreme governing document of the Azora OS ecosystem.
+5. **Rule of Law**: All operations within Azora OS shall be conducted in accordance with applicable laws and regulations.
+
+## Article 2: Compliance Requirements
+
+1. **Global Compliance**: All services must implement regional compliance frameworks appropriate to their operating jurisdiction.
+2. **Data Protection**: Personal data must be protected according to relevant regulations including GDPR, POPIA, and other applicable frameworks.
+3. **South African Legal Framework**: System must comply with South African legal frameworks including POPIA, BBBEE, and other applicable legislation.
+4. **UN Principles**: The system shall adhere to UN Global Compact principles and support relevant Sustainable Development Goals.
+5. **Automated Compliance**: The system shall implement automated compliance checks and reporting mechanisms.
+
+## Article 3: Governance
+
+1. **Constitution-as-Code**: The system shall implement Constitution-as-Code principles that encode these constitutional requirements directly in software.
+2. **Transparency**: All transactions shall be transparent and auditable.
+3. **Equitable Access**: The system shall prioritize fairness and equitable access.
+4. **Decentralization**: Governance shall be progressively decentralized over time.
+5. **Dispute Resolution**: Fair and accessible mechanisms shall exist for resolving disputes.
+
+## Article 4: Token Economics & Withdrawals
+
+1. **Token Supply**: The total supply of Azora Coin shall be fixed at 1,000,000 tokens.
+2. **Founder Allocation Split**: Founders are allocated 40% of the total supply, of which:
+   a. 40% (16% of total supply) may be withdrawn for personal use
+   b. 60% (24% of total supply) must be reinvested into Azora OS projects
+3. **Reinvestment Requirement**: The 60% of founder allocation that is reinvested must be directed to Azora OS development, growth, and community initiatives.
+4. **User Withdrawal Access**: Users shall be permitted to withdraw tokens only after founders have completed both their withdrawals and reinvestments.
+5. **User Allocation**: Users shall be allocated 60% of the total supply.
+6. **Transparency**: All withdrawals and reinvestments shall be recorded transparently in an immutable ledger.
+
+## Article 5: Technical Implementation
+
+1. **Azora Coin**: The Azora Coin implementation must enforce the 1 million token supply limit.
+2. **Procurement Corridor**: Must implement Section 217 principles of fairness, equity, transparency, competitiveness, and cost-effectiveness.
+3. **Email & Domain Services**: Must comply with global data protection regulations and provide adequate language support.
+4. **HR AI Deputy**: Must enforce labor laws and non-discrimination principles.
+5. **Regional Services**: Must adapt to local regulations while maintaining core constitutional principles.
+6. **Reinvestment System**: Must automatically enforce the 60% founder reinvestment requirement.
+
+## Article 6: Amendments
+
+This Constitution may only be amended with consensus from all founders and through a transparent governance process.
+
+## Article 7: Enforcement
+
+1. **Compliance Dashboard**: A public compliance dashboard shall monitor adherence to this Constitution.
+2. **Audit Trail**: All key operations shall maintain an immutable audit trail.
+3. **Regular Checks**: Automated compliance checks shall be performed regularly.
+
+---
+
+Adopted: October 18, 2025
+Last Amended: October 18, 2025 - Added reinvestment requirement in Article 4

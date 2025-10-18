@@ -1,0 +1,1818 @@
+{
+  "name": "azora-coin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^6.1.0",
+    "@openzeppelin/contracts": "^5.4.0",
+    "@openzeppelin/contracts-upgradeable": "^5.4.0",
+    "@openzeppelin/hardhat-upgrades": "^3.9.1",
+    "dotenv": "^17.2.3",
+    "hardhat": "^3.0.7"
+  }
+}
+{
+  "name": "compliance-service",
+  "version": "1.0.0",
+  "description": "ELD/HOS management and SA/SADC load compliance automation for Azora OS",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": ["compliance", "eld", "hos", "sadc", "south-africa", "fleet-management"],
+  "author": "Sizwe Ngwenya <sizwe.ngwenya@azora.world>",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "express": "^4.21.2",
+    "body-parser": "^2.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  }
+}
+{
+  "name": "geofencing",
+  "version": "1.0.0",
+  "description": "Location-based geofencing service with automated triggers and zones",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
+    "test": "echo \"No tests specified\""
+  },
+  "author": "Autonomous Logistics Team",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}{
+  "name": "predictive-maintenance-service",
+  "version": "1.0.0",
+  "description": "Advanced predictive maintenance service using physics, mathematics, and AI algorithms",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "predictive-maintenance",
+    "equipment-monitoring",
+    "failure-prediction",
+    "ai",
+    "physics",
+    "mathematics",
+    "logistics",
+    "azora"
+  ],
+  "author": "Sizwe Ngwenya (Azora World)",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sizwenya/azora-os"
+  }
+}{
+  "name": "admin-portal",
+  "version": "1.0.0",
+  "description": "Comprehensive admin portal with role-based access and integrated email for Azora OS",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": ["admin", "portal", "email", "rbac", "user-management"],
+  "author": "Sizwe Ngwenya <sizwe.ngwenya@azora.world>",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "express": "^4.21.2",
+    "body-parser": "^2.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  }
+}
+{
+  "name": "security-framework",
+  "version": "1.0.0",
+  "description": "Comprehensive security framework with threat detection and response",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
+    "test": "echo \"No tests specified\""
+  },
+  "author": "Autonomous Logistics Team",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}{
+  "name": "compliance-dashboard",
+  "version": "1.0.0",
+  "description": "Unified Compliance Monitoring Dashboard for Azora OS - GDPR, HIPAA, SOX, CCPA, PIPEDA, LGPD",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "node --test",
+    "lint": "eslint .",
+    "format": "prettier --write ."
+  },
+  "keywords": [
+    "compliance",
+    "dashboard",
+    "gdpr",
+    "hipaa",
+    "sox",
+    "ccpa",
+    "pipeda",
+    "lgpd",
+    "monitoring",
+    "regulatory"
+  ],
+  "author": "Azora OS",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "express-rate-limit": "^7.1.5",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.56.0",
+    "prettier": "^3.1.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}{
+  "name": "hipaa-compliance",
+  "version": "1.0.0",
+  "description": "HIPAA compliance monitoring and enforcement service",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": ["hipaa", "compliance", "healthcare", "privacy"],
+  "author": "Sizwe Ngwenya <sizwe.ngwenya@azora.world>",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "express": "^4.21.2",
+    "body-parser": "^2.2.0",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  }
+}{
+  "name": "klipp-service",
+  "version": "1.0.0",
+  "description": "Azora Klipp Service for decentralized tasks and opportunities.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "body-parser": "^1.20.2"
+  }
+}
+{
+  "name": "document-vault",
+  "version": "1.0.0",
+  "description": "Secure document vault with 3-way ledger system for Azora OS",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": ["document", "vault", "ledger", "verification", "certification"],
+  "author": "Sizwe Ngwenya <sizwe.ngwenya@azora.world>",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "express": "^4.21.2",
+    "body-parser": "^2.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  }
+}
+{
+  "name": "driver-behavior-service",
+  "version": "1.0.0",
+  "description": "Real-time driver scoring, gamification, and automated coaching for Azora OS",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": ["driver", "behavior", "scoring", "gamification", "coaching", "fleet-management"],
+  "author": "Sizwe Ngwenya <sizwe.ngwenya@azora.world>",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "express": "^4.21.2",
+    "body-parser": "^2.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  }
+}
+{
+  "name": "@azora/database-integration",
+  "version": "1.0.0",
+  "description": "Comprehensive database integration service with PostgreSQL, MongoDB, and Redis",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "database",
+    "postgresql",
+    "mongodb",
+    "redis",
+    "analytics",
+    "prisma",
+    "caching",
+    "real-time"
+  ],
+  "dependencies": {
+    "@prisma/client": "^6.17.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mongodb": "^6.3.0",
+    "pg": "^8.16.3",
+    "redis": "^4.6.12"
+  },
+  "devDependencies": {
+    "prisma": "^6.17.1"
+  }
+}
+{
+  "name": "@azora/voice",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": { "start": "node index.js" },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "vosk": "^0.3.39",
+    "ws": "^8.13.0"
+  }
+}
+{
+  "name": "accessibility",
+  "version": "1.0.0",
+  "description": "Full accessibility support for Azora OS: voice commands, keyboard navigation, screen readers, text-to-speech",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": ["accessibility", "voice-commands", "screen-reader", "keyboard-navigation", "text-to-speech"],
+  "author": "Sizwe Ngwenya <sizwe.ngwenya@azora.world>",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "express": "^4.21.2",
+    "body-parser": "^2.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  }
+}
+{
+  "name": "traffic-routing",
+  "version": "1.0.0",
+  "description": "Traffic detection and smart routing with accident prevention for Azora OS",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": ["traffic", "routing", "safety", "accident-prevention"],
+  "author": "Sizwe Ngwenya <sizwe.ngwenya@azora.world>",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "express": "^4.21.2",
+    "body-parser": "^2.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  }
+}
+{
+  "name": "autonomous-fleet-ai",
+  "version": "1.0.0",
+  "description": "Autonomous Fleet AI Service - SpaceX-style coordination for logistics vehicles",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "echo \"Tests coming soon - Mission-critical quality assurance\""
+  },
+  "keywords": [
+    "autonomous",
+    "fleet",
+    "ai",
+    "spacex",
+    "coordination",
+    "logistics",
+    "formation",
+    "mission-control",
+    "azora",
+    "south-africa"
+  ],
+  "author": "Sizwe Ngwenya (Azora World)",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/azora-world/azora-os"
+  }
+}{
+  "name": "@azora/knowledge",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": { "start": "node index.js" },
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5",
+    "prom-client": "^15.0.0"
+  }
+}
+{
+  "name": "orbital-logistics-center",
+  "version": "1.0.0",
+  "description": "Orbital Logistics Center - Advanced space-grade telemetry and autonomous coordination using physics and mathematics",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "echo \"Tests coming soon - Space-grade quality assurance\""
+  },
+  "keywords": [
+    "orbital",
+    "logistics",
+    "telemetry",
+    "autonomous",
+    "physics",
+    "mathematics",
+    "space-grade",
+    "azora",
+    "south-africa"
+  ],
+  "author": "Sizwe Ngwenya (Azora World)",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/azora-world/azora-os"
+  }
+}{
+  "name": "@azora/ai-evolution-engine",
+  "version": "1.0.0",
+  "description": "Self-improving AI with genetic algorithms and South African market integration",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "keywords": [
+    "ai",
+    "evolution",
+    "genetic-algorithm",
+    "self-improving",
+    "south-africa",
+    "autonomous"
+  ],
+  "dependencies": {
+    "express": "^4.18.2",
+    "body-parser": "^1.20.2"
+  }
+}
+{
+  "name": "@azora/assistant",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": { "start": "node index.js" },
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5",
+    "prom-client": "^15.0.0",
+    "crypto": "^1.0.1"
+  }
+}
+{
+  "name": "neural-context-engine",
+  "version": "1.0.0",
+  "description": "Aura's Neural Context Engine - Omniscient awareness of all employees and tasks",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "body-parser": "^1.20.2"
+  }
+}
+{
+  "name": "satellite-imagery-service",
+  "version": "1.0.0",
+  "description": "Advanced satellite positioning and imagery processing using orbital mechanics",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "satellite-imagery",
+    "orbital-mechanics",
+    "remote-sensing",
+    "gis",
+    "earth-observation",
+    "azora"
+  ],
+  "author": "Sizwe Ngwenya (Azora World)",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sizwenya/azora-os"
+  }
+}{
+  "name": "autonomous-operations",
+  "version": "10.0.0",
+  "type": "module",
+  "description": "EV Leader Autopilot × 10 - Revolutionary autonomous operations that actually work",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "body-parser": "^1.20.3"
+  }
+}
+{"name": "subscription","version": "1.0.0","description": "subscription service","main": "index.js","scripts": {"start": "node index.js"},"dependencies": {"express": "^4.18.0","cors": "^2.8.5","dotenv": "^16.0.0","helmet": "^6.0.0"},"devDependencies": {}}
+{
+  "name": "pipeda-compliance",
+  "version": "1.0.0",
+  "description": "PIPEDA Compliance Module for Azora OS - Personal Information Protection and Electronic Documents Act",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "node --test",
+    "lint": "eslint .",
+    "format": "prettier --write ."
+  },
+  "keywords": [
+    "pipeda",
+    "privacy",
+    "compliance",
+    "canada",
+    "data-protection",
+    "gdpr-like",
+    "personal-information"
+  ],
+  "author": "Azora OS",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "express-rate-limit": "^7.1.5",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.56.0",
+    "prettier": "^3.1.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}{
+  "name": "drone-delivery-systems",
+  "version": "1.0.0",
+  "description": "Autonomous drone delivery systems with advanced flight algorithms and optimization",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "drone-delivery",
+    "autonomous-flight",
+    "path-planning",
+    "obstacle-avoidance",
+    "fleet-optimization",
+    "logistics",
+    "azora"
+  ],
+  "author": "Sizwe Ngwenya (Azora World)",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sizwenya/azora-os"
+  }
+}
+{
+  "name": "advanced-compliance-engine",
+  "version": "3.0.0",
+  "description": "Industry-grade SADC compliance engine with logsheet generation, TREMCARD, HOS tracking, and cross-border rules for Azora OS",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": ["compliance", "sadc", "logsheet", "tremcard", "hos", "cross-border", "hazchem"],
+  "author": "Sizwe Ngwenya <sizwe.ngwenya@azora.world>",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "express": "^4.21.2",
+    "body-parser": "^2.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  }
+}
+{
+  "name": "quantum-iot-integration",
+  "version": "1.0.0",
+  "description": "Quantum-resistant IoT integration service for Azora OS compliance monitoring",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "jest",
+    "lint": "eslint src/**/*.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.7.2",
+    "mqtt": "^5.1.3",
+    "crypto": "^1.0.1",
+    "node-forge": "^1.3.1",
+    "axios": "^1.6.0",
+    "winston": "^3.11.0",
+    "helmet": "^7.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.1",
+    "eslint": "^8.54.0"
+  },
+  "keywords": ["quantum", "iot", "compliance", "security", "azora-os"],
+  "author": "Azora OS",
+  "license": "SEE LICENSE IN LICENSE"
+}{
+  "name": "predictive-analytics",
+  "version": "1.0.0",
+  "description": "AI-powered predictive analytics for demand forecasting and route optimization",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "jest",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "cors": "^2.8.5",
+    "@tensorflow/tfjs-node": "^4.15.0",
+    "natural": "^6.12.0",
+    "winston": "^3.18.3",
+    "dotenv": "^17.2.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0",
+    "jest": "^29.0.0",
+    "eslint": "^9.0.0"
+  },
+  "keywords": ["ai", "machine-learning", "predictive-analytics", "tensorflow", "azora-os"],
+  "author": "Azora OS Team",
+  "license": "SEE LICENSE IN LICENSE"
+}{"name": "marketplace-service","version": "1.0.0","description": "marketplace-service service","main": "index.js","scripts": {"start": "node index.js"},"dependencies": {"express": "^4.18.0","cors": "^2.8.5","dotenv": "^16.0.0","helmet": "^6.0.0"},"devDependencies": {}}
+{
+  "name": "advanced-tms",
+  "version": "1.0.0",
+  "description": "Advanced Transportation Management System with autonomous service integration",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
+    "test": "echo \"No tests specified\""
+  },
+  "author": "Autonomous Logistics Team",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "express": "^4.21.2",
+    "axios": "^1.12.2",
+    "crypto": "^1.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}{
+  "name": "@azora/auth",
+  "version": "1.0.0",
+  "scripts": { "start": "node index.js" },
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5"
+  }
+}
+{
+  "name": "ai-orchestrator",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "body-parser": "^1.20.2",
+    "axios": "^1.6.0"
+  }
+}
+{
+  "name": "lgpd-compliance",
+  "version": "1.0.0",
+  "description": "LGPD Compliance Module for Azora OS - Lei Geral de Proteção de Dados (Brazilian General Data Protection Law)",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "node --test",
+    "lint": "eslint .",
+    "format": "prettier --write ."
+  },
+  "keywords": [
+    "lgpd",
+    "gdpr-brasil",
+    "privacy",
+    "compliance",
+    "brazil",
+    "data-protection",
+    "lei-geral-de-protecao-de-dados"
+  ],
+  "author": "Azora OS",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "express-rate-limit": "^7.1.5",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.56.0",
+    "prettier": "^3.1.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}{
+  "name": "@azora/store",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": { "start": "node index.js" },
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5",
+    "prom-client": "^15.0.0"
+  }
+}
+{
+  "name": "gdpr-compliance",
+  "version": "1.0.0",
+  "description": "GDPR compliance monitoring and enforcement service",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": ["gdpr", "compliance", "privacy", "data-protection"],
+  "author": "Sizwe Ngwenya <sizwe.ngwenya@azora.world>",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "express": "^4.21.2",
+    "body-parser": "^2.2.0",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  }
+}{
+  "name": "driver-performance",
+  "version": "1.0.0",
+  "description": "Driver performance monitoring and analytics service",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
+    "test": "echo \"No tests specified\""
+  },
+  "author": "Autonomous Logistics Team",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}{
+  "name": "ai-trip-planning",
+  "version": "1.0.0",
+  "description": "AI-powered trip planning with Azora AI integration for easy trip starting and workday optimization",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": ["ai", "trip-planning", "azora-ai", "optimization"],
+  "author": "Sizwe Ngwenya <sizwe.ngwenya@azora.world>",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "express": "^4.21.2",
+    "body-parser": "^2.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  }
+}
+{
+  "name": "@azora/speaker",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": { "start": "node index.js" },
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5",
+    "prom-client": "^15.0.0",
+    "meyda": "^5.6.1"
+  }
+}
+{
+  "name": "@azora/orchestrator",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": { "start": "node index.js" },
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5",
+    "node-fetch": "^3.3.2"
+  }
+}
+{
+  "name": "@azora/real-time",
+  "version": "1.0.0",
+  "description": "Real-time communication service with WebRTC, Socket.io, and live collaboration",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "real-time",
+    "webrtc",
+    "socket.io",
+    "collaboration",
+    "notifications",
+    "streaming",
+    "live"
+  ],
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "socket.io": "^4.7.5",
+    "socket.io-client": "^4.7.5",
+    "simple-peer": "^9.11.1",
+    "redis": "^4.6.12",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0"
+  }
+}{
+  "name": "@azora/south-african-compliance",
+  "version": "1.0.0",
+  "description": "South African regulatory compliance monitoring service",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "compliance",
+    "south-africa",
+    "popia",
+    "ect-act",
+    "consumer-protection",
+    "labour-law",
+    "financial-regulation"
+  ],
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2"
+  }
+}{
+  "name": "@azora/simulator",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": { "start": "node index.js" },
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5"
+  }
+}
+{
+  "name": "@azora/payment-service",
+  "version": "1.0.0",
+  "description": "Handles payments and subscriptions for Azora OS.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "paystack-api": "^2.0.6",
+    "stripe": "^14.5.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
+{
+  "name": "@azora/policy",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": { "start": "node index.js" },
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5"
+  }
+}
+{
+  "name": "@azora/onboarding-service",
+  "version": "1.0.0",
+  "description": "Digital onboarding and contract management with e-signatures",
+  "main": "index.js",
+  "author": {
+    "name": "Sizwe Ngwenya",
+    "email": "sizwe.ngwenya@azora.world",
+    "url": "https://azora.world"
+  },
+  "license": "SEE LICENSE IN ../../LICENSE",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "body-parser": "^2.2.0",
+    "pdfkit": "^0.13.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  }
+}
+{
+  "name": "hr-ai-deputy",
+  "version": "1.0.0",
+  "description": "hr-ai-deputy service",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "helmet": "^6.0.0"
+  },
+  "devDependencies": {}
+}{
+  "name": "analytics-service",
+  "version": "1.0.0",
+  "description": "Profit analytics, TCO tracking, predictive forecasting, and custom reports for Azora OS",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": ["analytics", "profit", "tco", "forecasting", "reports", "fleet-management"],
+  "author": "Sizwe Ngwenya <sizwe.ngwenya@azora.world>",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "express": "^4.21.2",
+    "body-parser": "^2.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  }
+}
+{
+  "name": "global-satellite-network",
+  "version": "1.0.0",
+  "description": "Global Satellite Network Service - Advanced satellite connectivity for logistics operations using orbital mechanics and physics",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "echo \"Tests coming soon - Orbital-grade quality assurance\""
+  },
+  "keywords": [
+    "satellite",
+    "connectivity",
+    "orbital",
+    "physics",
+    "logistics",
+    "global",
+    "remote",
+    "azora",
+    "south-africa"
+  ],
+  "author": "Sizwe Ngwenya (Azora World)",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/azora-world/azora-os"
+  }
+}{
+  "name": "@azora/security-core",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "express": "^4.19.2",
+    "fs": "^0.0.1-security",
+    "node-fetch": "^3.3.2",
+    "prom-client": "^15.1.3"
+  }
+}
+{
+  "name": "cold-chain-quantum",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Revolutionary cold chain management with zero loss guarantee",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "body-parser": "^1.20.3"
+  }
+}
+{
+  "name": "retail-partner-integration",
+  "version": "1.0.0",
+  "description": "AI-powered retail partner integration with inventory, pricing, and wellness monitoring",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "body-parser": "^1.20.2"
+  }
+}
+{
+  "name": "ccpa-compliance",
+  "version": "1.0.0",
+  "description": "CCPA Compliance Module for Azora OS",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
+    "test": "node ../../tests/integration/ccpa-compliance-test.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "express-rate-limit": "^7.1.5",
+    "dotenv": "^16.3.1"
+  },
+  "keywords": [
+    "ccpa",
+    "compliance",
+    "privacy",
+    "data-protection"
+  ],
+  "author": "Azora OS",
+  "license": "SEE LICENSE IN LICENSE"
+}{
+  "name": "document-verification-service",
+  "version": "1.0.0",
+  "description": "Blockchain-backed document verification with UID tracking, watermarking, and geofenced alerts for Azora OS",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": ["blockchain", "document-verification", "watermarking", "geofence", "customs", "uid-tracking"],
+  "author": "Sizwe Ngwenya <sizwe.ngwenya@azora.world>",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "express": "^4.21.2",
+    "body-parser": "^2.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  }
+}
+{
+  "name": "api-gateway",
+  "version": "1.0.0",
+  "description": "Centralized API Gateway for Azora OS microservices",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "jest",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "cors": "^2.8.5",
+    "helmet": "^8.1.0",
+    "express-rate-limit": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "http-proxy-middleware": "^3.0.3",
+    "winston": "^3.18.3",
+    "dotenv": "^17.2.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0",
+    "jest": "^29.0.0",
+    "eslint": "^9.0.0"
+  },
+  "keywords": ["api-gateway", "microservices", "azora-os"],
+  "author": "Azora OS Team",
+  "license": "SEE LICENSE IN LICENSE"
+}{
+  "name": "@azora/conflict-resolution",
+  "version": "1.0.0",
+  "description": "AZORA Federated Conflict Resolution Engine - Phase 5: Nobel Peace Prize Infrastructure",
+  "main": "index.ts",
+  "scripts": {
+    "dev": "nodemon --exec ts-node index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "test": "jest",
+    "simulate": "ts-node scripts/simulate-conflict.ts"
+  },
+  "keywords": [
+    "conflict-resolution",
+    "peace",
+    "mediation",
+    "diplomacy",
+    "UN",
+    "AU",
+    "WTO",
+    "nobel-peace-prize",
+    "governance",
+    "blockchain",
+    "AI"
+  ],
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "@prisma/client": "^5.4.2",
+    "zod": "^3.22.4",
+    "ethers": "^6.8.0",
+    "winston": "^3.11.0",
+    "@anthropic-ai/sdk": "^0.9.1",
+    "openai": "^4.14.2",
+    "natural": "^6.10.0",
+    "compromise": "^14.11.0",
+    "graph-data-structure": "^3.3.0",
+    "neo4j-driver": "^5.14.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.20",
+    "@types/cors": "^2.8.15",
+    "@types/node": "^20.8.10",
+    "@types/natural": "^5.1.5",
+    "typescript": "^5.2.2",
+    "nodemon": "^3.0.1",
+    "ts-node": "^10.9.1",
+    "jest": "^29.7.0"
+  },
+  "author": "AZORA World (Pty) Ltd",
+  "license": "PROPRIETARY",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/azoraworld/azora-os"
+  }
+}
+{
+  "name": "automated-compliance-reporting",
+  "version": "1.0.0",
+  "description": "Automated compliance reporting system for Azora OS - generates periodic reports, audit trails, and regulatory filings",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "node test.js"
+  },
+  "dependencies": {
+    "archiver": "^6.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.1.5",
+    "helmet": "^7.1.0",
+    "node-cron": "^3.0.3",
+    "node-fetch": "^3.3.2",
+    "pdfkit": "^0.14.0",
+    "xlsx": "^0.18.5"
+  },
+  "keywords": [
+    "compliance",
+    "reporting",
+    "audit",
+    "regulatory",
+    "azora-os"
+  ],
+  "author": "Azora OS",
+  "license": "SEE LICENSE IN LICENSE"
+}
+{
+  "name": "@azora/quantum-deep-mind",
+  "version": "1.0.0",
+  "description": "Revolutionary local AI - Quantum-inspired neural networks with self-healing capabilities",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "keywords": [
+    "ai",
+    "quantum",
+    "neural-network",
+    "machine-learning",
+    "self-healing",
+    "generative-ai",
+    "local-ai"
+  ],
+  "dependencies": {
+    "express": "^4.18.2",
+    "body-parser": "^1.20.2"
+  }
+}
+{
+  "name": "employee-onboarding",
+  "version": "1.0.0",
+  "description": "Autonomous employee onboarding with e-signature contracts for Azora OS",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": ["onboarding", "employee", "contract", "e-signature"],
+  "author": "Sizwe Ngwenya <sizwe.ngwenya@azora.world>",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "express": "^4.21.2",
+    "body-parser": "^2.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  }
+}
+{
+  "name": "@azora/conversation",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "node-fetch": "^3.3.2",
+    "prom-client": "^15.1.3"
+  }
+}
+{
+  "name": "crypto-ledger-security",
+  "version": "1.0.0",
+  "description": "Advanced cryptographic security service with quantum-resistant encryption and blockchain ledger",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
+    "test": "echo \"No tests specified\""
+  },
+  "keywords": [
+    "cryptography",
+    "blockchain",
+    "quantum-resistant",
+    "zero-knowledge-proofs",
+    "security",
+    "ledger"
+  ],
+  "author": "Autonomous Logistics Team",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "express": "^4.21.2",
+    "axios": "^1.12.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}{
+  "name": "monitoring",
+  "version": "1.0.0",
+  "description": "Comprehensive monitoring and logging service for Azora OS",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "jest",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "cors": "^2.8.5",
+    "winston": "^3.18.3",
+    "dotenv": "^17.2.3",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0",
+    "jest": "^29.0.0",
+    "eslint": "^9.0.0"
+  },
+  "keywords": ["monitoring", "logging", "health-checks", "metrics", "azora-os"],
+  "author": "Azora OS Team",
+  "license": "SEE LICENSE IN LICENSE"
+}{
+  "name": "ai-unified",
+  "version": "1.0.0",
+  "description": "Unified AI service integrating multiple AI models and providers",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
+    "test": "echo \"No tests specified\""
+  },
+  "author": "Autonomous Logistics Team",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "express": "^4.21.2",
+    "cors": "^2.8.5"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}{
+  "name": "proof-of-delivery",
+  "version": "1.0.0",
+  "description": "Proof of delivery service with digital signatures and verification",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
+    "test": "echo \"No tests specified\""
+  },
+  "author": "Autonomous Logistics Team",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}{
+  "name": "maintenance-service",
+  "version": "1.0.0",
+  "description": "Predictive maintenance with AI, automated scheduling, and digital twin integration for Azora OS",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": ["maintenance", "predictive", "ai", "fleet-management", "digital-twin"],
+  "author": "Sizwe Ngwenya <sizwe.ngwenya@azora.world>",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "express": "^4.21.2",
+    "body-parser": "^2.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  }
+}
+{
+  "name": "@azora/security-pos",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": { "start": "node index.js" },
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5",
+    "node-fetch": "^3.3.2"
+  }
+}
+{
+  "name": "quantum-tracking",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "ws": "^8.18.0"
+  }
+}
+{
+  "name": "@azora/security-camera",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": { "start": "node index.js" },
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5",
+    "node-fetch": "^3.3.2"
+  }
+}
+{
+  "name": "@azora/procurement-corridor",
+  "version": "1.0.0",
+  "description": "AZORA Procurement Corridor - Sovereign Immune System Phase 1",
+  "main": "index.ts",
+  "scripts": {
+    "dev": "nodemon --exec ts-node index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.9.1",
+    "@prisma/client": "^5.4.2",
+    "bullmq": "^4.12.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "ethers": "^6.8.0",
+    "express": "^4.18.2",
+    "ioredis": "^5.3.2",
+    "openai": "^4.14.2",
+    "stripe": "^13.8.0",
+    "winston": "^3.11.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^4.17.23",
+    "@types/node": "^20.8.10",
+    "nodemon": "^3.0.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  }
+}
+{
+  "name": "quantum-routing-engine",
+  "version": "1.0.0",
+  "description": "Advanced routing optimization using quantum algorithms and physics-based traffic modeling",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "quantum-optimization",
+    "routing",
+    "qaoa",
+    "traffic-modeling",
+    "physics",
+    "logistics",
+    "azora"
+  ],
+  "author": "Sizwe Ngwenya (Azora World)",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sizwenya/azora-os"
+  }
+}{
+  "name": "universal-safety",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Universal Safety Operating System ensuring peace and safety for everyone",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "body-parser": "^1.20.3"
+  }
+}
+{
+  "name": "@azora/ui-core",
+  "version": "1.0.0",
+  "description": "Azora OS UI Design System",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "lint": "eslint src/**/*.ts*"
+  },
+  "keywords": ["azora", "ui", "design-system"],
+  "author": "Azora World (Pty) Ltd",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "framer-motion": "^10.16.4",
+    "lucide-react": "^0.284.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "eslint": "^8.45.0",
+    "tsup": "^7.2.0",
+    "typescript": "^5.0.2"
+  }
+}
+{
+  "name": "main-app",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "framer-motion": "^12.23.24",
+    "lucide-react": "^0.545.0",
+    "react-router-dom": "^7.9.4",
+    "tailwind-merge": "^3.3.1",
+    "react-hot-toast": "^2.6.0",
+    "axios": "^1.12.2",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
+    "react-dropzone": "^14.3.8",
+    "react-helmet-async": "^2.0.5",
+    "react-i18next": "^16.0.0",
+    "react-icons": "^5.5.0",
+    "react-is": "^19.2.0",
+    "react-signature-canvas": "1.1.0-alpha.2",
+    "recharts": "^3.2.1",
+    "socket.io-client": "^4.8.1",
+    "tailwindcss": "^4.1.14",
+    "uuid": "^13.0.0",
+    "leaflet": "^1.9.4",
+    "react-leaflet": "^5.0.0",
+    "react-speech-recognition": "^4.0.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vite": "^6.1.7",
+    "@vitejs/plugin-react": "^4.2.0",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^18.2.7",
+    "@types/node": "^24.7.1",
+    "@types/leaflet": "^1.9.21",
+    "@types/react-speech-recognition": "^3.9.6",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/user-event": "^14.6.1",
+    "vitest": "^3.2.4",
+    "happy-dom": "^20.0.0",
+    "jsdom": "^27.0.0"
+  }
+}
+{"name":"@azora/driver-pwa","version":"1.0.0","private":true,"scripts":{"dev":"vite","build":"vite build"},"dependencies":{"@aws-sdk/client-s3":"^3.908.0","@aws-sdk/s3-request-presigner":"^3.908.0","react":"^18.2.0","react-dom":"^18.2.0","react-hot-toast":"^2.4.0","react-router-dom":"^6.8.0","socket.io-client":"^4.7.0"},"devDependencies":{"@types/react":"^18.2.0","@types/react-dom":"^18.2.0","vite":"^5.4.0"}}{
+  "name": "@azora/staff-pwa",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.8.0",
+    "socket.io-client": "^4.7.0",
+    "react-hot-toast": "^2.4.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@vitejs/plugin-react": "^5.0.4",
+    "vite": "^5.4.0"
+  }
+}
+{
+  "name": "@azora/security-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": { "dev": "vite", "build": "vite build" },
+  "dependencies": { "react": "^18.2.0", "react-dom": "^18.2.0" },
+  "devDependencies": { "vite": "^5.4.0", "@types/react": "^18.2.0", "@types/react-dom": "^18.2.0" }
+}
+{
+  "name": "autonomous-logistics-platform",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "author": {
+    "name": "Autonomous Logistics Team"
+  },
+  "description": "Advanced autonomous AI platform for logistics and operations",
+  "homepage": "./",
+  "repository": {
+    "type": "git",
+    "url": "."
+  },
+  "license": "SEE LICENSE IN LICENSE",
+  "scripts": {
+    "start": "docker compose up -d --build",
+    "stop": "docker compose down",
+    "dev": "concurrently \"node services/ai-orchestrator/server.js\" \"node services/klipp-service/index.js\" \"node services/neural-context-engine/index.js\" \"node services/retail-partner-integration/index.js\" \"node services/cold-chain-quantum/index.js\" \"node services/universal-safety/index.js\" \"node services/autonomous-operations/index.js\" \"node services/quantum-tracking/index.js\" \"node services/quantum-deep-mind/index.js\" \"node services/ai-evolution-engine/index.js\" \"node services/onboarding-service/index.js\" \"node services/compliance-service/index.js\" \"node services/maintenance-service/index.js\" \"node services/driver-behavior-service/index.js\" \"node services/analytics-service/index.js\" \"node services/document-verification-service/index.js\" \"node services/advanced-compliance-engine/index.js\" \"node services/admin-portal/index.js\" \"node services/employee-onboarding/index.js\" \"node services/document-vault/index.js\" \"node services/traffic-routing/index.js\" \"node services/ai-trip-planning/index.js\" \"node services/accessibility/index.js\" \"node services/hr-ai-deputy/index.js\" \"node services/advanced-tms/index.js\" \"node services/crypto-ledger-security/index.js\" \"node services/api-gateway/index.js\" \"node services/predictive-analytics/index.js\" \"node services/monitoring/index.js\" \"node services/ai-ml-engine/index.js\" \"vite\" \"docker compose up prometheus grafana elasticsearch logstash\"",
+    "dev:frontend": "vite",
+    "dev:services": "concurrently \"node services/ai-orchestrator/server.js\" \"node services/klipp-service/index.js\" \"node services/hr-ai-deputy/index.js\"",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "test:security": "npm audit --audit-level=moderate",
+    "lint:fix": "eslint . --ext ts,tsx --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "husky",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.37.0",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.7.1",
+    "@types/react": "^19.2.2",
+    "@typescript-eslint/eslint-plugin": "^8.46.0",
+    "@typescript-eslint/parser": "^8.46.0",
+    "@vitejs/plugin-react": "^4.2.0",
+    "@vitest/coverage-v8": "^3.2.4",
+    "autoprefixer": "^10.4.21",
+    "concurrently": "^8.2.2",
+    "eslint": "^9.37.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.0",
+    "eslint-plugin-react-refresh": "^0.4.23",
+    "happy-dom": "^20.0.0",
+    "husky": "^9.1.7",
+    "jsdom": "^27.0.0",
+    "lint-staged": "^16.2.3",
+    "postcss": "^8.5.6",
+    "prettier": "^3.6.2",
+    "prisma": "^6.17.1",
+    "tailwindcss": "^4.1.14",
+    "typescript": "^5.9.3",
+    "vite": "^6.1.7",
+    "vitest": "^3.2.4"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.65.0",
+    "@prisma/client": "^6.17.1",
+    "@radix-ui/react-slot": "^1.2.3",
+    "@sentry/react": "^10.19.0",
+    "@sentry/tracing": "^7.120.4",
+    "@tailwindcss/postcss": "^4.1.14",
+    "@tensorflow/tfjs": "^4.22.0",
+    "@tensorflow/tfjs-node": "^4.22.0",
+    "@tensorflow/tfjs-vis": "^1.5.1",
+    "@types/leaflet": "^1.9.20",
+    "axios": "^1.12.2",
+    "bcryptjs": "^3.0.2",
+    "body-parser": "^2.2.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "date-fns": "^4.1.0",
+    "dotenv": "^17.2.3",
+    "ethers": "^6.15.0",
+    "express": "^4.21.2",
+    "express-rate-limit": "^8.1.0",
+    "framer-motion": "^12.23.24",
+    "helmet": "^8.1.0",
+    "http-proxy-middleware": "^3.0.3",
+    "i18next": "^25.6.0",
+    "i18next-browser-languagedetector": "^8.2.0",
+    "jsonwebtoken": "^9.0.2",
+    "leaflet": "^1.9.4",
+    "lucide-react": "^0.545.0",
+    "mongodb": "^6.20.0",
+    "natural": "^8.1.0",
+    "node-fetch": "^3.3.2",
+    "openai": "^6.3.0",
+    "pdfkit": "^0.17.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.2.0",
+    "react-dropzone": "^14.3.8",
+    "react-helmet-async": "^2.0.5",
+    "react-hot-toast": "^2.6.0",
+    "react-i18next": "^16.0.0",
+    "react-icons": "^5.5.0",
+    "react-is": "^19.2.0",
+    "react-leaflet": "^5.0.0",
+    "react-router-dom": "^7.9.4",
+    "react-signature-canvas": "1.1.0-alpha.2",
+    "react-speech-recognition": "^4.0.1",
+    "recharts": "^3.2.1",
+    "socket.io-client": "^4.8.1",
+    "tailwind-merge": "^3.3.1",
+    "tailwindcss-animate": "^1.0.7",
+    "uuid": "^13.0.0",
+    "winston": "^3.18.3",
+    "ws": "^8.18.0"
+  }
+}
+{
+  "name": "shield_service",
+  "version": "1.0.0",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "jest"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "express": "^4.18.2",
+    "node-pqcrypto": "^0.3.0",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3"
+  }
+}
+{
+  "name": "compliance-ui",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.14.0",
+    "axios": "^1.6.0",
+    "clsx": "^2.0.0",
+    "date-fns": "^3.0.6",
+    "lucide-react": "^0.294.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "recharts": "^2.8.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.37",
+    "@types/react-dom": "^18.2.15",
+    "@typescript-eslint/eslint-plugin": "^6.12.0",
+    "@typescript-eslint/parser": "^6.12.0",
+    "@vitejs/plugin-react": "^4.1.1",
+    "autoprefixer": "^10.4.21",
+    "eslint": "^8.54.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.4",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.18",
+    "typescript": "^5.2.2",
+    "vite": "^5.0.0"
+  }
+}

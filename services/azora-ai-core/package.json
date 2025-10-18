@@ -1,0 +1,20 @@
+{
+  "name": "azora-ai-core",
+  "version": "1.0.0",
+  "description": "Living, self-learning AI core that communicates with external AIs",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "@anthropic-ai/sdk": "^0.9.1",
+    "openai": "^4.20.1",
+    "axios": "^1.6.2",
+    "ioredis": "^5.3.2",
+    "pg": "^8.11.0",
+    "dotenv": "^16.3.1",
+    "winston": "^3.11.0"
+  }
+}

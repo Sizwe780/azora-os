@@ -13,3 +13,8 @@ proprietary/quantum-crypto.js
 proprietary/zkp-engine.js
 proprietary/mpc-engine.js
 proprietary/he-engine.js
+
+# Environment variables
+.env
+*.env
+.env.*

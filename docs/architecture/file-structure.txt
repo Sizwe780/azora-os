@@ -1,0 +1,2002 @@
+.
+├── # Code Citations
+├── DEPLOY.sh
+├── Dockerfile.backend
+├── LICENSE
+├── README.md
+├── The Azora OS Copilot.png
+├── UI Overhaul
+│   ├── index.html
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── public
+│   │   ├── azora-logo.svg
+│   │   ├── index.html
+│   │   └── manifest.json
+│   └── src
+│       ├── App.jsx
+│       ├── components
+│       │   ├── layout
+│       │   │   ├── AuthLayout.jsx
+│       │   │   ├── Footer.jsx
+│       │   │   ├── MainLayout.jsx
+│       │   │   ├── Sidebar.jsx
+│       │   │   └── TopBar.jsx
+│       │   ├── nudge
+│       │   │   └── NudgeBanner.jsx
+│       │   └── wallet
+│       │       └── WalletWidget.jsx
+│       ├── contexts
+│       │   ├── AuthContext.jsx
+│       │   └── ThemeContext.jsx
+│       ├── index.css
+│       ├── lib
+│       │   └── nudge.js
+│       ├── main.jsx
+│       ├── pages
+│       │   ├── Dashboard.jsx
+│       │   ├── Onboarding.jsx
+│       │   ├── Subscription.jsx
+│       │   ├── auth
+│       │   │   ├── ForgotPassword.jsx
+│       │   │   ├── Login.jsx
+│       │   │   └── Signup.jsx
+│       │   ├── services
+│       │   │   ├── AnalyticsPanel.jsx
+│       │   │   ├── ColdChainPanel.jsx
+│       │   │   ├── CompliancePanel.jsx
+│       │   │   ├── DeepMindPanel.jsx
+│       │   │   ├── DocumentVaultPanel.jsx
+│       │   │   ├── EVLeaderPanel.jsx
+│       │   │   ├── MaintenancePanel.jsx
+│       │   │   ├── NeuralContextPanel.jsx
+│       │   │   ├── RetailPartnerPanel.jsx
+│       │   │   ├── SafetyOrchestratorPanel.jsx
+│       │   │   └── TrackingEnginePanel.jsx
+│       │   └── wallet
+│       │       ├── SendPage.jsx
+│       │       ├── TransactionsPage.jsx
+│       │       ├── WalletPage.jsx
+│       │       └── WithdrawPage.jsx
+│       ├── providers
+│       │   └── NudgeProvider.jsx
+│       └── services
+│           └── blockchain
+│               └── blockchain.service.js
+├── WELCOME.txt
+├── ai-models
+│   └── cloud
+│       └── route-optimization
+│           └── README.md
+├── api
+│   └── v1
+│       ├── citizen
+│       │   └── emotional_feedback.py
+│       ├── emails
+│       │   └── index.js
+│       └── ledger
+│           └── index.ts
+├── apps
+│   ├── driver-pwa
+│   │   ├── Dockerfile
+│   │   ├── index.html
+│   │   ├── package-lock.json
+│   │   ├── package.json
+│   │   ├── public
+│   │   │   └── manifest.json
+│   │   └── src
+│   │       ├── App.tsx
+│   │       ├── AppRoutes.tsx
+│   │       ├── BeamsBackground.tsx
+│   │       ├── app
+│   │       │   ├── SignaturePad.tsx
+│   │       │   ├── Toaster.tsx
+│   │       │   └── leafletIcons.ts
+│   │       ├── assets
+│   │       │   ├── azora-logo.png
+│   │       │   ├── logo-dark.png
+│   │       │   ├── logo-light.png
+│   │       │   └── services
+│   │       │       └── azora
+│   │       │           ├── governance.ts
+│   │       │           ├── predictor.ts
+│   │       │           └── simulator.ts
+│   │       ├── atomic
+│   │       │   └── NotificationProvider.tsx
+│   │       ├── components
+│   │       │   ├── AdvisorPanel.tsx
+│   │       │   ├── AssistantPanel.tsx
+│   │       │   ├── AuditPanel.tsx
+│   │       │   ├── BeamsBackground.tsx
+│   │       │   ├── CommandCenter.tsx
+│   │       │   ├── CommandPanelButton.tsx
+│   │       │   ├── ConfirmationModal.jsx
+│   │       │   ├── ConstitutionWidget.tsx
+│   │       │   ├── CouponPopup.css
+│   │       │   ├── CouponPopup.tsx
+│   │       │   ├── CrossNationProposalsWidget.tsx
+│   │       │   ├── DelegateReputationWidget.tsx
+│   │       │   ├── ELDLogsheet.tsx
+│   │       │   ├── FederationWidget.tsx
+│   │       │   ├── GlobalErrorBoundary.tsx
+│   │       │   ├── GovernanceProposalsWidget.tsx
+│   │       │   ├── InsightsFeed.tsx
+│   │       │   ├── InviteNationForm.tsx
+│   │       │   ├── LeaderboardWidget.tsx
+│   │       │   ├── PWAInstallPrompt.tsx
+│   │       │   ├── PaymentStatus.tsx
+│   │       │   ├── PaymentWidget.tsx
+│   │       │   ├── ProfileWidget.jsx
+│   │       │   ├── ProfileWidget.tsx
+│   │       │   ├── ProtocolUpgradeWidget.tsx
+│   │       │   ├── ReputationBridgeWidget.tsx
+│   │       │   ├── ReputationEconomyWidget.tsx
+│   │       │   ├── Sidebar.tsx
+│   │       │   ├── SignaturePad.tsx
+│   │       │   ├── Skeleton.tsx
+│   │       │   ├── ThemeToggle.tsx
+│   │       │   ├── TrackingMap.tsx
+│   │       │   ├── VerifyUID.tsx
+│   │       │   ├── atoms
+│   │       │   │   ├── Avatar.jsx
+│   │       │   │   ├── Avatar.tsx
+│   │       │   │   ├── Card.tsx
+│   │       │   │   ├── GlassPanel.tsx
+│   │       │   │   ├── Heading.tsx
+│   │       │   │   ├── LearderboardRow.tsx
+│   │       │   │   ├── LearderboardWidget.tsx
+│   │       │   │   ├── RankBadge.tsx
+│   │       │   │   ├── ReputationBridgeWidget.tsx
+│   │       │   │   ├── ReputationScore.tsx
+│   │       │   │   ├── Skeleton.tsx
+│   │       │   │   └── index.ts
+│   │       │   ├── azora
+│   │       │   │   └── NotificationSettings.tsx
+│   │       │   ├── layout
+│   │       │   │   └── Sidebar.tsx
+│   │       │   ├── molecules
+│   │       │   │   ├── NotificationToast.tsx
+│   │       │   │   └── ProfileCard.tsx
+│   │       │   ├── organisms
+│   │       │   │   └── ProfileWidget.jsx
+│   │       │   └── ui
+│   │       │       └── AlertBanner.tsx
+│   │       ├── context
+│   │       │   ├── AlertProvider.tsx
+│   │       │   ├── MetricsProvider.tsx
+│   │       │   ├── NotificationProvider.tsx
+│   │       │   └── ThemeProvider.tsx
+│   │       ├── db
+│   │       │   └── client.ts
+│   │       ├── features
+│   │       │   └── jobs
+│   │       │       ├── README.md
+│   │       │       └── jobsBoard.ts
+│   │       ├── hooks
+│   │       │   ├── azora
+│   │       │   │   ├── InviteNationForm.tsx
+│   │       │   │   ├── useApi.ts
+│   │       │   │   ├── useAzoraAI.ts
+│   │       │   │   ├── useConfirmation.js
+│   │       │   │   ├── useConstitution.ts
+│   │       │   │   ├── useDelegation.ts
+│   │       │   │   ├── useGovernance.ts
+│   │       │   │   ├── useInterNation.ts
+│   │       │   │   ├── useNotifications.js
+│   │       │   │   ├── useNotify.ts
+│   │       │   │   ├── useProfile.js
+│   │       │   │   ├── useProtocolUpgrades.ts
+│   │       │   │   └── useReputationEconomy.ts
+│   │       │   ├── layouts
+│   │       │   │   └── DashboardLayout.tsx
+│   │       │   └── layouts copy
+│   │       │       └── DashboardLayout.tsx
+│   │       ├── index.css
+│   │       ├── layouts
+│   │       │   └── DashboardLayout.tsx
+│   │       ├── lib
+│   │       │   └── sa
+│   │       │       └── tax.ts
+│   │       ├── main.tsx
+│   │       ├── middleware
+│   │       │   ├── auth.ts
+│   │       │   ├── companyScope.ts
+│   │       │   └── error.ts
+│   │       ├── pages
+│   │       │   ├── AdvisorPage.tsx
+│   │       │   ├── Billing.tsx
+│   │       │   ├── ContractsPage.tsx
+│   │       │   ├── Dashboard.tsx
+│   │       │   ├── DashboardPage.jsx
+│   │       │   ├── DemoCouponScenario.tsx
+│   │       │   ├── DispatchPage.tsx
+│   │       │   ├── DownloadCenterPage.tsx
+│   │       │   ├── Driver.tsx
+│   │       │   ├── DriversAdmin.tsx
+│   │       │   ├── FederationPage.tsx
+│   │       │   ├── Jobs.tsx
+│   │       │   ├── LedgerPage.tsx
+│   │       │   ├── MainDashboard.tsx
+│   │       │   ├── NationPage.tsx
+│   │       │   ├── PartnerDashboard.tsx
+│   │       │   ├── PaymentsPage.tsx
+│   │       │   ├── PayoutsPage.tsx
+│   │       │   ├── ProfilePage.tsx
+│   │       │   ├── ScheduledExportsPage.tsx
+│   │       │   ├── Settings.tsx
+│   │       │   └── Subscription.tsx
+│   │       ├── routes
+│   │       │   ├── jobs.ts
+│   │       │   └── ledger.ts
+│   │       ├── server
+│   │       │   ├── advisor
+│   │       │   │   └── routes.ts
+│   │       │   ├── ai
+│   │       │   │   └── aiController.ts
+│   │       │   ├── app.ts
+│   │       │   ├── audit
+│   │       │   │   ├── routes.ts
+│   │       │   │   └── write.ts
+│   │       │   ├── auth
+│   │       │   │   └── routes.ts
+│   │       │   ├── company
+│   │       │   │   └── routes.ts
+│   │       │   ├── contracts
+│   │       │   │   └── routes.ts
+│   │       │   ├── cron.ts
+│   │       │   ├── drivers
+│   │       │   │   └── ruotes.ts
+│   │       │   ├── exports
+│   │       │   │   ├── export.ts
+│   │       │   │   └── exportDocument.ts
+│   │       │   ├── federation
+│   │       │   │   └── routes.ts
+│   │       │   ├── index.ts
+│   │       │   ├── integrations
+│   │       │   │   ├── stores.ts
+│   │       │   │   └── webhooks.ts
+│   │       │   ├── jobs
+│   │       │   │   ├── dispatch.ts
+│   │       │   │   ├── scheduledExports.ts
+│   │       │   │   └── upload.ts
+│   │       │   ├── ledger.ts
+│   │       │   ├── middleware
+│   │       │   │   └── auth.ts
+│   │       │   ├── nation
+│   │       │   │   └── routes.ts
+│   │       │   ├── partners
+│   │       │   │   ├── accrual.ts
+│   │       │   │   ├── commission.ts
+│   │       │   │   └── routes.ts
+│   │       │   ├── payments
+│   │       │   │   ├── history.ts
+│   │       │   │   ├── invoice.ts
+│   │       │   │   ├── paystack.ts
+│   │       │   │   ├── receipt.ts
+│   │       │   │   └── webhook.ts
+│   │       │   ├── policy
+│   │       │   │   ├── azoraPolicy.ts
+│   │       │   │   └── guard.ts
+│   │       │   ├── prisma.ts
+│   │       │   ├── realtime.ts
+│   │       │   ├── routes
+│   │       │   │   ├── advisor.ts
+│   │       │   │   ├── auth.ts
+│   │       │   │   ├── contract.ts
+│   │       │   │   ├── driver.ts
+│   │       │   │   ├── export.ts
+│   │       │   │   ├── federation.ts
+│   │       │   │   ├── ledger.ts
+│   │       │   │   ├── nation.ts
+│   │       │   │   ├── payments.ts
+│   │       │   │   └── payouts.ts
+│   │       │   ├── routes.ts
+│   │       │   ├── storage.ts
+│   │       │   ├── subscriptions
+│   │       │   │   └── routes.ts
+│   │       │   ├── trip
+│   │       │   │   └── planTrip.ts
+│   │       │   └── utils
+│   │       │       ├── jwt.ts
+│   │       │       ├── mailer.ts
+│   │       │       └── uid.ts
+│   │       ├── server.ts
+│   │       ├── service-worker.js
+│   │       ├── services
+│   │       │   ├── audit.ts
+│   │       │   ├── azora
+│   │       │   │   ├── advisor.ts
+│   │       │   │   ├── badges.ts
+│   │       │   │   ├── delegation.ts
+│   │       │   │   ├── governance.ts
+│   │       │   │   ├── interNation.ts
+│   │       │   │   ├── marketplace.ts
+│   │       │   │   ├── personalFeed.ts
+│   │       │   │   ├── predictor.ts
+│   │       │   │   ├── proposalSummarizer.ts
+│   │       │   │   ├── protocolUpgrade.ts
+│   │       │   │   ├── reputation.ts
+│   │       │   │   ├── reputationEconomy
+│   │       │   │   │   └── ts
+│   │       │   │   ├── reputationEconomy.ts
+│   │       │   │   ├── sentiment.ts
+│   │       │   │   ├── sentimentAggregrator.ts
+│   │       │   │   ├── simulator.ts
+│   │       │   │   └── streaks.ts
+│   │       │   └── federation
+│   │       │       ├── bonds.ts
+│   │       │       ├── budgetBuilder.ts
+│   │       │       ├── centralBank.ts
+│   │       │       ├── credit.ts
+│   │       │       ├── creditInsurance.ts
+│   │       │       ├── crisisSimulator.ts
+│   │       │       ├── derivatives.ts
+│   │       │       ├── econCouncil.ts
+│   │       │       ├── forecastEngine.ts
+│   │       │       ├── investments.ts
+│   │       │       ├── memoryGraph.ts
+│   │       │       ├── modelBuilder.ts
+│   │       │       ├── sentimentIndex.ts
+│   │       │       ├── tradeEngine.ts
+│   │       │       └── treasury.ts
+│   │       ├── styles
+│   │       │   ├── global.css
+│   │       │   └── theme.css
+│   │       ├── theme
+│   │       │   └── ThemeProvider.tsx
+│   │       └── types
+│   │           └── azora
+│   │               ├── delegation.ts
+│   │               ├── express
+│   │               │   └── index.d.ts
+│   │               ├── governance.ts
+│   │               ├── protocolUpgrade.ts
+│   │               └── reputationEconomy.ts
+│   ├── main-app
+│   │   ├── App.tsx
+│   │   ├── AppRoutes.tsx
+│   │   ├── Dockerfile
+│   │   ├── app
+│   │   │   ├── AZORAFounderWidget.tsx
+│   │   │   ├── AuraUI.tsx
+│   │   │   ├── BeamsBackground.tsx
+│   │   │   ├── CommandCenter.tsx
+│   │   │   ├── ConstitutionWidget.tsx
+│   │   │   ├── CrossNationProposalsWidget.tsx
+│   │   │   ├── DelegateReputationWidget.tsx
+│   │   │   ├── FederationWidget.tsx
+│   │   │   ├── GovernanceProposalForm.tsx
+│   │   │   ├── GovernanceProposalsWidget.tsx
+│   │   │   ├── InviteNationForm.tsx
+│   │   │   ├── LeaderboardWidget.tsx
+│   │   │   ├── NotificationSettings.tsx
+│   │   │   ├── ProtocolUpgradeWidget.tsx
+│   │   │   ├── ReputationBridgeWidget.tsx
+│   │   │   ├── ReputationMilestonesWidget.tsx
+│   │   │   ├── Sidebar.tsx
+│   │   │   ├── SovereignWeaverUI.tsx
+│   │   │   ├── ThemeToggle.tsx
+│   │   │   ├── Toaster.tsx
+│   │   │   └── TrackingMap.tsx
+│   │   ├── components
+│   │   │   ├── ErrorBoundary.tsx
+│   │   │   ├── NavigationButtons.jsx
+│   │   │   ├── ProgressIndicator.jsx
+│   │   │   ├── ProtectedRoute.tsx
+│   │   │   ├── StatCard.tsx
+│   │   │   ├── accessibility
+│   │   │   │   ├── InteractionCards.tsx
+│   │   │   │   ├── SettingOptions.tsx
+│   │   │   │   └── SettingToggle.tsx
+│   │   │   ├── admin-portal
+│   │   │   │   ├── AdminTabs.tsx
+│   │   │   │   ├── Dashboard.tsx
+│   │   │   │   ├── EmailComposer.tsx
+│   │   │   │   ├── EmailDetail.tsx
+│   │   │   │   ├── EmailList.tsx
+│   │   │   │   ├── EmailSidebar.tsx
+│   │   │   │   ├── UserManagement.tsx
+│   │   │   │   └── UserModal.tsx
+│   │   │   ├── ai-evolution
+│   │   │   │   ├── EvolutionChart.tsx
+│   │   │   │   ├── InfoCard.tsx
+│   │   │   │   └── MiniStat.tsx
+│   │   │   ├── ai-trip-planning
+│   │   │   │   ├── ChatMessage.tsx
+│   │   │   │   ├── ContextualInfoCard.tsx
+│   │   │   │   └── TripPlanCard.tsx
+│   │   │   ├── attendance
+│   │   │   │   ├── AnomaliesDashboard.tsx
+│   │   │   │   ├── AttendanceHeader.tsx
+│   │   │   │   └── PerformanceList.tsx
+│   │   │   ├── azora
+│   │   │   │   ├── AuraUI.tsx
+│   │   │   │   ├── FederationWidget.tsx
+│   │   │   │   ├── GridPattern.tsx
+│   │   │   │   ├── Header.tsx
+│   │   │   │   ├── Sidebar.tsx
+│   │   │   │   └── atoms
+│   │   │   │       ├── Card.tsx
+│   │   │   │       └── Heading.tsx
+│   │   │   ├── ceo-insights
+│   │   │   │   ├── MarketOpportunities.tsx
+│   │   │   │   ├── PredictiveAnalytics.tsx
+│   │   │   │   └── StrategicInsights.tsx
+│   │   │   ├── cold-chain
+│   │   │   │   ├── AssetSelector.tsx
+│   │   │   │   ├── BlockchainIntegrity.tsx
+│   │   │   │   ├── InterventionsPanel.tsx
+│   │   │   │   ├── PredictionChart.tsx
+│   │   │   │   └── StatCard.tsx
+│   │   │   ├── dashboard
+│   │   │   │   ├── DashboardHeader.tsx
+│   │   │   │   ├── QuickActionButton.tsx
+│   │   │   │   ├── RecentActivityFeed.tsx
+│   │   │   │   ├── ServiceModuleCard.tsx
+│   │   │   │   └── StatCard.tsx
+│   │   │   ├── document-vault
+│   │   │   │   ├── BorderReadinessCheck.tsx
+│   │   │   │   ├── DocumentCard.tsx
+│   │   │   │   ├── DocumentDetailModal.tsx
+│   │   │   │   ├── StatCard.tsx
+│   │   │   │   └── UploadButton.tsx
+│   │   │   ├── driver-command
+│   │   │   │   ├── ActionCard.tsx
+│   │   │   │   ├── RouteInfoPanel.tsx
+│   │   │   │   ├── StatCard.tsx
+│   │   │   │   └── VoiceActivationPanel.tsx
+│   │   │   ├── drone-monitor
+│   │   │   │   ├── BatteryChart.tsx
+│   │   │   │   ├── DroneList.tsx
+│   │   │   │   ├── LogModal.tsx
+│   │   │   │   └── StatCard.tsx
+│   │   │   ├── email
+│   │   │   │   ├── ComposeModal.tsx
+│   │   │   │   ├── EmailList.tsx
+│   │   │   │   ├── EmailSidebar.tsx
+│   │   │   │   └── EmailView.tsx
+│   │   │   ├── employee-onboarding
+│   │   │   │   ├── CompletionStep.tsx
+│   │   │   │   ├── FormControls.tsx
+│   │   │   │   ├── Notification.tsx
+│   │   │   │   ├── OnboardingProgress.tsx
+│   │   │   │   ├── OnboardingStepWrapper.tsx
+│   │   │   │   └── SignaturePad.tsx
+│   │   │   ├── finance
+│   │   │   │   ├── BalanceSheetOverview.tsx
+│   │   │   │   ├── CashFlowChart.tsx
+│   │   │   │   ├── ExpenseBreakdown.tsx
+│   │   │   │   ├── RevenueChart.tsx
+│   │   │   │   ├── Section.tsx
+│   │   │   │   └── StatCard.tsx
+│   │   │   ├── founders
+│   │   │   │   ├── FounderCard.tsx
+│   │   │   │   ├── Milestone.tsx
+│   │   │   │   └── StatCard.tsx
+│   │   │   ├── genesis-chamber
+│   │   │   │   ├── ApprovalControls.tsx
+│   │   │   │   ├── GenesisVisualizer.tsx
+│   │   │   │   └── InfoCard.tsx
+│   │   │   ├── hr-deputy
+│   │   │   │   ├── DashboardContent.tsx
+│   │   │   │   ├── PersonCard.tsx
+│   │   │   │   ├── StatCard.tsx
+│   │   │   │   └── TabButton.tsx
+│   │   │   ├── jobs
+│   │   │   │   ├── FilterBar.tsx
+│   │   │   │   └── JobCard.tsx
+│   │   │   ├── klipp
+│   │   │   │   ├── ActiveTaskView.tsx
+│   │   │   │   ├── StatCard.tsx
+│   │   │   │   └── TaskCard.tsx
+│   │   │   ├── landing
+│   │   │   │   ├── FeatureCard.tsx
+│   │   │   │   ├── Footer.tsx
+│   │   │   │   ├── Hero.tsx
+│   │   │   │   ├── PhaseCard.tsx
+│   │   │   │   └── PricingCard.tsx
+│   │   │   ├── maps
+│   │   │   │   ├── Map.tsx
+│   │   │   │   └── TripInfo.tsx
+│   │   │   ├── metrics
+│   │   │   │   ├── FederationTrafficWidget.tsx
+│   │   │   │   ├── ProposalVolumeChart.tsx
+│   │   │   │   └── RepDistributionChart.tsx
+│   │   │   ├── quantum-tracking
+│   │   │   │   ├── FleetList.tsx
+│   │   │   │   ├── MapView.tsx
+│   │   │   │   └── VehicleDetailPanel.tsx
+│   │   │   ├── retail-partner
+│   │   │   │   ├── CustomerFlowPanel.tsx
+│   │   │   │   ├── InventoryPanel.tsx
+│   │   │   │   ├── MetricCard.tsx
+│   │   │   │   └── WellnessPanel.tsx
+│   │   │   ├── security
+│   │   │   │   ├── AlarmsPanel.tsx
+│   │   │   │   ├── OverallStatus.tsx
+│   │   │   │   ├── SecurityLayersPanel.tsx
+│   │   │   │   └── SystemStatusPanel.tsx
+│   │   │   ├── settings
+│   │   │   │   ├── FormControls.tsx
+│   │   │   │   ├── ProfilePanel.tsx
+│   │   │   │   └── SettingsSection.tsx
+│   │   │   ├── signature
+│   │   │   │   └── SignaturePad.tsx
+│   │   │   ├── steps
+│   │   │   │   ├── AgreementStep.jsx
+│   │   │   │   ├── BusinessDetailsStep.jsx
+│   │   │   │   ├── CompletionStep.jsx
+│   │   │   │   ├── DocumentsStep.jsx
+│   │   │   │   ├── PersonalInfoStep.jsx
+│   │   │   │   ├── PricingStep.jsx
+│   │   │   │   ├── RepresentationStep.jsx
+│   │   │   │   └── WelcomeStep.jsx
+│   │   │   ├── subscription
+│   │   │   │   └── PlanCard.tsx
+│   │   │   ├── support
+│   │   │   │   ├── AgentCard.tsx
+│   │   │   │   ├── MetricCard.tsx
+│   │   │   │   ├── TicketDetail.tsx
+│   │   │   │   └── TicketRow.tsx
+│   │   │   └── ui
+│   │   │       ├── AlertBanner.tsx
+│   │   │       ├── Badge.tsx
+│   │   │       ├── Button.tsx
+│   │   │       ├── Card.tsx
+│   │   │       ├── Form.tsx
+│   │   │       ├── GlassCard.tsx
+│   │   │       ├── Modal.tsx
+│   │   │       ├── PageHeader.tsx
+│   │   │       ├── Skeleton.tsx
+│   │   │       ├── ThemeToggle.tsx
+│   │   │       └── VoiceControl.tsx
+│   │   ├── config
+│   │   │   └── firebase.ts
+│   │   ├── context
+│   │   │   ├── AdvisorProvider.tsx
+│   │   │   ├── AlertProvider.tsx
+│   │   │   ├── MetricsProvider.tsx
+│   │   │   ├── NotificationProvider.tsx
+│   │   │   └── ThemeProvider.tsx
+│   │   ├── features
+│   │   │   ├── accessibility
+│   │   │   │   └── mockAccessibility.ts
+│   │   │   ├── admin-portal
+│   │   │   │   └── mockAdminData.ts
+│   │   │   ├── ai-evolution
+│   │   │   │   └── mockAIEvolution.ts
+│   │   │   ├── ai-trip-planning
+│   │   │   │   └── mockCoPilot.ts
+│   │   │   ├── attendance
+│   │   │   │   └── mockAttendanceData.ts
+│   │   │   ├── ceo-insights
+│   │   │   │   └── mockData.ts
+│   │   │   ├── cold-chain
+│   │   │   │   └── mockColdChainData.ts
+│   │   │   ├── dashboard
+│   │   │   │   └── mockDashboardData.ts
+│   │   │   ├── document-vault
+│   │   │   │   └── mockData.ts
+│   │   │   ├── documentVerification
+│   │   │   │   └── documentVerifier.ts
+│   │   │   ├── driver-command
+│   │   │   │   └── mockData.ts
+│   │   │   ├── drone-monitor
+│   │   │   │   └── mockData.ts
+│   │   │   ├── email
+│   │   │   │   └── mockData.ts
+│   │   │   ├── employee-onboarding
+│   │   │   │   └── mockData.ts
+│   │   │   ├── finance
+│   │   │   │   └── mockData.ts
+│   │   │   ├── founders
+│   │   │   │   └── mockData.ts
+│   │   │   ├── fraudDetection
+│   │   │   │   └── fraudDetector.ts
+│   │   │   ├── genesis-chamber
+│   │   │   │   └── mockData.ts
+│   │   │   ├── hr-deputy
+│   │   │   │   └── mockData.ts
+│   │   │   ├── jobs
+│   │   │   │   └── jobsBoard.ts
+│   │   │   ├── klipp
+│   │   │   │   └── mockData.ts
+│   │   │   ├── ledger
+│   │   │   │   ├── mockLedger.ts
+│   │   │   │   └── useLedger.ts
+│   │   │   ├── legal
+│   │   │   │   ├── mockLegal.ts
+│   │   │   │   └── useLiveLegal.ts
+│   │   │   ├── maintenance
+│   │   │   │   └── predictiveMaintenance.ts
+│   │   │   ├── onboarding
+│   │   │   │   └── OnboardingAssistant.tsx
+│   │   │   ├── operations
+│   │   │   │   ├── mockOperations.ts
+│   │   │   │   └── useLiveOperations.ts
+│   │   │   ├── personalization
+│   │   │   │   └── personalizedDashboard.ts
+│   │   │   ├── quantum-tracking
+│   │   │   │   └── mockQuantum.ts
+│   │   │   ├── retail-partner
+│   │   │   │   └── mockRetail.ts
+│   │   │   ├── revenue
+│   │   │   │   └── mockRevenue.ts
+│   │   │   ├── scheduling
+│   │   │   │   └── smartScheduler.ts
+│   │   │   ├── security
+│   │   │   │   └── mockSecurity.ts
+│   │   │   ├── settings
+│   │   │   │   └── mockSettings.ts
+│   │   │   ├── subscription
+│   │   │   │   └── mockSubscription.ts
+│   │   │   └── support
+│   │   │       └── mockSupport.ts
+│   │   ├── hooks
+│   │   │   ├── azora
+│   │   │   │   ├── useApi.ts
+│   │   │   │   ├── useConstitution.ts
+│   │   │   │   ├── useGovernance.ts
+│   │   │   │   └── useProtocolUpgrades.ts
+│   │   │   └── useAlerting.ts
+│   │   ├── index.css
+│   │   ├── index.html
+│   │   ├── layouts
+│   │   │   ├── DashboardLayout.tsx
+│   │   │   └── ModernDashboardLayout.tsx
+│   │   ├── lib
+│   │   │   ├── accessibility.tsx
+│   │   │   ├── i18n
+│   │   │   │   ├── i18nContext.tsx
+│   │   │   │   ├── index.ts
+│   │   │   │   ├── locales
+│   │   │   │   │   ├── af.json
+│   │   │   │   │   ├── en.json
+│   │   │   │   │   ├── nr.json
+│   │   │   │   │   ├── nso.json
+│   │   │   │   │   ├── ss.json
+│   │   │   │   │   ├── st.json
+│   │   │   │   │   ├── tn.json
+│   │   │   │   │   ├── ts.json
+│   │   │   │   │   ├── ve.json
+│   │   │   │   │   ├── xh.json
+│   │   │   │   │   └── zu.json
+│   │   │   │   └── translations.ts
+│   │   │   ├── logger
+│   │   │   │   └── index.ts
+│   │   │   ├── security.ts
+│   │   │   ├── sentry.ts
+│   │   │   └── utils.ts
+│   │   ├── main.tsx
+│   │   ├── package-lock.json
+│   │   ├── package.json
+│   │   ├── pages
+│   │   │   ├── AIEvolution.tsx
+│   │   │   ├── AITripPlanningPage.tsx
+│   │   │   ├── AccessibilityPage.tsx
+│   │   │   ├── AdminPortalPage.tsx
+│   │   │   ├── AnomalyDetection.tsx
+│   │   │   ├── AttendancePage.tsx
+│   │   │   ├── CEOInsightsPage.tsx
+│   │   │   ├── ColdChainCommand.tsx
+│   │   │   ├── Dashboard.tsx
+│   │   │   ├── DemandForecasting.tsx
+│   │   │   ├── DocumentVaultPage.tsx
+│   │   │   ├── DriverCommandCenter.tsx
+│   │   │   ├── DroneMonitorPage.tsx
+│   │   │   ├── EmailPage.tsx
+│   │   │   ├── EmployeeOnboardingPage.tsx
+│   │   │   ├── FinancePage.tsx
+│   │   │   ├── FleetClustering.tsx
+│   │   │   ├── FoundersPage.tsx
+│   │   │   ├── GenesisChamberPage.tsx
+│   │   │   ├── HRDeputyCEOPage.tsx
+│   │   │   ├── Jobs.tsx
+│   │   │   ├── KlippPage.tsx
+│   │   │   ├── LandingPage.tsx
+│   │   │   ├── LedgerPage.tsx
+│   │   │   ├── LegalPage.tsx
+│   │   │   ├── LiveTripTrackingPage.tsx
+│   │   │   ├── LoginPage.tsx
+│   │   │   ├── OperationsPage.tsx
+│   │   │   ├── QuantumAI.tsx
+│   │   │   ├── QuantumTracking.tsx
+│   │   │   ├── RetailPartnerDashboard.tsx
+│   │   │   ├── RevenuePage.tsx
+│   │   │   ├── RouteOptimization.tsx
+│   │   │   ├── SanctuaryPage.tsx
+│   │   │   ├── SecurityPage.tsx
+│   │   │   ├── Settings.tsx
+│   │   │   ├── SubscriptionPage.tsx
+│   │   │   ├── SupportPage.tsx
+│   │   │   ├── TrafficRoutingPage.tsx
+│   │   │   ├── UniversalSafetyCommand.tsx
+│   │   │   ├── azora.txt
+│   │   │   └── onboarding
+│   │   │       ├── FounderOnboarding.tsx
+│   │   │       └── UniversalOnboarding.tsx
+│   │   ├── public
+│   │   │   ├── azora-logo.svg
+│   │   │   ├── azora_logo.svg
+│   │   │   ├── destination-icon.svg
+│   │   │   ├── driver-icon.svg
+│   │   │   ├── images
+│   │   │   ├── index.html
+│   │   │   └── manifest.json
+│   │   ├── src
+│   │   │   ├── App.jsx
+│   │   │   ├── components
+│   │   │   │   ├── LanguageSelector.jsx
+│   │   │   │   ├── global
+│   │   │   │   │   └── CommandPalette.jsx
+│   │   │   │   ├── layout
+│   │   │   │   │   ├── AuthLayout.jsx
+│   │   │   │   │   ├── Footer.jsx
+│   │   │   │   │   ├── MainLayout.jsx
+│   │   │   │   │   ├── Sidebar.jsx
+│   │   │   │   │   └── TopBar.jsx
+│   │   │   │   ├── nudge
+│   │   │   │   │   └── NudgeBanner.jsx
+│   │   │   │   └── wallet
+│   │   │   │       └── WalletWidget.jsx
+│   │   │   ├── context
+│   │   │   │   ├── CommandPaletteContext.jsx
+│   │   │   │   └── NudgeContext.jsx
+│   │   │   ├── contexts
+│   │   │   │   ├── AuthContext.jsx
+│   │   │   │   └── ThemeContext.jsx
+│   │   │   ├── i18n
+│   │   │   │   ├── i18n.js
+│   │   │   │   └── messages.js
+│   │   │   ├── index.css
+│   │   │   ├── lib
+│   │   │   │   └── nudge.js
+│   │   │   ├── main.jsx
+│   │   │   ├── pages
+│   │   │   │   ├── AIHQ.jsx
+│   │   │   │   ├── Analytics.jsx
+│   │   │   │   ├── Dashboard.jsx
+│   │   │   │   ├── Onboarding.jsx
+│   │   │   │   ├── Pricing.jsx
+│   │   │   │   ├── Subscription.jsx
+│   │   │   │   ├── auth
+│   │   │   │   │   ├── ForgotPassword.jsx
+│   │   │   │   │   ├── Login.jsx
+│   │   │   │   │   └── Signup.jsx
+│   │   │   │   ├── compliance
+│   │   │   │   │   └── LiveComplianceDashboard.jsx
+│   │   │   │   ├── monitoring
+│   │   │   │   │   └── MissionControl.jsx
+│   │   │   │   ├── services
+│   │   │   │   │   ├── AnalyticsPanel.jsx
+│   │   │   │   │   ├── ColdChainPanel.jsx
+│   │   │   │   │   ├── CompliancePanel.jsx
+│   │   │   │   │   ├── DeepMindPanel.jsx
+│   │   │   │   │   ├── DocumentVaultPanel.jsx
+│   │   │   │   │   ├── EVLeaderPanel.jsx
+│   │   │   │   │   ├── MaintenancePanel.jsx
+│   │   │   │   │   ├── NeuralContextPanel.jsx
+│   │   │   │   │   ├── RetailPartnerPanel.jsx
+│   │   │   │   │   ├── SafetyOrchestratorPanel.jsx
+│   │   │   │   │   └── TrackingEnginePanel.jsx
+│   │   │   │   └── wallet
+│   │   │   │       ├── SendPage.jsx
+│   │   │   │       ├── TransactionsPage.jsx
+│   │   │   │       ├── WalletPage.jsx
+│   │   │   │       └── WithdrawPage.jsx
+│   │   │   ├── providers
+│   │   │   │   └── NudgeProvider.jsx
+│   │   │   └── services
+│   │   │       └── blockchain
+│   │   │           └── blockchain.service.js
+│   │   ├── test
+│   │   │   ├── components
+│   │   │   │   ├── Card.test.tsx
+│   │   │   │   └── Heading.test.tsx
+│   │   │   └── setup.ts
+│   │   ├── types
+│   │   │   ├── founders.ts
+│   │   │   ├── ledger.ts
+│   │   │   ├── react-signature-canvas.d.ts
+│   │   │   └── subscription.ts
+│   │   ├── utils
+│   │   │   └── founderHOCs.tsx
+│   │   ├── vite-env.d.ts
+│   │   └── vite.config.js
+│   ├── security-dashboard
+│   │   ├── Dockerfile
+│   │   ├── index.html
+│   │   ├── package.json
+│   │   ├── src
+│   │   │   ├── App.tsx
+│   │   │   ├── main.tsx
+│   │   │   └── styles.css
+│   │   ├── tsconfig.json
+│   │   ├── tsconfig.node.json
+│   │   └── vite.config.js
+│   └── staff-pwa
+│       ├── Dockerfile
+│       ├── README.md
+│       ├── index.html
+│       ├── package-lock.json
+│       ├── package.json
+│       ├── postcss.config.js
+│       ├── src
+│       │   ├── App.tsx
+│       │   ├── components
+│       │   │   └── CouponPopup.tsx
+│       │   ├── context
+│       │   │   └── CouponProvider.tsx
+│       │   ├── main.tsx
+│       │   ├── styles.css
+│       │   ├── types
+│       │   │   └── coupon.ts
+│       │   └── voice
+│       │       ├── EnrollCapture.ts
+│       │       └── VoiceEngine.ts
+│       └── vite.config.mjs
+├── assessment
+│   ├── benchmarks
+│   │   └── competitive.json
+│   └── reports
+│       └── readiness-20251018.md
+├── azora-coin
+│   ├── README.md
+│   ├── artifacts
+│   │   └── contracts
+│   │       └── GlobalAzoraCoin.sol
+│   │           └── GlobalAzoraCoin.json
+│   ├── check-azora-coin.sh
+│   ├── compliance-engine
+│   │   ├── CryptoBackedLedger.ts
+│   │   ├── ProofOfCompliance.ts
+│   │   └── WithdrawalSystem.ts
+│   ├── contracts
+│   │   ├── AzoraCoin.sol
+│   │   └── GlobalAzoraCoin.sol
+│   ├── docker-compose.yml
+│   ├── docker-compose.yml.backup
+│   ├── hardhat.config.js
+│   ├── hardhat.config.ts
+│   ├── implement-ui-overhaul.sh
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── scripts
+│   │   ├── deploy.js
+│   │   └── deploy.ts
+│   ├── services
+│   │   ├── azora-coin-integration
+│   │   │   └── index.js
+│   │   └── compliance-service
+│   ├── setup-production.sh
+│   ├── start-azora.sh
+│   └── test
+│       └── AzoraCoin.test.ts
+├── backend
+│   ├── ledger
+│   │   ├── cryptoLedger.ts
+│   │   └── ledgerService.ts
+│   ├── quantum_microservice
+│   │   └── app.py
+│   └── src
+│       ├── api
+│       │   ├── auth.js
+│       │   ├── chat.js
+│       │   ├── compliance.js
+│       │   ├── quantum.js
+│       │   ├── reputation.js
+│       │   ├── vision.js
+│       │   └── voice.js
+│       ├── models
+│       │   ├── AuditLog.js
+│       │   ├── AviationChecklist.js
+│       │   ├── DefenseDrill.js
+│       │   ├── Incident.js
+│       │   ├── Policy.js
+│       │   ├── Reputation.js
+│       │   ├── Shift.js
+│       │   ├── TrainingRecord.js
+│       │   └── User.js
+│       ├── quantum
+│       │   └── quantumVision.js
+│       ├── resolvers
+│       │   ├── aviation.js
+│       │   ├── compliance.js
+│       │   ├── corridor.js
+│       │   ├── dashboard.js
+│       │   ├── defense.js
+│       │   ├── index.js
+│       │   └── reputation.js
+│       ├── schema.js
+│       ├── server.js
+│       └── services
+│           ├── auth
+│           │   └── federatedIdentityService.js
+│           ├── chat
+│           │   └── chatService.js
+│           ├── compliance
+│           │   └── complianceService.js
+│           ├── complianceService.js
+│           ├── index.js
+│           ├── neuralIntent.js
+│           ├── notificationService.js
+│           ├── ontologicalTwin.js
+│           ├── quantum
+│           │   └── predictiveAnalyticsService.js
+│           ├── quantumService.js
+│           ├── reputationService.js
+│           ├── visionService.js
+│           ├── voice
+│           │   └── voiceCopilotService.js
+│           └── voiceService.js
+├── check-all-services.sh
+├── check-compliance.sh
+├── check-full-compliance.sh
+├── check-services.sh
+├── check-valuation.sh
+├── code_todos.txt
+├── compliance
+│   └── nudge-check
+│       ├── check-nudge.js
+│       └── example-nudge.jsx
+├── compliance-reports
+│   ├── compliance-20251018-040258.md
+│   └── compliance-20251018-042246.md
+├── compliance-ui
+│   ├── eslint.config.js
+│   ├── index.html
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── postcss.config.cjs
+│   ├── src
+│   │   ├── App.tsx
+│   │   ├── components
+│   │   │   ├── charts
+│   │   │   │   ├── ComplianceScoreChart.tsx
+│   │   │   │   └── RegionalComplianceChart.tsx
+│   │   │   ├── index.ts
+│   │   │   ├── layout
+│   │   │   │   └── Sidebar.tsx
+│   │   │   ├── panels
+│   │   │   │   ├── AlertsPanel.tsx
+│   │   │   │   ├── Dashboard.tsx
+│   │   │   │   ├── MetricsPanel.tsx
+│   │   │   │   └── ReportsPanel.tsx
+│   │   │   └── shared
+│   │   │       ├── FrameworkStatusGrid.tsx
+│   │   │       ├── Header.tsx
+│   │   │       ├── RecentActivity.tsx
+│   │   │       └── Sidebar.tsx
+│   │   ├── index.css
+│   │   ├── main.tsx
+│   │   ├── styles
+│   │   │   └── theme.css
+│   │   └── types.ts
+│   ├── tailwind.config.js
+│   └── vite.config.js
+├── components.json
+├── dashboard
+├── data
+│   ├── ai
+│   └── models
+├── deploy
+│   ├── configs
+│   └── kubernetes
+├── docker-compose.compliance.yml
+├── docker-compose.production.yml
+├── docker-compose.yml
+├── docs
+│   ├── FOUNDER_ONBOARDING_PLAN.md
+│   ├── SERVICES.md
+│   ├── UPGRADES.md
+│   ├── analysis
+│   │   ├── docker_files.txt
+│   │   ├── repo_structure.txt
+│   │   └── services.txt
+│   ├── api
+│   │   └── AZORA_API_REFERENCE.md
+│   ├── architecture
+│   │   ├── SYSTEM_ARCHITECTURE.md
+│   │   ├── file-structure.txt
+│   │   └── system-overview.js
+│   ├── community-growth-kit.md
+│   ├── compliance
+│   │   └── un-compliance.md
+│   ├── constitution
+│   │   ├── AZORA_CONSTITUTION.md
+│   │   └── NO_CODE_LEFT_BEHIND.md
+│   ├── contracts
+│   │   └── FOUNDER_AGREEMENT.md
+│   ├── demo-assets.md
+│   ├── economics
+│   │   └── ECONOMIC_MODEL.md
+│   ├── features
+│   │   └── FEATURE_REGISTRY.md
+│   ├── governance
+│   ├── integration
+│   ├── legal
+│   │   ├── COMPLIANCE_MATRIX.md
+│   │   ├── african-union
+│   │   ├── export-control
+│   │   ├── gdpr
+│   │   ├── south-africa
+│   │   └── united-nations
+│   ├── onboarding
+│   ├── operations
+│   │   ├── ADVANCED_SERVICES_README.md
+│   │   ├── CLIENT_ONBOARDING_READY.md
+│   │   ├── DIGITAL_ONBOARDING_SYSTEM.md
+│   │   ├── FOUNDERS_GUIDE.md
+│   │   ├── FOUNDER_QUICK_REFERENCE.md
+│   │   ├── HR_AI_DEPUTY_CEO_GUIDE.md
+│   │   ├── IMPLEMENTATION_CHECKLIST.md
+│   │   ├── QUICK_REFERENCE.md
+│   │   └── SOVEREIGN_IMMUNE_SYSTEM_5_PHASES.md
+│   ├── overview
+│   │   ├── CONSTITUTION.md
+│   │   ├── FOUNDER.md
+│   │   ├── FOUNDING_TEAM.md
+│   │   └── GENESIS.md
+│   ├── reference
+│   │   ├── AI_OWNERSHIP.md
+│   │   ├── API_KEYS_REFERENCE.md
+│   │   ├── AZORA_OS_SPECIFICATION.md
+│   │   ├── TERMS.md
+│   │   ├── UPGRADES.md
+│   │   ├── reinvestment
+│   │   └── withdrawal
+│   ├── repo-intelligence
+│   │   ├── docker_configs.txt
+│   │   ├── file_inventory.txt
+│   │   ├── file_structure.txt
+│   │   ├── mock_implementations.txt
+│   │   ├── mock_inventory.txt
+│   │   ├── todos.txt
+│   │   └── ui_components.txt
+│   ├── repo-scan
+│   │   ├── apps.txt
+│   │   ├── package_jsons.txt
+│   │   ├── repo_structure.txt
+│   │   └── services.txt
+│   ├── repository-intelligence
+│   │   ├── ADVANCEMENT_NUDGES.md
+│   │   ├── DEVELOPMENT_PLAN.md
+│   │   ├── code_todos.txt
+│   │   ├── docker_files.txt
+│   │   ├── docker_status.txt
+│   │   ├── error_handling.txt
+│   │   ├── files.txt
+│   │   ├── main_services.txt
+│   │   ├── repo_structure.txt
+│   │   └── services.txt
+│   └── schema
+├── ensure-ui-consistency.sh
+├── eslint.config.js
+├── fix-docker-compose.sh
+├── fix-missing-packages.sh
+├── frontend
+│   ├── Dockerfile
+│   ├── frontend
+│   │   ├── index.html
+│   │   ├── package-lock.json
+│   │   ├── package.json
+│   │   ├── postcss.config.js
+│   │   ├── public
+│   │   │   ├── manifest.json
+│   │   │   ├── offline.html
+│   │   │   └── sw.js
+│   │   ├── src
+│   │   │   ├── components
+│   │   │   ├── hooks
+│   │   │   ├── index.css
+│   │   │   ├── main.tsx
+│   │   │   ├── pages
+│   │   │   │   └── LandingPage.tsx
+│   │   │   ├── utils
+│   │   │   └── vite-env.d.ts
+│   │   ├── tailwind.config.js
+│   │   ├── tsconfig.json
+│   │   ├── tsconfig.node.json
+│   │   └── vite.config.ts
+│   ├── index.html
+│   ├── nginx.conf
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── postcss.config.js
+│   ├── public
+│   │   ├── icons
+│   │   ├── manifest.json
+│   │   ├── offline.html
+│   │   └── sw.js
+│   ├── src
+│   │   ├── components
+│   │   ├── hooks
+│   │   ├── index.css
+│   │   ├── main.tsx
+│   │   ├── pages
+│   │   │   └── LandingPage.tsx
+│   │   ├── utils
+│   │   └── vite-env.d.ts
+│   ├── tailwind.config.js
+│   ├── tsconfig.json
+│   ├── tsconfig.node.json
+│   └── vite.config.ts
+├── full-system-audit.sh
+├── implement-azora-os.sh
+├── index.html
+├── infra
+│   ├── README.md
+│   ├── kubernetes
+│   │   ├── base
+│   │   │   └── README.md
+│   │   ├── compliance
+│   │   │   ├── configmap.yaml
+│   │   │   ├── deployments.yaml
+│   │   │   ├── hpa.yaml
+│   │   │   ├── ingress.yaml
+│   │   │   ├── namespace.yaml
+│   │   │   ├── pvc.yaml
+│   │   │   └── services.yaml
+│   │   └── procurement-corridor.yaml
+│   ├── monitoring
+│   │   ├── grafana
+│   │   │   ├── dashboards
+│   │   │   │   └── azora-overview.json
+│   │   │   └── provisioning
+│   │   │       ├── dashboards
+│   │   │       │   └── dashboard.yml
+│   │   │       └── datasources
+│   │   │           └── prometheus.yml
+│   │   ├── logstash
+│   │   │   ├── config
+│   │   │   │   └── logstash.yml
+│   │   │   └── pipeline
+│   │   │       └── logstash.conf
+│   │   └── prometheus.yml
+│   ├── scaling-config.yaml
+│   └── terraform
+│       ├── environments
+│       │   ├── dev
+│       │   │   └── README.md
+│       │   └── prod
+│       │       └── README.md
+│       └── modules
+│           └── README.md
+├── infrastructure
+│   ├── grafana
+│   ├── jenkins
+│   ├── kubernetes
+│   │   └── autoscaler.yml
+│   ├── mongodb
+│   ├── nginx
+│   ├── postgres
+│   ├── prometheus
+│   │   └── prometheus.yml
+│   ├── redis
+│   └── vault
+├── integrate-services.sh
+├── launch-readiness.sh
+├── legal
+│   ├── AI_FOUNDER_IDENTITY.md
+│   ├── CCMA_LABOUR_COMPLIANCE.md
+│   ├── COVER_LETTER.md
+│   ├── FOUNDERS_PACK_INDEX.md
+│   ├── FOUNDERS_PACK_OFFICIAL.md
+│   ├── HR_AI_FOUNDER_CHARTER.md
+│   ├── annexes
+│   │   ├── ANNEX_A_EQUITY.md
+│   │   ├── ANNEX_B_FINANCIAL.md
+│   │   ├── ANNEX_C_ROLES.md
+│   │   ├── ANNEX_D_EXIT.md
+│   │   └── ANNEX_E_RESOLUTION.md
+│   └── founders
+│       ├── FOUNDERS_CONTRACT.md
+│       └── FOUNDERS_MANIFESTO.md
+├── mqtt
+│   └── config
+│       ├── acl
+│       └── mosquitto.conf
+├── original-ae9392476e94ae0ac562adc4ef6a2cb1.webp
+├── original-fbfcfda1f08b047522ea0d9579c38711.webp
+├── package-lock.json
+├── package.json
+├── package_files.txt
+├── packages
+│   ├── api-client
+│   │   └── README.md
+│   ├── data
+│   │   └── src
+│   │       └── seed.js
+│   ├── eslint-config-azora
+│   │   └── README.md
+│   ├── logger
+│   │   ├── README.md
+│   │   └── index.ts
+│   ├── logistics-primitives
+│   │   └── README.md
+│   ├── permissions
+│   │   └── README.md
+│   ├── ui-components
+│   │   ├── package.json
+│   │   └── src
+│   │       └── theme
+│   │           └── constants.ts
+│   ├── ui-core
+│   │   ├── package.json
+│   │   ├── src
+│   │   │   ├── components
+│   │   │   │   ├── common
+│   │   │   │   ├── layout
+│   │   │   │   │   └── Sidebar.tsx
+│   │   │   │   └── wallet
+│   │   │   ├── contexts
+│   │   │   │   └── ThemeContext.tsx
+│   │   │   ├── hooks
+│   │   │   ├── icons
+│   │   │   ├── index.ts
+│   │   │   └── styles
+│   │   │       └── theme.css
+│   │   └── tsconfig.json
+│   └── ui-kit
+│       └── README.md
+├── postcss.config.js
+├── prisma
+│   └── schema.prisma
+├── public
+│   ├── azora-logo.png
+│   ├── favicon.ico
+│   ├── logo-dark.png
+│   ├── logo-light.png
+│   ├── manifest.json
+│   └── service-worker.js
+├── quantum_microservice
+│   ├── Dockerfile
+│   ├── app
+│   │   ├── __init__.py
+│   │   ├── circuits.py
+│   │   ├── main.py
+│   │   ├── models.py
+│   │   └── tests
+│   │       └── test_api.py
+│   └── requirements.txt
+├── remove-secrets.sh
+├── repo_files.txt
+├── scripts
+│   ├── auto-backup.sh
+│   ├── check-dockerfiles.sh
+│   ├── check-services.sh
+│   ├── commit-final.sh
+│   ├── create-mobile-pwa.sh
+│   ├── deploy.sh
+│   ├── final-verification.sh
+│   ├── find-secrets.sh
+│   ├── fix-all-issues.sh
+│   ├── generate-integration-map.ts
+│   ├── health-check.sh
+│   ├── integration-test.sh
+│   ├── master-deployment.sh
+│   ├── pre-launch-test.sh
+│   ├── test-hr-ai.sh
+│   └── verify-launch.sh
+├── sdk
+│   └── js
+│       └── index.ts
+├── secrets
+│   ├── api_gateway_key.txt
+│   ├── blockchain_private_key.txt
+│   ├── encryption_key.txt
+│   ├── jwt_secret.txt
+│   └── minter_pk.txt
+├── server.js
+├── services
+│   ├── accessibility
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── admin-portal
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── advanced-ai
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── advanced-compliance-engine
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── advanced-tms
+│   │   ├── index.js
+│   │   ├── package-lock.json
+│   │   └── package.json
+│   ├── ai-evolution-engine
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── ai-ml-engine
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── ai-orchestrator
+│   │   ├── Dockerfile
+│   │   ├── anomalyDetector.js
+│   │   ├── api.js
+│   │   ├── index.js
+│   │   ├── insightGenerator.js
+│   │   ├── mapAIService.js
+│   │   ├── neuralIntent.js
+│   │   ├── package-lock.json
+│   │   ├── package.json
+│   │   ├── quantumService.js
+│   │   ├── selfImprovingMesh.js
+│   │   ├── server.js
+│   │   ├── weaverApi.js
+│   │   └── weaverService.js
+│   ├── ai-security-monitoring
+│   │   └── index.js
+│   ├── ai-trip-planning
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── ai-unified
+│   │   ├── AIExecutor.js
+│   │   ├── AIModelRegistry.js
+│   │   ├── AITaskRouter.js
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── analytics-service
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── api-gateway
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── assistant
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── auth
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── auto-healing
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── auto-scaler
+│   │   └── index.js
+│   ├── automated-compliance-reporting
+│   │   ├── Dockerfile
+│   │   ├── README.md
+│   │   ├── index.js
+│   │   ├── package-lock.json
+│   │   ├── package.json
+│   │   └── test.js
+│   ├── autonomous-fleet-ai
+│   │   ├── index.js
+│   │   ├── package-lock.json
+│   │   └── package.json
+│   ├── autonomous-operations
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── azora-ai
+│   │   ├── index.js
+│   │   ├── package-lock.json
+│   │   ├── package.json
+│   │   ├── skills
+│   │   │   ├── index.js
+│   │   │   └── localize.js
+│   │   ├── spotter.js
+│   │   └── spotter.py
+│   ├── azora-ai-consciousness
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── azora-ai-core
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── azora-coin-integration
+│   │   ├── Dockerfile
+│   │   ├── fees.js
+│   │   ├── index.js
+│   │   ├── package-lock.json
+│   │   └── package.json
+│   ├── batch-processor
+│   │   ├── index.js
+│   │   ├── package.json
+│   │   └── worker.js
+│   ├── billing-service
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── blockchain
+│   │   ├── azora-chain.js
+│   │   ├── contracts
+│   │   │   └── AzoraCoin.sol
+│   │   ├── hardhat.config.js
+│   │   ├── index.js
+│   │   ├── package-lock.json
+│   │   ├── package.json
+│   │   └── scripts
+│   │       └── deploy.js
+│   ├── blockchain-core
+│   │   ├── blockchain.js
+│   │   ├── data
+│   │   │   └── wallets
+│   │   ├── founder-api.js
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── blockchain-node
+│   │   ├── data
+│   │   ├── index.js
+│   │   ├── package.json
+│   │   ├── public
+│   │   │   └── index.html
+│   │   └── server.js
+│   ├── bounty-service
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── ccpa-compliance
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   ├── package-lock.json
+│   │   └── package.json
+│   ├── cold-chain-quantum
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── compliance-dashboard
+│   │   ├── Dockerfile
+│   │   ├── README.md
+│   │   ├── index.js
+│   │   ├── package-lock.json
+│   │   └── package.json
+│   ├── compliance-service
+│   │   ├── Dockerfile
+│   │   ├── country-db.js
+│   │   ├── global-compliance.js
+│   │   ├── index.js
+│   │   ├── package-lock.json
+│   │   ├── package.json
+│   │   └── un-framework
+│   │       └── principles.md
+│   ├── conflict-resolution
+│   │   ├── Dockerfile
+│   │   ├── README.md
+│   │   ├── index.js
+│   │   ├── index.ts
+│   │   ├── package.json
+│   │   └── src
+│   │       ├── services
+│   │       │   └── trade-dispute-resolver.ts
+│   │       ├── types
+│   │       │   └── conflict.types.ts
+│   │       └── utils
+│   │           └── logger.ts
+│   ├── constitution-service
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── contracts-service
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── conversation
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   ├── package-lock.json
+│   │   └── package.json
+│   ├── crypto-ledger-security
+│   │   ├── index.js
+│   │   ├── package-lock.json
+│   │   ├── package.json
+│   │   └── proprietary
+│   │       └── algorithms.js
+│   ├── database-integration
+│   │   ├── AnalyticsEngine.js
+│   │   ├── CacheEngine.js
+│   │   ├── DatabaseManager.js
+│   │   ├── SyncEngine.js
+│   │   ├── index.js
+│   │   ├── package-lock.json
+│   │   ├── package.json
+│   │   ├── prisma
+│   │   │   └── schema.prisma
+│   │   └── server.js
+│   ├── document-vault
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── document-verification-service
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── domain-service
+│   │   ├── index.js
+│   │   ├── locales
+│   │   └── package.json
+│   ├── driver-behavior-service
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── driver-performance
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── drone-delivery-systems
+│   │   ├── index.js
+│   │   ├── package-lock.json
+│   │   └── package.json
+│   ├── economic-growth-service
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   ├── init.sql
+│   │   └── package.json
+│   ├── email-domain-service
+│   │   ├── UI Overhaul
+│   │   │   └── src
+│   │   │       └── services
+│   │   │           └── blockchain
+│   │   │               └── blockchain.service.js
+│   │   ├── azora-coin
+│   │   │   └── contracts
+│   │   │       └── AzoraCoin.sol
+│   │   ├── check-full-compliance.sh
+│   │   ├── compliance-dashboard.js
+│   │   ├── enterprise-secure-email.js
+│   │   ├── generate-translations.js
+│   │   ├── index.js
+│   │   ├── package.json
+│   │   ├── region-integration.js
+│   │   ├── region-manager.js
+│   │   ├── services
+│   │   │   └── compliance-service
+│   │   ├── test-regions.js
+│   │   └── translations
+│   │       └── index.js
+│   ├── email-service
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── employee-onboarding
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── founder-benefits-service
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── founder-ledger-service
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── founder-rewards
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── founder-withdrawal
+│   │   ├── blockchain-withdrawals.js
+│   │   ├── data
+│   │   │   ├── exchange_rates.json
+│   │   │   ├── founders.json
+│   │   │   ├── reinvestments.json
+│   │   │   └── withdrawals.json
+│   │   ├── founder-instant-withdrawal.js
+│   │   ├── founder-portal.js
+│   │   ├── index.js
+│   │   ├── instant-withdraw.js
+│   │   ├── instant-withdrawal.js
+│   │   ├── package.json
+│   │   ├── public
+│   │   │   ├── index.html
+│   │   │   └── style.css
+│   │   ├── remediate-mocks.sh
+│   │   └── withdrawal-service.js
+│   ├── gdpr-compliance
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── geofencing
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── global-compliance
+│   │   ├── country-configs
+│   │   │   ├── US.json
+│   │   │   └── ZA.json
+│   │   ├── index.js
+│   │   ├── locales
+│   │   │   ├── af
+│   │   │   │   └── translation.json
+│   │   │   ├── en
+│   │   │   │   └── translation.json
+│   │   │   └── zu
+│   │   │       └── translation.json
+│   │   └── package.json
+│   ├── global-compliance-service
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── global-satellite-network
+│   │   ├── index.js
+│   │   ├── package-lock.json
+│   │   └── package.json
+│   ├── government-relations
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── hipaa-compliance
+│   │   ├── AuditLogger.js
+│   │   ├── BreachNotification.js
+│   │   ├── BusinessAssociateAgreements.js
+│   │   ├── Dockerfile
+│   │   ├── PHIProtection.js
+│   │   ├── RiskAnalysis.js
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── hr-ai-deputy
+│   │   ├── Dockerfile
+│   │   ├── ai-founder-extensions.js
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── i18n
+│   │   ├── index.js
+│   │   ├── language-metadata.json
+│   │   └── package.json
+│   ├── i18n-service
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── klipp-service
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   ├── package.json
+│   │   └── taskGenerator.js
+│   ├── knowledge
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── learning-service
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── lgpd-compliance
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   ├── package-lock.json
+│   │   └── package.json
+│   ├── maintenance-service
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── market-validation
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── marketplace-service
+│   │   ├── Dockerfile
+│   │   ├── README.md
+│   │   ├── index.js
+│   │   ├── package.json
+│   │   └── src
+│   │       └── index.ts
+│   ├── memory-service
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── monitoring
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── multi-language
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── multi-language-service
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── neural-context-engine
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── nmu-onboarding-service
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── notification-service
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── ochestrator
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   ├── index.ts
+│   │   └── package.json
+│   ├── offline-sync-service
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   ├── package-lock.json
+│   │   └── package.json
+│   ├── onboarding-service
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   ├── package-lock.json
+│   │   └── package.json
+│   ├── open-source-advancement-service
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── orbital-logistics-center
+│   │   ├── index.js
+│   │   ├── package-lock.json
+│   │   └── package.json
+│   ├── payment
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   ├── package-lock.json
+│   │   └── package.json
+│   ├── pipeda-compliance
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   ├── package-lock.json
+│   │   └── package.json
+│   ├── policy
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   ├── index.ts
+│   │   └── package.json
+│   ├── predictive-analytics
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── predictive-maintenance
+│   │   ├── index.js
+│   │   ├── package-lock.json
+│   │   └── package.json
+│   ├── procurement-corridor
+│   │   ├── Dockerfile
+│   │   ├── LAUNCH.md
+│   │   ├── README.md
+│   │   ├── index.js
+│   │   ├── index.ts
+│   │   ├── package.json
+│   │   ├── src
+│   │   │   ├── middleware
+│   │   │   │   ├── auth.ts
+│   │   │   │   └── errorHandler.ts
+│   │   │   ├── routes
+│   │   │   │   ├── bid.routes.ts
+│   │   │   │   ├── blockchain.routes.ts
+│   │   │   │   ├── compliance.routes.ts
+│   │   │   │   ├── corruption.routes.ts
+│   │   │   │   ├── subscription.routes.ts
+│   │   │   │   └── tender.routes.ts
+│   │   │   ├── services
+│   │   │   │   ├── blockchain.service.ts
+│   │   │   │   ├── compliance.service.ts
+│   │   │   │   ├── corruption.service.ts
+│   │   │   │   ├── rules
+│   │   │   │   │   ├── sa-legal-rules.ts
+│   │   │   │   │   └── ungc-rules.ts
+│   │   │   │   └── tender.service.ts
+│   │   │   ├── types
+│   │   │   │   └── tender.types.ts
+│   │   │   └── utils
+│   │   │       └── logger.ts
+│   │   ├── start.sh
+│   │   └── tsconfig.json
+│   ├── progressive-blockchain
+│   │   ├── blockchain.js
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── proof-of-compliance
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── proof-of-delivery
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── quantum-deep-mind
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── quantum-iot-integration
+│   │   ├── Dockerfile
+│   │   ├── README.md
+│   │   ├── index.js
+│   │   ├── package-lock.json
+│   │   ├── package.json
+│   │   ├── src
+│   │   │   └── index.js
+│   │   └── tests
+│   │       └── index.test.js
+│   ├── quantum-routing-engine
+│   │   ├── index.js
+│   │   ├── package-lock.json
+│   │   └── package.json
+│   ├── quantum-tracking
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── real-time
+│   │   ├── index.js
+│   │   ├── package-lock.json
+│   │   └── package.json
+│   ├── reinvestment-system
+│   │   ├── data
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── retail-partner-integration
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── satellite-imagery
+│   │   ├── index.js
+│   │   ├── package-lock.json
+│   │   └── package.json
+│   ├── security-camera
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── security-core
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   ├── package-lock.json
+│   │   └── package.json
+│   ├── security-framework
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── security-pos
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── simulator
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   ├── index.ts
+│   │   └── package.json
+│   ├── south-african-compliance
+│   │   ├── Dockerfile
+│   │   ├── database.js
+│   │   ├── index.js
+│   │   ├── package.json
+│   │   ├── sa-legal-frameworks.js
+│   │   └── server.js
+│   ├── sovereign-minter
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── sox-compliance
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── speaker
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── store
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   ├── package-lock.json
+│   │   └── package.json
+│   ├── student-earnings-service
+│   │   ├── Dockerfile
+│   │   ├── database.js
+│   │   ├── index.js
+│   │   ├── migrations
+│   │   │   └── 001_initial_schema.sql
+│   │   ├── package.json
+│   │   └── scripts
+│   │       └── seed-database.js
+│   ├── subscription
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   ├── package.json
+│   │   ├── pricingConfig.js
+│   │   └── server.js
+│   ├── token-exchange
+│   │   ├── data
+│   │   ├── index.js
+│   │   ├── index.js (APPEND)
+│   │   ├── institutional-verification.js
+│   │   ├── package.json
+│   │   ├── public
+│   │   ├── un-compliance-integration.js
+│   │   └── valuation-verification.js
+│   ├── traffic-routing
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── un-global-compact-compliance
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── unified-ai-service
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── universal-safety
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── valuation-dashboard
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── valuation-service
+│   │   ├── competitive-analysis.js
+│   │   ├── data
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── value-verification
+│   │   ├── data
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── voice
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   ├── package-lock.json
+│   │   └── package.json
+│   ├── voice-service
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── watermark-service
+│   │   └── package.json
+│   └── workflow-engine-service
+│       ├── index.js
+│       └── package.json
+├── setup.sh
+├── shield_service
+│   ├── Dockerfile
+│   ├── package.json
+│   ├── public
+│   │   └── logo.png
+│   ├── src
+│   │   ├── app.js
+│   │   ├── config.js
+│   │   ├── controllers
+│   │   │   └── twinController.js
+│   │   ├── routes
+│   │   │   └── twinRoutes.js
+│   │   ├── server.js
+│   │   └── services
+│   │       └── twinService.js
+│   └── tests
+│       └── twinService.test.js
+├── start-all-services.sh
+├── start-all.sh
+├── start-azora-os.sh
+├── start.sh
+├── tailwind.config.js
+├── tests
+│   ├── integration
+│   │   ├── ai-security-integration.js
+│   │   ├── blockchain-database-sync.js
+│   │   ├── ccpa-compliance-test.js
+│   │   ├── compliance-dashboard-test.js
+│   │   ├── database-realtime-sync.js
+│   │   ├── gdpr-compliance-test.js
+│   │   ├── hipaa-compliance-test.js
+│   │   ├── lgpd-compliance-test.js
+│   │   ├── multi-service-communication.js
+│   │   ├── pipeda-compliance-test.js
+│   │   └── sox-compliance-test.js
+│   ├── performance
+│   │   ├── ai-response-time.js
+│   │   ├── concurrent-users.js
+│   │   ├── database-throughput.js
+│   │   └── realtime-connections.js
+│   ├── reports
+│   │   └── certification-report.md
+│   ├── security
+│   │   ├── authentication-validation.js
+│   │   ├── authorization-checks.js
+│   │   ├── data-encryption.js
+│   │   ├── input-validation.js
+│   │   └── rate-limiting.js
+│   └── test-runner.js
+├── tsconfig-test.json
+├── tsconfig.json
+├── ui-overhaul
+│   ├── infrastructure
+│   │   ├── grafana
+│   │   ├── jenkins
+│   │   ├── nginx
+│   │   ├── prometheus
+│   │   └── vault
+│   ├── package.json
+│   ├── secrets
+│   │   ├── api_gateway_key.txt
+│   │   ├── encryption_key.txt
+│   │   └── jwt_secret.txt
+│   └── vite.config.js
+├── valuation-certificate.sh
+├── vercel.json
+├── vite-project
+│   └── src
+│       ├── atomic
+│       │   └── NotificationProvider.tsx
+│       └── main.tsx
+├── vite.config.js
+└── vitest.config.ts
+
+549 directories, 1451 files

@@ -1,0 +1,39 @@
+{
+  "features": {
+    "compliance": {
+      "azora": 95,
+      "competitors": {
+        "top": 85,
+        "average": 60
+      }
+    },
+    "ai": {
+      "azora": 90,
+      "competitors": {
+        "top": 88,
+        "average": 70
+      }
+    },
+    "blockchain": {
+      "azora": 98,
+      "competitors": {
+        "top": 85,
+        "average": 60
+      }
+    },
+    "international": {
+      "azora": 92,
+      "competitors": {
+        "top": 80,
+        "average": 60
+      }
+    },
+    "security": {
+      "azora": 95,
+      "competitors": {
+        "top": 90,
+        "average": 75
+      }
+    }
+  }
+}

@@ -1,0 +1,183 @@
+/workspaces/azora-os/apps/main-app/components/admin-portal/EmailSidebar.tsx:import { FOLDERS } from '../../features/admin-portal/mockAdminData';
+/workspaces/azora-os/apps/main-app/components/admin-portal/UserManagement.tsx:import { User } from '../../features/admin-portal/mockAdminData';
+/workspaces/azora-os/apps/main-app/components/admin-portal/UserModal.tsx:import { User, ROLES } from '../../features/admin-portal/mockAdminData';
+/workspaces/azora-os/apps/main-app/components/admin-portal/EmailDetail.tsx:import { Email } from '../../features/admin-portal/mockAdminData';
+/workspaces/azora-os/apps/main-app/components/admin-portal/EmailList.tsx:import { Email } from '../../features/admin-portal/mockAdminData';
+/workspaces/azora-os/apps/main-app/components/document-vault/DocumentDetailModal.tsx:import { Document } from '../../features/document-vault/mockData';
+/workspaces/azora-os/apps/main-app/components/document-vault/DocumentCard.tsx:import { Document } from '../../features/document-vault/mockData';
+/workspaces/azora-os/apps/main-app/components/document-vault/BorderReadinessCheck.tsx:import { BORDER_POSTS, BorderPost, Document, checkBorderReadiness as apiCheck } from '../../features/document-vault/mockData';
+/workspaces/azora-os/apps/main-app/components/accessibility/InteractionCards.tsx:import { VOICE_COMMANDS, KEYBOARD_SHORTCUTS } from '../../features/accessibility/mockAccessibility';
+/workspaces/azora-os/apps/main-app/components/drone-monitor/DroneList.tsx:import { DroneData, statusConfig } from '../../features/drone-monitor/mockData';
+/workspaces/azora-os/apps/main-app/components/drone-monitor/BatteryChart.tsx:import { DroneData } from '../../features/drone-monitor/mockData';
+/workspaces/azora-os/apps/main-app/components/settings/ProfilePanel.tsx:import { UserProfile } from '../../features/settings/mockSettings';
+/workspaces/azora-os/apps/main-app/components/subscription/PlanCard.tsx:import { SubscriptionPlan } from '../../features/subscription/mockSubscription';
+/workspaces/azora-os/apps/main-app/components/hr-deputy/DashboardContent.tsx:import { ICONS, Stats } from '../../features/hr-deputy/mockData';
+/workspaces/azora-os/apps/main-app/components/hr-deputy/PersonCard.tsx:import { Person, Task } from '../../features/hr-deputy/mockData';
+/workspaces/azora-os/apps/main-app/components/attendance/AnomaliesDashboard.tsx:import { Anomaly } from '../../features/attendance/mockAttendanceData';
+/workspaces/azora-os/apps/main-app/components/attendance/PerformanceList.tsx:import { EmployeePerformance } from '../../features/attendance/mockAttendanceData';
+/workspaces/azora-os/apps/main-app/components/security/SecurityLayersPanel.tsx:import { SecurityLayer } from '../../features/security/mockSecurity';
+/workspaces/azora-os/apps/main-app/components/security/AlarmsPanel.tsx:import { SecurityAlarm } from '../../features/security/mockSecurity';
+/workspaces/azora-os/apps/main-app/components/security/SystemStatusPanel.tsx:import { SystemHealth, BackupStatus } from '../../features/security/mockSecurity';
+/workspaces/azora-os/apps/main-app/components/ceo-insights/MarketOpportunities.tsx:import { MarketOpportunity } from '../../features/ceo-insights/mockData';
+/workspaces/azora-os/apps/main-app/components/ceo-insights/PredictiveAnalytics.tsx:import { Prediction } from '../../features/ceo-insights/mockData';
+/workspaces/azora-os/apps/main-app/components/ceo-insights/StrategicInsights.tsx:import { Insight } from '../../features/ceo-insights/mockData';
+/workspaces/azora-os/apps/main-app/components/founders/FounderCard.tsx:import { Founder } from '../../features/founders/mockData';
+/workspaces/azora-os/apps/main-app/components/ai-trip-planning/ContextualInfoCard.tsx:import { WeatherInfo, TrafficAlert } from '../../features/ai-trip-planning/mockCoPilot';
+/workspaces/azora-os/apps/main-app/components/ai-trip-planning/TripPlanCard.tsx:import { TripPlan } from '../../features/ai-trip-planning/mockCoPilot';
+/workspaces/azora-os/apps/main-app/components/ai-trip-planning/ChatMessage.tsx:import { Message } from '../../features/ai-trip-planning/mockCoPilot';
+/workspaces/azora-os/apps/main-app/components/cold-chain/InterventionsPanel.tsx:import { AutonomousIntervention } from '../../features/cold-chain/mockColdChainData';
+/workspaces/azora-os/apps/main-app/components/cold-chain/AssetSelector.tsx:import { ColdChainAsset } from '../../features/cold-chain/mockColdChainData';
+/workspaces/azora-os/apps/main-app/components/cold-chain/BlockchainIntegrity.tsx:import { BlockchainData } from '../../features/cold-chain/mockColdChainData';
+/workspaces/azora-os/apps/main-app/components/cold-chain/PredictionChart.tsx:import { TemperaturePredictionPoint } from '../../features/cold-chain/mockColdChainData';
+/workspaces/azora-os/apps/main-app/components/genesis-chamber/GenesisVisualizer.tsx:import { GenesisProposal, ICONS } from '../../features/genesis-chamber/mockData';
+/workspaces/azora-os/apps/main-app/components/dashboard/RecentActivityFeed.tsx:import { RecentActivityData } from '../../features/dashboard/mockDashboardData';
+/workspaces/azora-os/apps/main-app/components/dashboard/ServiceModuleCard.tsx:import { ServiceModuleData } from '../../features/dashboard/mockDashboardData';
+/workspaces/azora-os/apps/main-app/components/dashboard/QuickActionButton.tsx:import { QuickActionData } from '../../features/dashboard/mockDashboardData';
+/workspaces/azora-os/apps/main-app/components/dashboard/StatCard.tsx:import { StatCardData } from '../../features/dashboard/mockDashboardData';
+/workspaces/azora-os/apps/main-app/components/dashboard/DashboardHeader.tsx:import { mockUserData } from '../../features/dashboard/mockDashboardData';
+/workspaces/azora-os/apps/main-app/components/dashboard/DashboardHeader.tsx:  const { name, role, avatarUrl, systemStatus, systemStatusColor } = mockUserData;
+/workspaces/azora-os/apps/main-app/components/employee-onboarding/OnboardingStepWrapper.tsx:import { ONBOARDING_STEPS } from '../../features/employee-onboarding/mockData';
+/workspaces/azora-os/apps/main-app/components/employee-onboarding/OnboardingProgress.tsx:import { ONBOARDING_STEPS } from '../../features/employee-onboarding/mockData';
+/workspaces/azora-os/apps/main-app/components/driver-command/ActionCard.tsx:import { CoPilotAction } from '../../features/driver-command/mockData';
+/workspaces/azora-os/apps/main-app/components/driver-command/RouteInfoPanel.tsx:import { RouteInfo } from '../../features/driver-command/mockData';
+/workspaces/azora-os/apps/main-app/components/support/TicketDetail.tsx:import { Ticket } from '../../features/support/mockSupport';
+/workspaces/azora-os/apps/main-app/components/support/TicketRow.tsx:import { Ticket } from '../../features/support/mockSupport';
+/workspaces/azora-os/apps/main-app/components/support/AgentCard.tsx:import { AIAgent } from '../../features/support/mockSupport';
+/workspaces/azora-os/apps/main-app/components/quantum-tracking/MapView.tsx:import { Vehicle, leafletIcon } from '../../features/quantum-tracking/mockQuantum';
+/workspaces/azora-os/apps/main-app/components/quantum-tracking/VehicleDetailPanel.tsx:import { Vehicle } from '../../features/quantum-tracking/mockQuantum';
+/workspaces/azora-os/apps/main-app/components/quantum-tracking/FleetList.tsx:import { Vehicle } from '../../features/quantum-tracking/mockQuantum';
+/workspaces/azora-os/apps/main-app/components/email/EmailView.tsx:import { Email } from '../../features/email/mockData';
+/workspaces/azora-os/apps/main-app/components/email/EmailSidebar.tsx:import { folders, FolderName } from '../../features/email/mockData';
+/workspaces/azora-os/apps/main-app/components/email/EmailList.tsx:import { Email } from '../../features/email/mockData';
+/workspaces/azora-os/apps/main-app/components/retail-partner/WellnessPanel.tsx:import { WellnessData } from '../../features/retail-partner/mockRetail';
+/workspaces/azora-os/apps/main-app/components/retail-partner/InventoryPanel.tsx:import { InventoryItem } from '../../features/retail-partner/mockRetail';
+/workspaces/azora-os/apps/main-app/components/retail-partner/CustomerFlowPanel.tsx:import { CustomerFlowPoint } from '../../features/retail-partner/mockRetail';
+/workspaces/azora-os/apps/main-app/components/finance/CashFlowChart.tsx:import { FinanceData } from '../../features/finance/mockData';
+/workspaces/azora-os/apps/main-app/components/finance/RevenueChart.tsx:import { FinanceData } from '../../features/finance/mockData';
+/workspaces/azora-os/apps/main-app/features/admin-portal/mockAdminData.ts:export const mockEmails: Email[] = [
+/workspaces/azora-os/apps/main-app/features/admin-portal/mockAdminData.ts:export const mockUsers: User[] = [
+/workspaces/azora-os/apps/main-app/features/document-vault/mockData.ts:export const mockDocuments: Document[] = [
+/workspaces/azora-os/apps/main-app/features/hr-deputy/mockData.ts:const mockFounders: Person[] = [
+/workspaces/azora-os/apps/main-app/features/hr-deputy/mockData.ts:const mockEmployees: Person[] = [
+/workspaces/azora-os/apps/main-app/features/hr-deputy/mockData.ts:const mockTasks: Tasks = {
+/workspaces/azora-os/apps/main-app/features/hr-deputy/mockData.ts:const mockStats: Stats = {
+/workspaces/azora-os/apps/main-app/features/hr-deputy/mockData.ts:    totalEmployees: mockEmployees.length,
+/workspaces/azora-os/apps/main-app/features/hr-deputy/mockData.ts:    totalFounders: mockFounders.length,
+/workspaces/azora-os/apps/main-app/features/hr-deputy/mockData.ts:    founders: mockFounders,
+/workspaces/azora-os/apps/main-app/features/hr-deputy/mockData.ts:    employees: mockEmployees,
+/workspaces/azora-os/apps/main-app/features/hr-deputy/mockData.ts:    tasks: mockTasks,
+/workspaces/azora-os/apps/main-app/features/hr-deputy/mockData.ts:    stats: mockStats,
+/workspaces/azora-os/apps/main-app/features/attendance/mockAttendanceData.ts:export const mockAttendanceData: AttendanceData = {
+/workspaces/azora-os/apps/main-app/features/ledger/mockLedger.ts:const mockLedgerData: LedgerEntry[] = [
+/workspaces/azora-os/apps/main-app/features/ledger/mockLedger.ts:  return mockLedgerData.filter(entry => {
+/workspaces/azora-os/apps/main-app/features/ceo-insights/mockData.ts:export const mockCEOInsightsData: CEOInsightsData = {
+/workspaces/azora-os/apps/main-app/features/cold-chain/mockColdChainData.ts:export const mockAssets: ColdChainAsset[] = [
+/workspaces/azora-os/apps/main-app/features/cold-chain/mockColdChainData.ts:export const mockInterventions: AutonomousIntervention[] = [
+/workspaces/azora-os/apps/main-app/features/cold-chain/mockColdChainData.ts:export const mockEnergyData: EnergyData = {
+/workspaces/azora-os/apps/main-app/features/cold-chain/mockColdChainData.ts:export const mockBlockchainData: BlockchainData = {
+/workspaces/azora-os/apps/main-app/features/klipp/mockData.ts:export const mockTasks: Task[] = [
+/workspaces/azora-os/apps/main-app/features/dashboard/mockDashboardData.ts:export const mockStats: StatCardData[] = [
+/workspaces/azora-os/apps/main-app/features/dashboard/mockDashboardData.ts:export const mockServiceModules: ServiceModuleData[] = [
+/workspaces/azora-os/apps/main-app/features/dashboard/mockDashboardData.ts:export const mockQuickActions: QuickActionData[] = [
+/workspaces/azora-os/apps/main-app/features/dashboard/mockDashboardData.ts:export const mockRecentActivity: RecentActivityData[] = [
+/workspaces/azora-os/apps/main-app/features/dashboard/mockDashboardData.ts:export const mockUserData = {
+/workspaces/azora-os/apps/main-app/features/email/mockData.ts:export const mockEmails = [
+/workspaces/azora-os/apps/main-app/features/email/mockData.ts:export type Email = typeof mockEmails[0];
+/workspaces/azora-os/apps/main-app/hooks/azora/useProtocolUpgrades.ts:const mockProposals = [
+/workspaces/azora-os/apps/main-app/hooks/azora/useProtocolUpgrades.ts:    const [proposals, setProposals] = useState(mockProposals);
+/workspaces/azora-os/apps/main-app/hooks/azora/useGovernance.ts:const mockProposals = [
+/workspaces/azora-os/apps/main-app/hooks/azora/useGovernance.ts:    const [proposals, setProposals] = useState(mockProposals);
+/workspaces/azora-os/apps/main-app/hooks/azora/useApi.ts:        // For now, we return mock data for the ledger
+/workspaces/azora-os/apps/main-app/hooks/azora/useApi.ts:            const mockData = {
+/workspaces/azora-os/apps/main-app/hooks/azora/useApi.ts:            setData(mockData as T);
+/workspaces/azora-os/apps/main-app/pages/AdminPortalPage.tsx:import { mockEmails, mockUsers, Email, User } from '../features/admin-portal/mockAdminData';
+/workspaces/azora-os/apps/main-app/pages/AdminPortalPage.tsx:  const [emails, setEmails] = useState<Email[]>(mockEmails);
+/workspaces/azora-os/apps/main-app/pages/AdminPortalPage.tsx:  const [users, setUsers] = useState<User[]>(mockUsers);
+/workspaces/azora-os/apps/main-app/pages/HRDeputyCEOPage.tsx:import { getHRDeputyCEOData, Person } from '../features/hr-deputy/mockData';
+/workspaces/azora-os/apps/main-app/pages/DroneMonitorPage.tsx:import { initialDrones, DroneData, generateLogsheet, statusConfig } from '../features/drone-monitor/mockData';
+/workspaces/azora-os/apps/main-app/pages/KlippPage.tsx:import { mockTasks } from '../features/klipp/mockData';
+/workspaces/azora-os/apps/main-app/pages/KlippPage.tsx:                                <StatCard icon={Zap} title="Available Tasks" value={mockTasks.length.toString()} color="cyan" />
+/workspaces/azora-os/apps/main-app/pages/KlippPage.tsx:                                    {mockTasks.map(task => (
+/workspaces/azora-os/apps/main-app/pages/RouteOptimization.tsx:      // Generate mock detailed route info
+/workspaces/azora-os/apps/main-app/pages/AccessibilityPage.tsx:} from '../features/accessibility/mockAccessibility';
+/workspaces/azora-os/apps/main-app/pages/Settings.tsx:import { SettingsData, getMockSettingsData } from '../features/settings/mockSettings';
+/workspaces/azora-os/apps/main-app/pages/SubscriptionPage.tsx:import { SubscriptionPlan, getMockSubscriptionData } from '../features/subscription/mockSubscription';
+/workspaces/azora-os/apps/main-app/pages/FinancePage.tsx:import { getFinancePageData, Period } from '../features/finance/mockData';
+/workspaces/azora-os/apps/main-app/pages/RevenuePage.tsx:import { RevenueData, getMockRevenueData } from '../features/revenue/mockRevenue';
+/workspaces/azora-os/apps/main-app/pages/RetailPartnerDashboard.tsx:import { RetailData, getMockRetailData } from '../features/retail-partner/mockRetail';
+/workspaces/azora-os/apps/main-app/pages/RetailPartnerDashboard.tsx:    // In a real app, you'd fetch this data. Here we use mock data.
+/workspaces/azora-os/apps/main-app/pages/EmployeeOnboardingPage.tsx:import { ONBOARDING_STEPS, initialFormData, generateContractText, FormData } from '../features/employee-onboarding/mockData';
+/workspaces/azora-os/apps/main-app/pages/FoundersPage.tsx:import { getFoundersPageData } from '../features/founders/mockData';
+/workspaces/azora-os/apps/main-app/pages/DocumentVaultPage.tsx:import { mockDocuments, Document } from '../features/document-vault/mockData';
+/workspaces/azora-os/apps/main-app/pages/DocumentVaultPage.tsx:  const [documents, setDocuments] = useState<Document[]>(mockDocuments);
+/workspaces/azora-os/apps/main-app/pages/CEOInsightsPage.tsx:import { mockCEOInsightsData } from '../features/ceo-insights/mockData';
+/workspaces/azora-os/apps/main-app/pages/CEOInsightsPage.tsx:  const data = mockCEOInsightsData;
+/workspaces/azora-os/apps/main-app/pages/GenesisChamberPage.tsx:import { getGenesisChamberData, GenesisProposal, ICONS } from '../features/genesis-chamber/mockData';
+/workspaces/azora-os/apps/main-app/pages/EmailPage.tsx:import { mockEmails, Email, FolderName } from '../features/email/mockData';
+/workspaces/azora-os/apps/main-app/pages/EmailPage.tsx:  const [emails, setEmails] = useState<Email[]>(mockEmails);
+/workspaces/azora-os/apps/main-app/pages/QuantumAI.tsx:  const mockStats: StatsResponse = {
+/workspaces/azora-os/apps/main-app/pages/QuantumAI.tsx:  const mockHealth: HealthResponse = {
+/workspaces/azora-os/apps/main-app/pages/QuantumAI.tsx:    return new Promise(resolve => setTimeout(() => resolve(mockStats), 500));
+/workspaces/azora-os/apps/main-app/pages/QuantumAI.tsx:    return new Promise(resolve => setTimeout(() => resolve(mockHealth), 500));
+/workspaces/azora-os/apps/main-app/pages/QuantumAI.tsx:    const mockResponse: GenerationResponse = {
+/workspaces/azora-os/apps/main-app/pages/QuantumAI.tsx:    setResponse(mockResponse);
+/workspaces/azora-os/apps/main-app/pages/QuantumAI.tsx:    setHistory(prev => [{ prompt, response: mockResponse, timestamp: Date.now() }, ...prev].slice(0, 5));
+/workspaces/azora-os/apps/main-app/pages/UniversalSafetyCommand.tsx:const mockMetrics = {
+/workspaces/azora-os/apps/main-app/pages/UniversalSafetyCommand.tsx:const mockThreats = [
+/workspaces/azora-os/apps/main-app/pages/UniversalSafetyCommand.tsx:const mockWellnessAlerts = [
+/workspaces/azora-os/apps/main-app/pages/UniversalSafetyCommand.tsx:        <StatCard icon={Shield} title="Overall Status" value={mockMetrics.overallStatus} color="green" />
+/workspaces/azora-os/apps/main-app/pages/UniversalSafetyCommand.tsx:        <StatCard icon={HeartPulse} title="Employee Wellness" value={`${mockMetrics.employeeWellness}%`} color="blue" />
+/workspaces/azora-os/apps/main-app/pages/UniversalSafetyCommand.tsx:        <StatCard icon={AlertTriangle} title="Active Threats" value={mockMetrics.activeThreats} color="purple" />
+/workspaces/azora-os/apps/main-app/pages/UniversalSafetyCommand.tsx:        <StatCard icon={CheckCircle} title="Resolved Today" value={mockMetrics.resolvedIncidents} color="yellow" />
+/workspaces/azora-os/apps/main-app/pages/UniversalSafetyCommand.tsx:        <StatCard icon={Users} title="Community Score" value={`${mockMetrics.communityScore}%`} color="indigo" />
+/workspaces/azora-os/apps/main-app/pages/UniversalSafetyCommand.tsx:              {mockThreats.map((threat) => (
+/workspaces/azora-os/apps/main-app/pages/UniversalSafetyCommand.tsx:              {mockWellnessAlerts.map((alert) => (
+/workspaces/azora-os/apps/main-app/pages/OperationsPage.tsx:import { getMockOperationsData, OperationsData, SystemHealth } from '../features/operations/mockOperations';
+/workspaces/azora-os/apps/main-app/pages/ColdChainCommand.tsx:  mockAssets,
+/workspaces/azora-os/apps/main-app/pages/ColdChainCommand.tsx:  mockInterventions,
+/workspaces/azora-os/apps/main-app/pages/ColdChainCommand.tsx:  mockEnergyData,
+/workspaces/azora-os/apps/main-app/pages/ColdChainCommand.tsx:  mockBlockchainData,
+/workspaces/azora-os/apps/main-app/pages/ColdChainCommand.tsx:} from '../features/cold-chain/mockColdChainData';
+/workspaces/azora-os/apps/main-app/pages/ColdChainCommand.tsx:  const [selectedAsset, setSelectedAsset] = useState<ColdChainAsset>(mockAssets[0]);
+/workspaces/azora-os/apps/main-app/pages/ColdChainCommand.tsx:  const totalValueSaved = useMemo(() => mockInterventions.reduce((sum, i) => sum + i.financialImpact.savedAmount, 0), []);
+/workspaces/azora-os/apps/main-app/pages/ColdChainCommand.tsx:    { icon: Snowflake, title: "Active Assets", value: mockAssets.length.toString(), color: '#60A5FA', index: 0 },
+/workspaces/azora-os/apps/main-app/pages/ColdChainCommand.tsx:    { icon: Bolt, title: "Energy Savings", value: `${mockEnergyData.savingsPercent.toFixed(1)}%`, color: '#4ADE80', index: 1 },
+/workspaces/azora-os/apps/main-app/pages/ColdChainCommand.tsx:    { icon: AlertTriangle, title: "Interventions", value: mockInterventions.length.toString(), color: '#A78BFA', index: 2 },
+/workspaces/azora-os/apps/main-app/pages/ColdChainCommand.tsx:            <AssetSelector assets={mockAssets} selectedAsset={selectedAsset} onSelectAsset={setSelectedAsset} />
+/workspaces/azora-os/apps/main-app/pages/ColdChainCommand.tsx:            <InterventionsPanel interventions={mockInterventions} />
+/workspaces/azora-os/apps/main-app/pages/ColdChainCommand.tsx:            <BlockchainIntegrity data={mockBlockchainData} />
+/workspaces/azora-os/apps/main-app/pages/LegalPage.tsx:import { getMockLegalData, LegalData, ComplianceFramework, Contract, LitigationRisk, legalColors, legalIcons } from '../features/legal/mockLegal';
+/workspaces/azora-os/apps/main-app/pages/SupportPage.tsx:import { SupportData, Ticket, getMockSupportData } from '../features/support/mockSupport';
+/workspaces/azora-os/apps/main-app/pages/AttendancePage.tsx:import { mockAttendanceData } from '../features/attendance/mockAttendanceData';
+/workspaces/azora-os/apps/main-app/pages/AttendancePage.tsx:  const data = mockAttendanceData;
+/workspaces/azora-os/apps/main-app/pages/FleetClustering.tsx:  // Generate mock fleet data
+/workspaces/azora-os/apps/main-app/pages/FleetClustering.tsx:    const mockVehicles: Vehicle[] = Array.from({ length: 25 }, (_, i) => ({
+/workspaces/azora-os/apps/main-app/pages/FleetClustering.tsx:    setVehicles(mockVehicles);
+/workspaces/azora-os/apps/main-app/pages/DemandForecasting.tsx:    const mockData: DemandData[] = Array.from({ length: 30 }, (_, i) => ({
+/workspaces/azora-os/apps/main-app/pages/DemandForecasting.tsx:    setHistoricalData(mockData);
+/workspaces/azora-os/apps/main-app/pages/QuantumTracking.tsx:import { Vehicle, SwarmData, getMockFleet, getMockSwarmData } from '../features/quantum-tracking/mockQuantum';
+/workspaces/azora-os/apps/main-app/pages/QuantumTracking.tsx:    const mockFleet = getMockFleet(15);
+/workspaces/azora-os/apps/main-app/pages/QuantumTracking.tsx:    setFleet(mockFleet);
+/workspaces/azora-os/apps/main-app/pages/QuantumTracking.tsx:    setSwarmData(getMockSwarmData(mockFleet));
+/workspaces/azora-os/apps/main-app/pages/Dashboard.tsx:  mockStats,
+/workspaces/azora-os/apps/main-app/pages/Dashboard.tsx:  mockServiceModules,
+/workspaces/azora-os/apps/main-app/pages/Dashboard.tsx:  mockQuickActions,
+/workspaces/azora-os/apps/main-app/pages/Dashboard.tsx:  mockRecentActivity,
+/workspaces/azora-os/apps/main-app/pages/Dashboard.tsx:} from '../features/dashboard/mockDashboardData';
+/workspaces/azora-os/apps/main-app/pages/Dashboard.tsx:          {mockStats.map((stat, idx) => (
+/workspaces/azora-os/apps/main-app/pages/Dashboard.tsx:                {mockServiceModules.map((service, idx) => (
+/workspaces/azora-os/apps/main-app/pages/Dashboard.tsx:                {mockQuickActions.map((action, idx) => (
+/workspaces/azora-os/apps/main-app/pages/Dashboard.tsx:            <RecentActivityFeed activities={mockRecentActivity} />
+/workspaces/azora-os/apps/main-app/pages/AITripPlanningPage.tsx:import { CoPilotState, Message, getMockCoPilotState, getDemoResponse } from '../features/ai-trip-planning/mockCoPilot';
+/workspaces/azora-os/apps/main-app/pages/SecurityPage.tsx:import { SecurityData, getMockSecurityData } from '../features/security/mockSecurity';
+/workspaces/azora-os/apps/main-app/pages/SecurityPage.tsx:      // For this mock, we can just re-set it to simulate updates.
+/workspaces/azora-os/apps/main-app/pages/AIEvolution.tsx:import { AIEvolutionData, getMockAIEvolutionData } from '../features/ai-evolution/mockAIEvolution';
+/workspaces/azora-os/apps/main-app/pages/DriverCommandCenter.tsx:} from '../features/driver-command/mockData';
+/workspaces/azora-os/apps/main-app/test/setup.ts:  value: vi.fn().mockImplementation(query => ({
+/workspaces/azora-os/apps/main-app/test/setup.ts:global.ResizeObserver = vi.fn().mockImplementation(() => ({
+/workspaces/azora-os/apps/main-app/test/setup.ts:global.IntersectionObserver = vi.fn().mockImplementation(() => ({
+/workspaces/azora-os/apps/driver-pwa/src/components/CrossNationProposalsWidget.tsx:      await vote(); // No arguments for mock
+/workspaces/azora-os/apps/driver-pwa/src/services/azora/protocolUpgrade.ts:// Remove mock data and implement actual backend integration
+/workspaces/azora-os/apps/driver-pwa/src/services/azora/governance.ts:// Remove mock data and implement actual backend integration
+/workspaces/azora-os/apps/driver-pwa/src/services/azora/interNation.ts:// Remove mock data and implement actual federation API calls
+/workspaces/azora-os/apps/driver-pwa/src/services/azora/reputationEconomy.ts:// Remove mock data and implement actual backend integration

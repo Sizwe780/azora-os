@@ -1,3 +1,29 @@
+const express = require('express');
+const cors = require('cors');
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+const PORT = process.env.PORT || 3000; // Port should be managed by orchestrator
+const SERVICE_NAME = 'payment';
+
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'online',
+    service: SERVICE_NAME,
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Add service-specific routes below this line
+
+app.listen(PORT, () => {
+  console.log();
+});
+
+// --- Existing code from original file ---
+
 require('dotenv').config();
 const express = require('express');
 const Paystack = require('paystack-api')(process.env.PAYSTACK_SECRET_KEY);
@@ -67,4 +93,3 @@ app.get('/api/v1/payment/transactions', async (req, res) => {
 app.listen(PORT, () => {
     console.log(`💳 Payment service running on port ${PORT}`);
 });
-

@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Azora OS Blockchain Explorer</title>
+  <style>
+    :root { --primary:#3498db; --secondary:#2ecc71; --dark:#2c3e50; --light:#ecf0f1; --danger:#e74c3c; --warning:#f39c12; }
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;line-height:1.6;color:#333;background:#f8f9fa;padding:20px}
+    .container{max-width:1200px;margin:0 auto}
+    .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+    .logo{font-size:24px;font-weight:700;color:var(--primary)}
+    .search-bar{flex-grow:1;max-width:500px;margin:0 20px}
+    .search-bar input{width:100%;padding:8px 12px;border:1px solid #ddd;border-radius:4px}
+    .valuation-box{background:var(--dark);color:#fff;padding:15px;border-radius:5px;text-align:center;margin-bottom:20px}
+    .valuation-amount{font-size:24px;font-weight:700;color:var(--secondary)}
+    .card{background:#fff;border-radius:5px;box-shadow:0 2px 5px rgba(0,0,0,.1);padding:20px;margin-bottom:20px}
+    .card-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #eee;padding-bottom:10px;margin-bottom:15px}
+    .card-title{font-size:18px;font-weight:700}
+    .tabs{display:flex;margin-bottom:20px;border-bottom:1px solid #ddd}
+    .tab{padding:10px 20px;cursor:pointer}
+    .tab.active{border-bottom:3px solid var(--primary);font-weight:700}
+    .tab-content{display:none}
+    .tab-content.active{display:block}
+    table{width:100%;border-collapse:collapse;margin-bottom:20px}
+    th,td{padding:12px 15px;text-align:left;border-bottom:1px solid #ddd}
+    th{background:#f8f9fa}
+    .hash-cell{font-family:monospace;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:12px}
+    .badge-primary{background:var(--primary);color:#fff}
+    .badge-success{background:var(--secondary);color:#fff}
+    .badge-warning{background:var(--warning);color:#fff}
+    .badge-danger{background:var(--danger);color:#fff}
+    .detail-row{display:flex;border-bottom:1px solid #eee;padding:10px 0}
+    .detail-label{flex:0 0 200px;font-weight:700}
+    .detail-value{flex:1;word-break:break-all}
+    .code-block{font-family:monospace;background:#f5f5f5;padding:10px;border-radius:4px;overflow-x:auto}
+    .btn{display:inline-block;padding:8px 16px;border-radius:4px;background:var(--primary);color:#fff;border:none;cursor:pointer}
+    .pagination{display:flex;justify-content:center;margin-top:20px}
+    .page-item{margin:0 5px}
+    .founder-split{display:flex;margin-top:10px}
+    .split-bar{height:30px;display:flex;width:100%;border-radius:4px;overflow:hidden;margin-top:5px}
+    .personal-bar{background:var(--primary);width:40%;display:flex;justify-content:center;align-items:center;color:#fff;font-weight:700}
+    .reinvestment-bar{background:var(--secondary);width:60%;display:flex;justify-content:center;align-items:center;color:#fff;font-weight:700}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">Azora OS Blockchain Explorer</div>
+      <div class="search-bar"><input id="search-input" placeholder="Search by transaction ID or block index" /></div>
+      <button id="search-button" class="btn">Search</button>
+    </div>
+
+    <div class="valuation-box">
+      <p>Azora OS Platform Value</p>
+      <div class="valuation-amount">$10,000,000</div>
+      <p>1,000,000 AZR tokens × $10 USD per token</p>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title" id="main-title">Blockchain Explorer</div>
+        <div id="refresh-time">Last updated: Loading...</div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active" data-tab="blocks">Blocks</div>
+        <div class="tab" data-tab="transactions">Recent Transactions</div>
+        <div class="tab" data-tab="pending">Pending Transactions</div>
+        <div class="tab" data-tab="stats">Statistics</div>
+      </div>
+
+      <div class="tab-content active" id="blocks-tab">
+        <table>
+          <thead><tr><th>Block</th><th>Time</th><th>Transactions</th><th>Hash</th></tr></thead>
+          <tbody id="blocks-table"><tr><td colspan="4">Loading blocks...</td></tr></tbody>
+        </table>
+        <div class="pagination" id="blocks-pagination"></div>
+      </div>
+
+      <div class="tab-content" id="transactions-tab">
+        <table>
+          <thead><tr><th>ID</th><th>Type</th><th>Time</th><th>Amount</th><th>Status</th></tr></thead>
+          <tbody id="transactions-table"><tr><td colspan="5">Loading transactions...</td></tr></tbody>
+        </table>
+      </div>
+
+      <div class="tab-content" id="pending-tab">
+        <table>
+          <thead><tr><th>ID</th><th>Type</th><th>Time</th><th>Status</th></tr></thead>
+          <tbody id="pending-table"><tr><td colspan="4">Loading pending transactions...</td></tr></tbody>
+        </table>
+      </div>
+
+      <div class="tab-content" id="stats-tab">
+        <div id="blockchain-stats">Loading statistics...</div>
+      </div>
+    </div>
+
+    <div id="transaction-view" style="display:none">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Transaction Details</div>
+          <button id="back-button" class="btn">Back to Explorer</button>
+        </div>
+        <div class="transaction-details" id="tx-details">Loading transaction details...</div>
+      </div>
+    </div>
+
+    <div id="block-view" style="display:none">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Block Details</div>
+          <button id="back-to-explorer" class="btn">Back to Explorer</button>
+        </div>
+        <div class="block-details" id="block-details">Loading block details...</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = '/api';
+    let currentPage = 0, currentBlocksLimit = 10;
+    const blocksTable = document.getElementById('blocks-table');
+    const transactionsTable = document.getElementById('transactions-table');
+    const pendingTable = document.getElementById('pending-table');
+    const blocksPagination = document.getElementById('blocks-pagination');
+    const searchInput = document.getElementById('search-input');
+    const searchButton = document.getElementById('search-button');
+    const tabs = document.querySelectorAll('.tab');
+    const tabContents = document.querySelectorAll('.tab-content');
+    const transactionView = document.getElementById('transaction-view');
+    const blockView = document.getElementById('block-view');
+    const mainCard = document.querySelector('.card');
+    const txDetails = document.getElementById('tx-details');
+    const blockDetails = document.getElementById('block-details');
+    const backButton = document.getElementById('back-button');
+    const backToExplorer = document.getElementById('back-to-explorer');
+    const refreshTime = document.getElementById('refresh-time');
+    const blockchainStats = document.getElementById('blockchain-stats');
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadBlocks(); loadTransactions(); loadPendingTransactions(); loadStats();
+      setupTabs(); setupSearch(); setupBackButtons();
+      refreshTime.textContent = `Last updated: ${new Date().toLocaleTimeString()}`;
+      const path = window.location.pathname.split('/');
+      if (path[2] === 'tx' && path[3]) showTransaction(path[3]);
+      if (path[2] === 'block' && path[3]) showBlock(parseInt(path[3]));
+    });
+
+    function setupTabs(){
+      tabs.forEach(tab => tab.addEventListener('click', () => {
+        tabs.forEach(t=>t.classList.remove('active')); tabContents.forEach(c=>c.classList.remove('active'));
+        tab.classList.add('active'); document.getElementById(`${tab.dataset.tab}-tab`).classList.add('active');
+        if(tab.dataset.tab==='blocks') loadBlocks(); if(tab.dataset.tab==='transactions') loadTransactions();
+        if(tab.dataset.tab==='pending') loadPendingTransactions(); if(tab.dataset.tab==='stats') loadStats();
+      }));
+    }
+
+    function setupSearch(){
+      searchButton.addEventListener('click', () => {
+        const q = searchInput.value.trim(); if(!q) return;
+        if(/^\d+$/.test(q)) showBlock(parseInt(q)); else showTransaction(q);
+      });
+      searchInput.addEventListener('keypress', e => { if(e.key==='Enter') searchButton.click(); });
+    }
+
+    function setupBackButtons(){
+      backButton.addEventListener('click', ()=>{ transactionView.style.display='none'; mainCard.style.display='block'; history.pushState({},'', '/explorer'); });
+      backToExplorer.addEventListener('click', ()=>{ blockView.style.display='none'; mainCard.style.display='block'; history.pushState({},'', '/explorer'); });
+    }
+
+    function formatDate(s){ return new Date(s).toLocaleString(); }
+
+    async function loadBlocks(){
+      try{
+        const res = await fetch(`${API_URL}/blocks?page=${currentPage}&limit=${currentBlocksLimit}`);
+        const data = await res.json();
+        let html = '';
+        if(!data.blocks || data.blocks.length===0) html = '<tr><td colspan="4">No blocks found</td></tr>';
+        else data.blocks.forEach(block => html += `<tr><td><a href="#" onclick="showBlock(${block.index});return false">${block.index}</a></td><td>${formatDate(block.timestamp)}</td><td>${block.transactions.length}</td><td class="hash-cell">${block.hash}</td></tr>`);
+        blocksTable.innerHTML = html;
+        updatePagination(data.total || 0);
+      }catch(e){ console.error(e); blocksTable.innerHTML = '<tr><td colspan="4">Error loading blocks</td></tr>'; }
+    }
+
+    function updatePagination(total){
+      const totalPages = Math.max(1, Math.ceil(total/currentBlocksLimit));
+      blocksPagination.innerHTML = `<div class="page-item"><button class="btn" onclick="changePage(${Math.max(0,currentPage-1)})" ${currentPage<=0?'disabled':''}>Previous</button></div><div class="page-item">Page ${currentPage+1} of ${totalPages}</div><div class="page-item"><button class="btn" onclick="changePage(${currentPage+1})" ${currentPage>=totalPages-1?'disabled':''}>Next</button></div>`;
+    }
+
+    function changePage(page){ currentPage = page; loadBlocks(); }
+
+    async function loadTransactions(){
+      try{
+        const res = await fetch(`${API_URL}/blocks?page=0&limit=5`);
+        const data = await res.json();
+        const txs = [];
+        (data.blocks||[]).forEach(block => block.transactions.forEach(tx => txs.push({...tx,blockIndex:block.index,confirmed:true})));
+        let html = ''; if(txs.length===0) html = '<tr><td colspan="5">No transactions found</td></tr>';
+        else txs.forEach(tx => {
+          const amount = tx.type==='FOUNDER_WITHDRAWAL' && tx.data && tx.data.tokens ? `${tx.data.tokens} AZR` : 'N/A';
+          html += `<tr><td><a href="#" onclick="showTransaction('${tx.id}');return false">${tx.id.substring(0,10)}...</a></td><td>${tx.type}</td><td>${formatDate(tx.timestamp)}</td><td>${amount}</td><td><span class="badge badge-success">Confirmed</span></td></tr>`;
+        });
+        transactionsTable.innerHTML = html;
+      }catch(e){ console.error(e); transactionsTable.innerHTML = '<tr><td colspan="5">Error loading transactions</td></tr>'; }
+    }
+
+    async function loadPendingTransactions(){
+      try{
+        const res = await fetch(`${API_URL}/pending-transactions`);
+        const txs = await res.json();
+        let html = '';
+        if(!txs || txs.length===0) html = '<tr><td colspan="4">No pending transactions</td></tr>';
+        else txs.forEach(tx => html += `<tr><td><a href="#" onclick="showTransaction('${tx.id}');return false">${tx.id.substring(0,10)}...</a></td><td>${tx.type}</td><td>${formatDate(tx.timestamp)}</td><td><span class="badge badge-warning">Pending</span></td></tr>`);
+        pendingTable.innerHTML = html;
+      }catch(e){ console.error(e); pendingTable.innerHTML = '<tr><td colspan="4">Error loading pending transactions</td></tr>'; }
+    }
+
+    async function loadStats(){
+      try{
+        const res = await fetch(`${API_URL}/blockchain/info`);
+        const info = await res.json();
+        blockchainStats.innerHTML = `<div class="detail-row"><div class="detail-label">Blockchain Name</div><div class="detail-value">${info.name}</div></div><div class="detail-row"><div class="detail-label">Token Symbol</div><div class="detail-value">${info.symbol}</div></div><div class="detail-row"><div class="detail-label">Total Blocks</div><div class="detail-value">${info.blocks}</div></div><div class="detail-row"><div class="detail-label">Total Transactions</div><div class="detail-value">${info.totalTransactions}</div></div><div class="detail-row"><div class="detail-label">Latest Block</div><div class="detail-value">${info.lastBlockIndex}</div></div><div class="detail-row"><div class="detail-label">Last Updated</div><div class="detail-value">${formatDate(info.lastUpdated)}</div></div>`;
+      }catch(e){ console.error(e); blockchainStats.textContent='Error loading blockchain stats'; }
+    }
+
+    async function showTransaction(txId){
+      try{
+        const res = await fetch(`${API_URL}/transactions/${txId}`);
+        if(!res.ok){ txDetails.innerHTML='<p>Transaction not found</p>'; return; }
+        const result = await res.json();
+        const { transaction, block, confirmed } = result;
+        mainCard.style.display='none'; transactionView.style.display='block'; history.pushState({},'',`/explorer/tx/${txId}`);
+        let transactionDetails = '';
+        if(transaction.type==='FOUNDER_WITHDRAWAL' && transaction.data){
+          transactionDetails = `<div class="founder-split"><div class="split-bar"><div class="personal-bar">40% Personal (${transaction.data.tokens*0.4} AZR)</div><div class="reinvestment-bar">60% Reinvestment (${transaction.data.tokens*0.6} AZR)</div></div></div>`;
+        }
+        let html = `<div class="detail-row"><div class="detail-label">Transaction ID</div><div class="detail-value">${transaction.id}</div></div><div class="detail-row"><div class="detail-label">Type</div><div class="detail-value">${transaction.type}</div></div><div class="detail-row"><div class="detail-label">Timestamp</div><div class="detail-value">${formatDate(transaction.timestamp)}</div></div><div class="detail-row"><div class="detail-label">Status</div><div class="detail-value">${confirmed?'<span class="badge badge-success">Confirmed</span>':'<span class="badge badge-warning">Pending</span>'}</div></div>`;
+        if(confirmed){ html += `<div class="detail-row"><div class="detail-label">Block</div><div class="detail-value"><a href="#" onclick="showBlock(${block.index});return false">${block.index}</a></div></div>`; }
+        if(transaction.type==='FOUNDER_WITHDRAWAL' && transaction.data){
+          html += `<div class="detail-row"><div class="detail-label">Founder ID</div><div class="detail-value">${transaction.data.founderId || 'N/A'}</div></div><div class="detail-row"><div class="detail-label">Tokens Withdrawn</div><div class="detail-value">${transaction.data.tokens} AZR</div></div><div class="detail-row"><div class="detail-label">USD Value</div><div class="detail-value">$${transaction.data.tokens*10}</div></div><div class="detail-row"><div class="detail-label">Withdrawal Split</div><div class="detail-value">${transactionDetails}</div></div>`;
+        }
+        html += `<div class="detail-row"><div class="detail-label">Raw Data</div><div class="detail-value"><pre class="code-block">${JSON.stringify(transaction.data,null,2)}</pre></div></div>`;
+        txDetails.innerHTML = html;
+      }catch(e){ console.error(e); txDetails.innerHTML='<p>Error loading transaction details</p>'; }
+    }
+
+    async function showBlock(blockIndex){
+      try{
+        const res = await fetch(`${API_URL}/blocks/${blockIndex}`);
+        if(!res.ok){ blockDetails.innerHTML='<p>Block not found</p>'; return; }
+        const block = await res.json();
+        mainCard.style.display='none'; blockView.style.display='block'; history.pushState({},'',`/explorer/block/${blockIndex}`);
+        let html = `<div class="detail-row"><div class="detail-label">Block Index</div><div class="detail-value">${block.index}</div></div><div class="detail-row"><div class="detail-label">Timestamp</div><div class="detail-value">${formatDate(block.timestamp)}</div></div><div class="detail-row"><div class="detail-label">Hash</div><div class="detail-value">${block.hash}</div></div><div class="detail-row"><div class="detail-label">Previous Hash</div><div class="detail-value">${block.previousHash}</div></div><div class="detail-row"><div class="detail-label">Nonce</div><div class="detail-value">${block.nonce}</div></div><div class="detail-row"><div class="detail-label">Transactions</div><div class="detail-value">${block.transactions.length}</div></div>`;
+        html += `<div class="detail-row"><div class="detail-label">Transaction List</div><div class="detail-value"><table><thead><tr><th>ID</th><th>Type</th><th>Timestamp</th></tr></thead><tbody>`;
+        (block.transactions||[]).forEach(tx => html += `<tr><td><a href="#" onclick="showTransaction('${tx.id}');return false">${tx.id.substring(0,10)}...</a></td><td>${tx.type}</td><td>${formatDate(tx.timestamp)}</td></tr>`);
+        html += `</tbody></table></div></div>`;
+        blockDetails.innerHTML = html;
+      }catch(e){ console.error(e); blockDetails.innerHTML='<p>Error loading block details</p>'; }
+    }
+
+    window.showTransaction = showTransaction;
+    window.showBlock = showBlock;
+    window.changePage = changePage;
+  </script>
+</body>
+</html>

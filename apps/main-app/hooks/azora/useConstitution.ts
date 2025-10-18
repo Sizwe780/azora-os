@@ -1,63 +1,72 @@
-// Minimal stub for useConstitution hook.
-// Fill in with actual logic later if needed.
+import { useState, useEffect } from 'react';
 
-import { useMemo, useState } from "react";
-import React from "react";
-type ConstitutionRule = {
-  appliesTo: React.ReactNode | Iterable<React.ReactNode>;
-  enforced: unknown;
-  id: string;
-  title: string;
-  description: string;
-  enabled: boolean;
-};
-
-type ConstitutionLog = {
-  triggeredBy: React.ReactNode | Iterable<React.ReactNode>;
-  actionTaken: React.ReactNode | Iterable<React.ReactNode>;
+// Define the structure of a constitutional rule
+interface ConstitutionalRule {
   ruleId: string;
-  id: string;
-  message: string;
-  timestamp: string;
-};
+  name: string;
+  description: string;
+  article: string;
+  section: string;
+  isCritical: boolean;
+  appliesTo: string[];
+}
 
+// Define the hook's return type
+interface UseConstitutionReturn {
+  rules: ConstitutionalRule[];
+  loading: boolean;
+  error: string | null;
+  getRuleById: (ruleId: string) => ConstitutionalRule | undefined;
+}
 
-export function useConstitution() {
-  const [constitution, setConstitution] = useState<string>("No constitution loaded.");
-  const [rules, setRules] = useState<ConstitutionRule[]>(() => []);
-  const [logs, setLogs] = useState<ConstitutionLog[]>(() => []);
-  const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
+const API_URL = 'http://localhost:4032/api/v1/compliance/rules';
+
+/**
+ * Fetches and manages constitutional rules from the Azora OS procurement corridor.
+ * This hook provides live data, adhering to the "No Mock Protocol" (Article IX).
+ * @returns {UseConstitutionReturn} The constitutional rules, loading state, and error status.
+ */
+export function useConstitution(): UseConstitutionReturn {
+  const [rules, setRules] = useState<ConstitutionalRule[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const toggle = (ruleId: string, enabled: boolean) => {
-    setRules(prev => prev.map(rule => (rule.id === ruleId ? { ...rule, enabled } : rule)));
-    setLogs(prev => [
-      ...prev,
-      {
-        id: `${ruleId}-${Date.now()}`,
-        ruleId,
-        message: `Rule ${ruleId} ${enabled ? "enabled" : "disabled"}`,
-        timestamp: new Date().toISOString(),
-        triggeredBy: null,
-        actionTaken: null,
-      },
-    ]);
+  useEffect(() => {
+    const fetchRules = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        const response = await fetch(API_URL);
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch rules: ${response.status} ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        
+        // The API returns an object with a 'rules' array
+        if (data && Array.isArray(data.rules)) {
+          setRules(data.rules);
+        } else {
+          // Handle cases where the API might return just the array
+          setRules(data);
+        }
+
+      } catch (err: any) {
+        console.error("Error fetching constitutional rules:", err);
+        setError(err.message || 'An unknown error occurred');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRules();
+  }, []);
+
+  const getRuleById = (ruleId: string): ConstitutionalRule | undefined => {
+    return rules.find(rule => rule.ruleId === ruleId);
   };
 
-  const api = useMemo(
-    () => ({
-      constitution,
-      setConstitution,
-      rules,
-      logs,
-      status,
-      setStatus,
-      error,
-      setError,
-      toggle,
-    }),
-    [constitution, rules, logs, status, error]
-  );
-
-  return api;
+  return { rules, loading, error, getRuleById };
 }

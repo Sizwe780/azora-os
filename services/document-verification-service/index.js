@@ -12,11 +12,13 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const crypto = require('crypto');
+const cors = require('cors');
 
 const app = express();
+app.use(cors());
 app.use(bodyParser.json({ limit: '50mb' }));
 
-const PORT = 8096;
+const PORT = process.env.VERIFY_PORT || 8096;
 
 // ============================================================================
 // DATA STORES (3-WAY LEDGER SYSTEM)
@@ -635,3 +637,15 @@ app.listen(PORT, () => {
 });
 
 module.exports = app;
+
+// Additional signing endpoint for document signatures
+app.post('/api/sign', (req, res) => {
+  const { documentId, signerId } = req.body;
+  const signaturePayload = `${documentId}|${signerId}|${new Date().toISOString()}`;
+  const signature = crypto.createHmac('sha256', 'azora-secret-key').update(signaturePayload).digest('hex');
+  
+  res.status(201).json({
+    message: 'Document signed successfully.',
+    signature: `sig-${signature}`
+  });
+});

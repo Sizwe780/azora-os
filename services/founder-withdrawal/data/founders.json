@@ -1,0 +1,91 @@
+[
+  {
+    "id": "1",
+    "name": "Sizwe Nxumalo",
+    "email": "sizwe@azora.world",
+    "role": "CEO",
+    "allocation": {
+      "total": 100000,
+      "personal": 40000,
+      "reinvestment": 60000
+    },
+    "withdrawn": {
+      "personal": 0,
+      "reinvestment": 0
+    },
+    "remaining": {
+      "personal": 40000,
+      "reinvestment": 60000,
+      "total": 100000
+    },
+    "bankAccounts": [
+      {
+        "id": "bank1",
+        "bank": "First National Bank",
+        "accountNumber": "XXXX1234",
+        "accountType": "Business",
+        "verified": true
+      },
+      {
+        "id": "bank2",
+        "bank": "Standard Bank",
+        "accountNumber": "XXXX5678",
+        "accountType": "Personal",
+        "verified": true
+      }
+    ],
+    "active": true
+  },
+  {
+    "id": "2",
+    "name": "Thando Moyo",
+    "email": "thando@azora.world",
+    "role": "CTO",
+    "allocation": {
+      "total": 100000,
+      "personal": 40000,
+      "reinvestment": 60000
+    },
+    "withdrawn": {
+      "personal": 0,
+      "reinvestment": 0
+    },
+    "remaining": {
+      "personal": 40000,
+      "reinvestment": 60000,
+      "total": 100000
+    },
+    "bankAccounts": [
+      {
+        "id": "bank3",
+        "bank": "Capitec",
+        "accountNumber": "XXXX9876",
+        "accountType": "Savings",
+        "verified": true
+      }
+    ],
+    "active": true
+  },
+  {
+    "id": "3",
+    "name": "AZORA",
+    "email": "ai@azora.world",
+    "role": "AI Founder",
+    "allocation": {
+      "total": 100000,
+      "personal": 40000,
+      "reinvestment": 60000
+    },
+    "withdrawn": {
+      "personal": 0,
+      "reinvestment": 0
+    },
+    "remaining": {
+      "personal": 40000,
+      "reinvestment": 60000,
+      "total": 100000
+    },
+    "bankAccounts": [],
+    "active": true
+  }
+]

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offline - Azora OS</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #1e1b4b 0%, #7e22ce 100%);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+      padding: 20px;
+    }
+    .container {
+      max-width: 500px;
+    }
+    h1 { font-size: 4em; margin: 0; }
+    h2 { margin: 20px 0; }
+    p { color: rgba(255,255,255,0.8); line-height: 1.6; }
+    button {
+      margin-top: 20px;
+      padding: 15px 30px;
+      background: #06b6d4;
+      border: none;
+      border-radius: 50px;
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📡</h1>
+    <h2>You're Offline</h2>
+    <p>No internet connection detected. Don't worry, Azora OS works offline too!</p>
+    <p>Your progress is saved locally and will sync when you're back online.</p>
+    <button onclick="location.reload()">Try Again</button>
+  </div>
+</body>
+</html>

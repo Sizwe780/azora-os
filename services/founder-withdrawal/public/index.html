@@ -1,0 +1,319 @@
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Azora Founder Portal</title>
+      <link rel="stylesheet" href="/style.css">
+    </head>
+    <body>
+      <header>
+        <h1>Azora Founder Portal</h1>
+        <p>Secure Token Withdrawal & Reinvestment</p>
+      </header>
+      
+      <div class="container">
+        <div id="notification-area"></div>
+        
+        <div class="card">
+          <h2>Founder Information</h2>
+          <div id="founder-info">Loading...</div>
+        </div>
+        
+        <div class="balance-container">
+          <div class="balance-card">
+            <div class="balance-label">Personal Withdrawal Available</div>
+            <div class="balance-value" id="personal-balance">--</div>
+            <div>ZAR Value: <span id="personal-zar">--</span></div>
+            <div class="progress-container">
+              <div class="progress-bar" id="personal-progress" style="width: 0%"></div>
+            </div>
+          </div>
+          
+          <div class="balance-card">
+            <div class="balance-label">Reinvestment Required</div>
+            <div class="balance-value" id="reinvestment-balance">--</div>
+            <div>ZAR Value: <span id="reinvestment-zar">--</span></div>
+            <div class="progress-container">
+              <div class="progress-bar" id="reinvestment-progress" style="width: 0%"></div>
+            </div>
+          </div>
+          
+          <div class="balance-card">
+            <div class="balance-label">Total Remaining</div>
+            <div class="balance-value" id="total-balance">--</div>
+            <div>ZAR Value: <span id="total-zar">--</span></div>
+            <div class="progress-container">
+              <div class="progress-bar" id="total-progress" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card actions">
+          <h2>Withdrawal Actions</h2>
+          <p>Choose your withdrawal option:</p>
+          <button id="withdraw-personal" onclick="showWithdrawOptions('personal')">Withdraw Personal Allocation</button>
+          <button id="withdraw-reinvest" onclick="showWithdrawOptions('reinvestment')">Process Reinvestment</button>
+          <button id="withdraw-all" onclick="showWithdrawOptions('all')">Process All Tokens</button>
+          
+          <div id="withdraw-options" class="withdraw-options">
+            <h3 id="withdraw-options-title">Withdrawal Options</h3>
+            
+            <form id="withdrawal-form">
+              <input type="hidden" id="withdrawal-type" value="personal">
+              
+              <div class="form-group">
+                <label for="bank-account">Select Bank Account:</label>
+                <select id="bank-account">
+                  <option value="">Loading bank accounts...</option>
+                </select>
+              </div>
+              
+              <div id="reinvestment-section" style="display: none;">
+                <h3>Select Reinvestment Options</h3>
+                <p>Choose where to reinvest your tokens (60% of your allocation):</p>
+                <div id="reinvestment-options" class="reinvestment-options">
+                  Loading reinvestment options...
+                </div>
+              </div>
+              
+              <div class="form-group" style="margin-top: 20px;">
+                <button type="submit" id="submit-withdrawal">Confirm Withdrawal</button>
+                <button type="button" onclick="hideWithdrawOptions()">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        
+        <div class="card">
+          <h2>Recent Transactions</h2>
+          <div id="transactions">No recent transactions</div>
+        </div>
+      </div>
+      
+      <script>
+        // Mock founder ID - in a real app, this would come from authentication
+        const founderId = '1'; // Sizwe Ngwenya
+        let founderData = null;
+        let reinvestmentOptions = [];
+        let selectedReinvestmentOptions = [];
+        
+        // Fetch founder data
+        async function loadFounderData() {
+          try {
+            const response = await fetch(`/api/founder/${founderId}`);
+            const data = await response.json();
+            
+            if (data.error) {
+              showNotification(data.error, 'error');
+              return;
+            }
+            
+            founderData = data;
+            updateFounderUI();
+            loadBankAccounts();
+          } catch (err) {
+            console.error('Error loading founder data:', err);
+            showNotification('Failed to load founder data. Please try again later.', 'error');
+          }
+        }
+        
+        // Update UI with founder data
+        function updateFounderUI() {
+          if (!founderData) return;
+          
+          // Update founder info
+          document.getElementById('founder-info').innerHTML = `
+            <p><strong>Name:</strong> ${founderData.founder.name}</p>
+            <p><strong>Role:</strong> ${founderData.founder.role}</p>
+            <p><strong>Email:</strong> ${founderData.founder.email}</p>
+            <p><strong>Total Allocation:</strong> ${founderData.allocation.total.toLocaleString()} AZR</p>
+          `;
+          
+          // Update balances
+          document.getElementById('personal-balance').textContent = `${founderData.remaining.personal.toLocaleString()} AZR`;
+          document.getElementById('personal-zar').textContent = `${founderData.zarValue.personal.toLocaleString()} ZAR`;
+          document.getElementById('personal-progress').style.width = `${(founderData.withdrawn.personal / founderData.allocation.personal * 100).toFixed(0)}%`;
+          
+          document.getElementById('reinvestment-balance').textContent = `${founderData.remaining.reinvestment.toLocaleString()} AZR`;
+          document.getElementById('reinvestment-zar').textContent = `${founderData.zarValue.reinvestment.toLocaleString()} ZAR`;
+          document.getElementById('reinvestment-progress').style.width = `${(founderData.withdrawn.reinvestment / founderData.allocation.reinvestment * 100).toFixed(0)}%`;
+          
+          document.getElementById('total-balance').textContent = `${founderData.remaining.total.toLocaleString()} AZR`;
+          document.getElementById('total-zar').textContent = `${(founderData.zarValue.personal + founderData.zarValue.reinvestment).toLocaleString()} ZAR`;
+          document.getElementById('total-progress').style.width = `${((founderData.withdrawn.personal + founderData.withdrawn.reinvestment) / founderData.allocation.total * 100).toFixed(0)}%`;
+          
+          // Enable/disable buttons based on remaining balances
+          document.getElementById('withdraw-personal').disabled = founderData.remaining.personal <= 0;
+          document.getElementById('withdraw-reinvest').disabled = founderData.remaining.reinvestment <= 0;
+          document.getElementById('withdraw-all').disabled = founderData.remaining.total <= 0;
+        }
+        
+        // Load bank accounts
+        function loadBankAccounts() {
+          if (!founderData) return;
+          
+          const bankAccountSelect = document.getElementById('bank-account');
+          bankAccountSelect.innerHTML = '';
+          
+          if (founderData.founder.name === 'AZORA') {
+            // AI founder doesn't need bank accounts
+            bankAccountSelect.innerHTML = '<option value="ai">AI Founder - No Bank Required</option>';
+            document.querySelector('.form-group').style.display = 'none';
+            return;
+          }
+          
+          founderData.founder.bankAccounts.forEach(account => {
+            const option = document.createElement('option');
+            option.value = account.accountNumber;
+            option.textContent = `${account.bank} - ${account.accountNumber} (${account.accountType})`;
+            bankAccountSelect.appendChild(option);
+          });
+        }
+        
+        // Load reinvestment options
+        async function loadReinvestmentOptions() {
+          try {
+            const response = await fetch('/api/reinvestment-options');
+            const data = await response.json();
+            
+            reinvestmentOptions = data.options;
+            const optionsContainer = document.getElementById('reinvestment-options');
+            
+            if (reinvestmentOptions.length === 0) {
+              optionsContainer.innerHTML = '<p>No reinvestment options available</p>';
+              return;
+            }
+            
+            optionsContainer.innerHTML = reinvestmentOptions.map(option => `
+              <div class="reinvestment-option" data-id="${option.id}" onclick="toggleReinvestmentOption('${option.id}')">
+                <h4>${option.name}</h4>
+                <p>${option.description}</p>
+                <p><strong>Minimum:</strong> ${option.minAmount.toLocaleString()} AZR</p>
+                <p><strong>Impact:</strong> ${option.impact}</p>
+              </div>
+            `).join('');
+          } catch (err) {
+            console.error('Error loading reinvestment options:', err);
+            document.getElementById('reinvestment-options').innerHTML = 
+              '<p class="error">Failed to load reinvestment options</p>';
+          }
+        }
+        
+        // Toggle selection of reinvestment option
+        function toggleReinvestmentOption(id) {
+          const element = document.querySelector(`.reinvestment-option[data-id="${id}"]`);
+          
+          if (element.classList.contains('selected')) {
+            element.classList.remove('selected');
+            selectedReinvestmentOptions = selectedReinvestmentOptions.filter(optId => optId !== id);
+          } else {
+            element.classList.add('selected');
+            selectedReinvestmentOptions.push(id);
+          }
+        }
+        
+        // Show withdrawal options
+        function showWithdrawOptions(type) {
+          document.getElementById('withdrawal-type').value = type;
+          const optionsDiv = document.getElementById('withdraw-options');
+          optionsDiv.style.display = 'block';
+          
+          let title;
+          switch (type) {
+            case 'personal':
+              title = 'Personal Withdrawal Options';
+              document.getElementById('reinvestment-section').style.display = 'none';
+              break;
+            case 'reinvestment':
+              title = 'Reinvestment Options';
+              document.getElementById('reinvestment-section').style.display = 'block';
+              loadReinvestmentOptions();
+              break;
+            case 'all':
+              title = 'Complete Token Processing';
+              document.getElementById('reinvestment-section').style.display = 'block';
+              loadReinvestmentOptions();
+              break;
+          }
+          
+          document.getElementById('withdraw-options-title').textContent = title;
+        }
+        
+        // Hide withdrawal options
+        function hideWithdrawOptions() {
+          document.getElementById('withdraw-options').style.display = 'none';
+          selectedReinvestmentOptions = [];
+        }
+        
+        // Show notification
+        function showNotification(message, type) {
+          const notification = document.createElement('div');
+          notification.className = `notification ${type}`;
+          notification.textContent = message;
+          
+          const notificationArea = document.getElementById('notification-area');
+          notificationArea.innerHTML = '';
+          notificationArea.appendChild(notification);
+          
+          // Remove notification after 5 seconds
+          setTimeout(() => {
+            notification.remove();
+          }, 5000);
+        }
+        
+        // Handle withdrawal form submission
+        document.getElementById('withdrawal-form').addEventListener('submit', async (e) => {
+          e.preventDefault();
+          
+          const withdrawalType = document.getElementById('withdrawal-type').value;
+          const bankAccountId = document.getElementById('bank-account').value;
+          
+          let reinvestmentOptions = null;
+          if (withdrawalType === 'reinvestment' || withdrawalType === 'all') {
+            if (selectedReinvestmentOptions.length === 0) {
+              showNotification('Please select at least one reinvestment option', 'error');
+              return;
+            }
+            
+            reinvestmentOptions = {
+              projects: selectedReinvestmentOptions
+            };
+          }
+          
+          try {
+            const response = await fetch(`/api/founder/${founderId}/withdraw`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                withdrawType: withdrawalType,
+                bankAccountId,
+                reinvestmentOptions
+              })
+            });
+            
+            const result = await response.json();
+            
+            if (result.error) {
+              showNotification(result.error, 'error');
+              return;
+            }
+            
+            showNotification('Withdrawal processed successfully!', 'success');
+            hideWithdrawOptions();
+            loadFounderData(); // Reload data to update balances
+          } catch (err) {
+            console.error('Error processing withdrawal:', err);
+            showNotification('Failed to process withdrawal. Please try again later.', 'error');
+          }
+        });
+        
+        // Initial data load
+        loadFounderData();
+      </script>
+    </body>
+    </html>
+    

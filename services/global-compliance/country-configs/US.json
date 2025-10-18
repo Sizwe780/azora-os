@@ -1,0 +1,34 @@
+{
+  "name": "United States",
+  "continent": "North America",
+  "requiredFields": [
+    "fullName", 
+    "taxId", 
+    "address", 
+    "dateOfBirth"
+  ],
+  "regulations": {
+    "KYC": {
+      "name": "Know Your Customer",
+      "required": true,
+      "description": "Identity verification procedures required by federal banking regulations"
+    },
+    "AML": {
+      "name": "Anti-Money Laundering",
+      "required": true,
+      "description": "Procedures to prevent money laundering as required by the Bank Secrecy Act"
+    },
+    "FATCA": {
+      "name": "Foreign Account Tax Compliance Act",
+      "required": true,
+      "description": "Reporting requirements for foreign financial accounts held by U.S. taxpayers"
+    },
+    "SEC": {
+      "name": "Securities and Exchange Commission",
+      "required": true,
+      "description": "Registration and reporting requirements for securities"
+    }
+  },
+  "minimumAge": 18,
+  "documentationRequired": ["government_id", "proof_of_address"]
+}

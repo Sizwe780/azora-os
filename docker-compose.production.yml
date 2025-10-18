@@ -1,0 +1,635 @@
+version: '3.8'
+
+secrets:
+  minter_private_key:
+    file: ./secrets/minter_pk.txt
+  jwt_secret:
+    file: ./secrets/jwt_secret.txt
+  encryption_key:
+    file: ./secrets/encryption_key.txt
+  api_gateway_key:
+    file: ./secrets/api_gateway_key.txt
+
+volumes:
+  postgres_data:
+  postgres_backups:
+  redis_data:
+  redis_backups:
+  student_earnings_db_data:
+  mongodb_data:
+  elasticsearch_data:
+  prometheus_data:
+  grafana_data:
+  minio_data:
+  vault_data:
+  nginx_cache:
+  offline_sync_data:
+
+networks:
+  azora-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+  azora-dmz:
+    driver: bridge
+  monitoring-network:
+    driver: bridge
+
+services:
+  # ============================================================================
+  # INFRASTRUCTURE LAYER - Core Services
+  # ============================================================================
+  
+  # Primary PostgreSQL Cluster
+  postgres-primary:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: azora_db
+      POSTGRES_USER: azora
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_REPLICATION_MODE: master
+      POSTGRES_REPLICATION_USER: replicator
+      POSTGRES_REPLICATION_PASSWORD: ${POSTGRES_REPLICATION_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - postgres_backups:/backups
+      - ./infrastructure/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./infrastructure/postgres/postgresql.conf:/etc/postgresql/postgresql.conf
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U azora"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+    networks:
+      - azora-network
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 8G
+        reservations:
+          cpus: '2'
+          memory: 4G
+
+  # PostgreSQL Read Replica
+  postgres-replica:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_MASTER_SERVICE_HOST: postgres-primary
+      POSTGRES_REPLICATION_MODE: slave
+      POSTGRES_REPLICATION_USER: replicator
+      POSTGRES_REPLICATION_PASSWORD: ${POSTGRES_REPLICATION_PASSWORD}
+    depends_on:
+      postgres-primary:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - azora-network
+
+  # Redis Cluster (Master)
+  redis-master:
+    image: redis:7-alpine
+    command: redis-server /usr/local/etc/redis/redis.conf
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+      - ./infrastructure/redis/redis-master.conf:/usr/local/etc/redis/redis.conf
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - azora-network
+
+  # Redis Sentinel for HA
+  redis-sentinel:
+    image: redis:7-alpine
+    command: redis-sentinel /usr/local/etc/redis/sentinel.conf
+    volumes:
+      - ./infrastructure/redis/sentinel.conf:/usr/local/etc/redis/sentinel.conf
+    depends_on:
+      - redis-master
+    restart: unless-stopped
+    networks:
+      - azora-network
+
+  # MongoDB for Document Storage
+  mongodb:
+    image: mongo:7
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: azora_admin
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
+      MONGO_INITDB_DATABASE: azora_docs
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - ./infrastructure/mongodb/mongod.conf:/etc/mongod.conf
+    command: mongod --config /etc/mongod.conf
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - azora-network
+
+  # Elasticsearch for Advanced Search & Analytics
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms2g -Xmx2g
+      - xpack.security.enabled=true
+      - ELASTIC_PASSWORD=${ELASTICSEARCH_PASSWORD}
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - azora-network
+
+  # MinIO for Object Storage (S3-compatible)
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - azora-network
+
+  # RabbitMQ Message Broker
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: azora
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - ./infrastructure/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - azora-network
+
+  # HashiCorp Vault for Secrets Management
+  vault:
+    image: vault:latest
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: ${VAULT_ROOT_TOKEN}
+      VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:8200
+    ports:
+      - "8200:8200"
+    volumes:
+      - vault_data:/vault/data
+      - ./infrastructure/vault/config.hcl:/vault/config/config.hcl
+    cap_add:
+      - IPC_LOCK
+    command: server
+    healthcheck:
+      test: ["CMD", "vault", "status"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - azora-network
+
+  # ============================================================================
+  # API GATEWAY & LOAD BALANCING LAYER
+  # ============================================================================
+
+  # NGINX API Gateway with Load Balancing
+  api-gateway:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./infrastructure/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./infrastructure/nginx/ssl:/etc/nginx/ssl
+      - nginx_cache:/var/cache/nginx
+      - ./infrastructure/nginx/lua:/etc/nginx/lua
+    depends_on:
+      - auth
+      - ai-orchestrator
+      - student-earnings-service
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - azora-dmz
+      - azora-network
+
+  # Kong API Gateway (Enterprise-grade)
+  kong:
+    image: kong:latest
+    environment:
+      KONG_DATABASE: postgres
+      KONG_PG_HOST: postgres-primary
+      KONG_PG_USER: azora
+      KONG_PG_PASSWORD: ${POSTGRES_PASSWORD}
+      KONG_PROXY_ACCESS_LOG: /dev/stdout
+      KONG_ADMIN_ACCESS_LOG: /dev/stdout
+      KONG_PROXY_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_LISTEN: 0.0.0.0:8001
+    ports:
+      - "8000:8000"
+      - "8443:8443"
+      - "8001:8001"
+    depends_on:
+      postgres-primary:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - azora-network
+
+  # ============================================================================
+  # MONITORING & OBSERVABILITY LAYER
+  # ============================================================================
+
+  # Prometheus for Metrics
+  prometheus:
+    image: prom/prometheus:latest
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=30d'
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./infrastructure/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    restart: unless-stopped
+    networks:
+      - monitoring-network
+      - azora-network
+
+  # Grafana for Visualization
+  grafana:
+    image: grafana/grafana:latest
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
+      GF_INSTALL_PLUGINS: grafana-clock-panel,grafana-simple-json-datasource
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./infrastructure/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./infrastructure/grafana/datasources:/etc/grafana/provisioning/datasources
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+    networks:
+      - monitoring-network
+
+  # Jaeger for Distributed Tracing
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    environment:
+      COLLECTOR_ZIPKIN_HOST_PORT: :9411
+    ports:
+      - "5775:5775/udp"
+      - "6831:6831/udp"
+      - "6832:6832/udp"
+      - "5778:5778"
+      - "16686:16686"
+      - "14268:14268"
+      - "14250:14250"
+      - "9411:9411"
+    restart: unless-stopped
+    networks:
+      - monitoring-network
+      - azora-network
+
+  # ELK Stack - Logstash
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.11.0
+    volumes:
+      - ./infrastructure/logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    depends_on:
+      - elasticsearch
+    restart: unless-stopped
+    networks:
+      - azora-network
+
+  # ELK Stack - Kibana
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.0
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+      ELASTICSEARCH_USERNAME: elastic
+      ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD}
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    restart: unless-stopped
+    networks:
+      - azora-network
+
+  # ============================================================================
+  # CORE AZORA SERVICES
+  # ============================================================================
+
+  # Authentication & Authorization Service
+  auth:
+    build:
+      context: ./services/auth
+      dockerfile: Dockerfile.production
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://azora:${POSTGRES_PASSWORD}@postgres-primary:5432/azora_db
+      REDIS_URL: redis://redis-master:6379
+      JWT_SECRET_FILE: /run/secrets/jwt_secret
+      VAULT_ADDR: http://vault:8200
+      VAULT_TOKEN: ${VAULT_ROOT_TOKEN}
+    secrets:
+      - jwt_secret
+    ports:
+      - "4004:4004"
+    depends_on:
+      postgres-primary:
+        condition: service_healthy
+      redis-master:
+        condition: service_healthy
+      vault:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4004/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    networks:
+      - azora-network
+    deploy:
+      replicas: 3
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+
+  # AI Orchestrator with Self-Learning
+  ai-orchestrator:
+    build:
+      context: ./services/ai-orchestrator
+      dockerfile: Dockerfile.production
+    environment:
+      NODE_ENV: production
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      REDIS_URL: redis://redis-master:6379
+      MONGODB_URL: mongodb://azora_admin:${MONGODB_PASSWORD}@mongodb:27017/azora_docs
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      RABBITMQ_URL: amqp://azora:${RABBITMQ_PASSWORD}@rabbitmq:5672
+      ENABLE_SELF_LEARNING: true
+      ENABLE_OFFLINE_MODE: true
+    ports:
+      - "4001:4001"
+    volumes:
+      - ./services/ai-orchestrator/models:/app/models
+      - offline_sync_data:/app/offline_data
+    depends_on:
+      - redis-master
+      - mongodb
+      - elasticsearch
+      - rabbitmq
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - azora-network
+    deploy:
+      resources:
+        limits:
+          cpus: '8'
+          memory: 16G
+        reservations:
+          cpus: '4'
+          memory: 8G
+
+  # Student Earnings Service
+  student-earnings-service:
+    build:
+      context: ./services/student-earnings-service
+      dockerfile: Dockerfile.production
+    environment:
+      NODE_ENV: production
+      STUDENT_DB_HOST: student-earnings-db
+      STUDENT_DB_PORT: 5432
+      STUDENT_DB_NAME: student_earnings_db
+      STUDENT_DB_USER: student_earnings_user
+      STUDENT_DB_PASSWORD: ${STUDENT_DB_PASSWORD}
+      REDIS_URL: redis://redis-master:6379
+      BLOCKCHAIN_RPC_URL: ${BLOCKCHAIN_RPC_URL}
+      RABBITMQ_URL: amqp://azora:${RABBITMQ_PASSWORD}@rabbitmq:5672
+      ENABLE_OFFLINE_SYNC: true
+      PROMETHEUS_ENDPOINT: http://prometheus:9090
+    depends_on:
+      student-earnings-db:
+        condition: service_healthy
+      redis-master:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    ports:
+      - "4700:4700"
+    volumes:
+      - offline_sync_data:/app/offline_data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4700/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - azora-network
+    deploy:
+      replicas: 3
+
+  # Dedicated Student Earnings Database
+  student-earnings-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: student_earnings_db
+      POSTGRES_USER: student_earnings_user
+      POSTGRES_PASSWORD: ${STUDENT_DB_PASSWORD}
+    ports:
+      - "5433:5432"
+    volumes:
+      - student_earnings_db_data:/var/lib/postgresql/data
+      - ./infrastructure/postgres/backup.sh:/usr/local/bin/backup.sh
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U student_earnings_user -d student_earnings_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - azora-network
+
+  # Blockchain Service
+  blockchain:
+    image: trufflesuite/ganache-cli:latest
+    ports:
+      - "8545:8545"
+    command: --deterministic --mnemonic "test test test test test test test test test test test junk" --networkId 1337 --gasLimit 12000000
+    restart: unless-stopped
+    networks:
+      - azora-network
+
+  # Sovereign Minter
+  sovereign-minter:
+    build:
+      context: ./services/sovereign-minter
+      dockerfile: Dockerfile.production
+    environment:
+      NODE_ENV: production
+      BLOCKCHAIN_RPC_URL: http://blockchain:8545
+      REDIS_URL: redis://redis-master:6379
+      RABBITMQ_URL: amqp://azora:${RABBITMQ_PASSWORD}@rabbitmq:5672
+    secrets:
+      - minter_private_key
+    depends_on:
+      - blockchain
+      - redis-master
+      - rabbitmq
+    restart: unless-stopped
+    networks:
+      - azora-network
+
+  # ============================================================================
+  # OFFLINE SYNCHRONIZATION SERVICE
+  # ============================================================================
+
+  offline-sync-service:
+    build:
+      context: ./services/offline-sync-service
+      dockerfile: Dockerfile
+    environment:
+      NODE_ENV: production
+      POSTGRES_URL: postgresql://azora:${POSTGRES_PASSWORD}@postgres-primary:5432/azora_db
+      REDIS_URL: redis://redis-master:6379
+      MONGODB_URL: mongodb://azora_admin:${MONGODB_PASSWORD}@mongodb:27017/azora_docs
+      SYNC_INTERVAL_SECONDS: 300
+      ENABLE_CONFLICT_RESOLUTION: true
+    volumes:
+      - offline_sync_data:/app/sync_data
+    depends_on:
+      - postgres-primary
+      - redis-master
+      - mongodb
+    restart: unless-stopped
+    networks:
+      - azora-network
+
+  # ============================================================================
+  # AUTO-SCALING & SELF-HEALING SERVICE
+  # ============================================================================
+
+  auto-scaler:
+    build:
+      context: ./services/auto-scaler
+      dockerfile: Dockerfile
+    environment:
+      PROMETHEUS_URL: http://prometheus:9090
+      DOCKER_HOST: unix:///var/run/docker.sock
+      ENABLE_AUTO_SCALING: true
+      CPU_THRESHOLD: 70
+      MEMORY_THRESHOLD: 80
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+    networks:
+      - azora-network
+      - monitoring-network
+
+  # ============================================================================
+  # CI/CD & DEPLOYMENT SERVICE
+  # ============================================================================
+
+  jenkins:
+    image: jenkins/jenkins:lts
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - ./infrastructure/jenkins:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      JAVA_OPTS: "-Djenkins.install.runSetupWizard=false"
+    restart: unless-stopped
+    networks:
+      - azora-network
+
+  # ============================================================================
+  # BACKUP & DISASTER RECOVERY SERVICE
+  # ============================================================================
+
+  backup-service:
+    build:
+      context: ./services/backup-service
+      dockerfile: Dockerfile
+    environment:
+      POSTGRES_HOST: postgres-primary
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      S3_ENDPOINT: http://minio:9000
+      S3_ACCESS_KEY: ${MINIO_ROOT_USER}
+      S3_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
+      BACKUP_SCHEDULE: "0 2 * * *"
+      RETENTION_DAYS: 30
+    volumes:
+      - postgres_backups:/backups
+      - redis_backups:/redis_backups
+    depends_on:
+      - postgres-primary
+      - minio
+    restart: unless-stopped
+    networks:
+      - azora-network

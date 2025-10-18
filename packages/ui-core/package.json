@@ -1,0 +1,30 @@
+{
+  "name": "@azora/ui-core",
+  "version": "1.0.0",
+  "description": "Azora OS UI Design System",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "lint": "eslint src/**/*.ts*"
+  },
+  "keywords": ["azora", "ui", "design-system"],
+  "author": "Azora World (Pty) Ltd",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "framer-motion": "^10.16.4",
+    "lucide-react": "^0.284.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "eslint": "^8.45.0",
+    "tsup": "^7.2.0",
+    "typescript": "^5.0.2"
+  }
+}

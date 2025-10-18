@@ -1,0 +1,28 @@
+{
+  "name": "@azora/ui-components",
+  "version": "1.0.0",
+  "description": "Azora OS shared UI components",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup src/index.tsx --format esm,cjs --dts",
+    "dev": "tsup src/index.tsx --format esm,cjs --watch --dts",
+    "lint": "eslint src/**/*.{ts,tsx}",
+    "test": "jest"
+  },
+  "dependencies": {
+    "framer-motion": "^10.16.4",
+    "lucide-react": "^0.288.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.25",
+    "@types/react-dom": "^18.2.11",
+    "eslint": "^8.51.0",
+    "jest": "^29.7.0",
+    "tsup": "^7.2.0",
+    "typescript": "^5.2.2"
+  }
+}

@@ -1,0 +1,36 @@
+
+  # Distributed Tracing & Recovery
+  tracing-recovery:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: azora-tracing
+    volumes:
+      - ./infrastructure:/app/infrastructure
+    environment:
+      - NODE_ENV=production
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql://azora_user:${POSTGRES_PASSWORD}@postgres:5432/azora
+      - TRACING_PORT=4998
+    ports:
+      - "4998:4998"
+    restart: always
+    depends_on:
+      - redis
+      - postgres
+    command: node /app/infrastructure/distributed-tracing.js
+
+  # Snapshot Scheduler
+  snapshot-scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: azora-snapshots
+    volumes:
+      - ./infrastructure:/app/infrastructure
+    environment:
+      - TRACING_SERVICE_URL=http://tracing-recovery:4998
+    restart: always
+    depends_on:
+      - tracing-recovery
+    command: node /app/infrastructure/snapshot-scheduler.js

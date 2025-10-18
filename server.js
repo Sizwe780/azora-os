@@ -1,22 +1,47 @@
-import express from 'express';
-import path from 'path';
-import { fileURLToPath } from 'url';
+/**
+ * Azora OS - 0 Million Blockchain System
+ * 
+ * This server combines all components:
+ * - Blockchain node with adaptive complexity
+ * - Founder withdrawal system (40% personal, 60% reinvestment)
+ * - Competitive analysis showing why Azora OS is worth 0M
+ * - Constitutional compliance enforcement
+ */
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
+const fs = require('fs').promises;
+const morgan = require('morgan');
+const bodyParser = require('body-parser');
 
+// Import routes
+const blockchainWithdrawalRouter = require('./services/founder-withdrawal/blockchain-withdrawals');
+const competitiveAnalysisRouter = require('./services/valuation-service/competitive-analysis');
+
+// Create express app
 const app = express();
-const port = process.env.PORT || 3000;
+app.use(cors());
+app.use(express.json());
+app.use(morgan('dev'));
+app.use(bodyParser.json());
 
-// Serve static files from the React app build directory
-app.use(express.static(path.join(__dirname, 'dist')));
+// Static files
+app.use(express.static(path.join(__dirname, 'services/blockchain-node/public')));
 
-// The "catchall" handler: for any request that doesn't
-// match one above, send back React's index.html file.
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+// Mount routes
+app.use('/api', blockchainWithdrawalRouter);
+app.use('/competitive', competitiveAnalysisRouter);
+
+// Redirect root to blockchain explorer
+app.get('/', (req, res) => {
+  res.redirect('/index.html');
 });
 
-app.listen(port, () => {
-  console.log(`Azora OS server listening on port ${port}`);
+// Start server
+const PORT = process.env.PORT || 5050;
+app.listen(PORT, () => {
+  console.log(`Azora OS Blockchain running on port ${PORT}`);
+  console.log('0 million valuation system initialized');
+  console.log('40/60 constitutional withdrawal system active');
 });

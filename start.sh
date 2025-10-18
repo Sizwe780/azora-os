@@ -1,6 +1,9 @@
 #!/bin/bash
 
-echo "�� Starting Azora OS..."
+# Azora OS Start Script
+# Follows the Azora Constitution Article IX: Development Principles
+
+echo "🚀 Starting Azora OS..."
 
 # Check if Docker is running
 if ! docker info > /dev/null 2>&1; then
@@ -8,23 +11,56 @@ if ! docker info > /dev/null 2>&1; then
   exit 1
 fi
 
-# Check for .env file
+# Ensure .env files exist
 if [ ! -f ".env" ]; then
-  echo "⚠️ .env file not found. Creating from .env.production..."
-  cp .env.production .env
-  echo "✅ .env file created. Please review it before proceeding."
+  echo "ℹ️ Creating .env file from .env.example..."
+  cp .env.example .env
+  echo "⚠️ Please update the .env file with your settings!"
 fi
 
-# Install dependencies if needed
-if [ ! -d "node_modules" ]; then
-  echo "📦 Installing dependencies..."
-  npm install
+# Check for azora-coin .env file
+if [ ! -f "azora-coin/.env" ]; then
+  echo "ℹ️ Creating azora-coin/.env file from azora-coin/.env.example..."
+  cp azora-coin/.env.example azora-coin/.env
+  echo "⚠️ Please update the azora-coin/.env file with your blockchain settings!"
 fi
 
-# Build and start services
-echo "🏗️ Building and starting services..."
+# Install dependencies in the azora-coin directory
+echo "📦 Installing Azora Coin dependencies..."
+cd azora-coin
+npm install
+npx hardhat compile
+cd ..
+
+# Install dependencies in the main app directory
+echo "📦 Installing Main App dependencies..."
+cd apps/main-app
+npm install
+cd ../..
+
+# Build and run services with Docker Compose
+echo "🐳 Building and starting services..."
+docker-compose build
 docker-compose up -d
 
-# Start development server
-echo "🔧 Starting development server..."
-npm run dev
+# Report on services status
+echo "🔍 Checking service status..."
+docker ps
+
+# Start development server for main app
+echo "🚀 Starting Main App development server..."
+cd apps/main-app
+npm run dev &
+APP_PID=$!
+
+# Print helpful information
+echo ""
+echo "✅ Azora OS is now running!"
+echo "📱 Main App: http://localhost:5173"
+echo "�� Azora Coin contract deployed"
+echo ""
+echo "Press Ctrl+C to stop all services"
+
+# Wait for user to press Ctrl+C
+trap "kill $APP_PID; docker-compose down; echo '🛑 Azora OS stopped.'" INT TERM
+wait

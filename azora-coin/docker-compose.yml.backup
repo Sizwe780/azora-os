@@ -1,0 +1,17 @@
+  azora-coin-integration:
+    build: 
+      context: .
+      dockerfile: Dockerfile.backend
+    environment:
+      - PORT=4092
+      - NODE_ENV=development
+      - BLOCKCHAIN_RPC_URL=${BLOCKCHAIN_RPC_URL:-http://blockchain:8545}
+      - BLOCKCHAIN_PRIVATE_KEY=${BLOCKCHAIN_PRIVATE_KEY}
+      - AZORA_COIN_CONTRACT=${AZORA_COIN_CONTRACT}
+    volumes:
+      - ./services/azora-coin-integration:/app/services/azora-coin-integration
+      - ./apps/main-app/src/contracts:/app/apps/main-app/src/contracts
+    ports:
+      - "4092:4092"
+    depends_on:
+      - blockchain

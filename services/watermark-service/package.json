@@ -1,0 +1,16 @@
+{
+  "name": "watermark-service",
+  "version": "1.0.0",
+  "description": "Document watermarking with UID tracking and blockchain verification",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.18.2",
+    "sharp": "^0.33.1",
+    "pdfkit": "^0.13.0",
+    "qrcode": "^1.5.3",
+    "uuid": "^9.0.1",
+    "ethers": "^6.9.0",
+    "pg": "^8.11.0",
+    "dotenv": "^16.3.1"
+  }
+}

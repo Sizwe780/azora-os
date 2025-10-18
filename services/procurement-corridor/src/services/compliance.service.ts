@@ -1,5 +1,7 @@
 import { logger } from '../utils/logger';
 import { ComplianceCheck, ComplianceRule, Tender, Bid } from '../types/tender.types';
+import { UNGCPrinciples } from './rules/ungc-rules';
+import { SALegalRules } from './rules/sa-legal-rules';
 
 interface ConstitutionRule {
   id: string;
@@ -10,7 +12,8 @@ interface ConstitutionRule {
   check: (tender: Tender, bid?: Bid) => Promise<{ passed: boolean; details?: string }>;
 }
 
-class ComplianceService {
+@Injectable()
+export class ComplianceService {
   private constitutionRules: ConstitutionRule[] = [];
 
   constructor() {
@@ -199,6 +202,13 @@ class ComplianceService {
           };
         },
       },
+    ];
+
+    // Add new rule sets to the existing ones
+    this.rules = [
+      ...this.rules, // Keep existing rules
+      ...UNGCPrinciples,
+      ...SALegalRules,
     ];
 
     logger.info(`Loaded ${this.constitutionRules.length} Constitution-as-Code rules`);

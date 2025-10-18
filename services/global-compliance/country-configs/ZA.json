@@ -1,0 +1,44 @@
+{
+  "name": "South Africa",
+  "continent": "Africa",
+  "requiredFields": [
+    "fullName", 
+    "idNumber", 
+    "address", 
+    "dateOfBirth"
+  ],
+  "regulations": {
+    "FICA": {
+      "name": "Financial Intelligence Centre Act",
+      "required": true,
+      "description": "Procedures to identify and verify clients and report suspicious transactions"
+    },
+    "POPIA": {
+      "name": "Protection of Personal Information Act",
+      "required": true,
+      "description": "Data protection law similar to GDPR"
+    },
+    "FAIS": {
+      "name": "Financial Advisory and Intermediary Services Act",
+      "required": false,
+      "description": "Regulations for financial advisors and intermediaries"
+    },
+    "NCA": {
+      "name": "National Credit Act",
+      "required": true,
+      "description": "Regulations for credit agreements"
+    }
+  },
+  "minimumAge": 18,
+  "documentationRequired": ["south_african_id", "proof_of_address"],
+  "specialWithdrawalRules": {
+    "founders": {
+      "guaranteed": 100,
+      "currency": "ZAR",
+      "requirements": {
+        "minClients": 10,
+        "documentationRequired": ["tax_clearance"]
+      }
+    }
+  }
+}
