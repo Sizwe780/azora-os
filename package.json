@@ -8,5 +8,10 @@
   "devDependencies": {
     "eslint": "^9.38.0",
     "jest": "^30.2.0"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "node-fetch": "^3.3.2"
   }
 }
