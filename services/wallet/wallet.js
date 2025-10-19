@@ -28,6 +28,9 @@ let provider;
 let contract;
 let wallets = {}; // In-memory wallet store (use DB in production)
 
+// Policy configuration
+const policyConfig = require('./policy-config.json');
+
 // Initialize blockchain
 const initBlockchain = async () => {
   const rpcUrl = process.env.BLOCKCHAIN_RPC_URL || 'http://blockchain:8545';
@@ -164,6 +167,24 @@ app.post('/api/wallet/:id/withdraw-zar', async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+});
+
+// Transaction creation with policy enforcement
+app.post('/api/wallet/:id/tx/create', async (req, res) => {
+  const { id } = req.params;
+  const { amount } = req.body;
+  const wallet = wallets[id];
+  if (!wallet) return res.status(404).json({ error: 'Wallet not found' });
+  
+  let riskLevel = 'lowRisk';
+  if (amount > policyConfig.thresholds.dailyCapStandard) riskLevel = 'mediumRisk';
+  if (amount > policyConfig.thresholds.highValueThreshold) riskLevel = 'highRisk';
+  
+  // Enforce factors and cooling
+  const policy = policyConfig.policies[riskLevel];
+  // Add logic to check factors and apply cooling
+  
+  res.json({ success: true, riskLevel, policy });
 });
 
 const PORT = process.env.WALLET_PORT || 4093;

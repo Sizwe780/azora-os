@@ -1,0 +1,36 @@
+{
+  "thresholds": {
+    "dailyCapSmall": 100,
+    "dailyCapStandard": 1000,
+    "highValueThreshold": 10000,
+    "txVelocityLimitPerHour": 10,
+    "slippageThreshold": 0.05,
+    "riskScoreJump": 20
+  },
+  "policies": {
+    "lowRisk": {
+      "factors": ["device_sig", "biometric"],
+      "coolingPeriod": 0
+    },
+    "mediumRisk": {
+      "factors": ["device_sig", "biometric", "oath_pin"],
+      "coolingPeriod": 0
+    },
+    "highRisk": {
+      "factors": ["device_sig", "biometric", "oath_pin", "guardian_cosign"],
+      "coolingPeriod": 259200,
+      "councilVoteRequired": true
+    }
+  },
+  "anomalyRules": {
+    "velocityCheck": true,
+    "geolocationShift": true,
+    "deviceChange": true,
+    "slippageCheck": true,
+    "riskScoreCheck": true
+  },
+  "autoFreeze": {
+    "enabled": true,
+    "overrideRequiresCouncil": true
+  }
+}

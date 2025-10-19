@@ -1,0 +1,670 @@
+openapi: 3.0.3
+info:
+  title: Azora OS API
+  version: 1.0.0
+  description: Production-grade API contracts for Azora OS identity, minting, wallet, and compliance services.
+servers:
+  - url: https://api.azora.os
+    description: Production server
+  - url: http://localhost:4092
+    description: Local development server
+security:
+  - bearerAuth: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    IdentityId:
+      type: string
+      description: Unique identity identifier
+    PoCHash:
+      type: string
+      description: Proof of Compliance hash
+    CoinId:
+      type: string
+      description: Unique coin identifier
+    TxId:
+      type: string
+      description: Transaction identifier
+    Amount:
+      type: number
+      minimum: 0
+      description: Amount in AZR or stable currency
+    Signature:
+      type: string
+      description: Cryptographic signature
+    Timestamp:
+      type: string
+      format: date-time
+      description: ISO 8601 timestamp
+    ResponseBase:
+      type: object
+      properties:
+        serverSignature:
+          $ref: '#/components/schemas/Signature'
+        timestamp:
+          $ref: '#/components/schemas/Timestamp'
+      required:
+        - serverSignature
+        - timestamp
+paths:
+  /identity/onboard:
+    post:
+      summary: Onboard a new identity
+      operationId: onboardIdentity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                dob:
+                  type: string
+                  format: date
+                idimagehash:
+                  type: string
+                biometricenrollmentblob:
+                  type: string
+                oath_signature:
+                  $ref: '#/components/schemas/Signature'
+              required:
+                - name
+                - dob
+                - idimagehash
+                - biometricenrollmentblob
+                - oath_signature
+      responses:
+        '200':
+          description: Identity onboarded successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseBase'
+                  - type: object
+                    properties:
+                      identityid:
+                        $ref: '#/components/schemas/IdentityId'
+                      pochash:
+                        $ref: '#/components/schemas/PoCHash'
+                      idtoken:
+                        type: string
+                      tierpending:
+                        type: string
+                        enum: [A, B, C, X]
+                    required:
+                      - identityid
+                      - pochash
+                      - idtoken
+                      - tierpending
+        '400':
+          description: Invalid request
+  /identity/verify:
+    post:
+      summary: Verify identity liveness
+      operationId: verifyIdentity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                identityid:
+                  $ref: '#/components/schemas/IdentityId'
+                livenessblob:
+                  type: string
+                device_attestation:
+                  type: string
+              required:
+                - identityid
+                - livenessblob
+                - device_attestation
+      responses:
+        '200':
+          description: Verification result
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseBase'
+                  - type: object
+                    properties:
+                      verified:
+                        type: boolean
+                      attestation_proof:
+                        type: string
+                    required:
+                      - verified
+  /compliance/submit:
+    post:
+      summary: Submit compliance document
+      operationId: submitCompliance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                identityid:
+                  $ref: '#/components/schemas/IdentityId'
+                doctype:
+                  type: string
+                dochash:
+                  type: string
+                redactedpayload_location:
+                  type: string
+              required:
+                - identityid
+                - doctype
+                - dochash
+                - redactedpayload_location
+      responses:
+        '200':
+          description: Submission accepted
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseBase'
+                  - type: object
+                    properties:
+                      submissionid:
+                        type: string
+                      pochashupdate:
+                        $ref: '#/components/schemas/PoCHash'
+                      riskscore:
+                        type: number
+                    required:
+                      - submissionid
+                      - pochashupdate
+                      - riskscore
+  /compliance/status/{identity_id}:
+    get:
+      summary: Get compliance status
+      operationId: getComplianceStatus
+      parameters:
+        - name: identity_id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/IdentityId'
+      responses:
+        '200':
+          description: Compliance status
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseBase'
+                  - type: object
+                    properties:
+                      identityid:
+                        $ref: '#/components/schemas/IdentityId'
+                      tier:
+                        type: string
+                        enum: [A, B, C, X]
+                      riskscore:
+                        type: number
+                      limits:
+                        type: object
+                        properties:
+                          daily:
+                            $ref: '#/components/schemas/Amount'
+                          weekly:
+                            $ref: '#/components/schemas/Amount'
+                    required:
+                      - identityid
+                      - tier
+                      - riskscore
+                      - limits
+  /mint/authorize:
+    post:
+      summary: Authorize minting
+      operationId: authorizeMint
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                identityid:
+                  $ref: '#/components/schemas/IdentityId'
+                requestedamount:
+                  $ref: '#/components/schemas/Amount'
+                sourceoffunds_hash:
+                  type: string
+              required:
+                - identityid
+                - requestedamount
+                - sourceoffunds_hash
+      responses:
+        '200':
+          description: Authorization result
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseBase'
+                  - type: object
+                    properties:
+                      authorized:
+                        type: boolean
+                      allowedamount:
+                        $ref: '#/components/schemas/Amount'
+                      nonce:
+                        type: string
+                      policyhash:
+                        type: string
+                    required:
+                      - authorized
+                      - allowedamount
+                      - nonce
+                      - policyhash
+  /mint/issue:
+    post:
+      summary: Issue minted coins
+      operationId: issueMint
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                identityid:
+                  $ref: '#/components/schemas/IdentityId'
+                authorizednonce:
+                  type: string
+                amount:
+                  $ref: '#/components/schemas/Amount'
+                tx_metadata:
+                  type: object
+              required:
+                - identityid
+                - authorizednonce
+                - amount
+                - tx_metadata
+      responses:
+        '200':
+          description: Mint issued
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseBase'
+                  - type: object
+                    properties:
+                      minteventid:
+                        type: string
+                      coinids:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/CoinId'
+                      pocstamp:
+                        type: string
+                      ledgertxref:
+                        type: string
+                    required:
+                      - minteventid
+                      - coinids
+                      - pocstamp
+                      - ledgertxref
+  /mint/lineage/{coinId}:
+    get:
+      summary: Get coin lineage
+      operationId: getCoinLineage
+      parameters:
+        - name: coinId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/CoinId'
+      responses:
+        '200':
+          description: Coin lineage
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseBase'
+                  - type: object
+                    properties:
+                      coinId:
+                        $ref: '#/components/schemas/CoinId'
+                      mintedat:
+                        $ref: '#/components/schemas/Timestamp'
+                      identityhash:
+                        type: string
+                      pocstamp:
+                        type: string
+                      mintevent_id:
+                        type: string
+                    required:
+                      - coinId
+                      - mintedat
+                      - identityhash
+                      - pocstamp
+                      - mintevent_id
+  /wallet/tx/create:
+    post:
+      summary: Create wallet transaction
+      operationId: createWalletTx
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fromidentity:
+                  $ref: '#/components/schemas/IdentityId'
+                toaddress:
+                  type: string
+                amount:
+                  $ref: '#/components/schemas/Amount'
+                devicesig:
+                  $ref: '#/components/schemas/Signature'
+                biometricchallenge:
+                  type: string
+              required:
+                - fromidentity
+                - toaddress
+                - amount
+                - devicesig
+                - biometricchallenge
+      responses:
+        '200':
+          description: Transaction created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseBase'
+                  - type: object
+                    properties:
+                      txid:
+                        $ref: '#/components/schemas/TxId'
+                      requiredfactors:
+                        type: array
+                        items:
+                          type: string
+                      risk_code:
+                        type: string
+                    required:
+                      - txid
+                      - requiredfactors
+                      - risk_code
+  /wallet/tx/confirm:
+    post:
+      summary: Confirm wallet transaction
+      operationId: confirmWalletTx
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                txid:
+                  $ref: '#/components/schemas/TxId'
+                guardiansigs:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Signature'
+                oathpinproof:
+                  type: string
+              required:
+                - txid
+                - guardiansigs
+                - oathpinproof
+      responses:
+        '200':
+          description: Transaction confirmed
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseBase'
+                  - type: object
+                    properties:
+                      confirmed:
+                        type: boolean
+                      ledgertxref:
+                        type: string
+                    required:
+                      - confirmed
+                      - ledgertxref
+  /wallet/recover/initiate:
+    post:
+      summary: Initiate wallet recovery
+      operationId: initiateWalletRecovery
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                identityid:
+                  $ref: '#/components/schemas/IdentityId'
+                reportreason:
+                  type: string
+                device_info:
+                  type: object
+              required:
+                - identityid
+                - reportreason
+                - device_info
+      responses:
+        '200':
+          description: Recovery initiated
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseBase'
+                  - type: object
+                    properties:
+                      recoverytoken:
+                        type: string
+                      requiredattestations:
+                        type: integer
+                      coolingperiodseconds:
+                        type: integer
+                    required:
+                      - recoverytoken
+                      - requiredattestations
+                      - coolingperiodseconds
+  /recover/attest:
+    post:
+      summary: Attest to recovery
+      operationId: attestRecovery
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                recoverytoken:
+                  type: string
+                guardianid:
+                  type: string
+                attestation_blob:
+                  type: string
+              required:
+                - recoverytoken
+                - guardianid
+                - attestation_blob
+      responses:
+        '200':
+          description: Attestation recorded
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseBase'
+                  - type: object
+                    properties:
+                      attestationid:
+                        type: string
+                      attestationtimestamp:
+                        $ref: '#/components/schemas/Timestamp'
+                    required:
+                      - attestationid
+                      - attestationtimestamp
+  /ledger/checkpoint:
+    post:
+      summary: Create ledger checkpoint
+      operationId: createLedgerCheckpoint
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nodeid:
+                  type: string
+                stateroot:
+                  type: string
+                signature:
+                  $ref: '#/components/schemas/Signature'
+                snapshot_locator:
+                  type: string
+              required:
+                - nodeid
+                - stateroot
+                - signature
+                - snapshot_locator
+      responses:
+        '200':
+          description: Checkpoint created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseBase'
+                  - type: object
+                    properties:
+                      checkpointid:
+                        type: string
+                      distributedslices_refs:
+                        type: array
+                        items:
+                          type: string
+                    required:
+                      - checkpointid
+                      - distributedslices_refs
+  /liquidity/pool/seed:
+    post:
+      summary: Seed liquidity pool
+      operationId: seedLiquidityPool
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                poolid:
+                  type: string
+                seedamountazr:
+                  $ref: '#/components/schemas/Amount'
+                seedamountstable:
+                  $ref: '#/components/schemas/Amount'
+                ownermultisig:
+                  type: string
+              required:
+                - poolid
+                - seedamountazr
+                - seedamountstable
+                - ownermultisig
+      responses:
+        '200':
+          description: Pool seeded
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseBase'
+                  - type: object
+                    properties:
+                      poolref:
+                        type: string
+                      initialtvl:
+                        $ref: '#/components/schemas/Amount'
+                    required:
+                      - poolref
+                      - initialtvl
+  /utility/airtime/redeem:
+    post:
+      summary: Redeem for airtime
+      operationId: redeemAirtime
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                identityid:
+                  $ref: '#/components/schemas/IdentityId'
+                amountazr:
+                  $ref: '#/components/schemas/Amount'
+                telcopartnerid:
+                  type: string
+              required:
+                - identityid
+                - amountazr
+                - telcopartnerid
+      responses:
+        '200':
+          description: Airtime redeemed
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseBase'
+                  - type: object
+                    properties:
+                      vouchercode:
+                        type: string
+                      redemptionref:
+                        type: string
+                    required:
+                      - vouchercode
+                      - redemptionref
+  /reporting/foundersales:
+    get:
+      summary: Get founder sales report
+      operationId: getFounderSales
+      responses:
+        '200':
+          description: Sales report
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResponseBase'
+                  - type: object
+                    properties:
+                      coinssold:
+                        $ref: '#/components/schemas/Amount'
+                      fundsreceivedhash:
+                        type: string
+                      signedreceipt:
+                        $ref: '#/components/schemas/Signature'
+                    required:
+                      - coinssold
+                      - fundsreceivedhash
+                      - signedreceipt
