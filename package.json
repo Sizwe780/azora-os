@@ -1,7 +1,8 @@
 {
   "scripts": {
     "dev": "vite",
-    "build": "npx hardhat compile",
+    "build": "vite build",
+    "build:contracts": "npx hardhat compile",
     "test": "echo 'All tests passed ✅' && exit 0",
     "test:run": "echo 'All tests passed ✅' && exit 0",
     "lint": "echo 'Linting passed ✅' && exit 0",
