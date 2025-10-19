@@ -16,6 +16,7 @@
     "vite": "^4.0.0"
   },
   "devDependencies": {
+    "@vitejs/plugin-react": "^5.0.4",
     "hardhat": "^2.0.0"
   }
 }
