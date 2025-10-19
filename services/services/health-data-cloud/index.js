@@ -1,5 +1,20 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
+app.use(cors());
 app.use(express.json());
-app.post('/api/health/data', (req, res) => res.json({ recordId: Date.now(), synced: true }));
-app.listen(3082);
+
+app.get('/health', (req, res) => res.json({ status: 'ok', service: 'health-data-cloud' }));
+
+app.post('/api/health-data-cloud', (req, res) => {
+  // TODO: Replace with real logic
+  res.json({ service: 'health-data-cloud', ok: true, received: req.body });
+});
+
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ error: err.message || 'Internal server error' });
+});
+
+const PORT = process.env.PORT || 3052;
+app.listen(PORT, () => console.log('[health-data-cloud] running on port', PORT));

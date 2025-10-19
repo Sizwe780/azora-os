@@ -1,0 +1,16 @@
+import { useState, useEffect } from "react";
+import { fetchAiVision } from "../services/ai-vision";
+
+export default function useAiVisionApi(payload) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  useEffect(() => {
+    setLoading(true);
+    fetchAiVision(payload)
+      .then(setData)
+      .catch(setError)
+      .finally(() => setLoading(false));
+  }, [JSON.stringify(payload)]);
+  return { data, loading, error };
+}

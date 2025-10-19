@@ -1,5 +1,20 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
+app.use(cors());
 app.use(express.json());
-app.post('/api/ai/summarize', (req, res) => res.json({ summary: 'short' }));
-app.listen(3019);
+
+app.get('/health', (req, res) => res.json({ status: 'ok', service: 'ai-summarization' }));
+
+app.post('/api/ai-summarization', (req, res) => {
+  // TODO: Replace with real logic
+  res.json({ service: 'ai-summarization', ok: true, received: req.body });
+});
+
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ error: err.message || 'Internal server error' });
+});
+
+const PORT = process.env.PORT || 3019;
+app.listen(PORT, () => console.log('[ai-summarization] running on port', PORT));

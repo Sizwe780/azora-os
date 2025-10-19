@@ -1,5 +1,20 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
+app.use(cors());
 app.use(express.json());
-app.post('/api/incident/report', (req, res) => res.json({ incidentId: Date.now(), status: 'open' }));
-app.listen(3106);
+
+app.get('/health', (req, res) => res.json({ status: 'ok', service: 'incident-management' }));
+
+app.post('/api/incident-management', (req, res) => {
+  // TODO: Replace with real logic
+  res.json({ service: 'incident-management', ok: true, received: req.body });
+});
+
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ error: err.message || 'Internal server error' });
+});
+
+const PORT = process.env.PORT || 3076;
+app.listen(PORT, () => console.log('[incident-management] running on port', PORT));

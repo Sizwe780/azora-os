@@ -1,5 +1,20 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
+app.use(cors());
 app.use(express.json());
-app.post('/api/ai/automate', (req, res) => res.json({ action: 'executed' }));
-app.listen(3016);
+
+app.get('/health', (req, res) => res.json({ status: 'ok', service: 'ai-automation' }));
+
+app.post('/api/ai-automation', (req, res) => {
+  // TODO: Replace with real logic
+  res.json({ service: 'ai-automation', ok: true, received: req.body });
+});
+
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ error: err.message || 'Internal server error' });
+});
+
+const PORT = process.env.PORT || 3016;
+app.listen(PORT, () => console.log('[ai-automation] running on port', PORT));

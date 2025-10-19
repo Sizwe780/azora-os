@@ -1,5 +1,20 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
+app.use(cors());
 app.use(express.json());
-app.post('/api/waste/track', (req, res) => res.json({ wasteId: Date.now(), recycled: true }));
-app.listen(3088);
+
+app.get('/health', (req, res) => res.json({ status: 'ok', service: 'waste-management' }));
+
+app.post('/api/waste-management', (req, res) => {
+  // TODO: Replace with real logic
+  res.json({ service: 'waste-management', ok: true, received: req.body });
+});
+
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ error: err.message || 'Internal server error' });
+});
+
+const PORT = process.env.PORT || 3058;
+app.listen(PORT, () => console.log('[waste-management] running on port', PORT));

@@ -1,5 +1,20 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
+app.use(cors());
 app.use(express.json());
-app.post('/api/devops/deploy', (req, res) => res.json({ deployed: true, version: req.body.version || 'latest' }));
-app.listen(3100);
+
+app.get('/health', (req, res) => res.json({ status: 'ok', service: 'devops-pipeline' }));
+
+app.post('/api/devops-pipeline', (req, res) => {
+  // TODO: Replace with real logic
+  res.json({ service: 'devops-pipeline', ok: true, received: req.body });
+});
+
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ error: err.message || 'Internal server error' });
+});
+
+const PORT = process.env.PORT || 3070;
+app.listen(PORT, () => console.log('[devops-pipeline] running on port', PORT));

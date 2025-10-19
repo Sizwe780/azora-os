@@ -1,0 +1,7 @@
+import axios from "axios";
+const BASE_URL = process.env.REACT_APP_BLOCKCHAIN-DEFI_URL || "http://localhost:3023";
+
+export async function fetchBlockchainDefi(payload = {}) {
+  const r = await axios.post(`${BASE_URL}/api/blockchain-defi`, payload);
+  return r.data;
+}

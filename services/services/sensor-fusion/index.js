@@ -1,5 +1,20 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
+app.use(cors());
 app.use(express.json());
-app.post('/api/sensor/fuse', (req, res) => res.json({ fused: true, quality: 0.98 }));
-app.listen(3077);
+
+app.get('/health', (req, res) => res.json({ status: 'ok', service: 'sensor-fusion' }));
+
+app.post('/api/sensor-fusion', (req, res) => {
+  // TODO: Replace with real logic
+  res.json({ service: 'sensor-fusion', ok: true, received: req.body });
+});
+
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ error: err.message || 'Internal server error' });
+});
+
+const PORT = process.env.PORT || 3047;
+app.listen(PORT, () => console.log('[sensor-fusion] running on port', PORT));

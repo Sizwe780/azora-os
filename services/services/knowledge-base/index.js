@@ -1,5 +1,20 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
+app.use(cors());
 app.use(express.json());
-app.post('/api/knowledge/query', (req, res) => res.json({ answer: '42', doc: 'doc.md' }));
-app.listen(3062);
+
+app.get('/health', (req, res) => res.json({ status: 'ok', service: 'knowledge-base' }));
+
+app.post('/api/knowledge-base', (req, res) => {
+  // TODO: Replace with real logic
+  res.json({ service: 'knowledge-base', ok: true, received: req.body });
+});
+
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ error: err.message || 'Internal server error' });
+});
+
+const PORT = process.env.PORT || 3035;
+app.listen(PORT, () => console.log('[knowledge-base] running on port', PORT));
