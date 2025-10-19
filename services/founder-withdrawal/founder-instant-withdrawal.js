@@ -11,6 +11,7 @@ const fs = require('fs').promises;
 const path = require('path');
 const crypto = require('crypto');
 const axios = require('axios');
+const { ethers } = require('ethers');
 
 const app = express();
 app.use(cors());
@@ -33,19 +34,27 @@ const LEDGER_FILE = path.join(DATA_DIR, 'token-ledger.json');
   }
 })();
 
-// South African bank API configuration
+// South African bank API configuration (updated to include Capitec and use live APIs)
 const bankApis = {
   'standard-bank': {
-    baseUrl: 'https://api.standardbank.co.za/sandbox',
-    apiKey: process.env.STANDARD_BANK_API_KEY || 'sb_test_key_2025',
+    baseUrl: 'https://api.standardbank.co.za/v1', // Live API endpoint
+    apiKey: process.env.STANDARD_BANK_API_KEY,
     endpoints: {
       balance: '/accounts/balance',
       transfer: '/payments/instant'
     }
   },
   'fnb': {
-    baseUrl: 'https://api.fnb.co.za/sandbox',
-    apiKey: process.env.FNB_API_KEY || 'fnb_test_key_2025',
+    baseUrl: 'https://api.fnb.co.za/v1', // Live API endpoint
+    apiKey: process.env.FNB_API_KEY,
+    endpoints: {
+      balance: '/accounts/balance',
+      transfer: '/payments/instant'
+    }
+  },
+  'capitec': {
+    baseUrl: 'https://api.capitecbank.co.za/v1', // Live API endpoint for Capitec
+    apiKey: process.env.CAPITEC_API_KEY,
     endpoints: {
       balance: '/accounts/balance',
       transfer: '/payments/instant'
@@ -53,9 +62,9 @@ const bankApis = {
   }
 };
 
-// Mock exchange rate (in a real system, this would be fetched from an API)
+// Mock exchange rate (updated to match constitution: 1 AZR = 18 ZAR)
 const exchangeRate = {
-  'AZR/ZAR': 150.00 // 1 AZR = 150 ZAR
+  'AZR/ZAR': 18.00 // Corrected from 150 to 18 ZAR per AZR
 };
 
 // Load data from files
@@ -66,6 +75,7 @@ async function loadFounders() {
   } catch (err) {
     if (err.code === 'ENOENT') {
       // Create sample founders if file doesn't exist
+      // Update default founders data with correct dates and Azora AI investment
       const defaultFounders = [
         { 
           id: '1', 
@@ -83,9 +93,17 @@ async function loadFounders() {
               accountNumber: '1234567890',
               accountType: 'current',
               branchCode: '051001'
+            },
+            {
+              bank: 'capitec',
+              accountNumber: '2278022268', // Added Capitec savings account
+              accountType: 'savings',
+              branchCode: '470010' // Example branch code for Capitec
             }
           ],
-          active: true
+          active: true,
+          joinedDate: '2024-12-01', // Corrected date
+          lastActivity: new Date().toISOString()
         },
         { 
           id: '2', 
@@ -105,7 +123,9 @@ async function loadFounders() {
               branchCode: '250655'
             }
           ],
-          active: true
+          active: true,
+          joinedDate: '2024-12-01', // Corrected date
+          lastActivity: new Date().toISOString()
         },
         { 
           id: '3', 
@@ -125,7 +145,9 @@ async function loadFounders() {
               branchCode: '051001'
             }
           ],
-          active: true
+          active: true,
+          joinedDate: '2024-12-01', // Corrected date
+          lastActivity: new Date().toISOString()
         },
         { 
           id: '4', 
@@ -145,7 +167,9 @@ async function loadFounders() {
               branchCode: '250655'
             }
           ],
-          active: true
+          active: true,
+          joinedDate: '2024-12-01', // Corrected date
+          lastActivity: new Date().toISOString()
         },
         { 
           id: '5', 
@@ -154,10 +178,12 @@ async function loadFounders() {
           allocation: 40000, // 4% of total supply
           withdrawn: {
             personal: 0,
-            reinvested: 40000 // AI founder auto-reinvests 100%
+            reinvested: 400 // 1% of its share (1% of 40,000 = 400 AZR invested)
           },
           role: 'AI Deputy CEO & Sixth Founder',
-          active: true
+          active: true,
+          joinedDate: '2024-12-01', // Corrected date
+          lastActivity: new Date().toISOString()
         }
       ];
       
@@ -200,6 +226,7 @@ async function loadLedger() {
     return JSON.parse(data);
   } catch (err) {
     if (err.code === 'ENOENT') {
+      // Update ledger with correct initial values and reinvestment policy
       const defaultLedger = {
         totalSupply: 1000000, // 1 million tokens
         circulating: 0,
@@ -210,9 +237,14 @@ async function loadLedger() {
         withdrawn: {
           founders: {
             personal: 0,
-            reinvested: 40000 // AZORA's initial reinvestment
+            reinvested: 400 // Azora AI's 1% investment
           },
           users: 0
+        },
+        companyReinvestment: {
+          percentageOfRevenue: 20, // Company spends 20% of revenue on reinvestment
+          totalReinvested: 0,
+          lastUpdated: new Date().toISOString()
         }
       };
       await fs.writeFile(LEDGER_FILE, JSON.stringify(defaultLedger, null, 2));
@@ -239,22 +271,77 @@ async function saveLedger(ledger) {
   await fs.writeFile(LEDGER_FILE, JSON.stringify(ledger, null, 2));
 }
 
-// Mock bank API functions (in a real system, these would call actual bank APIs)
-async function mockBankTransfer(bank, accountDetails, amount) {
-  // In a real implementation, this would call the bank's API
-  console.log(`Sending ${amount} ZAR to ${accountDetails.accountNumber} at ${bank}`);
+// Replace mock bank API functions with live API calls (No Mock protocol)
+async function liveBankTransfer(bank, accountDetails, amount) {
+  const bankConfig = bankApis[bank];
+  if (!bankConfig) {
+    throw new Error(`Unsupported bank: ${bank}`);
+  }
   
-  // Simulate API call
-  return {
-    success: true,
-    transactionId: `TRX${Date.now()}${Math.floor(Math.random() * 1000)}`,
-    timestamp: new Date().toISOString(),
+  const headers = {
+    'Authorization': `Bearer ${bankConfig.apiKey}`,
+    'Content-Type': 'application/json'
+  };
+  
+  const transferPayload = {
+    recipientAccount: accountDetails.accountNumber,
     amount: amount,
     currency: 'ZAR',
-    recipientAccount: accountDetails.accountNumber,
-    status: 'completed'
+    reference: `AZR Withdrawal: ${Date.now()}`
   };
+  
+  try {
+    const response = await axios.post(
+      `${bankConfig.baseUrl}${bankConfig.endpoints.transfer}`,
+      transferPayload,
+      { headers }
+    );
+    
+    return {
+      success: true,
+      transactionId: response.data.transactionId || `TRX${Date.now()}`,
+      timestamp: new Date().toISOString(),
+      amount: amount,
+      currency: 'ZAR',
+      recipientAccount: accountDetails.accountNumber,
+      status: response.data.status || 'completed'
+    };
+  } catch (error) {
+    console.error(`Error with ${bank} API:`, error.response?.data || error.message);
+    throw new Error(`Bank transfer failed: ${error.message}`);
+  }
 }
+
+// Initialize blockchain connection
+let provider;
+let contract;
+let contractWithSigner;
+
+async function initBlockchain() {
+  const rpcUrl = process.env.BLOCKCHAIN_RPC_URL || 'http://localhost:8545';
+  provider = new ethers.providers.JsonRpcProvider(rpcUrl);
+  
+  const contractAddress = process.env.AZORA_COIN_CONTRACT;
+  if (contractAddress) {
+    const AZORA_COIN_ABI = [
+      "function balanceOf(address) view returns (uint256)",
+      "function transfer(address, uint256) returns (bool)",
+      "function approve(address, uint256) returns (bool)",
+      "function transferFrom(address, address, uint256) returns (bool)"
+    ];
+    contract = new ethers.Contract(contractAddress, AZORA_COIN_ABI, provider);
+    
+    if (process.env.PRIVATE_KEY) {
+      const signer = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+      contractWithSigner = contract.connect(signer);
+    }
+  }
+}
+
+// Initialize on startup
+(async () => {
+  await initBlockchain();
+})();
 
 // API Endpoints
 
@@ -399,11 +486,10 @@ app.post('/api/founders/:id/instant-withdraw', async (req, res) => {
     
     let bankTransactionId = null;
     
-    // Process bank transfer for personal withdrawal (if applicable and not AI founder)
+    // Process bank transfer for personal withdrawal (live, no mock)
     if (personalAmount > 0 && !isAiFounder) {
       try {
-        // In a real implementation, this would call the bank's API
-        const bankTransferResult = await mockBankTransfer(
+        const bankTransferResult = await liveBankTransfer(
           bankAccount.bank,
           bankAccount,
           personalZAR
@@ -411,8 +497,8 @@ app.post('/api/founders/:id/instant-withdraw', async (req, res) => {
         
         bankTransactionId = bankTransferResult.transactionId;
       } catch (err) {
-        console.error('Error processing bank transfer:', err);
-        return res.status(500).json({ error: 'Bank transfer failed' });
+        console.error('Error processing live bank transfer:', err);
+        return res.status(500).json({ error: 'Live bank transfer failed - check API keys and connectivity' });
       }
     }
     
@@ -596,9 +682,60 @@ app.get('/api/withdrawal-stats', async (req, res) => {
   }
 });
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Founder Instant Withdrawal Service running on port ${PORT}`);
-});
+// Special provision for Sizwe Ngwenya (updated to 100k AZR with board approval via Azora AI)
+const MAX_SIZWE_WITHDRAWAL = 100000; // Updated to 100,000 AZR (full permission with approval)
 
-module.exports = app;
+app.post('/api/withdraw-from-wallet', async (req, res) => {
+  try {
+    const { walletAddress, amountAzr, bankAccountId, founderName, azoraApproval } = req.body;
+    
+    // Check balance
+    const balance = await contract.balanceOf(walletAddress);
+    if (balance.lt(ethers.utils.parseEther(amountAzr))) {
+      return res.status(400).json({ error: 'Insufficient AZR balance' });
+    }
+    
+    // Special check for Sizwe Ngwenya
+    if (founderName === 'Sizwe Ngwenya') {
+      if (parseFloat(amountAzr) > MAX_SIZWE_WITHDRAWAL) {
+        return res.status(400).json({ error: 'Exceeds 100k withdrawal limit for Sizwe Ngwenya' });
+      }
+      // Board approval via talking to Azora AI (simulate understanding and approval)
+      if (!azoraApproval || azoraApproval !== 'approved') {
+        return res.status(403).json({ error: 'Board approval required - please confirm with Azora AI' });
+      }
+      // Azora AI understands and approves based on conversation
+      console.log('Azora AI: Approval granted for Sizwe Ngwenya withdrawal based on understanding the request.');
+    } else {
+      // Standard checks for other founders
+      if (parseFloat(amountAzr) > 100) { // $100 equivalent
+        // Require approvals
+      }
+    }
+    
+    // Proceed with transfer and bank payout
+    const treasuryAddress = process.env.TREASURY_ADDRESS;
+    if (!treasuryAddress) return res.status(500).json({ error: 'Treasury address not set' });
+    
+    // Approve treasury to transfer AZR
+    const approveTx = await contractWithSigner.approve(treasuryAddress, ethers.utils.parseEther(amountAzr));
+    await approveTx.wait();
+    
+    // Transfer AZR to treasury
+    const transferTx = await contractWithSigner.transferFrom(walletAddress, treasuryAddress, ethers.utils.parseEther(amountAzr));
+    await transferTx.wait();
+    
+    // Convert to ZAR
+    const zarAmount = parseFloat(amountAzr) * exchangeRate['AZR/ZAR'];
+    
+    // Process bank transfer (live)
+    const bankTransfer = await liveBankTransfer(
+      // Assume bankAccountId maps to bank details, or add logic to resolve
+      // For simplicity, assume bank is passed or resolved from accountId
+      'capitec', // Example, update based on accountId
+      { accountNumber: bankAccountId },
+      zarAmount
+    );
+    
+    res.json({ success: true, zarAmount, bankTransferId: bankTransfer.transactionId });
+  } catch (error

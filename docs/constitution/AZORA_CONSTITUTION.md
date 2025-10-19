@@ -3,7 +3,7 @@
 **Established:** December 2024  
 **Location:** South Africa 🇿🇦  
 **Mission:** Build Africa's First Trillion-Dollar Software Infrastructure  
-**Status:** Living Document - Version 2.0
+**Status:** Living Document - Version 2.1
 
 ---
 
@@ -446,6 +446,7 @@ This constitution is ratified by the founding board on December 2024.
 **Amendment History:**
 - v1.0 - Initial constitution (Dec 2024)
 - v2.0 - Added growth model & infrastructure independence (Dec 2024)
+- v2.1 - Added special withdrawal provision for Sizwe Ngwenya (Oct 2025)
 
 ---
 

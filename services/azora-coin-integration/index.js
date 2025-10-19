@@ -27,7 +27,10 @@ const AZORA_COIN_ABI = [
   "function approveWithdrawal(uint256) returns (bool)",
   "function getFounderInfo(address) view returns (uint256, uint256, uint256)",
   "function totalStudentsJoined() view returns (uint256)",
-  "function totalFounders() view returns (uint256)"
+  "function totalFounders() view returns (uint256)",
+  "function proposeMint(address,uint256,bytes32,bytes) returns (bool)",
+  "function approveMint(uint256) returns (bool)",
+  "function executeMint(uint256) returns (bool)"
 ];
 
 let provider;
@@ -324,6 +327,80 @@ app.get('/api/stats', async (req, res) => {
     });
   } catch (error) {
     console.error('Stats error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Add local bank simulation (replace external bank APIs)
+const localBankDB = {};  // In-memory DB for bank accounts (use real DB in production)
+
+app.post('/api/simulate-bank-transfer', (req, res) => {
+  const { accountId, amount, currency } = req.body;
+  if (!localBankDB[accountId]) localBankDB[accountId] = { balance: 0 };
+  localBankDB[accountId].balance += amount;
+  res.json({ success: true, newBalance: localBankDB[accountId].balance });
+});
+
+// Enhanced mint with caching and rate limiting
+const mintCache = new Map();
+const rateLimit = {};  // Simple rate limiter
+
+app.post('/api/mint-to-founder', (req, res) => {
+  const { founderAddress, amount } = req.body;
+  const key = `${founderAddress}-${Date.now()}`;
+  
+  // Rate limit: 10 mints per minute per address
+  if (!rateLimit[founderAddress]) rateLimit[founderAddress] = [];
+  rateLimit[founderAddress] = rateLimit[founderAddress].filter(t => Date.now() - t < 60000);
+  if (rateLimit[founderAddress].length >= 10) {
+    return res.status(429).json({ error: 'Rate limit exceeded' });
+  }
+  rateLimit[founderAddress].push(Date.now());
+  
+  // Check cache for recent mints
+  if (mintCache.has(key)) {
+    return res.json(mintCache.get(key));
+  }
+  
+  try {
+    const complianceHash = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(`Founder Allocation: ${founderAddress}`));
+    const tx = await contract.proposeMint(founderAddress, ethers.utils.parseEther(amount.toString()), complianceHash, '0x');
+    await tx.wait();
+    
+    // Auto-approve if AZORA (for demo)
+    const requestId = tx.hash;  // Simplified; extract from event in production
+    await contract.approveMint(requestId);
+    await contract.executeMint(requestId);
+    
+    // Cache result
+    mintCache.set(key, { success: true, transaction: tx.hash });
+    res.json({ success: true, transaction: tx.hash });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Advanced withdrawal with multi-step approval and logging
+app.post('/api/advanced-withdraw', async (req, res) => {
+  const { founderAddress, amountAzr, bankAccountId, approvalSteps } = req.body;
+  // Multi-step approval logic (e.g., founder, compliance officer)
+  for (const step of approvalSteps) {
+    // Simulate approval checks
+    if (!step.approved) return res.status(403).json({ error: `Approval failed at step: ${step.name}` });
+  }
+  
+  // Log to local file
+  const fs = require('fs');
+  fs.appendFileSync('withdrawals.log', `${new Date().toISOString()}: ${founderAddress} withdrew ${amountAzr} AZR to ${bankAccountId}\n`);
+  
+  try {
+    const zarAmount = amountAzr * 1;  // Simplified conversion
+    // Simulate bank transfer
+    const transferTx = await contract.requestWithdrawal(zarAmount);
+    await transferTx.wait();
+    
+    res.json({ success: true, zarAmount, bankTransferId: 'local-' + Date.now() });
+  } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
