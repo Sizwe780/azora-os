@@ -1,17 +1,12 @@
 {
-  "name": "azora-os",
-  "private": true,
   "scripts": {
-    "start": "docker-compose up --build",
-    "build": "docker-compose build",
-    "lint": "eslint . --ext js,jsx",
+    "clean": "rm -rf node_modules dist",
+    "lint": "eslint .",
     "test": "jest",
-    "dev": "concurrently \\"docker-compose up\\" \\"cd apps/main-app && npm start\\""
+    "audit": "npm audit"
   },
-  "workspaces": ["apps/*", "services/*", "shared/*", "ui-overhaul/*"],
   "devDependencies": {
-    "eslint": "^8.0.0",
-    "jest": "^29.0.0",
-    "concurrently": "^8.0.0"
+    "eslint": "^9.38.0",
+    "jest": "^30.2.0"
   }
 }
