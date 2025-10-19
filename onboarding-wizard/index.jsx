@@ -2,9 +2,9 @@ import React, { useState } from "react";
 const steps = [
   { label: "Welcome", content: "Welcome to Azora OS! Let's get you set up." },
   { label: "Install", content: "Run `npm install` and `docker-compose up`." },
-  { label: "Configure", content: "Copy `.env.example` to `.env` and customize." },
-  { label: "Explore", content: "Browse the UI and test microservices." },
-  { label: "Launch", content: "Run production scripts and check monitoring." }
+  { label: "Configure", content: "Copy `.env.example` to `.env` and customize your secrets for prod." },
+  { label: "Explore", content: "Browse the UI at http://localhost:3000 and test microservices at /services/." },
+  { label: "Launch", content: "Run production launch using `/scripts/launch.sh`." }
 ];
 
 export default function OnboardingWizard() {
