@@ -32,3 +32,54 @@ app.get('/api/dashboard/summary', (req, res) => {
 
 const PORT = 4121;
 app.listen(PORT, () => console.log(`📊 Advanced Dashboard Service running on port ${PORT}`));
+app.get('/api/dashboard/full-summary', async (req, res) => {
+  try {
+    const [valuation, adoption, revenue] = await Promise.all([
+      axios.get('http://localhost:4124/api/valuation/backed'),
+      axios.get('http://localhost:4122/api/adoption/stats'),
+      axios.get('http://localhost:4126/api/revenue/total')
+    ]);
+    res.json({
+      valuation: valuation.data,
+      adoption: adoption.data,
+      revenue: revenue.data,
+      integrated: true
+    });
+  } catch (e) {
+    res.status(500).json({ error: 'Integration failed' });
+  }
+});
+app.get('/api/dashboard/full-summary', async (req, res) => {
+  try {
+    const [valuation, adoption, revenue] = await Promise.all([
+      axios.get('http://localhost:4124/api/valuation/backed'),
+      axios.get('http://localhost:4122/api/adoption/stats'),
+      axios.get('http://localhost:4126/api/revenue/total')
+    ]);
+    res.json({
+      valuation: valuation.data,
+      adoption: adoption.data,
+      revenue: revenue.data,
+      integrated: true
+    });
+  } catch (e) {
+    res.status(500).json({ error: 'Integration failed' });
+  }
+});
+app.get('/api/dashboard/full-summary', async (req, res) => {
+  try {
+    const [valuation, adoption, revenue] = await Promise.all([
+      axios.get('http://localhost:4124/api/valuation/backed'),
+      axios.get('http://localhost:4122/api/adoption/stats'),
+      axios.get('http://localhost:4126/api/revenue/total')
+    ]);
+    res.json({
+      valuation: valuation.data,
+      adoption: adoption.data,
+      revenue: revenue.data,
+      integrated: true
+    });
+  } catch (e) {
+    res.status(500).json({ error: 'Integration failed' });
+  }
+});

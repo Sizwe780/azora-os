@@ -1,19 +1,17 @@
 {
   "name": "azora-os",
-  "version": "1.0.0",
-  "description": "Africa's First Trillion-Dollar Operating System",
-  "author": {
-    "name": "Sizwe Ngwenya",
-    "email": "sizwe.ngwenya@azora.world"
-  },
+  "private": true,
   "scripts": {
-    "dev": "vite",
-    "build": "./build.sh || echo 'Build completed'",
-    "test": "echo 'All tests passed ✅' && exit 0",
-    "test:run": "echo 'All tests passed ✅' && exit 0",
-    "lint": "echo 'Linting passed ✅' && exit 0",
-    "start": "./START_AZORA_OS.sh"
+    "start": "docker-compose up --build",
+    "build": "docker-compose build",
+    "lint": "eslint . --ext js,jsx",
+    "test": "jest",
+    "dev": "concurrently \\"docker-compose up\\" \\"cd apps/main-app && npm start\\""
   },
-  "license": "SEE LICENSE IN LICENSE",
-  "private": true
+  "workspaces": ["apps/*", "services/*", "shared/*", "ui-overhaul/*"],
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "jest": "^29.0.0",
+    "concurrently": "^8.0.0"
+  }
 }

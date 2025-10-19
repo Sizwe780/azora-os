@@ -67,8 +67,8 @@ app.get('/health', (req, res) => {
     service: 'azora-coin-integration',
     contractDeployed: !!contract,
     usdValue: 1.00
-  });
-});
+  
+
 
 // Get token info
 app.get('/api/token-info', async (req, res) => {
@@ -81,7 +81,7 @@ app.get('/api/token-info', async (req, res) => {
         totalSupply: '0.0',
         usdValue: '1.00',
         deployed: false
-      });
+      ;
     }
     
     const [name, symbol, totalSupply, maxSupply, usdValue] = await Promise.all([
@@ -100,24 +100,24 @@ app.get('/api/token-info', async (req, res) => {
       usdValue: ethers.utils.formatEther(usdValue),
       deployed: true,
       contractAddress: contract.address
-    });
+    ;
   } catch (error) {
     console.error('Token info error:', error);
-    res.status(500).json({ error: 'Failed to get token info' });
+    res.status(500).json({ error: 'Failed to get token info' ;
   }
-});
+;
 
 // Register student (gets signup bonus)
 app.post('/api/students/register', async (req, res) => {
   try {
     if (!contract || !wallet) {
-      return res.status(503).json({ error: 'Contract not available' });
+      return res.status(503).json({ error: 'Contract not available' ;
     }
     
     const { studentAddress, bonusAmount = '10' } = req.body;
     
     if (!ethers.utils.isAddress(studentAddress)) {
-      return res.status(400).json({ error: 'Invalid student address' });
+      return res.status(400).json({ error: 'Invalid student address' ;
     }
     
     const bonus = ethers.utils.parseEther(bonusAmount);
@@ -136,24 +136,24 @@ app.post('/api/students/register', async (req, res) => {
       balanceUSD: parseFloat(ethers.utils.formatEther(balance)) * 1.00,
       totalStudents: totalStudents.toString(),
       txHash: tx.hash
-    });
+    ;
   } catch (error) {
     console.error('Student registration error:', error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.message ;
   }
-});
+;
 
 // Reward student for activity
 app.post('/api/students/reward', async (req, res) => {
   try {
     if (!contract || !wallet) {
-      return res.status(503).json({ error: 'Contract not available' });
+      return res.status(503).json({ error: 'Contract not available' ;
     }
     
     const { studentAddress, amount, reason } = req.body;
     
     if (!ethers.utils.isAddress(studentAddress)) {
-      return res.status(400).json({ error: 'Invalid student address' });
+      return res.status(400).json({ error: 'Invalid student address' ;
     }
     
     const rewardAmount = ethers.utils.parseEther(amount);
@@ -171,24 +171,24 @@ app.post('/api/students/reward', async (req, res) => {
       newBalance: ethers.utils.formatEther(balance),
       newBalanceUSD: parseFloat(ethers.utils.formatEther(balance)) * 1.00,
       txHash: tx.hash
-    });
+    ;
   } catch (error) {
     console.error('Student reward error:', error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.message ;
   }
-});
+;
 
 // Allocate to founder
 app.post('/api/founders/allocate', async (req, res) => {
   try {
     if (!contract || !wallet) {
-      return res.status(503).json({ error: 'Contract not available' });
+      return res.status(503).json({ error: 'Contract not available' ;
     }
     
     const { founderAddress, amount } = req.body;
     
     if (!ethers.utils.isAddress(founderAddress)) {
-      return res.status(400).json({ error: 'Invalid founder address' });
+      return res.status(400).json({ error: 'Invalid founder address' ;
     }
     
     const allocation = ethers.utils.parseEther(amount);
@@ -206,18 +206,18 @@ app.post('/api/founders/allocate', async (req, res) => {
       available: ethers.utils.formatEther(founderInfo[2]),
       availableUSD: parseFloat(ethers.utils.formatEther(founderInfo[2])) * 1.00,
       txHash: tx.hash
-    });
+    ;
   } catch (error) {
     console.error('Founder allocation error:', error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.message ;
   }
-});
+;
 
 // Request founder withdrawal ($100 limit)
 app.post('/api/founders/withdraw', async (req, res) => {
   try {
     if (!contract || !wallet) {
-      return res.status(503).json({ error: 'Contract not available' });
+      return res.status(503).json({ error: 'Contract not available' ;
     }
     
     const { amount = '100' } = req.body;
@@ -239,24 +239,24 @@ app.post('/api/founders/withdraw', async (req, res) => {
       requiredApprovals: 2,
       txHash: tx.hash,
       message: `Withdrawal request created for $${parseFloat(amount).toFixed(2)} USD`
-    });
+    ;
   } catch (error) {
     console.error('Withdrawal request error:', error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.message ;
   }
-});
+;
 
 // Get founder balance and info
 app.get('/api/founders/:address', async (req, res) => {
   try {
     if (!contract) {
-      return res.status(503).json({ error: 'Contract not available' });
+      return res.status(503).json({ error: 'Contract not available' ;
     }
     
     const { address } = req.params;
     
     if (!ethers.utils.isAddress(address)) {
-      return res.status(400).json({ error: 'Invalid address' });
+      return res.status(400).json({ error: 'Invalid address' ;
     }
     
     const [founderInfo, balance] = await Promise.all([
@@ -282,12 +282,12 @@ app.get('/api/founders/:address', async (req, res) => {
       canWithdraw: available >= 100,
       maxWithdrawal: Math.min(available, 100).toFixed(2),
       maxWithdrawalUSD: (Math.min(available, 100) * 1.00).toFixed(2)
-    });
+    ;
   } catch (error) {
     console.error('Founder info error:', error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.message ;
   }
-});
+;
 
 // Get statistics
 app.get('/api/stats', async (req, res) => {
@@ -300,7 +300,7 @@ app.get('/api/stats', async (req, res) => {
         totalSupply: '0.0',
         maxSupply: '1000000.0',
         utilization: '0.00'
-      });
+      ;
     }
     
     const [totalSupply, maxSupply, totalStudents, totalFounders] = await Promise.all([
@@ -324,12 +324,12 @@ app.get('/api/stats', async (req, res) => {
       maxSupplyUSD: (max * 1.00).toFixed(2),
       utilization: ((supply / max) * 100).toFixed(2) + '%',
       usdValue: '1.00'
-    });
+    ;
   } catch (error) {
     console.error('Stats error:', error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.message ;
   }
-});
+;
 
 // Add local bank simulation (replace external bank APIs)
 const localBankDB = {};  // In-memory DB for bank accounts (use real DB in production)
@@ -338,8 +338,8 @@ app.post('/api/simulate-bank-transfer', (req, res) => {
   const { accountId, amount, currency } = req.body;
   if (!localBankDB[accountId]) localBankDB[accountId] = { balance: 0 };
   localBankDB[accountId].balance += amount;
-  res.json({ success: true, newBalance: localBankDB[accountId].balance });
-});
+  res.json({ success: true, newBalance: localBankDB[accountId].balance ;
+;
 
 // Enhanced mint with caching and rate limiting
 const mintCache = new Map();
@@ -353,7 +353,7 @@ app.post('/api/mint-to-founder', (req, res) => {
   if (!rateLimit[founderAddress]) rateLimit[founderAddress] = [];
   rateLimit[founderAddress] = rateLimit[founderAddress].filter(t => Date.now() - t < 60000);
   if (rateLimit[founderAddress].length >= 10) {
-    return res.status(429).json({ error: 'Rate limit exceeded' });
+    return res.status(429).json({ error: 'Rate limit exceeded' ;
   }
   rateLimit[founderAddress].push(Date.now());
   
@@ -373,12 +373,12 @@ app.post('/api/mint-to-founder', (req, res) => {
     await contract.executeMint(requestId);
     
     // Cache result
-    mintCache.set(key, { success: true, transaction: tx.hash });
-    res.json({ success: true, transaction: tx.hash });
+    mintCache.set(key, { success: true, transaction: tx.hash ;
+    res.json({ success: true, transaction: tx.hash ;
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.message ;
   }
-});
+;
 
 // Advanced withdrawal with multi-step approval and logging
 app.post('/api/advanced-withdraw', async (req, res) => {
@@ -386,7 +386,7 @@ app.post('/api/advanced-withdraw', async (req, res) => {
   // Multi-step approval logic (e.g., founder, compliance officer)
   for (const step of approvalSteps) {
     // Simulate approval checks
-    if (!step.approved) return res.status(403).json({ error: `Approval failed at step: ${step.name}` });
+    if (!step.approved) return res.status(403).json({ error: `Approval failed at step: ${step.name}` ;
   }
   
   // Log to local file
@@ -399,11 +399,11 @@ app.post('/api/advanced-withdraw', async (req, res) => {
     const transferTx = await contract.requestWithdrawal(zarAmount);
     await transferTx.wait();
     
-    res.json({ success: true, zarAmount, bankTransferId: 'local-' + Date.now() });
+    res.json({ success: true, zarAmount, bankTransferId: 'local-' + Date.now() ;
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.message ;
   }
-});
+;
 
 // Withdraw bonus directly (for testing)
 app.post('/api/withdraw/bonus', (req, res) => {
@@ -411,8 +411,8 @@ app.post('/api/withdraw/bonus', (req, res) => {
   // Convert to ZAR (1 AZR = 18 ZAR)
   const zarAmount = amountAzr * 18;
   // Simulate bank transfer
-  res.json({ withdrawnZar: zarAmount, bank: 'Standard Bank', account: 'YourAccount' });
-});
+  res.json({ withdrawnZar: zarAmount, bank: 'Standard Bank', account: 'YourAccount' ;
+;
 
 // Mint bonus
 app.post('/api/mint/bonus', (req, res) => {
@@ -420,8 +420,8 @@ app.post('/api/mint/bonus', (req, res) => {
   // Mint bonus AZR (10% of total)
   const bonus = bonusAmount * 0.1;
   // Simulate minting
-  res.json({ mintedBonus: bonus, founderId });
-});
+  res.json({ mintedBonus: bonus, founderId ;
+;
 
 const PORT = process.env.AZORA_COIN_PORT || 4092;
 console.log(`💸 Founder Withdrawal: $100.00 USD per request`);
@@ -435,4 +435,4 @@ app.listen(PORT, async () => {
   console.log(`💰 Azora Coin Value: $1.00 USD`);
   console.log(`📊 Max Supply: 1,000,000 AZR ($1,000,000 USD)`);
   console.log(`💸 Founder Withdrawal: $100.00 USD per request`);
-});
+;

@@ -319,7 +319,7 @@ let contractWithSigner;
 
 async function initBlockchain() {
   const rpcUrl = process.env.BLOCKCHAIN_RPC_URL || 'http://localhost:8545';
-  provider = new ethers.providers.JsonRpcProvider(rpcUrl);
+  provider = new ethers.JsonRpcProvider(rpcUrl);
   
   const contractAddress = process.env.AZORA_COIN_CONTRACT;
   if (contractAddress) {

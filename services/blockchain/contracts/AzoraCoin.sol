@@ -12,9 +12,14 @@ import "@openzeppelin/contracts/access/Ownable.sol";
  * - No further minting is possible.
  */
 contract AzoraCoin is ERC20, Ownable {
-    uint256 public constant MAX_SUPPLY = 1_000_000 * 10**18;
+    uint256 public constant MAX_SUPPLY = 1_000_000 * 10**18; // 1M AZR
 
-    constructor(address initialOwner) ERC20("Azora Coin", "AZR") Ownable(initialOwner) {
-        _mint(initialOwner, MAX_SUPPLY);
+    constructor() ERC20("Azora Coin", "AZR") Ownable(msg.sender) {
+        _mint(msg.sender, 100_000 * 10**18); // Initial mint
+    }
+
+    function mint(address to, uint256 amount) public onlyOwner {
+        require(totalSupply() + amount <= MAX_SUPPLY, "Exceeds max supply");
+        _mint(to, amount);
     }
 }

@@ -1,0 +1,26 @@
+version: "3.8"
+services:
+  main-app:
+    build:
+      context: ./apps/main-app
+      dockerfile: Dockerfile
+    ports:
+      - "80:3000"
+    environment:
+      - NODE_ENV=production
+      - REACT_APP_API_BASE=http://main-app
+    restart: always
+    depends_on:
+      - ai-personalization
+      # ...add all other services
+
+  ai-personalization:
+    build: ./services/ai-personalization
+    ports: [ "3010:3010" ]
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3010/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+  # ...repeat for all services (increment port, add healthcheck)
