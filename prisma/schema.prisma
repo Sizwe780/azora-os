@@ -1,0 +1,200 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  role         UserRole  @default(USER)
+  jurisdiction String?
+  verified     Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+  wallet       Wallet?
+  staking      Staking[]
+  compliance   ComplianceAction[]
+  auditLogs    AuditLog[]
+  microserviceMeters MicroserviceMeter[]
+}
+
+enum UserRole {
+  USER
+  ADMIN
+  PARTNER
+  ENTERPRISE
+}
+
+model Wallet {
+  id         String    @id @default(cuid())
+  userId     String    @unique
+  user       User      @relation(fields: [userId], references: [id])
+  balance    Float     @default(0.0)
+  staked     Float     @default(0.0)
+  stakingRecords Staking[] @relation("WalletStaking")
+  sentTransactions     Transaction[] @relation("Sender")
+  receivedTransactions Transaction[] @relation("Recipient")
+}
+
+model Transaction {
+  id             String    @id @default(cuid())
+  type           TxnType
+  status         TxnStatus @default(PENDING)
+  amount         Float
+  coinType       CoinType  @default(AZR)
+  usdEquivalent  Float
+  notes          String?
+  hash           String    @unique
+  microservice   String?   // Name of service from your catalogue
+  externalTxnId  String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  senderId       String?
+  sender         Wallet?   @relation("Sender", fields: [senderId], references: [id])
+  recipientId    String?
+  recipient      Wallet?   @relation("Recipient", fields: [recipientId], references: [id])
+}
+
+model Staking {
+  id           String   @id @default(cuid())
+  walletId     String
+  wallet       Wallet   @relation("WalletStaking", fields: [walletId], references: [id])
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  amount       Float
+  startDate    DateTime @default(now())
+  lockPeriod   Int      // in days
+  apy          Float
+  active       Boolean  @default(true)
+  endDate      DateTime?
+  rewardsPaid  Float    @default(0.0)
+}
+
+model BurnLog {
+  id        String   @id @default(cuid())
+  amount    Float
+  burnedAt  DateTime @default(now())
+  notes     String?
+}
+
+model DeveloperGrant {
+  id        String   @id @default(cuid())
+  walletId  String
+  amount    Float
+  grantedAt DateTime @default(now())
+  notes     String?
+}
+
+model RevenueLog {
+  id                String   @id @default(cuid())
+  clientId          String
+  totalRevenue      Float
+  buyBackAllocation Float
+  companyAllocation Float
+  createdAt         DateTime @default(now())
+}
+
+model ComplianceAction {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  action    String
+  details   String?
+  at        DateTime @default(now())
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  entityType  String
+  entityId    String
+  action      String
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  metadata    String?
+  hash        String
+  createdAt   DateTime @default(now())
+}
+
+model MicroserviceMeter {
+  id           String   @id @default(cuid())
+  microservice String   // ENUM not used for flexibility; matches your catalogue
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  calls        Int      @default(0)
+  lastCalled   DateTime
+}
+
+// Example business models for analytics and service integration
+model Company {
+  id        String   @id @default(cuid())
+  name      String
+  users     User[]
+  jobs      Job[]
+  revenueRecords RevenueRecord[]
+  expenses  Expense[]
+  metrics   CompanyMetric[]
+}
+
+model Job {
+  id        String   @id @default(cuid())
+  companyId String
+  company   Company  @relation(fields: [companyId], references: [id])
+  title     String
+  pickup    String
+  dropoff   String
+  cargoType String?
+  driverId  String?
+  scheduledAt DateTime?
+  status    String?
+  createdAt DateTime @default(now())
+}
+
+model RevenueRecord {
+  id        String   @id @default(cuid())
+  companyId String
+  recordDate DateTime
+  amount    Float
+}
+
+model Expense {
+  id         String   @id @default(cuid())
+  companyId  String
+  expenseDate DateTime
+  amount     Float
+}
+
+model CompanyMetric {
+  id         String   @id @default(cuid())
+  companyId  String
+  timeframe  String
+  data       Json
+  createdAt  DateTime @default(now())
+}
+
+enum TxnType {
+  MINT
+  BURN
+  WITHDRAWAL
+  TRANSFER
+  STAKE
+  UNSTAKE
+  REWARD
+  GRANT
+  SaaS_PAYMENT
+  GAS
+}
+
+enum TxnStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum CoinType {
+  AZR
+  BONUS_AZR
+}
