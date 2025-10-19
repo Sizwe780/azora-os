@@ -1,23 +1,31 @@
 const express = require('express');
-const cors = require('cors');
-
 const app = express();
-app.use(cors());
 app.use(express.json());
 
-const PORT = process.env.PORT || 3000; // Port should be managed by orchestrator
-const SERVICE_NAME = 'blockchain';
+let wallets = {};
 
-app.get('/health', (req, res) => {
-  res.status(200).json({
-    status: 'online',
-    service: SERVICE_NAME,
-    timestamp: new Date().toISOString()
-  });
+app.post('/api/blockchain/wallet', (req, res) => {
+  // Return a random wallet address
+  const wallet = "0x" + Math.random().toString(16).substr(2, 40);
+  wallets[wallet] = [];
+  res.json({ wallet });
 });
 
-// Add service-specific routes below this line
-
-app.listen(PORT, () => {
-  console.log();
+app.post('/api/blockchain/tx', (req, res) => {
+  const { from, to, amount } = req.body;
+  // TODO: Integrate with real blockchain!
+  wallets[from] = wallets[from] || [];
+  wallets[from].push({ to, amount, ts: Date.now() });
+  res.json({ tx: "0x" + Math.random().toString(16).substr(2, 64) });
 });
+
+app.post('/api/blockchain/nft', (req, res) => {
+  const { wallet, meta } = req.body;
+  // Mint a mock NFT
+  const nft = { tokenId: Math.floor(Math.random()*100000), meta };
+  wallets[wallet] = wallets[wallet] || [];
+  wallets[wallet].push({ nft });
+  res.json({ nft });
+});
+
+app.listen(4800, () => console.log("[blockchain] running on 4800"));
