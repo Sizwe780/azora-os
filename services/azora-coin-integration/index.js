@@ -67,8 +67,13 @@ app.get('/health', (req, res) => {
     service: 'azora-coin-integration',
     contractDeployed: !!contract,
     usdValue: 1.00
+<<<<<<< HEAD
   
 
+=======
+  }); app.listen(4092, () => console.log("Azora Coin Integration running on port 4092"));
+}); app.listen(4092, () => console.log("Azora Coin Integration running on port 4092"));
+>>>>>>> 417edfe (Refactor Azora Coin Integration service and update startup script)
 
 // Get token info
 app.get('/api/token-info', async (req, res) => {
@@ -81,7 +86,11 @@ app.get('/api/token-info', async (req, res) => {
         totalSupply: '0.0',
         usdValue: '1.00',
         deployed: false
+<<<<<<< HEAD
       ;
+=======
+      }); app.listen(4092, () => console.log("Azora Coin Integration running on port 4092"));
+>>>>>>> 417edfe (Refactor Azora Coin Integration service and update startup script)
     }
     
     const [name, symbol, totalSupply, maxSupply, usdValue] = await Promise.all([
@@ -100,24 +109,41 @@ app.get('/api/token-info', async (req, res) => {
       usdValue: ethers.utils.formatEther(usdValue),
       deployed: true,
       contractAddress: contract.address
+<<<<<<< HEAD
     ;
   } catch (error) {
     console.error('Token info error:', error);
     res.status(500).json({ error: 'Failed to get token info' ;
   }
 ;
+=======
+    }); app.listen(4092, () => console.log("Azora Coin Integration running on port 4092"));
+  } catch (error) {
+    console.error('Token info error:', error);
+    res.status(500).json({ error: 'Failed to get token info' }); app.listen(4092, () => console.log("Azora Coin Integration running on port 4092"));
+  }
+}); app.listen(4092, () => console.log("Azora Coin Integration running on port 4092"));
+>>>>>>> 417edfe (Refactor Azora Coin Integration service and update startup script)
 
 // Register student (gets signup bonus)
 app.post('/api/students/register', async (req, res) => {
   try {
     if (!contract || !wallet) {
+<<<<<<< HEAD
       return res.status(503).json({ error: 'Contract not available' ;
+=======
+      return res.status(503).json({ error: 'Contract not available' }); app.listen(4092, () => console.log("Azora Coin Integration running on port 4092"));
+>>>>>>> 417edfe (Refactor Azora Coin Integration service and update startup script)
     }
     
     const { studentAddress, bonusAmount = '10' } = req.body;
     
     if (!ethers.utils.isAddress(studentAddress)) {
+<<<<<<< HEAD
       return res.status(400).json({ error: 'Invalid student address' ;
+=======
+      return res.status(400).json({ error: 'Invalid student address' }); app.listen(4092, () => console.log("Azora Coin Integration running on port 4092"));
+>>>>>>> 417edfe (Refactor Azora Coin Integration service and update startup script)
     }
     
     const bonus = ethers.utils.parseEther(bonusAmount);
@@ -136,24 +162,41 @@ app.post('/api/students/register', async (req, res) => {
       balanceUSD: parseFloat(ethers.utils.formatEther(balance)) * 1.00,
       totalStudents: totalStudents.toString(),
       txHash: tx.hash
+<<<<<<< HEAD
     ;
   } catch (error) {
     console.error('Student registration error:', error);
     res.status(500).json({ error: error.message ;
   }
 ;
+=======
+    }); app.listen(4092, () => console.log("Azora Coin Integration running on port 4092"));
+  } catch (error) {
+    console.error('Student registration error:', error);
+    res.status(500).json({ error: error.message }); app.listen(4092, () => console.log("Azora Coin Integration running on port 4092"));
+  }
+}); app.listen(4092, () => console.log("Azora Coin Integration running on port 4092"));
+>>>>>>> 417edfe (Refactor Azora Coin Integration service and update startup script)
 
 // Reward student for activity
 app.post('/api/students/reward', async (req, res) => {
   try {
     if (!contract || !wallet) {
+<<<<<<< HEAD
       return res.status(503).json({ error: 'Contract not available' ;
+=======
+      return res.status(503).json({ error: 'Contract not available' }); app.listen(4092, () => console.log("Azora Coin Integration running on port 4092"));
+>>>>>>> 417edfe (Refactor Azora Coin Integration service and update startup script)
     }
     
     const { studentAddress, amount, reason } = req.body;
     
     if (!ethers.utils.isAddress(studentAddress)) {
+<<<<<<< HEAD
       return res.status(400).json({ error: 'Invalid student address' ;
+=======
+      return res.status(400).json({ error: 'Invalid student address' }); app.listen(4092, () => console.log("Azora Coin Integration running on port 4092"));
+>>>>>>> 417edfe (Refactor Azora Coin Integration service and update startup script)
     }
     
     const rewardAmount = ethers.utils.parseEther(amount);
@@ -171,24 +214,41 @@ app.post('/api/students/reward', async (req, res) => {
       newBalance: ethers.utils.formatEther(balance),
       newBalanceUSD: parseFloat(ethers.utils.formatEther(balance)) * 1.00,
       txHash: tx.hash
+<<<<<<< HEAD
     ;
   } catch (error) {
     console.error('Student reward error:', error);
     res.status(500).json({ error: error.message ;
   }
 ;
+=======
+    }); app.listen(4092, () => console.log("Azora Coin Integration running on port 4092"));
+  } catch (error) {
+    console.error('Student reward error:', error);
+    res.status(500).json({ error: error.message }); app.listen(4092, () => console.log("Azora Coin Integration running on port 4092"));
+  }
+}); app.listen(4092, () => console.log("Azora Coin Integration running on port 4092"));
+>>>>>>> 417edfe (Refactor Azora Coin Integration service and update startup script)
 
 // Allocate to founder
 app.post('/api/founders/allocate', async (req, res) => {
   try {
     if (!contract || !wallet) {
+<<<<<<< HEAD
       return res.status(503).json({ error: 'Contract not available' ;
+=======
+      return res.status(503).json({ error: 'Contract not available' }); app.listen(4092, () => console.log("Azora Coin Integration running on port 4092"));
+>>>>>>> 417edfe (Refactor Azora Coin Integration service and update startup script)
     }
     
     const { founderAddress, amount } = req.body;
     
     if (!ethers.utils.isAddress(founderAddress)) {
+<<<<<<< HEAD
       return res.status(400).json({ error: 'Invalid founder address' ;
+=======
+      return res.status(400).json({ error: 'Invalid founder address' }); app.listen(4092, () => console.log("Azora Coin Integration running on port 4092"));
+>>>>>>> 417edfe (Refactor Azora Coin Integration service and update startup script)
     }
     
     const allocation = ethers.utils.parseEther(amount);
@@ -206,18 +266,31 @@ app.post('/api/founders/allocate', async (req, res) => {
       available: ethers.utils.formatEther(founderInfo[2]),
       availableUSD: parseFloat(ethers.utils.formatEther(founderInfo[2])) * 1.00,
       txHash: tx.hash
+<<<<<<< HEAD
     ;
   } catch (error) {
     console.error('Founder allocation error:', error);
     res.status(500).json({ error: error.message ;
   }
 ;
+=======
+    }); app.listen(4092, () => console.log("Azora Coin Integration running on port 4092"));
+  } catch (error) {
+    console.error('Founder allocation error:', error);
+    res.status(500).json({ error: error.message }); app.listen(4092, () => console.log("Azora Coin Integration running on port 4092"));
+  }
+}); app.listen(4092, () => console.log("Azora Coin Integration running on port 4092"));
+>>>>>>> 417edfe (Refactor Azora Coin Integration service and update startup script)
 
 // Request founder withdrawal ($100 limit)
 app.post('/api/founders/withdraw', async (req, res) => {
   try {
     if (!contract || !wallet) {
+<<<<<<< HEAD
       return res.status(503).json({ error: 'Contract not available' ;
+=======
+      return res.status(503).json({ error: 'Contract not available' }); app.listen(4092, () => console.log("Azora Coin Integration running on port 4092"));
+>>>>>>> 417edfe (Refactor Azora Coin Integration service and update startup script)
     }
     
     const { amount = '100' } = req.body;
@@ -239,24 +312,41 @@ app.post('/api/founders/withdraw', async (req, res) => {
       requiredApprovals: 2,
       txHash: tx.hash,
       message: `Withdrawal request created for $${parseFloat(amount).toFixed(2)} USD`
+<<<<<<< HEAD
     ;
   } catch (error) {
     console.error('Withdrawal request error:', error);
     res.status(500).json({ error: error.message ;
   }
 ;
+=======
+    }); app.listen(4092, () => console.log("Azora Coin Integration running on port 4092"));
+  } catch (error) {
+    console.error('Withdrawal request error:', error);
+    res.status(500).json({ error: error.message }); app.listen(4092, () => console.log("Azora Coin Integration running on port 4092"));
+  }
+}); app.listen(4092, () => console.log("Azora Coin Integration running on port 4092"));
+>>>>>>> 417edfe (Refactor Azora Coin Integration service and update startup script)
 
 // Get founder balance and info
 app.get('/api/founders/:address', async (req, res) => {
   try {
     if (!contract) {
+<<<<<<< HEAD
       return res.status(503).json({ error: 'Contract not available' ;
+=======
+      return res.status(503).json({ error: 'Contract not available' }); app.listen(4092, () => console.log("Azora Coin Integration running on port 4092"));
+>>>>>>> 417edfe (Refactor Azora Coin Integration service and update startup script)
     }
     
     const { address } = req.params;
     
     if (!ethers.utils.isAddress(address)) {
+<<<<<<< HEAD
       return res.status(400).json({ error: 'Invalid address' ;
+=======
+      return res.status(400).json({ error: 'Invalid address' }); app.listen(4092, () => console.log("Azora Coin Integration running on port 4092"));
+>>>>>>> 417edfe (Refactor Azora Coin Integration service and update startup script)
     }
     
     const [founderInfo, balance] = await Promise.all([
@@ -282,12 +372,21 @@ app.get('/api/founders/:address', async (req, res) => {
       canWithdraw: available >= 100,
       maxWithdrawal: Math.min(available, 100).toFixed(2),
       maxWithdrawalUSD: (Math.min(available, 100) * 1.00).toFixed(2)
+<<<<<<< HEAD
     ;
   } catch (error) {
     console.error('Founder info error:', error);
     res.status(500).json({ error: error.message ;
   }
 ;
+=======
+    }); app.listen(4092, () => console.log("Azora Coin Integration running on port 4092"));
+  } catch (error) {
+    console.error('Founder info error:', error);
+    res.status(500).json({ error: error.message }); app.listen(4092, () => console.log("Azora Coin Integration running on port 4092"));
+  }
+}); app.listen(4092, () => console.log("Azora Coin Integration running on port 4092"));
+>>>>>>> 417edfe (Refactor Azora Coin Integration service and update startup script)
 
 // Get statistics
 app.get('/api/stats', async (req, res) => {
@@ -300,7 +399,11 @@ app.get('/api/stats', async (req, res) => {
         totalSupply: '0.0',
         maxSupply: '1000000.0',
         utilization: '0.00'
+<<<<<<< HEAD
       ;
+=======
+      }); app.listen(4092, () => console.log("Azora Coin Integration running on port 4092"));
+>>>>>>> 417edfe (Refactor Azora Coin Integration service and update startup script)
     }
     
     const [totalSupply, maxSupply, totalStudents, totalFounders] = await Promise.all([
@@ -324,6 +427,7 @@ app.get('/api/stats', async (req, res) => {
       maxSupplyUSD: (max * 1.00).toFixed(2),
       utilization: ((supply / max) * 100).toFixed(2) + '%',
       usdValue: '1.00'
+<<<<<<< HEAD
     ;
   } catch (error) {
     console.error('Stats error:', error);
@@ -422,6 +526,14 @@ app.post('/api/mint/bonus', (req, res) => {
   // Simulate minting
   res.json({ mintedBonus: bonus, founderId ;
 ;
+=======
+    }); app.listen(4092, () => console.log("Azora Coin Integration running on port 4092"));
+  } catch (error) {
+    console.error('Stats error:', error);
+    res.status(500).json({ error: error.message }); app.listen(4092, () => console.log("Azora Coin Integration running on port 4092"));
+  }
+}); app.listen(4092, () => console.log("Azora Coin Integration running on port 4092"));
+>>>>>>> 417edfe (Refactor Azora Coin Integration service and update startup script)
 
 const PORT = process.env.AZORA_COIN_PORT || 4092;
 console.log(`💸 Founder Withdrawal: $100.00 USD per request`);
@@ -435,4 +547,8 @@ app.listen(PORT, async () => {
   console.log(`💰 Azora Coin Value: $1.00 USD`);
   console.log(`📊 Max Supply: 1,000,000 AZR ($1,000,000 USD)`);
   console.log(`💸 Founder Withdrawal: $100.00 USD per request`);
+<<<<<<< HEAD
 ;
+=======
+}); app.listen(4092, () => console.log("Azora Coin Integration running on port 4092"));
+>>>>>>> 417edfe (Refactor Azora Coin Integration service and update startup script)

@@ -1,5 +1,9 @@
 #!/bin/bash
+<<<<<<< HEAD
 echo "Starting Azora OS services (140+ integrated)..."
+=======
+echo "Starting Azora OS services..."
+>>>>>>> 417edfe (Refactor Azora Coin Integration service and update startup script)
 npx hardhat node &
 node services/identity/identity.js &
 node services/guardian/guardian.js &
@@ -24,6 +28,7 @@ node services/user-growth/user-growth.js &
 node services/revenue/revenue.js &
 node services/subscription/subscription.js &
 node services/marketplace/marketplace.js &
+<<<<<<< HEAD
 node services/placeholder25/placeholder25.js & &
 node services/placeholder26/placeholder26.js & &
 node services/placeholder27/placeholder27.js & &
@@ -141,3 +146,6 @@ node services/placeholder138/placeholder138.js & &
 node services/placeholder139/placeholder139.js & &
 node services/placeholder140/placeholder140.js & &
 echo 'All services started. Check logs for errors.'
+=======
+echo "All services started."
+>>>>>>> 417edfe (Refactor Azora Coin Integration service and update startup script)
