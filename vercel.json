@@ -2,7 +2,6 @@
   "version": 2,
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "installCommand": "npm install --legacy-peer-deps",
   "framework": "vite",
   "env": {
     "ENABLE_EXPERIMENTAL_COREPACK": "0",
