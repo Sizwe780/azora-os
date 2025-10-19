@@ -1,20 +1,49 @@
 const express = require('express');
+const cors = require('cors');
+const helmet = require('helmet');
+const compression = require('compression');
+const winston = require('winston');
+
 const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Middleware
+app.use(helmet());
+app.use(compression());
+app.use(cors());
 app.use(express.json());
 
-app.get('/health', (req, res) => res.json({ status: 'healthy', service: 'blockchain' }));
+// Logger
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.json(),
+  transports: [
+    new winston.transports.Console(),
+    new winston.transports.File({ filename: 'error.log', level: 'error' }),
+    new winston.transports.File({ filename: 'combined.log' })
+  ]
+});
 
-// Add basic endpoints based on service
-if ('blockchain' === 'azora-coin-integration') {
-  app.post('/api/mint/authorize', (req, res) => res.json({ authorized: true }));
-  app.get('/api/token-info', (req, res) => res.json({ supply: 1000000, symbol: 'AZR' }));
-}
-if ('blockchain' === 'subscription') {
-  app.post('/api/subscription/subscribe', (req, res) => res.json({ subscribed: true }));
-}
-if ('blockchain' === 'backed-valuation') {
-  app.get('/api/valuation/backed', (req, res) => res.json({ valuation: 1000000 }));
-}
+// Routes
+app.get('/health', (req, res) => {
+  res.json({ status: 'healthy', service: 'blockchain', version: '1.0.0' });
+});
 
-const PORT = 4000 + (Math.floor(Math.random() * 1000));
-app.listen(PORT, () => console.log('blockchain Service running on port ${PORT}'));
+app.get('/api/blockchain', async (req, res) => {
+  try {
+    // Placeholder for service-specific logic
+    const result = { message: 'blockchain is operational', data: {} };
+    logger.info('Service blockchain accessed');
+    res.json(result);
+  } catch (error) {
+    logger.error('Error in blockchain:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Start server
+app.listen(PORT, () => {
+  console.log('blockchain service running on port ${PORT}');
+});
+
+module.exports = app;
