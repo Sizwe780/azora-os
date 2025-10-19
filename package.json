@@ -1,4 +1,6 @@
 {
+  "name": "azora-os",
+  "version": "1.0.0",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -9,5 +11,11 @@
     "start": "./START_AZORA_OS.sh"
   },
   "license": "SEE LICENSE IN LICENSE",
-  "private": true
+  "private": true,
+  "dependencies": {
+    "vite": "^4.0.0"
+  },
+  "devDependencies": {
+    "hardhat": "^2.0.0"
+  }
 }
