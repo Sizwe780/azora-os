@@ -1,49 +1,11 @@
 const express = require('express');
-const cors = require('cors');
-const helmet = require('helmet');
-const compression = require('compression');
-const winston = require('winston');
-
 const app = express();
-const PORT = process.env.PORT || 3000;
-
-// Middleware
-app.use(helmet());
-app.use(compression());
-app.use(cors());
 app.use(express.json());
 
-// Logger
-const logger = winston.createLogger({
-  level: 'info',
-  format: winston.format.json(),
-  transports: [
-    new winston.transports.Console(),
-    new winston.transports.File({ filename: 'error.log', level: 'error' }),
-    new winston.transports.File({ filename: 'combined.log' })
-  ]
+app.post('/api/quantum/route', (req, res) => {
+  // Simulated quantum routing
+  const route = { path: 'optimized', qubits: 10 };
+  res.json(route);
 });
 
-// Routes
-app.get('/health', (req, res) => {
-  res.json({ status: 'healthy', service: 'quantum-routing-engine', version: '1.0.0' });
-});
-
-app.get('/api/quantum-routing-engine', async (req, res) => {
-  try {
-    // Placeholder for service-specific logic
-    const result = { message: 'quantum-routing-engine is operational', data: {} };
-    logger.info('Service quantum-routing-engine accessed');
-    res.json(result);
-  } catch (error) {
-    logger.error('Error in quantum-routing-engine:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-// Start server
-app.listen(PORT, () => {
-  console.log('quantum-routing-engine service running on port ${PORT}');
-});
-
-module.exports = app;
+app.listen(3003, () => console.log('Quantum Routing running on port 3003'));
