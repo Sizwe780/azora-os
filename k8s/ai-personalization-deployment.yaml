@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-personalization
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ai-personalization
+  template:
+    metadata:
+      labels:
+        app: ai-personalization
+    spec:
+      containers:
+      - name: ai-personalization
+        image: ai-personalization:latest
+        ports:
+        - containerPort: 3010
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ai-personalization
+spec:
+  type: ClusterIP
+  ports:
+  - port: 3010
+    targetPort: 3010
+  selector:
+    app: ai-personalization

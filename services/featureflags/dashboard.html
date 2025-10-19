@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Feature Flags Dashboard</title>
+<style>
+body { font-family:sans-serif; padding:2em; }
+input[type=checkbox] { transform: scale(1.5); margin:0 1em 0 0; }
+.card { background: #f3f3f3; border-radius: 8px; padding: 1em 2em; margin: 1em 0; }
+</style>
+</head>
+<body>
+<h1>Feature Flags Dashboard</h1>
+<div id="flags"></div>
+<script>
+fetch('/flags').then(r=>r.json()).then(flags=>{
+  const container = document.getElementById('flags');
+  Object.entries(flags).forEach(([key, value])=>{
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = \`
+      <label>
+        <input type="checkbox" \${value?'checked':''} onchange="toggleFlag('\${key}', this.checked)">
+        \${key}
+      </label>
+    \`;
+    container.appendChild(card);
+  });
+});
+function toggleFlag(flag, val) {
+  fetch('/flags', {
+    method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({[flag]:val})
+  }).then(()=>location.reload());
+}
+</script>
+</body>
+</html>

@@ -40,3 +40,43 @@ Copy \`.env.example\` to \`.env\` and adjust as needed.
 - Or deploy UI and services separately as containers
 
 Accessibility, dark/light theming, and atomic UI are fully supported.
+
+---
+
+## PWA, Push Notifications, and App Store/Play Store
+
+- Azora OS is a full PWA: installable on iOS & Android, works offline, supports push notifications.
+- To enable web push, configure your VAPID keys and a push backend (e.g., using web-push npm module).
+- For App Store/Play Store: Use manifest, icons, and screenshots. For Play Store, use [PWABuilder](https://www.pwabuilder.com/).
+- Mobile-first UI is guaranteed via responsive CSS and atomic components.
+
+
+---
+
+## PWA, Push Notifications, and App Store/Play Store
+
+- Azora OS is a full PWA: installable on iOS & Android, works offline, supports push notifications.
+- To enable web push, configure your VAPID keys and a push backend (e.g., using web-push npm module).
+- For App Store/Play Store: Use manifest, icons, and screenshots. For Play Store, use [PWABuilder](https://www.pwabuilder.com/).
+- Mobile-first UI is guaranteed via responsive CSS and atomic components.
+
+
+---
+
+## PWA, Push Notifications, and App Store/Play Store
+
+- Azora OS is a full PWA: installable on iOS & Android, works offline, supports push notifications.
+- To enable web push, configure your VAPID keys and a push backend (e.g., using web-push npm module).
+- For App Store/Play Store: Use manifest, icons, and screenshots. For Play Store, use [PWABuilder](https://www.pwabuilder.com/).
+- Mobile-first UI is guaranteed via responsive CSS and atomic components.
+
+
+---
+
+## PWA, Push Notifications, and App Store/Play Store
+
+- Azora OS is a full PWA: installable on iOS & Android, works offline, supports push notifications.
+- To enable web push, configure your VAPID keys and a push backend (e.g., using web-push npm module).
+- For App Store/Play Store: Use manifest, icons, and screenshots. For Play Store, use [PWABuilder](https://www.pwabuilder.com/).
+- Mobile-first UI is guaranteed via responsive CSS and atomic components.
+
