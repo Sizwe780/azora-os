@@ -12,3 +12,5 @@ node services/liquidity/liquidity.js &
 node services/reporting/reporting.js &
 
 echo "All services started. Check logs for errors."
+node services/ai-valuation/ai-valuation.js &
+node services/partnerships/partnerships.js &

@@ -1,0 +1,15 @@
+.azora-header {
+  background-color: #343a40;
+  color: white;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'Arial', sans-serif;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}

@@ -738,4 +738,8 @@ app.post('/api/withdraw-from-wallet', async (req, res) => {
     );
     
     res.json({ success: true, zarAmount, bankTransferId: bankTransfer.transactionId });
-  } catch (error
+    } catch (error) {
+      console.error('Error processing wallet withdrawal:', error);
+      res.status(500).json({ error: 'Failed to process withdrawal from wallet' });
+    }
+  });

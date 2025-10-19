@@ -405,8 +405,30 @@ app.post('/api/advanced-withdraw', async (req, res) => {
   }
 });
 
-const PORT = process.env.AZORA_COIN_PORT || 4092;
+// Withdraw bonus directly (for testing)
+app.post('/api/withdraw/bonus', (req, res) => {
+  const { founderId, amountAzr } = req.body;
+  // Convert to ZAR (1 AZR = 18 ZAR)
+  const zarAmount = amountAzr * 18;
+  // Simulate bank transfer
+  res.json({ withdrawnZar: zarAmount, bank: 'Standard Bank', account: 'YourAccount' });
+});
 
+// Mint bonus
+app.post('/api/mint/bonus', (req, res) => {
+  const { founderId, bonusAmount } = req.body;
+  // Mint bonus AZR (10% of total)
+  const bonus = bonusAmount * 0.1;
+  // Simulate minting
+  res.json({ mintedBonus: bonus, founderId });
+});
+
+const PORT = process.env.AZORA_COIN_PORT || 4092;
+console.log(`💸 Founder Withdrawal: $100.00 USD per request`);
+console.log(`📊 Max Supply: 1,000,000 AZR ($1,000,000 USD)`);
+console.log(`💰 Azora Coin Value: $1.00 USD`);
+console.log(`✅ Azora Coin Integration Service running on port ${PORT}`);
+await initBlockchain();
 app.listen(PORT, async () => {
   await initBlockchain();
   console.log(`✅ Azora Coin Integration Service running on port ${PORT}`);
