@@ -12,7 +12,7 @@
     "isolatedModules": true,
     "noEmit": false,
     "outDir": "dist",
-    "types": ["node", "vitest"]
+    "types": ["node"]
   },
   "include": ["src", "pages", "components", "test", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules", "dist"]
