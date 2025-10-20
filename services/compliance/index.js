@@ -800,7 +800,7 @@ const startServer = async () => {
   try {
     await initializeSystems();
 
-    app.listen(PORT, () => {
+    const server = app.listen(PORT, () => {
       logger.info(`🚀 Advanced Compliance Service v3.0 running on port ${PORT}`, {
         features: [
           'Multi-Framework Compliance (GDPR, HIPAA, CCPA, PIPEDA)',
@@ -817,10 +817,18 @@ const startServer = async () => {
       });
       console.log(`🚀 Advanced Compliance Service listening on port ${PORT}`);
     });
+
+    return server;
   } catch (error) {
     logger.error('Failed to start server', { error: error.message });
     process.exit(1);
   }
 };
 
-startServer();
+// Export for testing
+module.exports = { app, startServer, getPrivacyAIModel: () => privacyAIModel, getRiskAssessmentModel: () => riskAssessmentModel, setPrivacyAIModel: (model) => { privacyAIModel = model; }, setRiskAssessmentModel: (model) => { riskAssessmentModel = model; } };
+
+// Start server if this file is run directly
+if (require.main === module) {
+  startServer();
+}

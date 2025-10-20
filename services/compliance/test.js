@@ -18,6 +18,54 @@ const mockRedisClient = {
   quit: sinon.stub().resolves()
 };
 
+// Initialize AI models for testing
+async function initializeTestAIModels() {
+  const service = require('./index.js');
+
+  // Set up mock AI models using the setter functions
+  const mockPrivacyAIModel = {
+    analyzeDataFlow: async (dataFlow) => {
+      return {
+        privacyRisk: 'LOW',
+        score: 0.3,
+        recommendations: ['Data flow looks good']
+      };
+    },
+    generateRecommendations: (dataFlow, riskScore) => {
+      return ['Mock recommendation'];
+    }
+  };
+
+  const mockRiskAssessmentModel = {
+    assessComplianceRisk: async (organization, activities) => {
+      return {
+        overallRisk: 25,
+        riskLevel: 'LOW',
+        factors: [],
+        recommendations: ['Continue current practices']
+      };
+    },
+    checkFrameworkCompliance: async (org, framework) => {
+      return {
+        score: 0.85,
+        issues: ['Minor documentation gaps']
+      };
+    },
+    assessActivityRisk: async (activity) => {
+      return {
+        score: 10,
+        issues: []
+      };
+    },
+    generateRiskRecommendations: (totalRisk, factors) => {
+      return ['Mock risk recommendation'];
+    }
+  };
+
+  service.setPrivacyAIModel(mockPrivacyAIModel);
+  service.setRiskAssessmentModel(mockRiskAssessmentModel);
+}
+
 describe('Advanced Compliance Service', () => {
   let app;
   let server;
@@ -26,15 +74,25 @@ describe('Advanced Compliance Service', () => {
     // Mock Redis
     sinon.stub(redis, 'createClient').returns(mockRedisClient);
 
+    // Mock axios for event bus
+    sinon.stub(axios, 'post').resolves({ data: { success: true } });
+
     // Import the service after mocking
     const service = require('./index.js');
     app = service.app;
-    server = service.server;
+
+    // Initialize AI models manually for testing
+    await initializeTestAIModels();
+
+    // Start server for testing
+    server = await service.startServer();
   });
 
-  after(() => {
+  after(async () => {
     sinon.restore();
-    if (server) server.close();
+    if (server) {
+      server.close();
+    }
   });
 
   describe('Health Check', () => {
@@ -311,9 +369,6 @@ describe('Advanced Compliance Service', () => {
 
   describe('Integration Tests', () => {
     it('should integrate with event bus for data rights requests', async () => {
-      // Mock axios for event bus communication
-      const axiosStub = sinon.stub(axios, 'post').resolves({ status: 200 });
-
       const requestData = {
         subjectId: 'user-001',
         dataTypes: ['personal'],
@@ -325,14 +380,10 @@ describe('Advanced Compliance Service', () => {
         .send(requestData);
 
       // Verify event bus was called
-      expect(axiosStub.called).to.be.true;
-      axiosStub.restore();
+      expect(axios.post.called).to.be.true;
     });
 
     it('should integrate with event bus for breach reporting', async () => {
-      // Mock axios for event bus communication
-      const axiosStub = sinon.stub(axios, 'post').resolves({ status: 200 });
-
       const breachData = {
         type: 'data_breach',
         affectedUsers: 100,
@@ -346,8 +397,7 @@ describe('Advanced Compliance Service', () => {
         .send(breachData);
 
       // Verify event bus was called
-      expect(axiosStub.called).to.be.true;
-      axiosStub.restore();
+      expect(axios.post.called).to.be.true;
     });
   });
 
