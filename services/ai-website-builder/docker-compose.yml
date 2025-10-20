@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  ai-website-builder:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: ai-website-builder-service
+    ports:
+      - "3008:3008"
+    environment:
+      - PORT=3008
+      - NODE_ENV=production
+      - MONGODB_URI=mongodb://mongodb:27017/ai-website-builder
+      - PROMETHEUS_METRICS_ENABLED=true
+      - LOG_LEVEL=info
+      - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+      - PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+    volumes:
+      - ./logs:/app/logs
+      - ./uploads:/app/uploads
+      - ./deployments:/app/deployments
+    depends_on:
+      - mongodb
+    networks:
+      - azora-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3008/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  mongodb:
+    image: mongo:6.0
+    container_name: ai-website-builder-mongodb
+    ports:
+      - "27019:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=ai-website-builder
+    volumes:
+      - mongodb_data:/data/db
+      - ./docker/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    networks:
+      - azora-network
+    restart: unless-stopped
+
+volumes:
+  mongodb_data:
+
+networks:
+  azora-network:
+    driver: bridge
+    name: azora-network

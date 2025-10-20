@@ -369,22 +369,22 @@ router.get('/:id', async (req: AuthenticatedRequest, res: Response) => {
 /**
  * @swagger
  * /api/v1/emails/{id}/resend:
- * post:
- * summary: Resend a failed email
- * tags: [Emails]
- * security:
- * - bearerAuth: []
- * - apiKeyAuth: []
- * parameters:
- * - in: path
- * name: id
- * required: true
- * schema:
- * type: string
- * description: Email ID
- * responses:
- * 202:
- * description: Email queued for resending
+ *   post:
+ *     summary: Resend a failed email
+ *     tags: [Emails]
+ *     security:
+ *       - bearerAuth: []
+ *       - apiKeyAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Email ID
+ *     responses:
+ *       202:
+ *         description: Email queued for resending
  */
 router.post('/:id/resend', async (req: AuthenticatedRequest, res: Response) => {
   try {
@@ -464,22 +464,22 @@ router.post('/:id/resend', async (req: AuthenticatedRequest, res: Response) => {
 /**
  * @swagger
  * /api/v1/emails/{id}:
- * delete:
- * summary: Delete an email
- * tags: [Emails]
- * security:
- * - bearerAuth: []
- * - apiKeyAuth: []
- * parameters:
- * - in: path
- * name: id
- * required: true
- * schema:
- * type: string
- * description: Email ID
- * responses:
- * 200:
- * description: Email deleted successfully
+ *   delete:
+ *     summary: Delete an email
+ *     tags: [Emails]
+ *     security:
+ *       - bearerAuth: []
+ *       - apiKeyAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Email ID
+ *     responses:
+ *       200:
+ *         description: Email deleted successfully
  */
 router.delete('/:id', async (req: AuthenticatedRequest, res: Response) => {
   try {
