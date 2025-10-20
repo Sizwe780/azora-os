@@ -5,7 +5,7 @@ export class AuditService {
   static async log(eventType: string, details: any, userId?: string) {
     await prisma.auditLog.create({
       data: {
-        eventType,
+        eventType: eventType,
         details,
         userId,
       },
@@ -15,10 +15,10 @@ export class AuditService {
 
 export class ABTestService {
   static async assignVariant(userId: string): Promise<string> {
-    let abTest = await prisma.aBTest.findFirst({ where: { userId } });
+    let abTest = await prisma.abTest.findFirst({ where: { userId } });
     if (!abTest) {
       const variant = Math.random() > 0.5 ? "A" : "B";
-      abTest = await prisma.aBTest.create({
+      abTest = await prisma.abTest.create({
         data: { userId, variant },
       });
       await AuditService.log('ASSIGN_VARIANT', { userId, variant }, userId);
@@ -27,9 +27,9 @@ export class ABTestService {
   }
 
   static async recordResult(userId: string, result: string, metadata?: any) {
-    const abTest = await prisma.aBTest.findFirst({ where: { userId } });
+    const abTest = await prisma.abTest.findFirst({ where: { userId } });
     if (abTest) {
-      await prisma.aBTest.update({
+      await prisma.abTest.update({
         where: { id: abTest.id },
         data: { result, metadata },
       });

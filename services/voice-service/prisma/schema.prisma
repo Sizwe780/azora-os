@@ -1,0 +1,30 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Transcription {
+  id            String   @id @default(cuid())
+  audioData     String   // Base64 or URL
+  transcription String
+  userId        String?
+  createdAt     DateTime @default(now())
+
+  @@map("transcription")
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  action    String
+  details   Json
+  timestamp DateTime @default(now())
+
+  @@map("audit_log")
+}

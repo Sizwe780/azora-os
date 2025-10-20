@@ -26,4 +26,14 @@ router.get('/notifications/:userId', async (req, res) => {
   }
 });
 
+router.get('/proactive/:userId', async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const result = await NotificationService.proactiveNotify(userId);
+    res.json({ result });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to send proactive notification', details: err });
+  }
+});
+
 export default router;

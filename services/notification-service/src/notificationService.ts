@@ -35,4 +35,12 @@ export class NotificationService {
       orderBy: { createdAt: 'desc' },
     });
   }
+
+  static async proactiveNotify(userId: string): Promise<{ title: string; message: string }> {
+    // AI-driven proactive notification
+    const title = 'Proactive Alert';
+    const message = 'Based on your activity, consider completing a course for bonus AZR.';
+    await this.sendNotification(userId, title, message, 'learn');
+    return { title, message };
+  }
 }

@@ -24,4 +24,14 @@ router.get('/record/:userId', async (req, res) => {
   }
 });
 
+router.get('/predict/:userId', async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const prediction = await ComplianceService.predictRisk(userId);
+    res.json({ prediction });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to predict risk', details: err });
+  }
+});
+
 export default router;

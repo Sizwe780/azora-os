@@ -1,0 +1,41 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Subscription {
+  id        String   @id @default(cuid())
+  userId    String
+  tier      String   @default("free_citizen")
+  status    String   @default("active")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("subscription")
+}
+
+model Invoice {
+  id        String   @id @default(cuid())
+  userId    String
+  amount    Float
+  status    String   @default("pending")
+  createdAt DateTime @default(now())
+
+  @@map("invoice")
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  action    String
+  details   Json
+  timestamp DateTime @default(now())
+
+  @@map("audit_log")
+}

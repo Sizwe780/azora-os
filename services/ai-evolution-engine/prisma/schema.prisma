@@ -1,0 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Evolution {
+  id          String   @id @default(cuid())
+  generation  Int
+  fitness     Float
+  parameters  Json
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  models      Model[]
+  auditLogs   AuditLog[]
+}
+
+model Model {
+  id          String   @id @default(cuid())
+  name        String
+  version     String
+  accuracy    Float?
+  evolutionId String?
+  evolution   Evolution? @relation(fields: [evolutionId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  auditLogs   AuditLog[]
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  action      String
+  entityId    String
+  entityType  String
+  details     Json?
+  userId      String?
+  timestamp   DateTime @default(now())
+  evolutionId String?
+  evolution   Evolution? @relation(fields: [evolutionId], references: [id])
+  modelId     String?
+  model       Model? @relation(fields: [modelId], references: [id])
+}
