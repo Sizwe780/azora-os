@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
-import Email from '../models/Email';
-import Domain from '../models/Domain';
+import Email from '../models/Email'; // Assuming Email model has .canRetry()
+import Domain from '../models/Domain'; // Assuming Domain model has smtpConfig
 import { customMetrics } from '../middleware/metrics';
 import { emailRateLimiter } from '../middleware/rateLimiter';
 import logger from '../utils/logger';
@@ -17,7 +17,10 @@ interface AuthenticatedRequest extends Request {
   };
 }
 
-// Apply rate limiting
+// TODO: ADD AUTHENTICATION MIDDLEWARE HERE globally for this router
+// Example: router.use(yourAuthMiddleware);
+
+// Apply rate limiting to all routes in this file
 router.use(emailRateLimiter);
 
 /**
@@ -54,89 +57,81 @@ router.use(emailRateLimiter);
  */
 router.post('/', async (req: AuthenticatedRequest, res: Response) => {
   try {
-    const {
-      from,
-      to,
-      cc,
-      bcc,
-      subject,
-      text,
-      html,
-      attachments,
-      priority = 'normal',
-      scheduledAt
-    } = req.body;
+    const { to, cc, bcc, subject, text, html, attachments, priority, scheduledAt, domain } = req.body;
+    
+    // Enforce authentication. This should fail if auth middleware is missing.
+    if (!req.user?.id) {
+      return res.status(401).json({
+        success: false,
+        message: 'Authentication required'
+      });
+    }
+    const userId = req.user.id;
 
-    const userId = req.user?.id || 'anonymous'; // TODO: Add authentication middleware
-
-    // Extract domain from sender email
-    const fromDomain = from.split('@')[1]?.toLowerCase();
-    if (!fromDomain) {
+    // Validate required fields
+    if (!to || !subject || !domain) {
       return res.status(400).json({
         success: false,
-        message: 'Invalid sender email address'
+        message: 'Missing required fields: to, subject, domain'
       });
     }
 
-    // Check if domain is registered and active
-    const domain = await Domain.findOne({ name: fromDomain, owner: userId, status: 'active' });
-    if (!domain) {
-      return res.status(403).json({
-        success: false,
-        message: 'Domain not registered or not verified'
-      });
-    }
-
-    // Validate SMTP configuration
-    if (!domain.smtpConfig.host || !domain.smtpConfig.username || !domain.smtpConfig.password) {
+    // Validate domain ownership
+    const domainDoc = await Domain.findOne({ name: domain, owner: userId, status: 'active' });
+    if (!domainDoc) {
       return res.status(400).json({
         success: false,
-        message: 'SMTP configuration incomplete for this domain'
+        message: 'Domain not found, not verified, or not active'
       });
     }
 
-    // Generate unique message ID
-    const messageId = uuidv4();
+    // Convert base64 attachments to Buffers for database storage
+    const processedAttachments = attachments?.map((att: any) => ({
+      filename: att.filename,
+      content: Buffer.from(att.content, 'base64'), // Convert base64 string to Buffer
+      contentType: att.contentType
+    }));
 
-    // Create email record
+    // Create email document
     const email = new Email({
-      messageId,
-      from,
+      messageId: uuidv4(),
+      from: `noreply@${domain}`,
       to: Array.isArray(to) ? to : [to],
       cc: cc ? (Array.isArray(cc) ? cc : [cc]) : undefined,
       bcc: bcc ? (Array.isArray(bcc) ? bcc : [bcc]) : undefined,
       subject,
       text,
       html,
-      attachments,
-      priority,
+      attachments: processedAttachments,
+      priority: priority || 'normal',
       scheduledAt: scheduledAt ? new Date(scheduledAt) : undefined,
-      domain: fromDomain,
-      userId,
-      status: scheduledAt ? 'queued' : 'sending'
+      domain,
+      userId
     });
 
     await email.save();
 
-    // Queue email for sending (in production, use a job queue)
-    if (!scheduledAt || new Date(scheduledAt) <= new Date()) {
-      // Send email immediately
-      setImmediate(() => sendEmail(email, domain));
-    }
-
     customMetrics.emailsQueued.inc();
+
+    // NOTE: setImmediate is not a durable queue. If the process crashes,
+    // this email will be lost. A proper queue (e.g., BullMQ, RabbitMQ) is required.
+    setImmediate(() => sendEmail(email, domainDoc));
 
     res.status(202).json({
       success: true,
-      message: scheduledAt ? 'Email scheduled for sending' : 'Email queued for sending',
-      data: email
+      message: 'Email queued for sending',
+      data: {
+        id: email._id,
+        messageId: email.messageId
+      }
     });
-  } catch (error: any) {
-    logger.error('Error queuing email:', error);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    logger.error('Error queuing email:', { error: message });
     res.status(500).json({
       success: false,
       message: 'Failed to queue email',
-      error: error.message
+      error: message
     });
   }
 });
@@ -181,14 +176,21 @@ router.post('/', async (req: AuthenticatedRequest, res: Response) => {
  *       200:
  *         description: List of emails retrieved successfully
  */
-router.get('/', async (req: Request, res: Response) => {
+router.get('/', async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { status, domain, limit = 20, offset = 0 } = req.query;
-    const userId = req.user?.id || 'anonymous'; // TODO: Add authentication middleware
+
+    if (!req.user?.id) {
+      return res.status(401).json({
+        success: false,
+        message: 'Authentication required'
+      });
+    }
+    const userId = req.user.id;
 
     const query: any = { userId };
-    if (status) query.status = status;
-    if (domain) query.domain = domain;
+    if (status) query.status = status as string;
+    if (domain) query.domain = domain as string;
 
     const emails = await Email.find(query)
       .sort({ createdAt: -1 })
@@ -206,12 +208,104 @@ router.get('/', async (req: Request, res: Response) => {
         offset: Number(offset)
       }
     });
-  } catch (error) {
-    logger.error('Error fetching emails:', error);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    logger.error('Error fetching emails:', { error: message });
     res.status(500).json({
       success: false,
       message: 'Failed to fetch emails',
-      error: error.message
+      error: message
+    });
+  }
+});
+
+/**
+ * @swagger
+ * /api/v1/emails/stats/summary:
+ *   get:
+ *     summary: Get email statistics summary
+ *     tags: [Emails]
+ *     security:
+ *       - bearerAuth: []
+ *       - apiKeyAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: domain
+ *         schema:
+ *           type: string
+ *         description: Filter by domain
+ *       - in: query
+ *         name: days
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 365
+ *           default: 30
+ *         description: Number of days to look back
+ *     responses:
+ *       200:
+ *         description: Email statistics retrieved successfully
+ */
+router.get('/stats/summary', async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const { domain, days = 30 } = req.query;
+    
+    if (!req.user?.id) {
+      return res.status(401).json({
+        success: false,
+        message: 'Authentication required'
+      });
+    }
+    const userId = req.user.id;
+
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - Number(days));
+
+    const matchQuery: any = {
+      userId,
+      createdAt: { $gte: startDate }
+    };
+
+    if (domain) {
+      matchQuery.domain = domain as string;
+    }
+
+    const stats = await Email.aggregate([
+      { $match: matchQuery },
+      {
+        $group: {
+          _id: '$status',
+          count: { $sum: 1 }
+        }
+      }
+    ]);
+
+    const total = stats.reduce((sum, stat) => sum + stat.count, 0);
+    const statsMap = stats.reduce((map, stat) => {
+      map[stat._id] = stat.count;
+      return map;
+    }, {});
+
+    res.json({
+      success: true,
+      data: {
+        total,
+        sent: statsMap.sent || 0,
+        delivered: statsMap.delivered || 0,
+        bounced: statsMap.bounced || 0,
+        failed: statsMap.failed || 0,
+        queued: statsMap.queued || 0,
+        sending: statsMap.sending || 0,
+        period: `${days} days`
+      }
+    });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    logger.error('Error fetching email stats:', { error: message });
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch email statistics',
+      error: message
     });
   }
 });
@@ -239,7 +333,14 @@ router.get('/', async (req: Request, res: Response) => {
 router.get('/:id', async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { id } = req.params;
-    const userId = req.user?.id || 'anonymous'; // TODO: Add authentication middleware
+    
+    if (!req.user?.id) {
+      return res.status(401).json({
+        success: false,
+        message: 'Authentication required'
+      });
+    }
+    const userId = req.user.id;
 
     const email = await Email.findOne({ _id: id, userId });
 
@@ -254,20 +355,48 @@ router.get('/:id', async (req: AuthenticatedRequest, res: Response) => {
       success: true,
       data: email
     });
-  } catch (error: any) {
-    logger.error('Error fetching email:', error);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    logger.error('Error fetching email:', { error: message });
     res.status(500).json({
       success: false,
       message: 'Failed to fetch email',
-      error: error.message
+      error: message
     });
   }
 });
 
+/**
+ * @swagger
+ * /api/v1/emails/{id}/resend:
+ * post:
+ * summary: Resend a failed email
+ * tags: [Emails]
+ * security:
+ * - bearerAuth: []
+ * - apiKeyAuth: []
+ * parameters:
+ * - in: path
+ * name: id
+ * required: true
+ * schema:
+ * type: string
+ * description: Email ID
+ * responses:
+ * 202:
+ * description: Email queued for resending
+ */
 router.post('/:id/resend', async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { id } = req.params;
-    const userId = req.user?.id || 'anonymous'; // TODO: Add authentication middleware
+
+    if (!req.user?.id) {
+      return res.status(401).json({
+        success: false,
+        message: 'Authentication required'
+      });
+    }
+    const userId = req.user.id;
 
     const email = await Email.findOne({ _id: id, userId });
 
@@ -281,10 +410,11 @@ router.post('/:id/resend', async (req: AuthenticatedRequest, res: Response) => {
     if (email.status !== 'failed' && email.status !== 'bounced') {
       return res.status(400).json({
         success: false,
-        message: 'Email is not in a failed state'
+        message: 'Email is not in a failed or bounced state'
       });
     }
 
+    // This assumes `canRetry()` is an instance method on your Email schema
     if (!(email as any).canRetry()) {
       return res.status(400).json({
         success: false,
@@ -293,195 +423,40 @@ router.post('/:id/resend', async (req: AuthenticatedRequest, res: Response) => {
     }
 
     // Reset email status and queue for sending
-    email.status = 'sending';
+    email.status = 'queued'; // Set to 'queued' to re-enter the processing state
     email.errorMessage = undefined;
+    // You might want to increment a retry counter here, e.g., email.retries += 1;
     await email.save();
 
     // Get domain configuration
     const domain = await Domain.findOne({ name: email.domain, owner: userId, status: 'active' });
     if (!domain) {
+      // Even if domain is gone, we queued it. But we can't send it.
+      // Mark as failed again.
+      email.status = 'failed';
+      email.errorMessage = 'Domain configuration not found or not active';
+      await email.save();
+      
       return res.status(400).json({
         success: false,
         message: 'Domain configuration not found'
       });
     }
 
-    // Send email
+    // Queue email for sending
     setImmediate(() => sendEmail(email, domain));
 
     res.status(202).json({
       success: true,
       message: 'Email queued for resending'
     });
-  } catch (error: any) {
-    logger.error('Error resending email:', error);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    logger.error('Error resending email:', { error: message });
     res.status(500).json({
       success: false,
       message: 'Failed to resend email',
-      error: error.message
-    });
-  }
-});
-
-router.delete('/:id', async (req: AuthenticatedRequest, res: Response) => {
-  try {
-    const { id } = req.params;
-    const userId = req.user?.id || 'anonymous'; // TODO: Add authentication middleware
-
-    const email = await Email.findOneAndDelete({ _id: id, userId });
-
-    if (!email) {
-      return res.status(404).json({
-        success: false,
-        message: 'Email not found'
-      });
-    }
-
-    res.json({
-      success: true,
-      message: 'Email deleted successfully'
-    });
-  } catch (error: any) {
-    logger.error('Error deleting email:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to delete email',
-      error: error.message
-    });
-  }
-});
-
-router.get('/stats/summary', async (req: AuthenticatedRequest, res: Response) => {
-  try {
-    const { domain, days = 30 } = req.query;
-    const userId = req.user?.id || 'anonymous'; // TODO: Add authentication middleware
-
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - Number(days));
-
-    const matchQuery: any = {
-      userId,
-      createdAt: { $gte: startDate }
-    };
-
-    if (domain) {
-      matchQuery.domain = domain;
-    }
-
-    const stats = await Email.aggregate([
-      { $match: matchQuery },
-      {
-        $group: {
-          _id: '$status',
-          count: { $sum: 1 }
-        }
-      }
-    ]);
-
-    const total = stats.reduce((sum, stat) => sum + stat.count, 0);
-    const statsMap = stats.reduce((map, stat) => {
-      map[stat._id] = stat.count;
-      return map;
-    }, {});
-
-    res.json({
-      success: true,
-      data: {
-        total,
-        sent: statsMap.sent || 0,
-        delivered: statsMap.delivered || 0,
-        bounced: statsMap.bounced || 0,
-        failed: statsMap.failed || 0,
-        queued: statsMap.queued || 0,
-        sending: statsMap.sending || 0,
-        period: `${days} days`
-      }
-    });
-  } catch (error: any) {
-    logger.error('Error fetching email stats:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch email statistics',
-      error: error.message
-    });
-  }
-});
-
-/**
- * @swagger
- * /api/v1/emails/{id}/resend:
- *   post:
- *     summary: Resend a failed email
- *     tags: [Emails]
- *     security:
- *       - bearerAuth: []
- *       - apiKeyAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: Email ID
- *     responses:
- *       202:
- *         description: Email queued for resending
- */
-router.post('/:id/resend', async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const userId = req.user?.id || 'anonymous'; // TODO: Add authentication middleware
-
-    const email = await Email.findOne({ _id: id, userId });
-
-    if (!email) {
-      return res.status(404).json({
-        success: false,
-        message: 'Email not found'
-      });
-    }
-
-    if (email.status !== 'failed' && email.status !== 'bounced') {
-      return res.status(400).json({
-        success: false,
-        message: 'Email is not in a failed state'
-      });
-    }
-
-    if (!email.canRetry()) {
-      return res.status(400).json({
-        success: false,
-        message: 'Maximum retry attempts exceeded'
-      });
-    }
-
-    // Reset email status and queue for sending
-    email.status = 'sending';
-    email.errorMessage = undefined;
-    await email.save();
-
-    // Get domain configuration
-    const domain = await Domain.findOne({ name: email.domain, owner: userId, status: 'active' });
-    if (!domain) {
-      return res.status(400).json({
-        success: false,
-        message: 'Domain configuration not found'
-      });
-    }
-
-    // Send email
-    setImmediate(() => sendEmail(email, domain));
-
-    res.status(202).json({
-      success: true,
-      message: 'Email queued for resending'
-    });
-  } catch (error) {
-    logger.error('Error resending email:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to resend email',
-      error: error.message
+      error: message
     });
   }
 });
@@ -489,27 +464,34 @@ router.post('/:id/resend', async (req: Request, res: Response) => {
 /**
  * @swagger
  * /api/v1/emails/{id}:
- *   delete:
- *     summary: Delete an email
- *     tags: [Emails]
- *     security:
- *       - bearerAuth: []
- *       - apiKeyAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: Email ID
- *     responses:
- *       200:
- *         description: Email deleted successfully
+ * delete:
+ * summary: Delete an email
+ * tags: [Emails]
+ * security:
+ * - bearerAuth: []
+ * - apiKeyAuth: []
+ * parameters:
+ * - in: path
+ * name: id
+ * required: true
+ * schema:
+ * type: string
+ * description: Email ID
+ * responses:
+ * 200:
+ * description: Email deleted successfully
  */
-router.delete('/:id', async (req: Request, res: Response) => {
+router.delete('/:id', async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { id } = req.params;
-    const userId = req.user?.id || 'anonymous'; // TODO: Add authentication middleware
+
+    if (!req.user?.id) {
+      return res.status(401).json({
+        success: false,
+        message: 'Authentication required'
+      });
+    }
+    const userId = req.user.id;
 
     const email = await Email.findOneAndDelete({ _id: id, userId });
 
@@ -524,107 +506,30 @@ router.delete('/:id', async (req: Request, res: Response) => {
       success: true,
       message: 'Email deleted successfully'
     });
-  } catch (error) {
-    logger.error('Error deleting email:', error);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    logger.error('Error deleting email:', { error: message });
     res.status(500).json({
       success: false,
       message: 'Failed to delete email',
-      error: error.message
+      error: message
     });
   }
 });
 
-/**
- * @swagger
- * /api/v1/emails/stats:
- *   get:
- *     summary: Get email statistics
- *     tags: [Emails]
- *     security:
- *       - bearerAuth: []
- *       - apiKeyAuth: []
- *     parameters:
- *       - in: query
- *         name: domain
- *         schema:
- *           type: string
- *         description: Filter by domain
- *       - in: query
- *         name: days
- *         schema:
- *           type: integer
- *           minimum: 1
- *           maximum: 365
- *           default: 30
- *         description: Number of days to look back
- *     responses:
- *       200:
- *         description: Email statistics retrieved successfully
- */
-router.get('/stats/summary', async (req: Request, res: Response) => {
-  try {
-    const { domain, days = 30 } = req.query;
-    const userId = req.user?.id || 'anonymous'; // TODO: Add authentication middleware
-
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - Number(days));
-
-    const matchQuery: any = {
-      userId,
-      createdAt: { $gte: startDate }
-    };
-
-    if (domain) {
-      matchQuery.domain = domain;
-    }
-
-    const stats = await Email.aggregate([
-      { $match: matchQuery },
-      {
-        $group: {
-          _id: '$status',
-          count: { $sum: 1 }
-        }
-      }
-    ]);
-
-    const total = stats.reduce((sum, stat) => sum + stat.count, 0);
-    const statsMap = stats.reduce((map, stat) => {
-      map[stat._id] = stat.count;
-      return map;
-    }, {});
-
-    res.json({
-      success: true,
-      data: {
-        total,
-        sent: statsMap.sent || 0,
-        delivered: statsMap.delivered || 0,
-        bounced: statsMap.bounced || 0,
-        failed: statsMap.failed || 0,
-        queued: statsMap.queued || 0,
-        sending: statsMap.sending || 0,
-        period: `${days} days`
-      }
-    });
-  } catch (error) {
-    logger.error('Error fetching email stats:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch email statistics',
-      error: error.message
-    });
-  }
-});
 
 // Helper function to send email
 async function sendEmail(email: any, domain: any) {
   try {
+    // Update status to 'sending' only when the worker picks it up
+    email.status = 'sending';
+    await email.save();
+
     // Create transporter
-    const transporter = nodemailer.createTransporter({
+    const transporter = nodemailer.createTransport({
       host: domain.smtpConfig.host,
       port: domain.smtpConfig.port,
-      secure: domain.smtpConfig.secure,
+      secure: domain.smtpConfig.secure, // true for 465, false for other ports
       auth: {
         user: domain.smtpConfig.username,
         pass: domain.smtpConfig.password
@@ -648,7 +553,7 @@ async function sendEmail(email: any, domain: any) {
       html: email.html,
       attachments: email.attachments?.map((att: any) => ({
         filename: att.filename,
-        content: Buffer.from(att.content, 'base64'),
+        content: att.content, // Pass the Buffer directly
         contentType: att.contentType
       })),
       messageId: `<${email.messageId}@${domain.name}>`,
@@ -659,7 +564,7 @@ async function sendEmail(email: any, domain: any) {
     const info = await transporter.sendMail(mailOptions);
 
     // Update email status
-    email.markAsSent();
+    email.markAsSent(); // Assumes this method exists on the model
     await email.save();
 
     customMetrics.emailsSent.inc({ status: 'sent', domain: domain.name });
@@ -669,14 +574,15 @@ async function sendEmail(email: any, domain: any) {
       messageIdSMTP: info.messageId
     });
 
-  } catch (error) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
     logger.error('Failed to send email:', {
       messageId: email.messageId,
-      error: error.message
+      error: message
     });
 
     // Update email status
-    email.markAsFailed(error.message);
+    email.markAsFailed(message); // Assumes this method exists on the model
     await email.save();
 
     customMetrics.emailsSent.inc({ status: 'failed', domain: domain.name });

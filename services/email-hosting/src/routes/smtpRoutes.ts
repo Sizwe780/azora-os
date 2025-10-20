@@ -1,11 +1,19 @@
 import { Router, Request, Response } from 'express';
-import Domain from '../models/Domain';
+import Domain, { IDNSRecord } from '../models/Domain';
 import { customMetrics } from '../middleware/metrics';
 import { smtpRateLimiter } from '../middleware/rateLimiter';
 import logger from '../utils/logger';
 import nodemailer from 'nodemailer';
 
 const router = Router();
+
+// Extend Request interface to include user
+interface AuthenticatedRequest extends Request {
+  user?: {
+    id: string;
+    email?: string;
+  };
+}
 
 // Apply rate limiting
 router.use(smtpRateLimiter);
@@ -71,12 +79,12 @@ router.use(smtpRateLimiter);
  *                     response:
  *                       type: string
  */
-router.post('/test', async (req: Request, res: Response) => {
+router.post('/test', async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { host, port, secure, username, password, domain } = req.body;
 
     // Create transporter
-    const transporter = nodemailer.createTransporter({
+    const transporter = nodemailer.createTransport({
       host,
       port,
       secure,
@@ -105,7 +113,7 @@ router.post('/test', async (req: Request, res: Response) => {
         response: 'Connection established successfully'
       }
     });
-  } catch (error) {
+  } catch (error: any) {
     logger.error('SMTP test failed:', error);
     res.status(400).json({
       success: false,
@@ -149,7 +157,7 @@ router.post('/test', async (req: Request, res: Response) => {
  *                 data:
  *                   $ref: '#/components/schemas/SMTPConfig'
  */
-router.get('/domains/:domainId/config', async (req: Request, res: Response) => {
+router.get('/domains/:domainId/config', async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { domainId } = req.params;
     const userId = req.user?.id || 'anonymous'; // TODO: Add authentication middleware
@@ -167,7 +175,7 @@ router.get('/domains/:domainId/config', async (req: Request, res: Response) => {
       success: true,
       data: domain.smtpConfig
     });
-  } catch (error) {
+  } catch (error: any) {
     logger.error('Error fetching SMTP config:', error);
     res.status(500).json({
       success: false,
@@ -206,7 +214,7 @@ router.get('/domains/:domainId/config', async (req: Request, res: Response) => {
  *       200:
  *         description: SMTP configuration updated successfully
  */
-router.put('/domains/:domainId/config', async (req: Request, res: Response) => {
+router.put('/domains/:domainId/config', async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { domainId } = req.params;
     const { smtpConfig } = req.body;
@@ -225,7 +233,7 @@ router.put('/domains/:domainId/config', async (req: Request, res: Response) => {
     if (smtpConfig.host && smtpConfig.port) {
       // Test the configuration
       try {
-        const transporter = nodemailer.createTransporter({
+        const transporter = nodemailer.createTransport({
           host: smtpConfig.host,
           port: smtpConfig.port,
           secure: smtpConfig.secure || false,
@@ -236,7 +244,7 @@ router.put('/domains/:domainId/config', async (req: Request, res: Response) => {
         });
 
         await transporter.verify();
-      } catch (testError) {
+      } catch (testError: any) {
         return res.status(400).json({
           success: false,
           message: 'SMTP configuration validation failed',
@@ -253,7 +261,7 @@ router.put('/domains/:domainId/config', async (req: Request, res: Response) => {
       message: 'SMTP configuration updated successfully',
       data: domain.smtpConfig
     });
-  } catch (error) {
+  } catch (error: any) {
     logger.error('Error updating SMTP config:', error);
     res.status(500).json({
       success: false,
@@ -321,7 +329,7 @@ router.put('/domains/:domainId/config', async (req: Request, res: Response) => {
  *                       type: string
  *                       description: DNS TXT record to add
  */
-router.post('/domains/:domainId/dkim', async (req: Request, res: Response) => {
+router.post('/domains/:domainId/dkim', async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { domainId } = req.params;
     const { selector = 'azora', keySize = 2048 } = req.body;
@@ -377,7 +385,7 @@ router.post('/domains/:domainId/dkim', async (req: Request, res: Response) => {
         dnsRecord
       }
     });
-  } catch (error) {
+  } catch (error: any) {
     logger.error('Error generating DKIM keys:', error);
     res.status(500).json({
       success: false,
@@ -424,7 +432,7 @@ router.post('/domains/:domainId/dkim', async (req: Request, res: Response) => {
  *       200:
  *         description: SPF record generated successfully
  */
-router.post('/domains/:domainId/spf', async (req: Request, res: Response) => {
+router.post('/domains/:domainId/spf', async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { domainId } = req.params;
     const { include = [], policy = '-all' } = req.body;
@@ -441,7 +449,7 @@ router.post('/domains/:domainId/spf', async (req: Request, res: Response) => {
 
     // Generate SPF record
     const spfParts = ['v=spf1'];
-    include.forEach(domain => spfParts.push(`include:${domain}`));
+    include.forEach((domain: string) => spfParts.push(`include:${domain}`));
     spfParts.push(policy);
 
     const spfRecord = spfParts.join(' ');
@@ -451,7 +459,7 @@ router.post('/domains/:domainId/spf', async (req: Request, res: Response) => {
     await domain.save();
 
     // Add SPF TXT record to DNS records
-    const spfDNSRecord = {
+    const spfDNSRecord: IDNSRecord = {
       type: 'TXT',
       name: domain.name,
       value: spfRecord,
@@ -476,7 +484,7 @@ router.post('/domains/:domainId/spf', async (req: Request, res: Response) => {
         dnsRecord: spfDNSRecord
       }
     });
-  } catch (error) {
+  } catch (error: any) {
     logger.error('Error generating SPF record:', error);
     res.status(500).json({
       success: false,
@@ -533,7 +541,7 @@ router.post('/domains/:domainId/spf', async (req: Request, res: Response) => {
  *       200:
  *         description: DMARC record generated successfully
  */
-router.post('/domains/:domainId/dmarc', async (req: Request, res: Response) => {
+router.post('/domains/:domainId/dmarc', async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { domainId } = req.params;
     const {
@@ -576,7 +584,7 @@ router.post('/domains/:domainId/dmarc', async (req: Request, res: Response) => {
     await domain.save();
 
     // Add DMARC TXT record to DNS records
-    const dmarcDNSRecord = {
+    const dmarcDNSRecord: IDNSRecord = {
       type: 'TXT',
       name: `_dmarc.${domain.name}`,
       value: dmarcRecord,
@@ -601,7 +609,7 @@ router.post('/domains/:domainId/dmarc', async (req: Request, res: Response) => {
         dnsRecord: dmarcDNSRecord
       }
     });
-  } catch (error) {
+  } catch (error: any) {
     logger.error('Error generating DMARC record:', error);
     res.status(500).json({
       success: false,

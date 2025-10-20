@@ -80,7 +80,7 @@ router.get('/', async (req: Request, res: Response) => {
     res.status(503).json({
       status: 'unhealthy',
       timestamp: new Date().toISOString(),
-      error: error.message
+      error: (error as Error).message
     });
   }
 });
@@ -114,7 +114,7 @@ router.get('/ready', async (req: Request, res: Response) => {
   } catch (error) {
     res.status(503).json({
       status: 'not ready',
-      message: error.message
+      message: (error as Error).message
     });
   }
 });
@@ -159,7 +159,7 @@ router.get('/metrics', async (req: Request, res: Response) => {
     logger.error('Metrics retrieval failed:', error);
     res.status(500).json({
       error: 'Failed to retrieve metrics',
-      message: error.message
+      message: (error as Error).message
     });
   }
 });
