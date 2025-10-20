@@ -3,7 +3,53 @@ import { apiGatewayService } from './apiGatewayService';
 
 const router = express.Router();
 
-// Register a new service route
+/**
+ * @swagger
+ * /api/routes:
+ *   post:
+ *     summary: Register a new service route
+ *     description: Registers a new route for service routing through the API Gateway
+ *     tags: [Routes]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - serviceName
+ *               - route
+ *               - targetUrl
+ *             properties:
+ *               serviceName:
+ *                 type: string
+ *                 description: Name of the service
+ *               route:
+ *                 type: string
+ *                 description: Route path (e.g., "/api/users")
+ *               targetUrl:
+ *                 type: string
+ *                 description: Target service URL (e.g., "http://user-service:3001")
+ *               method:
+ *                 type: string
+ *                 enum: [GET, POST, PUT, DELETE, PATCH]
+ *                 description: HTTP method (defaults to GET)
+ *     responses:
+ *       201:
+ *         description: Route registered successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 routeId:
+ *                   type: string
+ *                   description: Unique identifier for the registered route
+ *       400:
+ *         description: Missing required fields
+ *       500:
+ *         description: Internal server error
+ */
 router.post('/routes', async (req, res) => {
   try {
     const { serviceName, route, targetUrl, method } = req.body;
@@ -21,7 +67,41 @@ router.post('/routes', async (req, res) => {
   }
 });
 
-// Get all registered routes
+/**
+ * @swagger
+ * /api/routes:
+ *   get:
+ *     summary: Get all registered routes
+ *     description: Retrieves a list of all active service routes
+ *     tags: [Routes]
+ *     responses:
+ *       200:
+ *         description: List of routes retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 routes:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                       serviceName:
+ *                         type: string
+ *                       route:
+ *                         type: string
+ *                       targetUrl:
+ *                         type: string
+ *                       method:
+ *                         type: string
+ *                       isActive:
+ *                         type: boolean
+ *       500:
+ *         description: Internal server error
+ */
 router.get('/routes', async (req, res) => {
   try {
     const routes = await apiGatewayService.getRoutes();
@@ -32,7 +112,39 @@ router.get('/routes', async (req, res) => {
   }
 });
 
-// Get circuit breaker status
+/**
+ * @swagger
+ * /api/circuit-breakers:
+ *   get:
+ *     summary: Get circuit breaker status
+ *     description: Retrieves the current status of all circuit breakers
+ *     tags: [Circuit Breakers]
+ *     responses:
+ *       200:
+ *         description: Circuit breaker status retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 circuitBreakers:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       serviceName:
+ *                         type: string
+ *                       state:
+ *                         type: string
+ *                         enum: [closed, open, half-open]
+ *                       failureCount:
+ *                         type: integer
+ *                       lastFailure:
+ *                         type: string
+ *                         format: date-time
+ *       500:
+ *         description: Internal server error
+ */
 router.get('/circuit-breakers', async (req, res) => {
   try {
     const status = await apiGatewayService.getCircuitBreakerStatus();
@@ -43,7 +155,63 @@ router.get('/circuit-breakers', async (req, res) => {
   }
 });
 
-// Get audit logs
+/**
+ * @swagger
+ * /api/audit:
+ *   get:
+ *     summary: Get audit logs
+ *     description: Retrieves audit logs with optional filtering
+ *     tags: [Audit]
+ *     parameters:
+ *       - in: query
+ *         name: entityId
+ *         schema:
+ *           type: string
+ *         description: Filter by entity ID
+ *       - in: query
+ *         name: entityType
+ *         schema:
+ *           type: string
+ *         description: Filter by entity type
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 1000
+ *           default: 100
+ *         description: Maximum number of logs to return
+ *     responses:
+ *       200:
+ *         description: Audit logs retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 auditLogs:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                       action:
+ *                         type: string
+ *                       entityId:
+ *                         type: string
+ *                       entityType:
+ *                         type: string
+ *                       userId:
+ *                         type: string
+ *                       details:
+ *                         type: object
+ *                       timestamp:
+ *                         type: string
+ *                         format: date-time
+ *       500:
+ *         description: Internal server error
+ */
 router.get('/audit', async (req, res) => {
   try {
     const { entityId, entityType, limit } = req.query;
@@ -54,7 +222,7 @@ router.get('/audit', async (req, res) => {
       limit ? parseInt(limit as string) : 50
     );
 
-    res.json({ logs });
+    res.json({ auditLogs: logs });
   } catch (error) {
     console.error('Error getting audit logs:', error);
     res.status(500).json({ error: 'Failed to get audit logs' });

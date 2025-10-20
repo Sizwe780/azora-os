@@ -2,6 +2,8 @@ import { PrismaClient } from '@prisma/client';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import CircuitBreaker from 'opossum';
 import axios from 'axios';
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
 
 const prisma = new PrismaClient();
 
@@ -21,6 +23,101 @@ interface CircuitBreakerState {
 export class ApiGatewayService {
   private routes: Map<string, ServiceRoute> = new Map();
   private circuitBreakers: CircuitBreakerState = {};
+
+  constructor() {}
+
+  setupSwagger(app: any) {
+    const swaggerDefinition = {
+      openapi: '3.0.0',
+      info: {
+        title: 'Azora OS API Gateway',
+        version: '2.0.0',
+        description: 'Enterprise API Gateway with circuit breakers, audit logging, and service routing',
+        contact: {
+          name: 'Azora OS',
+          url: 'https://azora.world'
+        },
+        license: {
+          name: 'SEE LICENSE IN LICENSE',
+        }
+      },
+      servers: [
+        {
+          url: `http://localhost:${process.env.PORT || 3000}`,
+          description: 'Development server',
+        },
+      ],
+      components: {
+        securitySchemes: {
+          bearerAuth: {
+            type: 'http',
+            scheme: 'bearer',
+            bearerFormat: 'JWT',
+          }
+        },
+        schemas: {
+          Error: {
+            type: 'object',
+            properties: {
+              error: {
+                type: 'string',
+                description: 'Error message'
+              }
+            }
+          },
+          Health: {
+            type: 'object',
+            properties: {
+              status: {
+                type: 'string',
+                enum: ['healthy', 'unhealthy'],
+                description: 'Service health status'
+              },
+              service: {
+                type: 'string',
+                description: 'Service name'
+              },
+              version: {
+                type: 'string',
+                description: 'Service version'
+              },
+              database: {
+                type: 'string',
+                enum: ['connected', 'disconnected'],
+                description: 'Database connection status'
+              },
+              timestamp: {
+                type: 'string',
+                format: 'date-time',
+                description: 'Health check timestamp'
+              }
+            }
+          }
+        }
+      },
+      security: [
+        {
+          bearerAuth: []
+        }
+      ]
+    };
+
+    const options = {
+      swaggerDefinition,
+      apis: ['./src/apiGatewayRoutes.ts'], // Path to the API routes
+    };
+
+    const swaggerSpec = swaggerJsdoc(options);
+
+    // Serve Swagger UI
+    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+    // Serve Swagger JSON
+    app.get('/swagger.json', (req: any, res: any) => {
+      res.setHeader('Content-Type', 'application/json');
+      res.send(swaggerSpec);
+    });
+  }
 
   async initialize() {
     console.log('Initializing API Gateway Service...');

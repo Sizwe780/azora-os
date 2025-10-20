@@ -55,6 +55,9 @@ app.get('/health', (req, res) => {
 // API routes
 app.use('/api', apiGatewayRoutes);
 
+// Swagger documentation
+apiGatewayService.setupSwagger(app);
+
 // Error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error('API Gateway Error:', err);

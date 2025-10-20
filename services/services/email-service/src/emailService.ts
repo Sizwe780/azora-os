@@ -6,6 +6,8 @@ import winston from 'winston';
 import nodemailer from 'nodemailer';
 import { PrismaClient } from '@prisma/client';
 import CircuitBreaker from 'opossum';
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
 
 export class EmailService {
   private app: express.Application;
@@ -23,6 +25,7 @@ export class EmailService {
 
     this.setupMiddleware();
     this.setupRoutes();
+    this.setupSwagger(this.app);
   }
 
   private setupLogger(): winston.Logger {
@@ -68,6 +71,39 @@ export class EmailService {
 
   private setupRoutes(): void {
     // Health check
+    /**
+     * @swagger
+     * /health:
+     *   get:
+     *     summary: Health check endpoint
+     *     description: Returns the health status of the email service and database connection
+     *     tags: [Health]
+     *     responses:
+     *       200:
+     *         description: Service is healthy
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 status:
+     *                   type: string
+     *                   example: healthy
+     *                 service:
+     *                   type: string
+     *                   example: email-service
+     *                 version:
+     *                   type: string
+     *                   example: 2.0.0
+     *                 database:
+     *                   type: string
+     *                   example: connected
+     *                 timestamp:
+     *                   type: string
+     *                   format: date-time
+     *       503:
+     *         description: Service is unhealthy
+     */
     this.app.get('/health', async (req, res) => {
       try {
         await this.prisma.$queryRaw`SELECT 1`;
@@ -89,6 +125,75 @@ export class EmailService {
     });
 
     // Send email endpoint
+    /**
+     * @swagger
+     * /api/email/send:
+     *   post:
+     *     summary: Send an email
+     *     description: Queues an email for sending. Supports both plain text and HTML content, with optional template processing.
+     *     tags: [Email]
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             required:
+     *               - to
+     *               - subject
+     *             properties:
+     *               to:
+     *                 type: string
+     *                 format: email
+     *                 description: Recipient email address
+     *               subject:
+     *                 type: string
+     *                 description: Email subject line
+     *               text:
+     *                 type: string
+     *                 description: Plain text content (ignored if html is provided)
+     *               html:
+     *                 type: string
+     *                 description: HTML content for the email
+     *               templateId:
+     *                 type: string
+     *                 description: ID of email template to use (optional)
+     *               variables:
+     *                 type: object
+     *                 description: Template variables for substitution (required if templateId is provided)
+     *               priority:
+     *                 type: integer
+     *                 minimum: 1
+     *                 maximum: 10
+     *                 default: 1
+     *                 description: Email priority (higher numbers processed first)
+     *               userId:
+     *                 type: string
+     *                 description: User ID for audit logging
+     *     responses:
+     *       200:
+     *         description: Email queued successfully
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 success:
+     *                   type: boolean
+     *                   example: true
+     *                 emailId:
+     *                   type: string
+     *                   description: Unique identifier for the queued email
+     *                 message:
+     *                   type: string
+     *                   example: Email queued for sending
+     *       400:
+     *         description: Missing required fields or invalid template
+     *       404:
+     *         description: Template not found
+     *       500:
+     *         description: Internal server error
+     */
     this.app.post('/api/email/send', async (req, res) => {
       try {
         const { to, subject, text, html, templateId, variables } = req.body;
@@ -142,6 +247,39 @@ export class EmailService {
     });
 
     // Get email templates
+    /**
+     * @swagger
+     * /api/email/templates:
+     *   get:
+     *     summary: Get all email templates
+     *     description: Retrieves a list of all available email templates with basic information
+     *     tags: [Templates]
+     *     responses:
+     *       200:
+     *         description: List of email templates retrieved successfully
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: array
+     *               items:
+     *                 type: object
+     *                 properties:
+     *                   id:
+     *                     type: string
+     *                     description: Template unique identifier
+     *                   name:
+     *                     type: string
+     *                     description: Template name
+     *                   subject:
+     *                     type: string
+     *                     description: Template subject line
+     *                   createdAt:
+     *                     type: string
+     *                     format: date-time
+     *                     description: Template creation timestamp
+     *       500:
+     *         description: Internal server error
+     */
     this.app.get('/api/email/templates', async (req, res) => {
       try {
         const templates = await this.prisma.emailTemplate.findMany({
@@ -155,6 +293,53 @@ export class EmailService {
     });
 
     // Create email template
+    /**
+     * @swagger
+     * /api/email/templates:
+     *   post:
+     *     summary: Create a new email template
+     *     description: Creates a new email template with subject, HTML content, and optional text content
+     *     tags: [Templates]
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             required:
+     *               - name
+     *               - subject
+     *               - htmlContent
+     *             properties:
+     *               name:
+     *                 type: string
+     *                 description: Template name
+     *               subject:
+     *                 type: string
+     *                 description: Email subject template with optional variables (e.g., "Welcome {{userName}}")
+     *               htmlContent:
+     *                 type: string
+     *                 description: HTML content template with variables for substitution
+     *               textContent:
+     *                 type: string
+     *                 description: Plain text content template (optional)
+     *               variables:
+     *                 type: object
+     *                 description: Schema definition for template variables
+     *                 example: {"userName": "string", "companyName": "string"}
+     *               userId:
+     *                 type: string
+     *                 description: User ID for audit logging
+     *     responses:
+     *       200:
+     *         description: Template created successfully
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/EmailTemplate'
+     *       500:
+     *         description: Internal server error
+     */
     this.app.post('/api/email/templates', async (req, res) => {
       try {
         const { name, subject, htmlContent, textContent, variables } = req.body;
@@ -181,6 +366,41 @@ export class EmailService {
     });
 
     // Process email queue (internal endpoint)
+    /**
+     * @swagger
+     * /api/email/process-queue:
+     *   post:
+     *     summary: Process email queue
+     *     description: Processes pending emails in the queue, sending them via SMTP with circuit breaker protection
+     *     tags: [Queue]
+     *     responses:
+     *       200:
+     *         description: Queue processing completed
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 processed:
+     *                   type: integer
+     *                   description: Number of emails processed
+     *                 results:
+     *                   type: array
+     *                   items:
+     *                     type: object
+     *                     properties:
+     *                       id:
+     *                         type: string
+     *                         description: Email queue item ID
+     *                       status:
+     *                         type: string
+     *                         enum: [sent, failed]
+     *                       error:
+     *                         type: string
+     *                         description: Error message (only present for failed emails)
+     *       500:
+     *         description: Internal server error
+     */
     this.app.post('/api/email/process-queue', async (req, res) => {
       try {
         const pendingEmails = await this.prisma.emailQueue.findMany({
@@ -265,6 +485,146 @@ export class EmailService {
         res.status(500).json({ error: 'Failed to process queue' });
       }
     });
+  }
+
+  private setupSwagger(app: express.Application): void {
+    const swaggerDefinition = {
+      openapi: '3.0.0',
+      info: {
+        title: 'Azora OS Email Service',
+        version: '2.0.0',
+        description: 'Enterprise email service with templates, queuing, SMTP integration, and audit logging',
+        contact: {
+          name: 'Azora OS',
+          url: 'https://azora.world'
+        },
+        license: {
+          name: 'SEE LICENSE IN LICENSE',
+        }
+      },
+      servers: [
+        {
+          url: `http://localhost:${process.env.PORT || 3000}`,
+          description: 'Development server',
+        },
+      ],
+      components: {
+        schemas: {
+          EmailTemplate: {
+            type: 'object',
+            properties: {
+              id: {
+                type: 'string',
+                description: 'Unique identifier for the template'
+              },
+              name: {
+                type: 'string',
+                description: 'Template name'
+              },
+              subject: {
+                type: 'string',
+                description: 'Email subject template'
+              },
+              htmlContent: {
+                type: 'string',
+                description: 'HTML content template'
+              },
+              textContent: {
+                type: 'string',
+                description: 'Plain text content template'
+              },
+              variables: {
+                type: 'object',
+                description: 'Template variables schema'
+              },
+              createdAt: {
+                type: 'string',
+                format: 'date-time',
+                description: 'Creation timestamp'
+              }
+            }
+          },
+          EmailQueue: {
+            type: 'object',
+            properties: {
+              id: {
+                type: 'string',
+                description: 'Unique identifier for the queued email'
+              },
+              to: {
+                type: 'string',
+                format: 'email',
+                description: 'Recipient email address'
+              },
+              subject: {
+                type: 'string',
+                description: 'Email subject'
+              },
+              content: {
+                type: 'string',
+                description: 'Email content'
+              },
+              priority: {
+                type: 'integer',
+                minimum: 1,
+                maximum: 10,
+                description: 'Email priority (1-10, higher is more important)'
+              },
+              status: {
+                type: 'string',
+                enum: ['pending', 'processing', 'sent', 'failed'],
+                description: 'Email sending status'
+              }
+            }
+          },
+          EmailLog: {
+            type: 'object',
+            properties: {
+              id: {
+                type: 'string',
+                description: 'Unique identifier for the email log'
+              },
+              to: {
+                type: 'string',
+                format: 'email',
+                description: 'Recipient email address'
+              },
+              from: {
+                type: 'string',
+                format: 'email',
+                description: 'Sender email address'
+              },
+              subject: {
+                type: 'string',
+                description: 'Email subject'
+              },
+              status: {
+                type: 'string',
+                enum: ['sent', 'failed', 'bounced'],
+                description: 'Email delivery status'
+              },
+              sentAt: {
+                type: 'string',
+                format: 'date-time',
+                description: 'Timestamp when email was sent'
+              },
+              error: {
+                type: 'string',
+                description: 'Error message if delivery failed'
+              }
+            }
+          }
+        }
+      }
+    };
+
+    const options = {
+      swaggerDefinition,
+      apis: ['./src/emailService.ts'] // Path to the API docs
+    };
+
+    const specs = swaggerJsdoc(options);
+    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
   }
 
   public async getTemplate(id: string) {

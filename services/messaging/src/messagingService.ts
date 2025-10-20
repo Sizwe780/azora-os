@@ -5,6 +5,8 @@ import compression from 'compression';
 import winston from 'winston';
 import { PrismaClient } from '@prisma/client';
 import CircuitBreaker from 'opossum';
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
 
 export class MessagingService {
   private app: express.Application;
@@ -20,6 +22,7 @@ export class MessagingService {
 
     this.setupMiddleware();
     this.setupRoutes();
+    this.setupSwagger(this.app);
   }
 
   private setupLogger(): winston.Logger {
@@ -53,6 +56,39 @@ export class MessagingService {
 
   private setupRoutes(): void {
     // Health check
+    /**
+     * @swagger
+     * /health:
+     *   get:
+     *     summary: Health check endpoint
+     *     description: Returns the health status of the messaging service and database connection
+     *     tags: [Health]
+     *     responses:
+     *       200:
+     *         description: Service is healthy
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 status:
+     *                   type: string
+     *                   example: healthy
+     *                 service:
+     *                   type: string
+     *                   example: messaging-service
+     *                 version:
+     *                   type: string
+     *                   example: 2.0.0
+     *                 database:
+     *                   type: string
+     *                   example: connected
+     *                 timestamp:
+     *                   type: string
+     *                   format: date-time
+     *       503:
+     *         description: Service is unhealthy
+     */
     this.app.get('/health', async (req, res) => {
       try {
         await this.prisma.$queryRaw`SELECT 1`;
@@ -74,6 +110,65 @@ export class MessagingService {
     });
 
     // Send message
+    /**
+     * @swagger
+     * /api/messages:
+     *   post:
+     *     summary: Send a message
+     *     description: Sends a message to a user or conversation. Creates a new conversation if conversationId is not provided.
+     *     tags: [Messages]
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             required:
+     *               - from
+     *               - text
+     *             properties:
+     *               from:
+     *                 type: string
+     *                 description: ID of the sender
+     *               to:
+     *                 type: string
+     *                 description: ID of the recipient (required if conversationId not provided)
+     *               text:
+     *                 type: string
+     *                 description: Message content
+     *               conversationId:
+     *                 type: string
+     *                 description: ID of existing conversation (optional)
+     *               messageType:
+     *                 type: string
+     *                 enum: [text, image, file]
+     *                 default: text
+     *                 description: Type of message content
+     *               metadata:
+     *                 type: object
+     *                 description: Additional metadata (file URLs, image info, etc.)
+     *     responses:
+     *       200:
+     *         description: Message sent successfully
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 success:
+     *                   type: boolean
+     *                   example: true
+     *                 messageId:
+     *                   type: string
+     *                   description: Unique identifier for the sent message
+     *                 conversationId:
+     *                   type: string
+     *                   description: ID of the conversation (new or existing)
+     *       400:
+     *         description: Missing required fields or invalid data
+     *       500:
+     *         description: Internal server error
+     */
     this.app.post('/api/messages', async (req, res) => {
       try {
         const { from, to, text, conversationId, messageType, metadata } = req.body;
@@ -136,6 +231,71 @@ export class MessagingService {
     });
 
     // Get messages for user
+    /**
+     * @swagger
+     * /api/messages/{userId}:
+     *   get:
+     *     summary: Get user conversations and messages
+     *     description: Retrieves all conversations and recent messages for a specific user
+     *     tags: [Messages]
+     *     parameters:
+     *       - in: path
+     *         name: userId
+     *         required: true
+     *         schema:
+     *           type: string
+     *         description: ID of the user
+     *       - in: query
+     *         name: limit
+     *         schema:
+     *           type: integer
+     *           minimum: 1
+     *           maximum: 100
+     *           default: 50
+     *         description: Maximum number of messages per conversation
+     *       - in: query
+     *         name: offset
+     *         schema:
+     *           type: integer
+     *           minimum: 0
+     *           default: 0
+     *         description: Number of messages to skip
+     *     responses:
+     *       200:
+     *         description: Conversations and messages retrieved successfully
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 conversations:
+     *                   type: array
+     *                   items:
+     *                     type: object
+     *                     properties:
+     *                       id:
+     *                         type: string
+     *                       participants:
+     *                         type: array
+     *                         items:
+     *                           type: string
+     *                       title:
+     *                         type: string
+     *                       type:
+     *                         type: string
+     *                       createdAt:
+     *                         type: string
+     *                         format: date-time
+     *                       updatedAt:
+     *                         type: string
+     *                         format: date-time
+     *                       messages:
+     *                         type: array
+     *                         items:
+     *                           $ref: '#/components/schemas/Message'
+     *       500:
+     *         description: Internal server error
+     */
     this.app.get('/api/messages/:userId', async (req, res) => {
       try {
         const { userId } = req.params;
@@ -170,6 +330,50 @@ export class MessagingService {
     });
 
     // Get conversation messages
+    /**
+     * @swagger
+     * /api/conversations/{conversationId}/messages:
+     *   get:
+     *     summary: Get messages in a conversation
+     *     description: Retrieves all messages in a specific conversation
+     *     tags: [Conversations]
+     *     parameters:
+     *       - in: path
+     *         name: conversationId
+     *         required: true
+     *         schema:
+     *           type: string
+     *         description: ID of the conversation
+     *       - in: query
+     *         name: limit
+     *         schema:
+     *           type: integer
+     *           minimum: 1
+     *           maximum: 100
+     *           default: 50
+     *         description: Maximum number of messages to return
+     *       - in: query
+     *         name: offset
+     *         schema:
+     *           type: integer
+     *           minimum: 0
+     *           default: 0
+     *         description: Number of messages to skip
+     *     responses:
+     *       200:
+     *         description: Messages retrieved successfully
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 messages:
+     *                   type: array
+     *                   items:
+     *                     $ref: '#/components/schemas/Message'
+     *       500:
+     *         description: Internal server error
+     */
     this.app.get('/api/conversations/:conversationId/messages', async (req, res) => {
       try {
         const { conversationId } = req.params;
@@ -191,6 +395,50 @@ export class MessagingService {
     });
 
     // Mark message as read
+    /**
+     * @swagger
+     * /api/messages/{messageId}/read:
+     *   post:
+     *     summary: Mark message as read
+     *     description: Marks a message as read by a specific user
+     *     tags: [Messages]
+     *     parameters:
+     *       - in: path
+     *         name: messageId
+     *         required: true
+     *         schema:
+     *           type: string
+     *         description: ID of the message to mark as read
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             required:
+     *               - userId
+     *             properties:
+     *               userId:
+     *                 type: string
+     *                 description: ID of the user marking the message as read
+     *     responses:
+     *       200:
+     *         description: Message marked as read successfully
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 success:
+     *                   type: boolean
+     *                   example: true
+     *       400:
+     *         description: Missing userId
+     *       404:
+     *         description: Message not found
+     *       500:
+     *         description: Internal server error
+     */
     this.app.post('/api/messages/:messageId/read', async (req, res) => {
       try {
         const { messageId } = req.params;
@@ -251,6 +499,51 @@ export class MessagingService {
     });
 
     // Create conversation
+    /**
+     * @swagger
+     * /api/conversations:
+     *   post:
+     *     summary: Create a new conversation
+     *     description: Creates a new conversation (direct or group) with specified participants
+     *     tags: [Conversations]
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             required:
+     *               - participants
+     *             properties:
+     *               participants:
+     *                 type: array
+     *                 items:
+     *                   type: string
+     *                 minItems: 2
+     *                 description: Array of user IDs to include in the conversation
+     *               title:
+     *                 type: string
+     *                 description: Conversation title (for group conversations)
+     *               type:
+     *                 type: string
+     *                 enum: [direct, group]
+     *                 default: group
+     *                 description: Type of conversation
+     *               creatorId:
+     *                 type: string
+     *                 description: ID of the user creating the conversation (for audit logging)
+     *     responses:
+     *       200:
+     *         description: Conversation created successfully
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Conversation'
+     *       400:
+     *         description: Invalid participants or missing required fields
+     *       500:
+     *         description: Internal server error
+     */
     this.app.post('/api/conversations', async (req, res) => {
       try {
         const { participants, title, type = 'group' } = req.body;
@@ -279,6 +572,151 @@ export class MessagingService {
         res.status(500).json({ error: 'Failed to create conversation' });
       }
     });
+  }
+
+  private setupSwagger(app: express.Application): void {
+    const swaggerDefinition = {
+      openapi: '3.0.0',
+      info: {
+        title: 'Azora OS Messaging Service',
+        version: '2.0.0',
+        description: 'Real-time messaging service with conversations, message status tracking, and audit logging',
+        contact: {
+          name: 'Azora OS',
+          url: 'https://azora.world'
+        },
+        license: {
+          name: 'SEE LICENSE IN LICENSE',
+        }
+      },
+      servers: [
+        {
+          url: `http://localhost:${process.env.PORT || 4200}`,
+          description: 'Development server',
+        },
+      ],
+      components: {
+        schemas: {
+          Conversation: {
+            type: 'object',
+            properties: {
+              id: {
+                type: 'string',
+                description: 'Unique identifier for the conversation'
+              },
+              participants: {
+                type: 'array',
+                items: {
+                  type: 'string'
+                },
+                description: 'Array of user IDs participating in the conversation'
+              },
+              title: {
+                type: 'string',
+                description: 'Conversation title (for group chats)'
+              },
+              type: {
+                type: 'string',
+                enum: ['direct', 'group'],
+                description: 'Type of conversation'
+              },
+              createdAt: {
+                type: 'string',
+                format: 'date-time',
+                description: 'Creation timestamp'
+              },
+              updatedAt: {
+                type: 'string',
+                format: 'date-time',
+                description: 'Last update timestamp'
+              }
+            }
+          },
+          Message: {
+            type: 'object',
+            properties: {
+              id: {
+                type: 'string',
+                description: 'Unique identifier for the message'
+              },
+              conversationId: {
+                type: 'string',
+                description: 'ID of the conversation this message belongs to'
+              },
+              senderId: {
+                type: 'string',
+                description: 'ID of the user who sent the message'
+              },
+              content: {
+                type: 'string',
+                description: 'Message content'
+              },
+              messageType: {
+                type: 'string',
+                enum: ['text', 'image', 'file'],
+                description: 'Type of message content'
+              },
+              metadata: {
+                type: 'object',
+                description: 'Additional metadata (file info, image URLs, etc.)'
+              },
+              readBy: {
+                type: 'array',
+                items: {
+                  type: 'string'
+                },
+                description: 'Array of user IDs who have read the message'
+              },
+              createdAt: {
+                type: 'string',
+                format: 'date-time',
+                description: 'Message creation timestamp'
+              },
+              updatedAt: {
+                type: 'string',
+                format: 'date-time',
+                description: 'Message update timestamp'
+              }
+            }
+          },
+          MessageStatus: {
+            type: 'object',
+            properties: {
+              id: {
+                type: 'string',
+                description: 'Unique identifier for the message status'
+              },
+              messageId: {
+                type: 'string',
+                description: 'ID of the message'
+              },
+              userId: {
+                type: 'string',
+                description: 'ID of the user'
+              },
+              status: {
+                type: 'string',
+                enum: ['sent', 'delivered', 'read'],
+                description: 'Read status of the message'
+              },
+              timestamp: {
+                type: 'string',
+                format: 'date-time',
+                description: 'Status update timestamp'
+              }
+            }
+          }
+        }
+      }
+    };
+
+    const options = {
+      swaggerDefinition,
+      apis: ['./src/messagingService.ts'] // Path to the API docs
+    };
+
+    const specs = swaggerJsdoc(options);
+    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
   }
 
   private async logAudit(
