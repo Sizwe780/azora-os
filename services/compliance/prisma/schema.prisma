@@ -1,0 +1,26 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ComplianceCheck {
+  id        String   @id @default(cuid())
+  userId    String
+  action    String
+  compliant Boolean
+  risk      String
+  timestamp DateTime @default(now())
+  metadata  Json?
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  eventType String
+  details   Json
+  createdAt DateTime @default(now())
+  userId    String?
+}

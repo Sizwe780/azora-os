@@ -1,0 +1,25 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ABTest {
+  id        String   @id @default(cuid())
+  userId    String
+  variant   String
+  assignedAt DateTime @default(now())
+  result    String?
+  metadata  Json?
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  eventType String
+  details   Json
+  createdAt DateTime @default(now())
+  userId    String?
+}

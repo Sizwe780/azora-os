@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import { Bot } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 import {
   mockStats,
@@ -16,7 +17,50 @@ import QuickActionButton from '../components/dashboard/QuickActionButton';
 import RecentActivityFeed from '../components/dashboard/RecentActivityFeed';
 import SecurityMonitoringPanel from '../components/SecurityMonitoringPanel';
 
+const servicePorts: Record<string, number> = {
+  'azora-coin': 3001,
+  'compliance': 4120,
+  'salezora': 5400,
+  'marketplace': 4130,
+  'notification': 5300,
+  'quantum-ai': 4001,
+  'fleet-command': 4002,
+  'cold-chain': 4007,
+  'universal-safety': 4008,
+  'hr-deputy': 4003,
+  'doc-vault': 4004,
+};
+
 export default function Dashboard({ userId }: { userId: string }) {
+  const [serviceStatuses, setServiceStatuses] = useState<Record<string, 'operational' | 'degraded' | 'maintenance'>>({});
+
+  useEffect(() => {
+    const checkHealth = async () => {
+      const statuses: Record<string, 'operational' | 'degraded' | 'maintenance'> = {};
+      for (const [id, port] of Object.entries(servicePorts)) {
+        try {
+          const response = await fetch(`http://localhost:${port}/health`);
+          if (response.ok) {
+            statuses[id] = 'operational';
+          } else {
+            statuses[id] = 'degraded';
+          }
+        } catch {
+          statuses[id] = 'maintenance';
+        }
+      }
+      setServiceStatuses(statuses);
+    };
+    checkHealth();
+    const interval = setInterval(checkHealth, 30000); // Check every 30 seconds
+    return () => clearInterval(interval);
+  }, []);
+
+  const servicesWithStatus = mockServiceModules.map(service => ({
+    ...service,
+    status: serviceStatuses[service.id] || service.status,
+  }));
+
   console.log('Dashboard loaded for user:', userId);
   return (
     <>
@@ -48,7 +92,7 @@ export default function Dashboard({ userId }: { userId: string }) {
                 <span>Service Modules</span>
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {mockServiceModules.map((service, idx) => (
+                {servicesWithStatus.map((service, idx) => (
                   <ServiceModuleCard key={service.id} {...service} index={idx} />
                 ))}
               </div>

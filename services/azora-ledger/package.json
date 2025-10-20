@@ -1,6 +1,7 @@
 {
   "name": "azora-ledger",
   "version": "1.0.0",
+  "type": "module",
   "description": "Africa's First Proof of Compliance Cryptographic AI Ledger - Advanced Data Center Ledger Software",
   "main": "dist/index.js",
   "scripts": {

@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model KycCheck {
+  id        String   @id @default(cuid())
+  userId    String
+  approved  Boolean
+  risk      String
+  reason    String?
+  timestamp DateTime @default(now())
+}
+
+model AmlCheck {
+  id        String   @id @default(cuid())
+  userId    String
+  amount    Float
+  flagged   Boolean
+  reason    String?
+  timestamp DateTime @default(now())
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  eventType String
+  details   Json
+  createdAt DateTime @default(now())
+  userId    String?
+}

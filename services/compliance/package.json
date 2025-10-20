@@ -2,13 +2,16 @@
   "name": "compliance-service",
   "version": "3.0.0",
   "description": "Advanced Compliance Service with GDPR, HIPAA, CCPA engines, automated reporting, and privacy-preserving AI",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
+    "dev": "ts-node src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "prisma:migrate": "prisma migrate dev --name init",
+    "prisma:generate": "prisma generate",
     "test": "mocha test.js --timeout 10000",
-    "lint": "eslint index.js test.js",
-    "lint:fix": "eslint index.js test.js --fix"
+    "lint": "eslint src/**/*.ts test.js",
+    "lint:fix": "eslint src/**/*.ts test.js --fix"
   },
   "dependencies": {
     "express": "^4.21.2",
@@ -34,7 +37,8 @@
     "xlsx": "^0.18.5",
     "moment": "^2.30.1",
     "lodash": "^4.17.21",
-    "dotenv": "^17.2.3"
+    "dotenv": "^17.2.3",
+    "@prisma/client": "^5.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.0",
@@ -42,7 +46,10 @@
     "chai": "^4.3.10",
     "sinon": "^18.0.0",
     "supertest": "^6.3.3",
-    "eslint": "^9.0.0"
+    "eslint": "^9.0.0",
+    "prisma": "^5.0.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.0"
   },
   "keywords": ["compliance", "gdpr", "hipaa", "ccpa", "privacy", "ai", "automated-reporting"],
   "author": "Azora OS Team",

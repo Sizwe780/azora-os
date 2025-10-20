@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from qiskit.primitives import Sampler
 from qiskit.transpiler import PassManager
 from qiskit import QuantumCircuit
+from models.quantum_service import QuantumService
 
 app = Flask(__name__)
 sampler = Sampler()
@@ -26,23 +27,11 @@ def build_risk_ising(params):
 def submit_circuit():
     name = request.json.get("name")
     params = request.json.get("params", {})
-    if name not in TEMPLATES:
-        return jsonify({"error": "template_not_allowed"}), 400
-    qc = TEMPLATES[name](params)
-    # enforce resource caps
-    if qc.num_qubits > 32 or qc.depth() > 512:
-        return jsonify({"error": "circuit_limits_exceeded"}), 400
-    tqc = pm.run(qc)
-    res = sampler.run(tqc).result()
-    dist = res.quasi_dists[0]
-    return jsonify({
-        "embedding": dist.binary_probabilities(),
-        "provenance": {
-            "template": name,
-            "num_qubits": qc.num_qubits,
-            "depth": qc.depth()
-        }
-    })
+    try:
+        result = QuantumService.submit_circuit(name, params)
+        return jsonify(result)
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
 
 @app.post("/simulate")
 def simulate():

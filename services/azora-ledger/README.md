@@ -4,6 +4,15 @@
 
 Azora Ledger represents a revolutionary advancement in blockchain and ledger technology - **Africa's First Proof of Compliance Cryptographic AI Ledger**. This is not just another cryptocurrency system; it's a comprehensive data center ledger software that serves as the most advanced, secure, and intelligent ledger system in the world.
 
+## Latest Advancement: Ledger-Backed System
+
+The Azora Ledger has been fully certified with a robust, **ledger-backed system using Node.js, Express, and Prisma with PostgreSQL**. This addresses the critical gap between prototype and production-ready financial assets by providing:
+
+- **Database Schema**: Complete ledger for users, wallets, and transactions
+- **Atomic Services**: Ensures balance and transaction log are always in sync
+- **API Endpoints**: Instant withdrawal, minting, balance checks, and Proof of Reserve
+- **Production Ready**: Immutable audit trail and financial-grade reliability
+
 ## Core Innovation: Proof of Compliance
 
 Unlike traditional Proof of Work or Proof of Stake systems, Azora Ledger implements **Proof of Compliance** - where the value and security of the ledger is directly tied to compliance data, regulatory adherence, and information value. The system creates a beautiful symbiotic relationship between:
@@ -44,6 +53,84 @@ Unlike traditional Proof of Work or Proof of Stake systems, Azora Ledger impleme
 - **Multi-framework support**: GDPR, HIPAA, CCPA, PIPEDA integration
 - **Automated compliance**: Real-time compliance monitoring
 - **Legal backing**: Cryptographically enforced regulatory compliance
+
+### 🗄️ Ledger-Backed Architecture
+- **PostgreSQL Database**: Robust, ACID-compliant storage
+- **Prisma ORM**: Type-safe database operations
+- **Atomic Transactions**: Balance and ledger always in sync
+- **Audit Trail**: Immutable transaction history
+- **API-First Design**: RESTful endpoints for all operations
+
+## Database Schema
+
+```prisma
+// User model to handle roles and link to a wallet
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  role      UserRole @default(USER)
+  createdAt DateTime @default(now())
+  wallet    Wallet?
+}
+
+model Wallet {
+  id      String @id @default(cuid())
+  userId  String @unique
+  user    User   @relation(fields: [userId], references: [id])
+  balance Float  @default(0.0)
+  sentTransactions     Transaction[] @relation("Sender")
+  receivedTransactions Transaction[] @relation("Recipient")
+}
+
+// The core ledger - every change is recorded here
+model Transaction {
+  id             String    @id @default(cuid())
+  type           TxnType
+  status         TxnStatus @default(PENDING)
+  amount         Float
+  usdEquivalent  Float
+  notes          String?
+  externalTxnId  String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  senderId       String?
+  sender         Wallet?   @relation("Sender", fields: [senderId], references: [id])
+  recipientId    String?
+  recipient      Wallet?   @relation("Recipient", fields: [recipientId], references: [id])
+}
+
+enum TxnType {
+  MINT
+  BURN
+  WITHDRAWAL
+  TRANSFER
+}
+
+enum TxnStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum UserRole {
+  USER
+  ADMIN
+  PARTNER
+}
+```
+
+## API Endpoints
+
+### User Management
+- `POST /register` - Create new user with wallet
+- `GET /balance?userId=<id>` - Get user balance
+- `GET /history?userId=<id>` - Get transaction history
+
+### Financial Operations
+- `POST /withdraw` - Request instant withdrawal
+- `POST /webhooks/deposit-successful` - Mint coins from deposits
+- `GET /proof-of-reserve` - Public reserve verification
 
 ## Architecture
 

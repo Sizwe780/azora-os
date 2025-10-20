@@ -2,18 +2,24 @@
   "name": "@azora/payment-service",
   "version": "1.0.0",
   "description": "Handles payments and subscriptions for Azora OS.",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "ts-node src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "prisma:migrate": "prisma migrate dev --name init",
+    "prisma:generate": "prisma generate"
   },
   "dependencies": {
+    "@prisma/client": "^5.0.0",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "paystack-api": "^2.0.6",
-    "stripe": "^14.5.0"
+    "cors": "^2.8.5"
   },
   "devDependencies": {
+    "prisma": "^5.0.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.0",
     "nodemon": "^2.0.22"
   }
 }

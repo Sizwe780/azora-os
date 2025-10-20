@@ -1,0 +1,33 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Checkpoint {
+  id               String   @id @default(cuid())
+  nodeId           String
+  stateRoot        String
+  signature        String
+  snapshotLocator  String?
+  slices           String[]
+  createdAt        DateTime @default(now())
+}
+
+model LedgerEntry {
+  id        String   @id @default(cuid())
+  key       String
+  value     String
+  timestamp DateTime @default(now())
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  eventType String
+  details   Json
+  createdAt DateTime @default(now())
+  userId    String?
+}
