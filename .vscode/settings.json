@@ -1,1 +1,4 @@
-{ "typescript.tsserver.maxTsServerMemory": 4096 }
+{
+    "typescript.tsserver.maxTsServerMemory": 4096,
+    "chat.agent.maxRequests": 250
+}
