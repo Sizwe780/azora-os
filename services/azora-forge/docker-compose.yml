@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  azora-forge:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: azora-forge
+    ports:
+      - "3005:3005"
+    environment:
+      - NODE_ENV=production
+      - PORT=3005
+      - MONGODB_URI=mongodb://mongodb:27017/azora-forge
+      - JWT_SECRET=${JWT_SECRET:-default-jwt-secret-change-in-production}
+    depends_on:
+      - mongodb
+    networks:
+      - azora-network
+    restart: unless-stopped
+    volumes:
+      - ./logs:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3005/api/health/ready"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  mongodb:
+    image: mongo:7-jammy
+    container_name: azora-forge-mongodb
+    ports:
+      - "27018:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=azora-forge
+    volumes:
+      - mongodb_data:/data/db
+      - ./docker/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    networks:
+      - azora-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  mongodb_data:
+
+networks:
+  azora-network:
+    driver: bridge
