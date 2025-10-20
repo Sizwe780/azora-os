@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  azora-nexus:
+    build: .
+    ports:
+      - "3006:3006"
+      - "9091:9091"  # Metrics port
+    environment:
+      - NODE_ENV=production
+      - PORT=3006
+      - METRICS_PORT=9091
+    env_file:
+      - .env
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - azora-network
+    restart: unless-stopped
+    depends_on:
+      - mongodb
+    healthcheck:
+      test: ["CMD", "node", "dist/healthcheck.js"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  mongodb:
+    image: mongo:6.0
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=azora
+      - MONGO_INITDB_ROOT_PASSWORD=azora_password
+      - MONGO_INITDB_DATABASE=azora_nexus
+    volumes:
+      - mongodb_data:/data/db
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    networks:
+      - azora-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Optional: Redis for caching
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - azora-network
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+volumes:
+  mongodb_data:
+  redis_data:
+
+networks:
+  azora-network:
+    driver: bridge
