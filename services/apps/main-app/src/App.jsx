@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import './App.css';
 
-function App() {
+const App = () => {
   const [account, setAccount] = useState('');
   const [balance, setBalance] = useState(0);
   const [azrContract, setAzrContract] = useState(null);
@@ -54,6 +54,6 @@ function App() {
       </header>
     </div>
   );
-}
+};
 
 export default App;

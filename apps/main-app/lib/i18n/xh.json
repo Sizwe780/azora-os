@@ -1,0 +1,41 @@
+
+{
+  "common": {
+    "loading": "Uyalayisha...",
+    "error": "Imposiso",
+    "success": "Impumelelo",
+    "cancel": "Rhoxisa",
+    "confirm": "Qinisekisa",
+    "save": "Gcina",
+    "delete": "Cima",
+    "edit": "Hlela",
+    "add": "Yongeza",
+    "search": "Phendla",
+    "filter": "Hlunga",
+    "sort": "Hlela",
+    "no": "Hayi"
+  },
+  "navigation": {
+    "profile": "Iprofayili"
+  },
+  "dashboard": {
+    "recentActivity": "Umsebenzi wakutshanje"
+  },
+  "tracking": {
+    "realTimeUpdates": "Uhlaziyo lwexesha lokwenyani"
+  },
+  "ai": {
+    "quantumProcessing": "Ukwenziwa kweQuantum"
+  },
+  "safety": {
+    "emergencyResponse": "Impendulo yeNgxakeko"
+  },
+  "errors": {
+    "timeout": "Isicelo siphelelwe lixesha"
+  },
+  "validation": {
+    "confirmPassword": "Iipaswedi azifani"
+  },
+  "welcome": "Wamkelekile",
+  "home": "Ikhaya"
+}

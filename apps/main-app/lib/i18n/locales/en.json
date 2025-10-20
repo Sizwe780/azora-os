@@ -35,7 +35,7 @@
   },
   "dashboard": {
     "title": "Azora OS Dashboard",
-    "welcome": "Welcome to Azora OS",
+    "welcome": "Welcome",
     "subtitle": "Africa's First Autonomous AI Platform",
     "metrics": "Key Metrics",
     "alerts": "Active Alerts",
@@ -79,5 +79,9 @@
     "phone": "Please enter a valid phone number",
     "password": "Password must be at least 8 characters",
     "confirmPassword": "Passwords do not match"
+  },
+  "additional": {
+    "welcome": "Welcome",
+    "home": "Home"
   }
 }

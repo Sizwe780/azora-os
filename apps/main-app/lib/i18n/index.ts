@@ -1,56 +1,47 @@
-import i18n from 'i18next'
-import { initReactI18next } from 'react-i18next'
-import LanguageDetector from 'i18next-browser-languagedetector'
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+import LanguageDetector from 'i18next-browser-languagedetector';
+import Backend from 'i18next-http-backend';
 
-// Import translation files
-import en from './locales/en.json'
-import af from './locales/af.json'
-import zu from './locales/zu.json'
-import xh from './locales/xh.json'
-import st from './locales/st.json'
-import tn from './locales/tn.json'
-import nso from './locales/nso.json'
-import ts from './locales/ts.json'
-import ve from './locales/ve.json'
-import nr from './locales/nr.json'
-import ss from './locales/ss.json'
+// Import all locale JSON files
+import af from './locales/af.json';
+import en from './locales/en.json';
+import nr from './locales/nr.json';
+import nso from './locales/nso.json';
+import ss from './locales/ss.json';
+import st from './locales/st.json';
+import tn from './locales/tn.json';
+import ts from './locales/ts.json';
+import ve from './locales/ve.json';
+import xh from './locales/xh.json';
+import zu from './locales/zu.json';
 
+// List of supported languages and their resources
 const resources = {
-  en: { translation: en },
   af: { translation: af },
-  zu: { translation: zu },
-  xh: { translation: xh },
+  en: { translation: en },
+  nr: { translation: nr },
+  nso: { translation: nso },
+  ss: { translation: ss },
   st: { translation: st },
   tn: { translation: tn },
-  nso: { translation: nso },
   ts: { translation: ts },
   ve: { translation: ve },
-  nr: { translation: nr },
-  ss: { translation: ss },
-}
+  xh: { translation: xh },
+  zu: { translation: zu }
+};
 
 i18n
+  .use(Backend)
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
     resources,
     fallbackLng: 'en',
-    debug: process.env.NODE_ENV === 'development',
-
-    // Language detection options
-    detection: {
-      order: ['localStorage', 'navigator', 'htmlTag'],
-      lookupLocalStorage: 'i18nextLng',
-      caches: ['localStorage'],
-    },
-
+    debug: false,
     interpolation: {
-      escapeValue: false, // React already escapes values
-    },
+      escapeValue: false
+    }
+  });
 
-    // Supported languages
-    supportedLngs: ['en', 'af', 'zu', 'xh', 'st', 'tn', 'nso', 'ts', 've', 'nr', 'ss'],
-    nonExplicitSupportedLngs: true,
-  })
-
-export default i18n
+export default i18n;

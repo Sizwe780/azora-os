@@ -35,7 +35,7 @@
   },
   "dashboard": {
     "title": "Azora OS Dashboard",
-    "welcome": "Welkom by Azora OS",
+    "welcome": "Welkom",
     "subtitle": "Afrika se Eerste Outonome KI Platform",
     "metrics": "Sleutel Metrieke",
     "alerts": "Aktiewe Waarskuwings",
@@ -79,5 +79,7 @@
     "phone": "Voer asseblief 'n geldige telefoon nommer in",
     "password": "Wagwoord moet ten minste 8 karakters wees",
     "confirmPassword": "Wagwoorde stem nie ooreen nie"
-  }
+  },
+  "welcome": "Welkom",
+  "home": "Tuis"
 }
