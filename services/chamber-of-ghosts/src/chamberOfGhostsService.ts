@@ -720,6 +720,7 @@ class PastOptimizer {
         dataType: 'comprehensive',
         rawData: data,
         insights,
+        regrets: {}, // Historical regrets and missed opportunities
         corrections,
         appliedCorrections: true,
         correctionTimestamp: new Date()

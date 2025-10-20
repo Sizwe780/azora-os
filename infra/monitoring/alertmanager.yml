@@ -1,0 +1,36 @@
+global:
+  smtp_smarthost: 'localhost:587'
+  smtp_from: 'alertmanager@azora.world'
+
+route:
+  group_by: ['alertname']
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 1h
+  receiver: 'email-alerts'
+  routes:
+  - match:
+      severity: critical
+    receiver: 'critical-alerts'
+
+receivers:
+- name: 'email-alerts'
+  email_configs:
+  - to: 'alerts@azora.world'
+    send_resolved: true
+
+- name: 'critical-alerts'
+  email_configs:
+  - to: 'critical@azora.world'
+    send_resolved: true
+  slack_configs:
+  - api_url: 'YOUR_SLACK_WEBHOOK_URL'
+    channel: '#alerts'
+    send_resolved: true
+
+inhibit_rules:
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname', 'dev', 'instance']

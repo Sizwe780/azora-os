@@ -64,3 +64,27 @@ scrape_configs:
       - targets: ['backend:3000']
     scrape_interval: 5s
     metrics_path: '/metrics'
+
+  - job_name: 'api-gateway'
+    static_configs:
+      - targets: ['api-gateway:3000']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'email-service'
+    static_configs:
+      - targets: ['email-service:3000']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'messaging-service'
+    static_configs:
+      - targets: ['messaging-service:4200']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'chamber-of-ghosts'
+    static_configs:
+      - targets: ['chamber-of-ghosts:3005']
+    scrape_interval: 10s
+    metrics_path: '/metrics'

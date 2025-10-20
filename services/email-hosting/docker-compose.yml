@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  email-hosting:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: azora-email-hosting
+    ports:
+      - "3006:3006"
+    environment:
+      - NODE_ENV=production
+      - PORT=3006
+      - MONGODB_URI=mongodb://mongodb:27017/azora-email-hosting
+      - LOG_LEVEL=info
+      - JWT_SECRET=${JWT_SECRET:-your-jwt-secret-here}
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - azora-network
+    depends_on:
+      - mongodb
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3006/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  mongodb:
+    image: mongo:7-jammy
+    container_name: azora-email-hosting-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD:-azora-admin-password}
+      - MONGO_INITDB_DATABASE=azora-email-hosting
+    volumes:
+      - mongodb_data:/data/db
+      - ./docker/mongo-init:/docker-entrypoint-initdb.d
+    networks:
+      - azora-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  mongodb_data:
+
+networks:
+  azora-network:
+    driver: bridge
+    name: azora-network

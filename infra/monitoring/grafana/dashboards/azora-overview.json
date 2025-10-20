@@ -28,7 +28,7 @@
         "type": "stat",
         "targets": [
           {
-            "expr": "up{job=~\"ai-ml-engine|ai-orchestrator|auth-service\"}",
+            "expr": "up{job=~\"ai-ml-engine|ai-orchestrator|auth-service|api-gateway|email-service|messaging-service|chamber-of-ghosts\"}",
             "legendFormat": "{{job}}"
           }
         ],
@@ -51,9 +51,77 @@
         ],
         "gridPos": {
           "h": 8,
-          "w": 24,
+          "w": 12,
           "x": 0,
           "y": 8
+        }
+      },
+      {
+        "id": 4,
+        "title": "API Gateway Request Rate",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(http_requests_total{job=\"api-gateway\"}[5m])",
+            "legendFormat": "API Gateway Requests/sec"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 8
+        }
+      },
+      {
+        "id": 5,
+        "title": "Email Service Queue Status",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "http_requests_total{job=\"email-service\", endpoint=\"/api/email/send\"}",
+            "legendFormat": "Emails Queued"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 8,
+          "x": 0,
+          "y": 16
+        }
+      },
+      {
+        "id": 6,
+        "title": "Messaging Service Activity",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(http_requests_total{job=\"messaging-service\", endpoint=\"/api/messages\"}[5m])",
+            "legendFormat": "Messages Sent/sec"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 8,
+          "x": 8,
+          "y": 16
+        }
+      },
+      {
+        "id": 7,
+        "title": "Chamber of Ghosts Simulations",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "http_requests_total{job=\"chamber-of-ghosts\", endpoint=\"/api/trigger/past\"} + http_requests_total{job=\"chamber-of-ghosts\", endpoint=\"/api/trigger/present\"} + http_requests_total{job=\"chamber-of-ghosts\", endpoint=\"/api/trigger/future\"}",
+            "legendFormat": "Simulations Run"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 8,
+          "x": 16,
+          "y": 16
         }
       }
     ],
