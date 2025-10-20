@@ -20,7 +20,7 @@ Azora OS is a modular, API-first platform that integrates AI, blockchain, and en
 - **auth**: Authentication and authorization service
 - **analytics**: Real-time analytics and reporting
 - **marketplace**: Service marketplace with AI matching
-- **notification-service**: Multi-channel notification system
+- **notification-service**: Multi-channel notification system 
 - **billing-service**: Subscription and payment processing
 - **ledger**: Financial ledger with audit trails
 - **ai-evolution-engine**: AI model evolution and optimization
