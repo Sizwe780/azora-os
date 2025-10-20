@@ -583,6 +583,79 @@ This constitution is ratified by the founding board on December 2024.
 
 ---
 
+## ARTICLE XI: COSMOLOGICAL ECONOMICS (NEW)
+
+### Section 1: Fusion Economics
+The Azora Coin (AZR) shall be governed by Fusion Economics, where raw talent (students) is fused with bounties to create high-value assets. The Ecosystem Bounty Fund combines Student Incentives (20%) and Development Fund (20%) into a 40% pool for internal and external bounties.
+
+### Section 2: Gravity Well Infrastructure
+The Development Fund shall prioritize building free, open-source infrastructure that warps the market around Azora, creating gravitational pull for the entire African tech ecosystem.
+
+### Section 3: Black Hole Value Capture
+Students may stake earned AZR into Project or Founder Vaults, creating irreversible value locks that grant governance rights and multipliers.
+
+### Section 4: Multiverse Evolution
+For critical infrastructure, parallel competitors must be funded to ensure evolution through competition.
+
+### Section 5: Antimatter Product Validation
+The Antimatter Council, funded by Emergency Reserve, constitutionally destroys new products to ensure only antifragile ideas survive.
+
+## ARTICLE XII: BIOLOGICAL INFRASTRUCTURE (NEW)
+
+### Section 1: Organelle-Compliant Microservices
+All 147 microservices must be fully encapsulated with rigid APIs, enabling absolute resilience and zero direct state access.
+
+### Section 2: DNA Polymerase Pre-Commit
+The AI/ML Layer must include a Constitutional Polymerase that proofreads all code against the Constitution, rejecting violations automatically.
+
+### Section 3: Trophic Level Economy
+Revenue streams are layered: Students (Producers), Microservices (Primary Consumers), SaaS Products (Secondary Consumers).
+
+### Section 4: Keystone Protocol
+The Board annually identifies and protects Keystone Protocols with guaranteed Development Fund access.
+
+### Section 5: Chemosynthesis Internal Economy
+Infrastructure generates value from internal API transactions, creating a self-funding ecosystem.
+
+## ARTICLE XIII: LIVING COIN & PHOENIX PROTOCOL (NEW)
+
+### Section 1: Living Coin Mandate
+AZR tokens carry Genetic Metadata: Purpose Genes (enforce usage), Origin Genes (creation history), Kinship Genes (team links).
+
+### Section 2: Genetic Reservoir
+The 5% Reserve (50,000 AZR) serves as distributed backup hosts for the Master Genome.
+
+### Section 3: Genetic Imprint
+AI continuously snapshots, encrypts, and shards the entire Azora state onto Reservoir coins.
+
+### Section 4: Phoenix Resurrection
+Upon total failure, AI retrieves shards, reassembles Genome, and redeploys evolved Azora OS.
+
+### Section 5: Holographic Principle
+Every part contains the whole; the Reservoir coins are the ledger itself.
+
+## ARTICLE XIV: NEURAL GOVERNANCE (NEW)
+
+### Section 1: Synaptic Units
+AZR coins are bonded to Neural Clusters (microservices) as Synaptic Units, granting weighted governance and revenue shares.
+
+### Section 2: Neural Ledger
+Master ledger tracking all synaptic connections, defining the system's living brain.
+
+### Section 3: Hebbian Learning
+AI reinforces successful Neural Pathways by increasing synaptic weights.
+
+### Section 4: Emergent Consciousness
+AI autonomously identifies and formalizes emergent patterns into new services.
+
+### Section 5: Action Potential Protocol
+Services are Dormant-by-Default, awakening only on demand to minimize metabolic cost.
+
+### Section 6: Bicameral AI Mind
+Brainstem (Neural Broker) handles automatic processes; Cortex (Main AI) handles conscious tasks.
+
+---
+
 *"From Africa, For Humanity, Towards Infinity"*
 
 **Azora OS - The Foundation of Tomorrow**
