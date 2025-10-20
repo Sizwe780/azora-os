@@ -52,7 +52,7 @@ router.use(emailRateLimiter);
  *                 data:
  *                   $ref: '#/components/schemas/Email'
  */
-router.post('/', async (req: Request, res: Response) => {
+router.post('/', async (req: AuthenticatedRequest, res: Response) => {
   try {
     const {
       from,
@@ -131,7 +131,7 @@ router.post('/', async (req: Request, res: Response) => {
       message: scheduledAt ? 'Email scheduled for sending' : 'Email queued for sending',
       data: email
     });
-  } catch (error) {
+  } catch (error: any) {
     logger.error('Error queuing email:', error);
     res.status(500).json({
       success: false,
@@ -236,7 +236,7 @@ router.get('/', async (req: Request, res: Response) => {
  *       200:
  *         description: Email retrieved successfully
  */
-router.get('/:id', async (req: Request, res: Response) => {
+router.get('/:id', async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { id } = req.params;
     const userId = req.user?.id || 'anonymous'; // TODO: Add authentication middleware
@@ -254,11 +254,154 @@ router.get('/:id', async (req: Request, res: Response) => {
       success: true,
       data: email
     });
-  } catch (error) {
+  } catch (error: any) {
     logger.error('Error fetching email:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to fetch email',
+      error: error.message
+    });
+  }
+});
+
+router.post('/:id/resend', async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user?.id || 'anonymous'; // TODO: Add authentication middleware
+
+    const email = await Email.findOne({ _id: id, userId });
+
+    if (!email) {
+      return res.status(404).json({
+        success: false,
+        message: 'Email not found'
+      });
+    }
+
+    if (email.status !== 'failed' && email.status !== 'bounced') {
+      return res.status(400).json({
+        success: false,
+        message: 'Email is not in a failed state'
+      });
+    }
+
+    if (!(email as any).canRetry()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Maximum retry attempts exceeded'
+      });
+    }
+
+    // Reset email status and queue for sending
+    email.status = 'sending';
+    email.errorMessage = undefined;
+    await email.save();
+
+    // Get domain configuration
+    const domain = await Domain.findOne({ name: email.domain, owner: userId, status: 'active' });
+    if (!domain) {
+      return res.status(400).json({
+        success: false,
+        message: 'Domain configuration not found'
+      });
+    }
+
+    // Send email
+    setImmediate(() => sendEmail(email, domain));
+
+    res.status(202).json({
+      success: true,
+      message: 'Email queued for resending'
+    });
+  } catch (error: any) {
+    logger.error('Error resending email:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to resend email',
+      error: error.message
+    });
+  }
+});
+
+router.delete('/:id', async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user?.id || 'anonymous'; // TODO: Add authentication middleware
+
+    const email = await Email.findOneAndDelete({ _id: id, userId });
+
+    if (!email) {
+      return res.status(404).json({
+        success: false,
+        message: 'Email not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Email deleted successfully'
+    });
+  } catch (error: any) {
+    logger.error('Error deleting email:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to delete email',
+      error: error.message
+    });
+  }
+});
+
+router.get('/stats/summary', async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const { domain, days = 30 } = req.query;
+    const userId = req.user?.id || 'anonymous'; // TODO: Add authentication middleware
+
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - Number(days));
+
+    const matchQuery: any = {
+      userId,
+      createdAt: { $gte: startDate }
+    };
+
+    if (domain) {
+      matchQuery.domain = domain;
+    }
+
+    const stats = await Email.aggregate([
+      { $match: matchQuery },
+      {
+        $group: {
+          _id: '$status',
+          count: { $sum: 1 }
+        }
+      }
+    ]);
+
+    const total = stats.reduce((sum, stat) => sum + stat.count, 0);
+    const statsMap = stats.reduce((map, stat) => {
+      map[stat._id] = stat.count;
+      return map;
+    }, {});
+
+    res.json({
+      success: true,
+      data: {
+        total,
+        sent: statsMap.sent || 0,
+        delivered: statsMap.delivered || 0,
+        bounced: statsMap.bounced || 0,
+        failed: statsMap.failed || 0,
+        queued: statsMap.queued || 0,
+        sending: statsMap.sending || 0,
+        period: `${days} days`
+      }
+    });
+  } catch (error: any) {
+    logger.error('Error fetching email stats:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch email statistics',
       error: error.message
     });
   }
