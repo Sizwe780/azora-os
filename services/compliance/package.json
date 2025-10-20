@@ -1,6 +1,50 @@
 {
   "name": "compliance-service",
-  "version": "1.0.0",
+  "version": "3.0.0",
+  "description": "Advanced Compliance Service with GDPR, HIPAA, CCPA engines, automated reporting, and privacy-preserving AI",
   "main": "index.js",
-  "dependencies": { "express": "^4.18.0" }
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "mocha test.js --timeout 10000",
+    "lint": "eslint index.js test.js",
+    "lint:fix": "eslint index.js test.js --fix"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "cors": "^2.8.5",
+    "helmet": "^8.1.0",
+    "express-rate-limit": "^8.1.0",
+    "body-parser": "^1.20.3",
+    "mongoose": "^8.8.3",
+    "redis": "^4.6.0",
+    "jsonwebtoken": "^9.0.2",
+    "bcryptjs": "^2.4.3",
+    "winston": "^3.18.3",
+    "node-cron": "^3.0.3",
+    "axios": "^1.6.0",
+    "crypto": "^1.0.1",
+    "uuid": "^10.0.0",
+    "multer": "^1.4.4",
+    "sharp": "^0.33.4",
+    "natural": "^6.5.0",
+    "@tensorflow/tfjs": "^4.20.0",
+    "@tensorflow/tfjs-node": "^4.20.0",
+    "pdfkit": "^0.15.0",
+    "xlsx": "^0.18.5",
+    "moment": "^2.30.1",
+    "lodash": "^4.17.21",
+    "dotenv": "^17.2.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0",
+    "mocha": "^10.2.0",
+    "chai": "^4.3.10",
+    "sinon": "^18.0.0",
+    "supertest": "^6.3.3",
+    "eslint": "^9.0.0"
+  },
+  "keywords": ["compliance", "gdpr", "hipaa", "ccpa", "privacy", "ai", "automated-reporting"],
+  "author": "Azora OS Team",
+  "license": "SEE LICENSE IN LICENSE"
 }

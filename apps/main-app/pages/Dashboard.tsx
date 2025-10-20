@@ -14,6 +14,7 @@ import StatCard from '../components/dashboard/StatCard';
 import ServiceModuleCard from '../components/dashboard/ServiceModuleCard';
 import QuickActionButton from '../components/dashboard/QuickActionButton';
 import RecentActivityFeed from '../components/dashboard/RecentActivityFeed';
+import SecurityMonitoringPanel from '../components/SecurityMonitoringPanel';
 
 export default function Dashboard({ userId }: { userId: string }) {
   console.log('Dashboard loaded for user:', userId);
@@ -52,6 +53,9 @@ export default function Dashboard({ userId }: { userId: string }) {
                 ))}
               </div>
             </motion.div>
+
+            {/* Security Monitoring */}
+            <SecurityMonitoringPanel />
 
             {/* Quick Actions */}
             <div>

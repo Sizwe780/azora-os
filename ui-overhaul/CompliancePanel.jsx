@@ -1,27 +1,149 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { 
-  Shield, CheckCircle, AlertTriangle, FileText, 
-  Settings, Calendar, Users, Eye 
+import {
+  Shield, CheckCircle, AlertTriangle, FileText,
+  Settings, Calendar, Users, Eye, Download,
+  Upload, Search, Filter, Plus, RefreshCw,
+  TrendingUp, AlertCircle, CheckSquare, Clock,
+  Database, Lock, UserCheck, FileCheck, Zap
 } from 'lucide-react'
 
 const CompliancePanel = () => {
   const [activeTab, setActiveTab] = useState('overview')
+  const [complianceData, setComplianceData] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [frameworks, setFrameworks] = useState([])
+  const [assessments, setAssessments] = useState([])
+  const [documents, setDocuments] = useState([])
+  const [dataRightsRequests, setDataRightsRequests] = useState([])
+  const [breaches, setBreaches] = useState([])
+
+  const COMPLIANCE_SERVICE_URL = 'http://localhost:3003'
 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: Shield },
-    { id: 'audits', label: 'Audits', icon: CheckCircle },
-    { id: 'violations', label: 'Violations', icon: AlertTriangle },
+    { id: 'frameworks', label: 'Frameworks', icon: Database },
+    { id: 'assessments', label: 'Risk Assessment', icon: TrendingUp },
+    { id: 'data-rights', label: 'Data Rights', icon: UserCheck },
     { id: 'documents', label: 'Documents', icon: FileText },
-    { id: 'training', label: 'Training', icon: Users },
+    { id: 'breaches', label: 'Breaches', icon: AlertTriangle },
+    { id: 'audits', label: 'Audits', icon: CheckCircle },
+    { id: 'reports', label: 'Reports', icon: FileCheck },
     { id: 'settings', label: 'Settings', icon: Settings }
   ]
 
+  // Fetch data from compliance service
+  useEffect(() => {
+    fetchComplianceData()
+  }, [])
+
+  const fetchComplianceData = async () => {
+    try {
+      setLoading(true)
+
+      // Fetch frameworks
+      const frameworksRes = await fetch(`${COMPLIANCE_SERVICE_URL}/api/frameworks`)
+      const frameworksData = await frameworksRes.json()
+      setFrameworks(Object.values(frameworksData.frameworks || {}))
+
+      // Fetch health status for metrics
+      const healthRes = await fetch(`${COMPLIANCE_SERVICE_URL}/health`)
+      const healthData = await healthRes.json()
+
+      setComplianceData({
+        frameworksCount: healthData.frameworks || 0,
+        aiModelsLoaded: healthData.aiModelsLoaded,
+        mongodbConnected: healthData.mongodb,
+        redisConnected: healthData.redis,
+        uptime: healthData.uptime
+      })
+
+      // Mock additional data for demo
+      setAssessments([
+        {
+          id: 'ASS-001',
+          framework: 'GDPR',
+          riskLevel: 'LOW',
+          score: 15,
+          lastAssessed: '2025-01-15',
+          recommendations: ['Review data retention policies', 'Update consent forms']
+        },
+        {
+          id: 'ASS-002',
+          framework: 'HIPAA',
+          riskLevel: 'MEDIUM',
+          score: 45,
+          lastAssessed: '2025-01-10',
+          recommendations: ['Implement additional access controls', 'Conduct security training']
+        }
+      ])
+
+      setDataRightsRequests([
+        {
+          id: 'DRR-001',
+          right: 'ACCESS',
+          subjectId: 'user-001',
+          status: 'PENDING',
+          submittedAt: '2025-01-12',
+          sla: '2025-02-11'
+        },
+        {
+          id: 'DRR-002',
+          right: 'ERASURE',
+          subjectId: 'user-002',
+          status: 'COMPLETED',
+          submittedAt: '2025-01-08',
+          completedAt: '2025-01-15'
+        }
+      ])
+
+      setBreaches([
+        {
+          id: 'BR-001',
+          type: 'Unauthorized Access',
+          affectedUsers: 1500,
+          status: 'CONTAINED',
+          reportedAt: '2025-01-10',
+          notifications: ['GDPR', 'CCPA']
+        }
+      ])
+
+    } catch (error) {
+      console.error('Failed to fetch compliance data:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const complianceMetrics = [
-    { label: 'Compliance Score', value: '98.7%', change: '+1.2%', color: 'var(--success)' },
-    { label: 'Active Audits', value: '3', change: '+1', color: 'var(--warning)' },
-    { label: 'Violations (30d)', value: '2', change: '-5', color: 'var(--success)' },
-    { label: 'Cert. Expiring', value: '7', change: '+2', color: 'var(--warning)' }
+    {
+      label: 'Overall Compliance Score',
+      value: '94.2%',
+      change: '+2.1%',
+      color: 'var(--success)',
+      icon: Shield
+    },
+    {
+      label: 'Active Frameworks',
+      value: frameworks.length.toString(),
+      change: '+1',
+      color: 'var(--accent-primary)',
+      icon: Database
+    },
+    {
+      label: 'Data Rights Requests',
+      value: dataRightsRequests.filter(r => r.status === 'PENDING').length.toString(),
+      change: '-2',
+      color: 'var(--warning)',
+      icon: UserCheck
+    },
+    {
+      label: 'Documents Expiring',
+      value: '3',
+      change: '+1',
+      color: 'var(--error)',
+      icon: Clock
+    }
   ]
 
   const activeAudits = [
@@ -96,8 +218,534 @@ const CompliancePanel = () => {
   ]
 
   const renderTabContent = () => {
+    if (loading) {
+      return (
+        <div className="card" style={{ padding: '40px', textAlign: 'center' }}>
+          <RefreshCw size={24} className="spin" style={{ marginBottom: '16px' }} />
+          <p>Loading compliance data...</p>
+        </div>
+      )
+    }
+
     switch (activeTab) {
       case 'overview':
+        return (
+          <div>
+            {/* Compliance Metrics */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+              gap: '20px',
+              marginBottom: '32px'
+            }}>
+              {complianceMetrics.map((metric, index) => {
+                const Icon = metric.icon
+                return (
+                  <div key={index} className="card" style={{ padding: '20px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+                      <Icon size={20} style={{ color: 'var(--accent-primary)' }} />
+                      <span style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>
+                        {metric.label}
+                      </span>
+                    </div>
+                    <div style={{ fontSize: '28px', fontWeight: '700', marginBottom: '8px' }}>
+                      {metric.value}
+                    </div>
+                    <span style={{ color: metric.color, fontSize: '14px', fontWeight: '500' }}>
+                      {metric.change}
+                    </span>
+                  </div>
+                )
+              })}
+            </div>
+
+            {/* System Status & AI Models */}
+            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px', marginBottom: '32px' }}>
+              <div className="card" style={{ padding: '24px' }}>
+                <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '20px' }}>
+                  System Status
+                </h3>
+                <div style={{ display: 'grid', gap: '16px' }}>
+                  {[
+                    { component: 'AI Privacy Models', status: complianceData?.aiModelsLoaded ? 'operational' : 'initializing', icon: Zap },
+                    { component: 'MongoDB Database', status: complianceData?.mongodbConnected ? 'connected' : 'disconnected', icon: Database },
+                    { component: 'Redis Cache', status: complianceData?.redisConnected ? 'connected' : 'disconnected', icon: Database },
+                    { component: 'Compliance Engine', status: 'operational', icon: Shield }
+                  ].map((item, index) => {
+                    const Icon = item.icon
+                    return (
+                      <div key={index} style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '12px',
+                        background: 'var(--bg-secondary)',
+                        borderRadius: '8px'
+                      }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                          <Icon size={16} style={{ color: 'var(--accent-primary)' }} />
+                          <span style={{ fontWeight: '500' }}>{item.component}</span>
+                        </div>
+                        <div style={{
+                          padding: '4px 8px',
+                          borderRadius: '12px',
+                          fontSize: '12px',
+                          fontWeight: '500',
+                          background: item.status === 'operational' || item.status === 'connected' ? 'var(--success)' : 'var(--warning)',
+                          color: 'white'
+                        }}>
+                          {item.status}
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Recent Activity */}
+              <div className="card" style={{ padding: '24px' }}>
+                <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '20px' }}>
+                  Recent Activity
+                </h3>
+                <div style={{ display: 'grid', gap: '12px' }}>
+                  {[
+                    { action: 'Risk assessment completed', time: '2 hours ago', type: 'success' },
+                    { action: 'Data rights request received', time: '4 hours ago', type: 'info' },
+                    { action: 'Document expiring soon', time: '1 day ago', type: 'warning' },
+                    { action: 'Framework compliance updated', time: '2 days ago', type: 'success' }
+                  ].map((activity, index) => (
+                    <div key={index} style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      padding: '12px',
+                      background: 'var(--bg-secondary)',
+                      borderRadius: '8px'
+                    }}>
+                      <div style={{
+                        width: '8px',
+                        height: '8px',
+                        borderRadius: '50%',
+                        background: activity.type === 'success' ? 'var(--success)' :
+                                   activity.type === 'warning' ? 'var(--warning)' :
+                                   activity.type === 'error' ? 'var(--error)' : 'var(--accent-primary)'
+                      }} />
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: '14px', marginBottom: '2px' }}>{activity.action}</div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{activity.time}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+
+      case 'frameworks':
+        return (
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+              <h3 style={{ fontSize: '18px', fontWeight: '600' }}>Compliance Frameworks</h3>
+              <button className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Plus size={16} />
+                Add Framework
+              </button>
+            </div>
+            <div style={{ display: 'grid', gap: '16px' }}>
+              {frameworks.map((framework, index) => (
+                <div key={index} className="card" style={{ padding: '20px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '16px' }}>
+                    <div>
+                      <h4 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '4px' }}>
+                        {framework.name}
+                      </h4>
+                      <p style={{ color: 'var(--text-secondary)', marginBottom: '8px' }}>
+                        Region: {framework.region}
+                      </p>
+                      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                        {framework.requirements.map((req, reqIndex) => (
+                          <span key={reqIndex} style={{
+                            padding: '4px 8px',
+                            background: 'var(--bg-secondary)',
+                            borderRadius: '12px',
+                            fontSize: '12px',
+                            color: 'var(--text-secondary)'
+                          }}>
+                            {req.replace('_', ' ')}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontSize: '20px', fontWeight: '700', color: 'var(--error)', marginBottom: '4px' }}>
+                        Up to {framework.penalties.max.toLocaleString()} {framework.penalties.currency}
+                      </div>
+                      <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
+                        Max Penalty
+                      </div>
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', gap: '12px' }}>
+                    <button className="btn-secondary">View Details</button>
+                    <button className="btn-secondary">Run Assessment</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )
+
+      case 'assessments':
+        return (
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+              <h3 style={{ fontSize: '18px', fontWeight: '600' }}>Risk Assessments</h3>
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <button className="btn-secondary" onClick={fetchComplianceData}>
+                  <RefreshCw size={16} />
+                </button>
+                <button className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Plus size={16} />
+                  New Assessment
+                </button>
+              </div>
+            </div>
+            <div style={{ display: 'grid', gap: '16px' }}>
+              {assessments.map((assessment) => (
+                <div key={assessment.id} className="card" style={{ padding: '20px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '16px' }}>
+                    <div>
+                      <h4 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '4px' }}>
+                        {assessment.id} - {assessment.framework}
+                      </h4>
+                      <p style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '8px' }}>
+                        Last assessed: {assessment.lastAssessed}
+                      </p>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <span style={{
+                          padding: '4px 8px',
+                          borderRadius: '12px',
+                          fontSize: '12px',
+                          fontWeight: '500',
+                          background: assessment.riskLevel === 'HIGH' ? 'var(--error)' :
+                                     assessment.riskLevel === 'MEDIUM' ? 'var(--warning)' : 'var(--success)',
+                          color: 'white'
+                        }}>
+                          {assessment.riskLevel} RISK
+                        </span>
+                        <span style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>
+                          Score: {assessment.score}/100
+                        </span>
+                      </div>
+                    </div>
+                    <div style={{ width: '120px', height: '120px' }}>
+                      {/* Risk Score Circular Progress */}
+                      <svg width="120" height="120" viewBox="0 0 120 120">
+                        <circle
+                          cx="60" cy="60" r="50"
+                          fill="none"
+                          stroke="var(--bg-tertiary)"
+                          strokeWidth="8"
+                        />
+                        <circle
+                          cx="60" cy="60" r="50"
+                          fill="none"
+                          stroke={assessment.riskLevel === 'HIGH' ? 'var(--error)' :
+                                  assessment.riskLevel === 'MEDIUM' ? 'var(--warning)' : 'var(--success)'}
+                          strokeWidth="8"
+                          strokeDasharray={`${(assessment.score / 100) * 314} 314`}
+                          strokeDashoffset="0"
+                          transform="rotate(-90 60 60)"
+                          strokeLinecap="round"
+                        />
+                        <text x="60" y="65" textAnchor="middle" fontSize="18" fontWeight="700">
+                          {assessment.score}
+                        </text>
+                      </svg>
+                    </div>
+                  </div>
+                  {assessment.recommendations.length > 0 && (
+                    <div style={{ marginBottom: '16px' }}>
+                      <h5 style={{ fontSize: '14px', fontWeight: '600', marginBottom: '8px' }}>
+                        Recommendations:
+                      </h5>
+                      <ul style={{ paddingLeft: '20px', margin: 0 }}>
+                        {assessment.recommendations.map((rec, index) => (
+                          <li key={index} style={{ fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '4px' }}>
+                            {rec}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  <div style={{ display: 'flex', gap: '12px' }}>
+                    <button className="btn-secondary">View Details</button>
+                    <button className="btn-secondary">Re-run Assessment</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )
+
+      case 'data-rights':
+        return (
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+              <h3 style={{ fontSize: '18px', fontWeight: '600' }}>Data Subject Rights Requests</h3>
+              <button className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Plus size={16} />
+                New Request
+              </button>
+            </div>
+            <div style={{ display: 'grid', gap: '16px' }}>
+              {dataRightsRequests.map((request) => (
+                <div key={request.id} className="card" style={{ padding: '20px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                    <div>
+                      <h4 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '4px' }}>
+                        {request.id} - {request.right}
+                      </h4>
+                      <p style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>
+                        Subject: {request.subjectId} • Submitted: {request.submittedAt}
+                      </p>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{
+                        padding: '6px 12px',
+                        borderRadius: '20px',
+                        fontSize: '12px',
+                        fontWeight: '500',
+                        background: request.status === 'COMPLETED' ? 'var(--success)' :
+                                   request.status === 'PENDING' ? 'var(--warning)' : 'var(--accent-primary)',
+                        color: 'white',
+                        marginBottom: '8px'
+                      }}>
+                        {request.status}
+                      </div>
+                      {request.sla && (
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
+                          SLA: {request.sla}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', gap: '12px' }}>
+                    <button className="btn-secondary">View Details</button>
+                    {request.status === 'PENDING' && (
+                      <button className="btn-primary">Process Request</button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )
+
+      case 'breaches':
+        return (
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+              <h3 style={{ fontSize: '18px', fontWeight: '600' }}>Data Breach Reports</h3>
+              <button className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <AlertTriangle size={16} />
+                Report Breach
+              </button>
+            </div>
+            <div style={{ display: 'grid', gap: '16px' }}>
+              {breaches.map((breach) => (
+                <div key={breach.id} className="card" style={{ padding: '20px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '16px' }}>
+                    <div>
+                      <h4 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '4px' }}>
+                        {breach.id} - {breach.type}
+                      </h4>
+                      <p style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '8px' }}>
+                        Reported: {breach.reportedAt} • Affected: {breach.affectedUsers.toLocaleString()} users
+                      </p>
+                      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                        {breach.notifications.map((framework, index) => (
+                          <span key={index} style={{
+                            padding: '4px 8px',
+                            background: 'var(--error)',
+                            color: 'white',
+                            borderRadius: '12px',
+                            fontSize: '12px',
+                            fontWeight: '500'
+                          }}>
+                            {framework} Notice Required
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    <div style={{
+                      padding: '6px 12px',
+                      borderRadius: '20px',
+                      fontSize: '12px',
+                      fontWeight: '500',
+                      background: breach.status === 'CONTAINED' ? 'var(--success)' : 'var(--warning)',
+                      color: 'white'
+                    }}>
+                      {breach.status}
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', gap: '12px' }}>
+                    <button className="btn-secondary">View Details</button>
+                    <button className="btn-secondary">Download Report</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )
+
+      case 'documents':
+        return (
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+              <h3 style={{ fontSize: '18px', fontWeight: '600' }}>Compliance Documents</h3>
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <button className="btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Upload size={16} />
+                  Upload
+                </button>
+                <button className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Download size={16} />
+                  Export All
+                </button>
+              </div>
+            </div>
+            <div style={{ display: 'grid', gap: '16px' }}>
+              {[
+                { name: 'GDPR Compliance Report', status: 'valid', expires: '2025-12-31', type: 'Report', framework: 'GDPR' },
+                { name: 'HIPAA Security Assessment', status: 'valid', expires: '2025-06-30', type: 'Assessment', framework: 'HIPAA' },
+                { name: 'CCPA Privacy Notice', status: 'expiring', expires: '2025-02-15', type: 'Policy', framework: 'CCPA' },
+                { name: 'Data Processing Agreement', status: 'valid', expires: '2025-09-30', type: 'Contract', framework: 'GDPR' },
+                { name: 'Breach Response Plan', status: 'valid', expires: '2025-08-31', type: 'Plan', framework: 'General' }
+              ].map((doc, index) => (
+                <div key={index} className="card" style={{ padding: '20px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                      <div style={{
+                        width: '48px',
+                        height: '48px',
+                        background: doc.status === 'valid' ? 'var(--success)' :
+                                   doc.status === 'expiring' ? 'var(--warning)' : 'var(--error)',
+                        borderRadius: '8px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}>
+                        <FileText size={20} style={{ color: 'white' }} />
+                      </div>
+                      <div>
+                        <h4 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '4px' }}>{doc.name}</h4>
+                        <p style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '8px' }}>
+                          {doc.type} • {doc.framework} • Expires: {doc.expires}
+                        </p>
+                        <div style={{
+                          padding: '4px 8px',
+                          borderRadius: '12px',
+                          fontSize: '12px',
+                          fontWeight: '500',
+                          background: doc.status === 'valid' ? 'var(--success)' :
+                                     doc.status === 'expiring' ? 'var(--warning)' : 'var(--error)',
+                          color: 'white',
+                          display: 'inline-block'
+                        }}>
+                          {doc.status.toUpperCase()}
+                        </div>
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', gap: '12px' }}>
+                      <button className="btn-secondary">
+                        <Eye size={16} />
+                      </button>
+                      <button className="btn-secondary">
+                        <Download size={16} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )
+
+      case 'reports':
+        return (
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+              <h3 style={{ fontSize: '18px', fontWeight: '600' }}>Compliance Reports</h3>
+              <button className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Plus size={16} />
+                Generate Report
+              </button>
+            </div>
+            <div style={{ display: 'grid', gap: '16px' }}>
+              {[
+                { id: 'RPT-001', name: 'Q4 2024 Compliance Report', type: 'Quarterly', frameworks: ['GDPR', 'HIPAA'], generated: '2025-01-15', status: 'completed' },
+                { id: 'RPT-002', name: 'Annual Privacy Assessment', type: 'Annual', frameworks: ['GDPR', 'CCPA'], generated: '2025-01-01', status: 'completed' },
+                { id: 'RPT-003', name: 'Monthly Risk Summary', type: 'Monthly', frameworks: ['All'], generated: '2025-01-20', status: 'processing' }
+              ].map((report) => (
+                <div key={report.id} className="card" style={{ padding: '20px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                      <h4 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '4px' }}>{report.name}</h4>
+                      <p style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '8px' }}>
+                        {report.type} • Generated: {report.generated}
+                      </p>
+                      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                        {report.frameworks.map((framework, index) => (
+                          <span key={index} style={{
+                            padding: '2px 6px',
+                            background: 'var(--bg-secondary)',
+                            borderRadius: '8px',
+                            fontSize: '12px',
+                            color: 'var(--text-secondary)'
+                          }}>
+                            {framework}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      <div style={{
+                        padding: '6px 12px',
+                        borderRadius: '20px',
+                        fontSize: '12px',
+                        fontWeight: '500',
+                        background: report.status === 'completed' ? 'var(--success)' : 'var(--warning)',
+                        color: 'white'
+                      }}>
+                        {report.status}
+                      </div>
+                      <button className="btn-secondary">
+                        <Download size={16} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )
+
+      default:
+        return (
+          <div className="card" style={{ padding: '40px', textAlign: 'center' }}>
+            <Settings size={48} style={{ color: 'var(--text-muted)', marginBottom: '16px' }} />
+            <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>
+              {tabs.find(tab => tab.id === activeTab)?.label}
+            </h3>
+            <p style={{ color: 'var(--text-secondary)' }}>
+              Advanced compliance settings and configuration
+            </p>
+          </div>
+        )
+    }
+  }
         return (
           <div>
             {/* Compliance Metrics */}
