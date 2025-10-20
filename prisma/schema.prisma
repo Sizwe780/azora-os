@@ -14,6 +14,8 @@ model User {
   jurisdiction String?
   verified     Boolean   @default(false)
   createdAt    DateTime  @default(now())
+  companyId    String?
+  company      Company?  @relation(fields: [companyId], references: [id])
   wallet       Wallet?
   staking      Staking[]
   compliance   ComplianceAction[]
@@ -155,6 +157,7 @@ model Job {
 model RevenueRecord {
   id        String   @id @default(cuid())
   companyId String
+  company   Company  @relation(fields: [companyId], references: [id])
   recordDate DateTime
   amount    Float
 }
@@ -162,6 +165,7 @@ model RevenueRecord {
 model Expense {
   id         String   @id @default(cuid())
   companyId  String
+  company    Company  @relation(fields: [companyId], references: [id])
   expenseDate DateTime
   amount     Float
 }
@@ -169,6 +173,7 @@ model Expense {
 model CompanyMetric {
   id         String   @id @default(cuid())
   companyId  String
+  company    Company  @relation(fields: [companyId], references: [id])
   timeframe  String
   data       Json
   createdAt  DateTime @default(now())
