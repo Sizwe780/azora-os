@@ -1,0 +1,137 @@
+// Prisma schema for Chamber of Ghosts - Cognitive Simulation Engine
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Historical simulation data for the Ghost of the Past
+model HistoricalSimulation {
+  id          String   @id @default(cuid())
+  timestamp   DateTime @default(now())
+  periodStart DateTime
+  periodEnd   DateTime
+  dataType    String   // 'ledger', 'security', 'performance', 'user_growth'
+
+  // Raw historical data
+  rawData     Json
+
+  // Analysis results
+  insights    Json     // Key findings and patterns
+  regrets     Json     // What could have been done better
+  corrections Json     // Recommended adjustments to current ICV
+
+  // Impact on current system
+  appliedCorrections Boolean @default(false)
+  correctionTimestamp DateTime?
+
+  @@map("historical_simulations")
+}
+
+// Present state monitoring for the Ghost of the Present
+model PresentVitalSigns {
+  id              String   @id @default(cuid())
+  timestamp       DateTime @default(now())
+  collectionPeriod String  // '24h', '7d', '30d'
+
+  // System vitals
+  metabolicRate   Float    // Transaction volume per minute
+  neuralDensity   Float    // Active service interconnections
+  memoryUsage     Float    // Database/storage utilization
+  responseTime    Float    // Average API response time
+
+  // Health indicators
+  errorRate       Float
+  throughput      Float
+  availability    Float
+
+  // ICV confidence score
+  icvConfidence   Float    // 0-1, how confident we are in current valuation
+
+  @@map("present_vital_signs")
+}
+
+// Future projections for the Ghost of the Far Future
+model FutureSimulation {
+  id            String   @id @default(cuid())
+  timestamp     DateTime @default(now())
+  scenarioType  String   // 'optimistic', 'pessimistic', 'realistic', 'catastrophic'
+  timeHorizon   String   // '30d', '90d', '1y', '5y', '10y'
+
+  // External factors considered
+  externalFactors Json    // Economic trends, tech advancements, regulations
+
+  // Simulation parameters
+  parameters    Json     // Monte Carlo variables and distributions
+
+  // Results
+  outcomes      Json     // Multiple simulation outcomes
+  probabilities Json     // Probability distributions
+  riskFactors   Json     // Identified vulnerabilities
+
+  // Recommended actions
+  recommendations Json    // Proactive measures to take
+
+  @@map("future_simulations")
+}
+
+// Simulation runs and their metadata
+model SimulationRun {
+  id            String   @id @default(cuid())
+  ghostType     String   // 'past', 'present', 'future'
+  startTime     DateTime @default(now())
+  endTime       DateTime?
+  status        String   @default("running") // 'running', 'completed', 'failed'
+  duration      Int?     // Duration in milliseconds
+
+  // Configuration
+  config        Json
+
+  // Results summary
+  summary       Json?
+
+  // Error details if failed
+  error         String?
+
+  @@map("simulation_runs")
+}
+
+// Cognitive insights and decisions made by the AI
+model CognitiveInsight {
+  id          String   @id @default(cuid())
+  timestamp   DateTime @default(now())
+  ghostSource String   // Which ghost generated this insight
+  insightType String   // 'correction', 'warning', 'optimization', 'prediction'
+
+  // The insight content
+  title       String
+  description String
+  confidence  Float    // 0-1 confidence score
+
+  // Supporting data
+  evidence    Json
+
+  // Action taken or recommended
+  action      Json?
+
+  // Impact assessment
+  impact      Json?
+
+  @@map("cognitive_insights")
+}
+
+// Audit log for all Chamber activities
+model ChamberAuditLog {
+  id        String   @id @default(cuid())
+  action    String   // e.g., "simulation_started", "insight_generated", "correction_applied"
+  entityId  String   // ID of the entity being audited
+  entityType String  // e.g., "SimulationRun", "CognitiveInsight", "FutureSimulation"
+  userId    String?  // AI system user (usually null for autonomous actions)
+  details   Json     // Additional details about the action
+  timestamp DateTime @default(now())
+
+  @@map("chamber_audit_logs")
+}

@@ -1,3 +1,6 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -7,21 +10,59 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model ServiceRoute {
+  id          String   @id @default(cuid())
+  serviceName String
+  route       String   // e.g., "/api/users"
+  targetUrl   String   // e.g., "http://user-service:3001"
+  method      String   // GET, POST, PUT, DELETE
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  apiCalls    ApiCall[]
+
+  @@map("service_routes")
+}
+
 model ApiCall {
   id          String   @id @default(cuid())
+  routeId     String?
+  route       ServiceRoute? @relation(fields: [routeId], references: [id])
   method      String
   path        String
   userId      String?
-  ip          String
-  responseTime Int
+  ipAddress   String
+  userAgent   String?
   statusCode  Int
+  responseTime Int      // in milliseconds
+  requestSize Int?
+  responseSize Int?
   timestamp   DateTime @default(now())
+
+  @@map("api_calls")
+}
+
+model CircuitBreaker {
+  id          String   @id @default(cuid())
+  serviceName String   @unique
+  failureCount Int     @default(0)
+  lastFailure DateTime?
+  state       String   @default("closed") // closed, open, half-open
+  timeout     Int      @default(60000)    // timeout in ms
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("circuit_breakers")
 }
 
 model AuditLog {
   id        String   @id @default(cuid())
-  eventType String
-  details   Json
-  createdAt DateTime @default(now())
-  userId    String?
+  action    String   // e.g., "route_added", "circuit_opened", "rate_limit_exceeded"
+  entityId  String   // ID of the entity being audited
+  entityType String  // e.g., "ServiceRoute", "CircuitBreaker", "ApiCall"
+  userId    String?  // User who performed the action (if applicable)
+  details   Json     // Additional details about the action
+  timestamp DateTime @default(now())
+
+  @@map("audit_logs")
 }

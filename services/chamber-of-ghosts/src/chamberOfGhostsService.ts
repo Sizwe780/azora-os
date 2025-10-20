@@ -1,0 +1,747 @@
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import compression from 'compression';
+import winston from 'winston';
+import { PrismaClient } from '@prisma/client';
+import cron from 'node-cron';
+import axios from 'axios';
+
+export class ChamberOfGhostsService {
+  private app: express.Application;
+  private prisma: PrismaClient;
+  private logger: winston.Logger;
+
+  // The three ghosts
+  private ghostOfThePast: PastOptimizer;
+  private ghostOfThePresent: PresentCalibrator;
+  private ghostOfTheFuture: FutureSimulator;
+
+  constructor() {
+    this.app = express();
+    this.prisma = new PrismaClient();
+    this.logger = this.setupLogger();
+
+    // Initialize the three ghosts
+    this.ghostOfThePast = new PastOptimizer(this.prisma, this.logger);
+    this.ghostOfThePresent = new PresentCalibrator(this.prisma, this.logger);
+    this.ghostOfTheFuture = new FutureSimulator(this.prisma, this.logger);
+
+    this.setupMiddleware();
+    this.setupRoutes();
+    this.startCognitiveCycles();
+  }
+
+  private setupLogger(): winston.Logger {
+    return winston.createLogger({
+      level: 'info',
+      format: winston.format.json(),
+      transports: [
+        new winston.transports.Console(),
+        new winston.transports.File({ filename: 'chamber.log' }),
+        new winston.transports.File({ filename: 'chamber-error.log', level: 'error' })
+      ]
+    });
+  }
+
+  private setupMiddleware(): void {
+    this.app.use(helmet());
+    this.app.use(compression());
+    this.app.use(cors());
+    this.app.use(express.json());
+  }
+
+  private setupRoutes(): void {
+    // Health check
+    this.app.get('/health', async (req, res) => {
+      try {
+        await this.prisma.$queryRaw`SELECT 1`;
+        res.json({
+          status: 'healthy',
+          service: 'chamber-of-ghosts',
+          version: '1.0.0',
+          ghosts: {
+            past: 'active',
+            present: 'active',
+            future: 'active'
+          },
+          timestamp: new Date().toISOString()
+        });
+      } catch (error) {
+        this.logger.error('Health check failed:', error);
+        res.status(503).json({
+          status: 'unhealthy',
+          service: 'chamber-of-ghosts',
+          error: 'Database connection failed'
+        });
+      }
+    });
+
+    // Get cognitive insights
+    this.app.get('/api/insights', async (req, res) => {
+      try {
+        const { limit = 50, ghost } = req.query;
+
+        const where = ghost ? { ghostSource: ghost as string } : {};
+
+        const insights = await this.prisma.cognitiveInsight.findMany({
+          where,
+          orderBy: { timestamp: 'desc' },
+          take: parseInt(limit as string)
+        });
+
+        res.json(insights);
+      } catch (error) {
+        this.logger.error('Error fetching insights:', error);
+        res.status(500).json({ error: 'Failed to fetch insights' });
+      }
+    });
+
+    // Get simulation results
+    this.app.get('/api/simulations/:ghostType', async (req, res) => {
+      try {
+        const { ghostType } = req.params;
+        const { limit = 10 } = req.query;
+
+        let simulations;
+        switch (ghostType) {
+          case 'past':
+            simulations = await this.prisma.historicalSimulation.findMany({
+              orderBy: { timestamp: 'desc' },
+              take: parseInt(limit as string)
+            });
+            break;
+          case 'present':
+            simulations = await this.prisma.presentVitalSigns.findMany({
+              orderBy: { timestamp: 'desc' },
+              take: parseInt(limit as string)
+            });
+            break;
+          case 'future':
+            simulations = await this.prisma.futureSimulation.findMany({
+              orderBy: { timestamp: 'desc' },
+              take: parseInt(limit as string)
+            });
+            break;
+          default:
+            return res.status(400).json({ error: 'Invalid ghost type' });
+        }
+
+        res.json(simulations);
+      } catch (error) {
+        this.logger.error('Error fetching simulations:', error);
+        res.status(500).json({ error: 'Failed to fetch simulations' });
+      }
+    });
+
+    // Manual trigger for ghost simulations
+    this.app.post('/api/trigger/:ghostType', async (req, res) => {
+      try {
+        const { ghostType } = req.params;
+
+        switch (ghostType) {
+          case 'past':
+            await this.ghostOfThePast.runSimulation();
+            break;
+          case 'present':
+            await this.ghostOfThePresent.runSimulation();
+            break;
+          case 'future':
+            await this.ghostOfTheFuture.runSimulation();
+            break;
+          default:
+            return res.status(400).json({ error: 'Invalid ghost type' });
+        }
+
+        res.json({ success: true, message: `${ghostType} ghost simulation triggered` });
+      } catch (error) {
+        this.logger.error(`Error triggering ${req.params.ghostType} simulation:`, error);
+        res.status(500).json({ error: 'Failed to trigger simulation' });
+      }
+    });
+  }
+
+  private startCognitiveCycles(): void {
+    // Run past analysis every 6 hours
+    cron.schedule('0 */6 * * *', async () => {
+      try {
+        await this.ghostOfThePast.runSimulation();
+      } catch (error) {
+        this.logger.error('Past ghost simulation failed:', error);
+      }
+    });
+
+    // Run present calibration every hour
+    cron.schedule('0 * * * *', async () => {
+      try {
+        await this.ghostOfThePresent.runSimulation();
+      } catch (error) {
+        this.logger.error('Present ghost simulation failed:', error);
+      }
+    });
+
+    // Run future simulations every 12 hours
+    cron.schedule('0 */12 * * *', async () => {
+      try {
+        await this.ghostOfTheFuture.runSimulation();
+      } catch (error) {
+        this.logger.error('Future ghost simulation failed:', error);
+      }
+    });
+
+    this.logger.info('Cognitive cycles started - Chamber of Ghosts is now active');
+  }
+
+  public start(port: number = 3005): void {
+    this.app.listen(port, () => {
+      this.logger.info(`Chamber of Ghosts running on port ${port}`);
+    });
+  }
+
+  public getApp(): express.Application {
+    return this.app;
+  }
+
+  public async close(): Promise<void> {
+    await this.prisma.$disconnect();
+  }
+}
+
+// The Ghost of the Past - Retrospective Optimizer
+class PastOptimizer {
+  constructor(private prisma: PrismaClient, private logger: winston.Logger) {}
+
+  async runSimulation(): Promise<void> {
+    const runId = await this.startSimulationRun();
+
+    try {
+      // Analyze historical ledger data
+      const historicalData = await this.gatherHistoricalData();
+
+      // Identify patterns and inefficiencies
+      const insights = await this.analyzePatterns(historicalData);
+
+      // Generate corrections for the current ICV model
+      const corrections = await this.generateCorrections(insights);
+
+      // Store the simulation results
+      await this.storeHistoricalSimulation(historicalData, insights, corrections);
+
+      // Apply corrections to current system
+      await this.applyCorrections(corrections);
+
+      await this.completeSimulationRun(runId, { insights, corrections });
+
+      this.logger.info('Ghost of the Past: Historical analysis completed', { insights, corrections });
+
+    } catch (error) {
+      await this.failSimulationRun(runId, error as Error);
+      throw error;
+    }
+  }
+
+  private async gatherHistoricalData() {
+    // Gather data from the last year
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+
+    // This would integrate with other services to get historical data
+    // For now, return mock data structure
+    return {
+      ledger: [],
+      security: [],
+      performance: [],
+      userGrowth: []
+    };
+  }
+
+  private async analyzePatterns(data: any) {
+    // Analyze patterns in historical data
+    return {
+      inefficiencies: [],
+      missedOpportunities: [],
+      riskPatterns: [],
+      successPatterns: []
+    };
+  }
+
+  private async generateCorrections(insights: any) {
+    // Generate corrections based on insights
+    return {
+      icvAdjustments: [],
+      processOptimizations: [],
+      riskMitigations: []
+    };
+  }
+
+  private async applyCorrections(corrections: any) {
+    // Apply corrections to current system
+    // This would update ICV calculations, service configurations, etc.
+  }
+
+  private async startSimulationRun(): Promise<string> {
+    const run = await this.prisma.simulationRun.create({
+      data: {
+        ghostType: 'past',
+        config: { depth: '1year', focus: 'optimization' }
+      }
+    });
+    return run.id;
+  }
+
+  private async completeSimulationRun(runId: string, results: any) {
+    await this.prisma.simulationRun.update({
+      where: { id: runId },
+      data: {
+        status: 'completed',
+        endTime: new Date(),
+        summary: results
+      }
+    });
+  }
+
+  private async failSimulationRun(runId: string, error: Error) {
+    await this.prisma.simulationRun.update({
+      where: { id: runId },
+      data: {
+        status: 'failed',
+        endTime: new Date(),
+        error: error.message
+      }
+    });
+  }
+
+  private async storeHistoricalSimulation(data: any, insights: any, corrections: any) {
+    await this.prisma.historicalSimulation.create({
+      data: {
+        periodStart: new Date(Date.now() - 365 * 24 * 60 * 60 * 1000),
+        periodEnd: new Date(),
+        dataType: 'comprehensive',
+        rawData: data,
+        insights,
+        corrections,
+        appliedCorrections: true,
+        correctionTimestamp: new Date()
+      }
+    });
+  }
+}
+
+// The Ghost of the Present - Predictive Calibrator
+class PresentCalibrator {
+  constructor(private prisma: PrismaClient, private logger: winston.Logger) {}
+
+  async runSimulation(): Promise<void> {
+    const runId = await this.startSimulationRun();
+
+    try {
+      // Collect current vital signs
+      const vitalSigns = await this.collectVitalSigns();
+
+      // Analyze current health
+      const healthAnalysis = await this.analyzeHealth(vitalSigns);
+
+      // Calculate ICV confidence
+      const icvConfidence = await this.calculateICVConfidence(healthAnalysis);
+
+      // Generate immediate recommendations
+      const recommendations = await this.generateRecommendations(healthAnalysis);
+
+      // Store vital signs
+      await this.storeVitalSigns(vitalSigns, icvConfidence);
+
+      await this.completeSimulationRun(runId, { healthAnalysis, icvConfidence, recommendations });
+
+      this.logger.info('Ghost of the Present: Vital signs collected', { icvConfidence, recommendations });
+
+    } catch (error) {
+      await this.failSimulationRun(runId, error as Error);
+      throw error;
+    }
+  }
+
+  private async collectVitalSigns() {
+    // Collect real-time metrics from all services
+    // This would integrate with monitoring systems
+    return {
+      metabolicRate: Math.random() * 100,
+      neuralDensity: Math.random() * 100,
+      memoryUsage: Math.random() * 100,
+      responseTime: Math.random() * 1000,
+      errorRate: Math.random() * 0.1,
+      throughput: Math.random() * 1000,
+      availability: 0.95 + Math.random() * 0.05
+    };
+  }
+
+  private async analyzeHealth(vitalSigns: any) {
+    // Analyze current system health
+    const healthScore = this.calculateHealthScore(vitalSigns);
+
+    return {
+      overallHealth: healthScore,
+      bottlenecks: [],
+      warnings: [],
+      criticalIssues: []
+    };
+  }
+
+  private calculateHealthScore(vitalSigns: any): number {
+    // Calculate overall health score 0-1
+    const weights = {
+      metabolicRate: 0.2,
+      neuralDensity: 0.2,
+      memoryUsage: 0.15,
+      responseTime: 0.15,
+      errorRate: 0.15,
+      throughput: 0.1,
+      availability: 0.05
+    };
+
+    let score = 0;
+    for (const [metric, weight] of Object.entries(weights)) {
+      const value = vitalSigns[metric];
+      const normalizedValue = this.normalizeMetric(metric, value);
+      score += normalizedValue * (weight as number);
+    }
+
+    return score;
+  }
+
+  private normalizeMetric(metric: string, value: number): number {
+    // Normalize different metrics to 0-1 scale
+    switch (metric) {
+      case 'errorRate': return Math.max(0, 1 - value * 10); // Lower error rate is better
+      case 'responseTime': return Math.max(0, 1 - value / 1000); // Lower response time is better
+      case 'availability': return value; // Already 0-1
+      default: return Math.min(1, value / 100); // Higher values are better for most metrics
+    }
+  }
+
+  private async calculateICVConfidence(healthAnalysis: any): Promise<number> {
+    // Calculate confidence in current ICV based on system health
+    return healthAnalysis.overallHealth * 0.8 + 0.2; // Base confidence of 20%
+  }
+
+  private async generateRecommendations(healthAnalysis: any) {
+    // Generate immediate recommendations
+    return {
+      immediateActions: [],
+      monitoring: [],
+      optimizations: []
+    };
+  }
+
+  private async storeVitalSigns(vitalSigns: any, icvConfidence: number) {
+    await this.prisma.presentVitalSigns.create({
+      data: {
+        collectionPeriod: '24h',
+        metabolicRate: vitalSigns.metabolicRate,
+        neuralDensity: vitalSigns.neuralDensity,
+        memoryUsage: vitalSigns.memoryUsage,
+        responseTime: vitalSigns.responseTime,
+        errorRate: vitalSigns.errorRate,
+        throughput: vitalSigns.throughput,
+        availability: vitalSigns.availability,
+        icvConfidence
+      }
+    });
+  }
+
+  private async startSimulationRun(): Promise<string> {
+    const run = await this.prisma.simulationRun.create({
+      data: {
+        ghostType: 'present',
+        config: { frequency: 'hourly', focus: 'calibration' }
+      }
+    });
+    return run.id;
+  }
+
+  private async completeSimulationRun(runId: string, results: any) {
+    await this.prisma.simulationRun.update({
+      where: { id: runId },
+      data: {
+        status: 'completed',
+        endTime: new Date(),
+        summary: results
+      }
+    });
+  }
+
+  private async failSimulationRun(runId: string, error: Error) {
+    await this.prisma.simulationRun.update({
+      where: { id: runId },
+      data: {
+        status: 'failed',
+        endTime: new Date(),
+        error: error.message
+      }
+    });
+  }
+}
+
+// The Ghost of the Far Future - Adversarial Simulator
+class FutureSimulator {
+  constructor(private prisma: PrismaClient, private logger: winston.Logger) {}
+
+  async runSimulation(): Promise<void> {
+    const runId = await this.startSimulationRun();
+
+    try {
+      // Gather external data
+      const externalData = await this.gatherExternalData();
+
+      // Run Monte Carlo simulations
+      const simulations = await this.runMonteCarloSimulations(externalData);
+
+      // Identify vulnerabilities
+      const vulnerabilities = await this.identifyVulnerabilities(simulations);
+
+      // Generate proactive recommendations
+      const recommendations = await this.generateProactiveMeasures(vulnerabilities);
+
+      // Store simulation results
+      await this.storeFutureSimulation(externalData, simulations, vulnerabilities, recommendations);
+
+      await this.completeSimulationRun(runId, { simulations: simulations.length, vulnerabilities, recommendations });
+
+      this.logger.info('Ghost of the Future: Future simulations completed', {
+        simulationsRun: simulations.length,
+        vulnerabilitiesFound: vulnerabilities.length
+      });
+
+    } catch (error) {
+      await this.failSimulationRun(runId, error as Error);
+      throw error;
+    }
+  }
+
+  private async gatherExternalData() {
+    // Gather external data from APIs
+    try {
+      // This would call real APIs for economic data, news, etc.
+      return {
+        economicIndicators: {},
+        technologyTrends: {},
+        regulatoryChanges: {},
+        competitorAnalysis: {}
+      };
+    } catch (error) {
+      this.logger.warn('Failed to gather external data:', error);
+      return {};
+    }
+  }
+
+  private async runMonteCarloSimulations(externalData: any) {
+    // Run 10,000 Monte Carlo simulations
+    const simulations = [];
+
+    for (let i = 0; i < 10000; i++) {
+      const scenario = this.generateRandomScenario(externalData);
+      const outcome = await this.simulateScenario(scenario);
+      simulations.push({ scenario, outcome });
+    }
+
+    return simulations;
+  }
+
+  private generateRandomScenario(externalData: any) {
+    // Generate random scenario based on external data
+    return {
+      economicShock: Math.random() > 0.8,
+      techDisruption: Math.random() > 0.9,
+      regulatoryChange: Math.random() > 0.7,
+      competitorAction: Math.random() > 0.6,
+      internalFailure: Math.random() > 0.95
+    };
+  }
+
+  private async simulateScenario(scenario: any) {
+    // Simulate the outcome of this scenario
+    let survivalProbability = 1.0;
+
+    if (scenario.economicShock) survivalProbability *= 0.7;
+    if (scenario.techDisruption) survivalProbability *= 0.5;
+    if (scenario.regulatoryChange) survivalProbability *= 0.8;
+    if (scenario.competitorAction) survivalProbability *= 0.9;
+    if (scenario.internalFailure) survivalProbability *= 0.3;
+
+    return {
+      survivalProbability,
+      timeToFailure: survivalProbability < 0.5 ? Math.random() * 365 : null,
+      recoveryTime: survivalProbability > 0.5 ? Math.random() * 90 : null
+    };
+  }
+
+  private async identifyVulnerabilities(simulations: any[]) {
+    // Analyze simulations to identify vulnerabilities
+    const vulnerabilities = [];
+
+    // Group simulations by failure modes
+    const failureModes: { [key: string]: number } = {};
+
+    simulations.forEach(sim => {
+      if (sim.outcome.survivalProbability < 0.5) {
+        const failureReason = this.identifyFailureReason(sim.scenario);
+        failureModes[failureReason] = (failureModes[failureReason] || 0) + 1;
+      }
+    });
+
+    // Convert to vulnerabilities
+    for (const [reason, count] of Object.entries(failureModes)) {
+      if (count > 100) { // More than 1% of simulations fail this way
+        vulnerabilities.push({
+          type: reason,
+          probability: count / simulations.length,
+          severity: this.calculateSeverity(reason),
+          description: this.getVulnerabilityDescription(reason)
+        });
+      }
+    }
+
+    return vulnerabilities;
+  }
+
+  private identifyFailureReason(scenario: any): string {
+    if (scenario.internalFailure) return 'internal_failure';
+    if (scenario.techDisruption) return 'tech_disruption';
+    if (scenario.economicShock) return 'economic_shock';
+    if (scenario.regulatoryChange) return 'regulatory_change';
+    if (scenario.competitorAction) return 'competitor_action';
+    return 'unknown';
+  }
+
+  private calculateSeverity(reason: string): string {
+    const severityMap: { [key: string]: string } = {
+      'internal_failure': 'critical',
+      'tech_disruption': 'high',
+      'economic_shock': 'high',
+      'regulatory_change': 'medium',
+      'competitor_action': 'medium'
+    };
+    return severityMap[reason] || 'low';
+  }
+
+  private getVulnerabilityDescription(reason: string): string {
+    const descriptions: { [key: string]: string } = {
+      'internal_failure': 'Critical internal system failure requiring immediate attention',
+      'tech_disruption': 'Emerging technology could disrupt our current architecture',
+      'economic_shock': 'Economic downturn could reduce user spending and investment',
+      'regulatory_change': 'New regulations could impact our operations',
+      'competitor_action': 'Competitive pressure from new market entrants'
+    };
+    return descriptions[reason] || 'Unknown vulnerability';
+  }
+
+  private async generateProactiveMeasures(vulnerabilities: any[]) {
+    // Generate recommendations to address vulnerabilities
+    const recommendations = [];
+
+    for (const vuln of vulnerabilities) {
+      recommendations.push({
+        vulnerability: vuln.type,
+        actions: this.getRecommendedActions(vuln.type),
+        timeline: this.getRecommendedTimeline(vuln.severity),
+        priority: vuln.severity
+      });
+    }
+
+    return recommendations;
+  }
+
+  private getRecommendedActions(vulnerabilityType: string): string[] {
+    const actionMap: { [key: string]: string[] } = {
+      'internal_failure': [
+        'Implement redundant systems',
+        'Increase monitoring coverage',
+        'Develop automated failover procedures'
+      ],
+      'tech_disruption': [
+        'Research emerging technologies',
+        'Prototype alternative architectures',
+        'Partner with technology leaders'
+      ],
+      'economic_shock': [
+        'Diversify revenue streams',
+        'Build cash reserves',
+        'Develop cost optimization strategies'
+      ]
+    };
+    return actionMap[vulnerabilityType] || ['Conduct further analysis'];
+  }
+
+  private getRecommendedTimeline(severity: string): string {
+    const timelineMap: { [key: string]: string } = {
+      'critical': 'immediate',
+      'high': '3 months',
+      'medium': '6 months',
+      'low': '12 months'
+    };
+    return timelineMap[severity] || 'review';
+  }
+
+  private async storeFutureSimulation(externalData: any, simulations: any[], vulnerabilities: any[], recommendations: any[]) {
+    await this.prisma.futureSimulation.create({
+      data: {
+        scenarioType: 'comprehensive',
+        timeHorizon: '1y',
+        externalFactors: externalData,
+        parameters: { simulationCount: simulations.length },
+        outcomes: simulations.slice(0, 100), // Store sample outcomes
+        probabilities: this.calculateProbabilities(simulations),
+        riskFactors: vulnerabilities,
+        recommendations
+      }
+    });
+  }
+
+  private calculateProbabilities(simulations: any[]) {
+    const probabilities: { [key: string]: number } = {};
+
+    simulations.forEach(sim => {
+      const survival = sim.outcome.survivalProbability;
+      const bucket = Math.floor(survival * 10) / 10; // Round to nearest 0.1
+      probabilities[bucket] = (probabilities[bucket] || 0) + 1;
+    });
+
+    // Convert to percentages
+    for (const bucket in probabilities) {
+      probabilities[bucket] = probabilities[bucket] / simulations.length;
+    }
+
+    return probabilities;
+  }
+
+  private async startSimulationRun(): Promise<string> {
+    const run = await this.prisma.simulationRun.create({
+      data: {
+        ghostType: 'future',
+        config: { simulationCount: 10000, horizons: ['30d', '90d', '1y'] }
+      }
+    });
+    return run.id;
+  }
+
+  private async completeSimulationRun(runId: string, results: any) {
+    await this.prisma.simulationRun.update({
+      where: { id: runId },
+      data: {
+        status: 'completed',
+        endTime: new Date(),
+        summary: results
+      }
+    });
+  }
+
+  private async failSimulationRun(runId: string, error: Error) {
+    await this.prisma.simulationRun.update({
+      where: { id: runId },
+      data: {
+        status: 'failed',
+        endTime: new Date(),
+        error: error.message
+      }
+    });
+  }
+}

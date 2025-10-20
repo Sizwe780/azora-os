@@ -1,0 +1,61 @@
+// Prisma schema for messaging-service
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Conversation {
+  id          String   @id @default(cuid())
+  participants String[] // Array of user IDs
+  title       String?
+  type        String   @default("direct") // 'direct', 'group'
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  messages Message[]
+
+  @@map("conversations")
+}
+
+model Message {
+  id             String   @id @default(cuid())
+  conversationId String
+  senderId       String
+  content        String
+  messageType    String   @default("text") // 'text', 'image', 'file'
+  metadata       Json?    // Additional data like file info, image URLs
+  readBy         String[] // Array of user IDs who have read the message
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@map("messages")
+}
+
+model MessageStatus {
+  id        String   @id @default(cuid())
+  messageId String
+  userId    String
+  status    String   // 'sent', 'delivered', 'read'
+  timestamp DateTime @default(now())
+
+  @@unique([messageId, userId])
+  @@map("message_status")
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  action    String   // e.g., "message_sent", "conversation_created", "message_read"
+  entityId  String   // ID of the entity being audited
+  entityType String  // e.g., "Message", "Conversation", "MessageStatus"
+  userId    String?  // User who performed the action
+  details   Json     // Additional details about the action
+  timestamp DateTime @default(now())
+
+  @@map("audit_logs")
+}

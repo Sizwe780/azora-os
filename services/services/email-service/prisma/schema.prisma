@@ -1,0 +1,69 @@
+// Prisma schema for email-service
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model EmailTemplate {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  subject     String
+  htmlContent String
+  textContent String?
+  variables   Json     // Template variables like {{name}}, {{email}}
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  logs EmailLog[]
+
+  @@map("email_templates")
+}
+
+model EmailLog {
+  id          String   @id @default(cuid())
+  to          String
+  from        String
+  subject     String
+  templateId  String?
+  variables   Json?
+  status      String   // 'sent', 'failed', 'pending'
+  error       String?
+  sentAt      DateTime?
+  createdAt   DateTime @default(now())
+
+  template EmailTemplate? @relation(fields: [templateId], references: [id])
+
+  @@map("email_logs")
+}
+
+model EmailQueue {
+  id         String   @id @default(cuid())
+  to         String
+  subject    String
+  content    String
+  priority   Int      @default(1) // 1=low, 2=normal, 3=high
+  status     String   @default("pending") // 'pending', 'processing', 'sent', 'failed'
+  retryCount Int      @default(0)
+  maxRetries Int      @default(3)
+  nextRetry  DateTime?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("email_queue")
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  action    String   // e.g., "email_sent", "template_created", "queue_processed"
+  entityId  String   // ID of the entity being audited
+  entityType String  // e.g., "EmailLog", "EmailTemplate", "EmailQueue"
+  userId    String?  // User who performed the action (if applicable)
+  details   Json     // Additional details about the action
+  timestamp DateTime @default(now())
+
+  @@map("audit_logs")
+}

@@ -1,84 +1,190 @@
-name: CI
+name: CI/CD Pipelinename: CI
 
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
-jobs:
-  test:
-    runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [18.x]
+on:on:
 
-    steps:
-    - uses: actions/checkout@v3
+  push:  push:
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
+    branches: [ main, develop ]    branches: [ main ]
+
+  pull_request:  pull_request:
+
+    branches: [ main, develop ]    branches: [ main ]
+
+
+
+jobs:jobs:
+
+  test:  test:
+
+    runs-on: ubuntu-latest    runs-on: ubuntu-latest
+
+
+
+    services:    strategy:
+
+      postgres:      matrix:
+
+        image: postgres:15        node-version: [18.x]
+
+        env:
+
+          POSTGRES_PASSWORD: postgres    steps:
+
+          POSTGRES_DB: test    - uses: actions/checkout@v3
+
+        options: >-
+
+          --health-cmd pg_isready    - name: Use Node.js ${{ matrix.node-version }}
+
+          --health-interval 10s      uses: actions/setup-node@v3
+
+          --health-timeout 5s      with:
+
+          --health-retries 5        node-version: ${{ matrix.node-version }}
+
+        ports:        cache: 'npm'
+
+          - 5432:5432
 
     - name: Install dependencies
-      run: npm install
+
+    steps:      run: npm install
+
+    - uses: actions/checkout@v4
 
     - name: Run security tests
-      run: npm run test:security
 
-    - name: Run compliance dashboard tests
-      run: |
-        cd services/compliance-dashboard
+    - name: Setup Node.js      run: npm run test:security
+
+      uses: actions/setup-node@v4
+
+      with:    - name: Run compliance dashboard tests
+
+        node-version: '20'      run: |
+
+        cache: 'npm'        cd services/compliance-dashboard
+
         npm install
-        npm test
+
+    - name: Install dependencies        npm test
+
+      run: npm ci
 
     - name: Run automated reporting tests
-      run: |
-        cd services/automated-compliance-reporting
+
+    - name: Lint code      run: |
+
+      run: npm run lint        cd services/automated-compliance-reporting
+
         npm install
-        npm test
+
+    - name: Type check        npm test
+
+      run: npm run type-check
 
     - name: Run integration tests
-      run: npm run test:integration
 
-  lint:
-    runs-on: ubuntu-latest
+    - name: Run tests      run: npm run test:integration
 
-    steps:
-    - uses: actions/checkout@v3
+      run: npm test
 
-    - name: Use Node.js 18.x
-      uses: actions/setup-node@v3
+      env:  lint:
+
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test    runs-on: ubuntu-latest
+
+
+
+    - name: Upload coverage reports    steps:
+
+      uses: codecov/codecov-action@v3    - uses: actions/checkout@v3
+
       with:
-        node-version: 18.x
-        cache: 'npm'
 
-    - name: Install dependencies
-      run: npm install
+        file: ./coverage/lcov.info    - name: Use Node.js 18.x
 
-    - name: Run ESLint
-      run: npm run lint
+      uses: actions/setup-node@v3
 
-  docker:
-    runs-on: ubuntu-latest
+  build:      with:
 
-    steps:
-    - uses: actions/checkout@v3
+    needs: test        node-version: 18.x
 
-    - name: Build compliance dashboard Docker image
-      run: |
+    runs-on: ubuntu-latest        cache: 'npm'
+
+
+
+    steps:    - name: Install dependencies
+
+    - uses: actions/checkout@v4      run: npm install
+
+
+
+    - name: Setup Node.js    - name: Run ESLint
+
+      uses: actions/setup-node@v4      run: npm run lint
+
+      with:
+
+        node-version: '20'  docker:
+
+        cache: 'npm'    runs-on: ubuntu-latest
+
+
+
+    - name: Install dependencies    steps:
+
+      run: npm ci    - uses: actions/checkout@v3
+
+
+
+    - name: Build application    - name: Build compliance dashboard Docker image
+
+      run: npm run build      run: |
+
         cd services/compliance-dashboard
-        docker build -t azora/compliance-dashboard:test .
+
+    - name: Build contracts        docker build -t azora/compliance-dashboard:test .
+
+      run: npm run build:contracts
 
     - name: Build automated reporting Docker image
-      run: |
-        cd services/automated-compliance-reporting
+
+  security:      run: |
+
+    runs-on: ubuntu-latest        cd services/automated-compliance-reporting
+
         docker build -t azora/automated-reporting:test .
 
-    - name: Test Docker images
+    steps:
+
+    - uses: actions/checkout@v4    - name: Test Docker images
+
       run: |
-        docker run --rm azora/compliance-dashboard:test npm test -- --grep "Health"
-        docker run --rm azora/automated-reporting:test npm test -- --grep "Health"
+
+    - name: Run Trivy vulnerability scanner        docker run --rm azora/compliance-dashboard:test npm test -- --grep "Health"
+
+      uses: aquasecurity/trivy-action@master        docker run --rm azora/automated-reporting:test npm test -- --grep "Health"
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+
+    - name: Upload Trivy scan results
+      uses: github/codeql-action/upload-sarif@v2
+      if: always()
+      with:
+        sarif_file: 'trivy-results.sarif'
+
+  deploy-demo:
+    needs: [test, build]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Deploy to demo environment
+      run: echo "Deploying to demo environment..."
+      # Add actual deployment commands here
