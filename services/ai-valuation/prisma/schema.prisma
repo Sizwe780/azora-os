@@ -1,0 +1,56 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model UserGrowth {
+  id          String   @id @default(cuid())
+  totalUsers  Int      @default(10000)
+  newUsers    Int      @default(0)
+  period      String   // "daily", "weekly", "monthly"
+  timestamp   DateTime @default(now())
+  metadata    Json?    // Additional growth metrics
+
+  @@map("user_growth")
+}
+
+model ValuationMetrics {
+  id            String   @id @default(cuid())
+  metricType    String   // "user_value", "market_size", "revenue_projection"
+  value         Float
+  confidence    Float?   // AI confidence score
+  parameters    Json     // Input parameters used for calculation
+  calculatedAt  DateTime @default(now())
+  validUntil    DateTime?
+
+  @@map("valuation_metrics")
+}
+
+model UserOnboarding {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  onboardedAt DateTime @default(now())
+  source      String?  // How the user was acquired
+  metadata    Json?    // Additional onboarding data
+
+  @@map("user_onboarding")
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  action    String   // e.g., "user_onboarded", "valuation_calculated", "growth_updated"
+  entityId  String   // ID of the entity being audited
+  entityType String  // e.g., "UserGrowth", "ValuationMetrics", "UserOnboarding"
+  userId    String?  // User who performed the action (if applicable)
+  details   Json     // Additional details about the action
+  timestamp DateTime @default(now())
+
+  @@map("audit_logs")
+}

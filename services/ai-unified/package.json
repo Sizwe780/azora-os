@@ -2,18 +2,28 @@
   "name": "ai-unified",
   "version": "1.0.0",
   "description": "Unified AI service integrating multiple AI models and providers",
-  "main": "index.js",
-  "type": "module",
+  "main": "dist/index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "node index.js",
-    "test": "echo \"No tests specified\""
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts",
+    "migrate": "prisma migrate dev",
+    "generate": "prisma generate"
   },
   "author": "Autonomous Logistics Team",
   "license": "SEE LICENSE IN LICENSE",
   "dependencies": {
     "express": "^4.21.2",
+    "@prisma/client": "^5.22.0",
     "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "prisma": "^5.22.0",
+    "@types/express": "^4.17.17",
+    "@types/cors": "^2.8.13",
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.1"
   },
   "engines": {
     "node": ">=18.0.0"

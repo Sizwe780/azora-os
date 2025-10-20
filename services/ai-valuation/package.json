@@ -1,7 +1,7 @@
 {
-  "name": "ai-recommendations-service",
+  "name": "ai-valuation",
   "version": "1.0.0",
-  "description": "AI-powered recommendations service for personalized suggestions",
+  "description": "AI-powered valuation and user growth tracking service",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",

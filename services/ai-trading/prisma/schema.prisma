@@ -10,24 +10,28 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model SearchQuery {
+model Trade {
   id          String   @id @default(cuid())
-  query       String
+  symbol      String
+  type        String
+  amount      Float
+  price       Float
   userId      String?
-  results     Json
+  strategyId  String?
+  strategy    Strategy? @relation(fields: [strategyId], references: [id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  searchResults SearchResult[]
   auditLogs   AuditLog[]
 }
 
-model SearchResult {
+model Strategy {
   id          String   @id @default(cuid())
-  queryId     String
-  query       SearchQuery @relation(fields: [queryId], references: [id])
-  content     String
-  relevance   Float
+  name        String
+  parameters  Json
+  performance Float?
   createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  trades      Trade[]
   auditLogs   AuditLog[]
 }
 
@@ -39,8 +43,8 @@ model AuditLog {
   details     Json?
   userId      String?
   timestamp   DateTime @default(now())
-  queryId     String?
-  query       SearchQuery? @relation(fields: [queryId], references: [id])
-  resultId    String?
-  result      SearchResult? @relation(fields: [resultId], references: [id])
+  tradeId     String?
+  trade       Trade? @relation(fields: [tradeId], references: [id])
+  strategyId  String?
+  strategy    Strategy? @relation(fields: [strategyId], references: [id])
 }

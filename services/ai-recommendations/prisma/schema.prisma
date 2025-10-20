@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model UserProfile {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  preferences Json     // User preferences and settings
+  behavior    Json     // Behavioral data for recommendations
+  demographics Json?   // Optional demographic information
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  recommendations Recommendation[]
+  interactions   Interaction[]
+
+  @@map("user_profiles")
+}
+
+model Recommendation {
+  id          String   @id @default(cuid())
+  userId      String
+  user        UserProfile @relation(fields: [userId], references: [userId])
+  type        String   // "feature", "service", "product", etc.
+  itemId      String   // ID of the recommended item
+  itemName    String   // Name of the recommended item
+  score       Float    // Recommendation confidence score
+  context     Json     // Context in which recommendation was made
+  status      String   @default("active") // active, dismissed, accepted
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  interactions Interaction[]
+
+  @@map("recommendations")
+}
+
+model Interaction {
+  id          String   @id @default(cuid())
+  userId      String
+  user        UserProfile @relation(fields: [userId], references: [userId])
+  recommendationId String?
+  recommendation   Recommendation? @relation(fields: [recommendationId], references: [id])
+  type        String   // "view", "click", "dismiss", "accept", "purchase"
+  itemId      String   // ID of the interacted item
+  metadata    Json     // Additional interaction data
+  timestamp   DateTime @default(now())
+
+  @@map("interactions")
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  action    String   // e.g., "recommendation_generated", "profile_updated", "interaction_logged"
+  entityId  String   // ID of the entity being audited
+  entityType String  // e.g., "UserProfile", "Recommendation", "Interaction"
+  userId    String?  // User who performed the action (if applicable)
+  details   Json     // Additional details about the action
+  timestamp DateTime @default(now())
+
+  @@map("audit_logs")
+}

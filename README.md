@@ -1,53 +1,117 @@
 # Azora OS
 
-**Sovereign. Compliant. Autonomous.**  
-**The next-generation, open, modular AI OS for organizations.**
+**Enterprise-grade AI platform with autonomous services, built on biological and natural principles.**
 
----
+Azora OS is a modular, API-first platform that integrates AI, blockchain, and enterprise services following constitutional governance principles inspired by biological systems, quantum computing, and natural ecosystems.
 
-## Features
+## Current Status
 
-- **100+ Microservices**: Modular, API-first, K8s- and Docker-native.
-- **Atomic UI**: Mobile-first, accessible, dark/light, PWA, and App/Play Store ready.
-- **AI/ML/LLM**: Native OpenAI, custom models, AI search, recommendations, analytics.
-- **Fintech & Blockchain**: Payments, wallets, NFTs, open banking, multi-tenant SaaS.
-- **Security & Compliance**: Zero trust, audit, digital assets, sovereign/multicloud.
-- **Innovation**: Quantum/AR/IoT, digital twin, edge compute, workflow automation.
-- **DevOps**: CI/CD, health checks, observability, auto-healing.
-- **Extensibility**: Plugin system, API-first, cloud/edge ready.
+- **12+ Services Upgraded**: Enterprise-grade with TypeScript, Prisma ORM, PostgreSQL persistence, and comprehensive audit trails
+- **Constitutional Governance**: AI-driven compliance with biological, cosmological, and natural principles
+- **Production Ready**: Docker, health checks, and scalable architecture
 
----
+## Architecture
 
-## Quickstart
+### Core Services (Upgraded)
+- **ai-unified**: Unified AI task routing and model management
+- **ai-recommendations**: Personalized AI recommendations with user profiling
+- **ai-valuation**: User growth tracking and AI-powered valuation
+- **wallet**: Cryptocurrency wallet with Azora Coin integration
+- **auth**: Authentication and authorization service
+- **analytics**: Real-time analytics and reporting
+- **marketplace**: Service marketplace with AI matching
+- **notification-service**: Multi-channel notification system
+- **billing-service**: Subscription and payment processing
+- **ledger**: Financial ledger with audit trails
+- **ai-evolution-engine**: AI model evolution and optimization
+- **ai-ml-engine**: Machine learning pipeline orchestration
 
-1. **Install dependencies:**
+### Technology Stack
+- **Backend**: TypeScript, Express.js, Prisma ORM
+- **Database**: PostgreSQL with per-service databases
+- **AI Integration**: OpenAI, custom models, unified API
+- **Blockchain**: Ethereum, Azora Coin smart contracts
+- **Deployment**: Docker, Kubernetes, multi-cloud
+- **Security**: Zero-trust, audit logging, compliance frameworks
+
+## Quick Start
+
+### Prerequisites
+- Node.js 18+
+- PostgreSQL 15+
+- Docker & Docker Compose
+
+### Development Setup
+
+1. **Clone and install:**
    ```bash
+   git clone <repository-url>
+   cd azora-os
    npm install
    ```
-2. **Start all services & UI:**
-   ```bash
-   docker-compose up --build
-   ```
-   or for prod:
-   ```bash
-   docker-compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
-   ```
-3. **Access the UI:**  
-   [http://localhost:3000](http://localhost:3000) or your prod domain
 
-4. **Kubernetes:**  
+2. **Start databases:**
    ```bash
-   kubectl apply -f k8s/
+   docker-compose -f docker/production.yml up postgres-primary -d
    ```
 
----
+3. **Start a service:**
+   ```bash
+   cd services/ai-unified
+   npm run build
+   npm start
+   ```
 
-## Launch, Roadmap, and Valuation
+4. **Access health check:**
+   ```bash
+   curl http://localhost:3000/health
+   ```
 
-- **Launch script:** `/scripts/launch.sh`
-- **Roadmap:** `ROADMAP.md`
-- **Valuation:** `VALUATION-REPORT.md`
-- **Investor deck:** `/investor-deck/`
+### Production Deployment
+
+```bash
+docker-compose -f docker/production.yml up -d
+```
+
+## Constitution & Governance
+
+Azora OS operates under the Azora Constitution, implementing:
+
+- **Biological Principles**: Immune systems, organelle architecture, DNA polymerase validation
+- **Cosmological Economics**: Fusion energy models, black hole economics, multiverse value creation
+- **Natural Governance**: Mycelial networks, trophic levels, keystone species resilience
+- **Phoenix Protocol**: Genetic resurrection and evolutionary adaptation
+
+## Development
+
+### Service Upgrade Pattern
+
+Each service follows this upgrade pattern:
+
+1. **TypeScript Migration**: Convert to TypeScript with proper types
+2. **Database Integration**: Add Prisma ORM with PostgreSQL
+3. **AI Integration**: Connect to unified AI services
+4. **Audit & Compliance**: Add comprehensive audit trails
+5. **Health Checks**: Implement `/health` endpoints
+6. **Testing**: Add unit and integration tests
+
+### Contributing
+
+1. Follow the constitutional principles
+2. Maintain audit trails for all operations
+3. Ensure services are API-first and modular
+4. Add comprehensive error handling
+5. Include health checks and monitoring
+
+## License
+
+See LICENSE file for details.
+
+## Contact
+
+- **Founder**: Sizwe Ngwenya
+- **Email**: legal@azora.world
+- **Domain**: azora.world
 
 ---
 
