@@ -1,0 +1,17 @@
+apiVersion: v2
+name: vigil
+description: A Helm chart for Azora Vigil AI surveillance service
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+keywords:
+  - surveillance
+  - ai
+  - video
+  - security
+home: https://azora.world
+sources:
+  - https://github.com/azora-os/vigil
+maintainers:
+  - name: Azora OS Team
+    email: team@azora.world

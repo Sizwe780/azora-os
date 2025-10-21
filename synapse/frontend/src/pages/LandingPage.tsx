@@ -1,5 +1,5 @@
 // filepath: frontend/frontend/src/pages/LandingPage.tsx
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function LandingPage() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -11,7 +11,7 @@ export default function LandingPage() {
   });
   
   // Use useMemo to avoid re-computing on every render
-  const isIOS = useMemo(() => /iPad|iPhone|iPod/.test(navigator.userAgent), []);
+  // const isIOS = useMemo(() => /iPad|iPhone|iPod/.test(navigator.userAgent), []);
   
   // Set iOS state only once
   useEffect(() => {

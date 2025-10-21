@@ -33,6 +33,11 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const winston = require('winston');
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.simple(),
+  transports: [new winston.transports.Console()]
+});
 const { CloudEvent } = require('cloudevents');
 
 // Import service modules
@@ -41,11 +46,11 @@ const alertEngine = require('./alertEngine');
 const streamProcessor = require('./streamProcessor');
 
 // Import route modules
-const authRoutes = require('./routes/auth');
-const adminRoutes = require('./routes/admin');
+const authRoutes = require('./routes/auth.js');
+const adminRoutes = require('./routes/admin.js');
 
 // Import auth middleware
-const { requireAuth, requireRole, optionalAuth } = require('./auth/middlewares');
+const { requireAuth, requireRole, optionalAuth } = require('./auth/middlewares.js');
 
 // Import Socket.io
 const { Server } = require('socket.io');
@@ -164,7 +169,7 @@ function publishMetrics() {
     try {
       // Get camera metrics
       const cameras = await cameraManager.getCameras();
-      const activeStreams = streamProcessor.getActiveStreams();
+  const activeStreams = streamProcessor.getActiveStreams();
 
       // Calculate system-wide metrics
       const systemMetrics = {
@@ -384,6 +389,10 @@ app.get('/api/vigil/streams', optionalAuth, async (req, res) => {
     const streams = streamProcessor.getActiveStreams();
     res.json(streams);
   } catch (error) {
+    logger.error('Error fetching streams:', error);
+    res.status(500).json({ error: 'Failed to fetch streams' });
+  }
+});
 
 app.get('/api/vigil/streams/:cameraId/status', optionalAuth, async (req, res) => {
   try {
@@ -442,7 +451,7 @@ app.get('/api/vigil/streams/:cameraId/endpoints', optionalAuth, async (req, res)
 app.get('/api/vigil/system/metrics', optionalAuth, async (req, res) => {
   try {
     const cameras = await cameraManager.getCameras();
-    const activeStreams = streamProcessor.getActiveStreams();
+  const activeStreams = streamProcessor.getActiveStreams();
     const alerts = await alertEngine.getAlerts();
 
     const metrics = {

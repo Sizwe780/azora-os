@@ -1,5 +1,5 @@
 /**
- * @file auth.ts
+ * @file auth.js
  * @module organs/vigil-service/src/routes
  * @description Authentication routes for login/logout
  * @author Azora OS Team
@@ -16,29 +16,12 @@
  * @tests unit, integration
  */
 
-import { Request, Response } from 'express';
-
-// Extend Express Request to include user property for authentication
-interface VigilRequest extends Request {
-  user?: {
-    sub: string;
-    id: string;
-    name: string;
-    email: string;
-    role: string;
-    createdAt: string;
-    lastLoginAt?: string;
-    isActive: boolean;
-  };
-}
-
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { optionalAuth } = require('../auth/middlewares.js');
 
 // In-memory user store (replace with database in production)
-// Same store as admin routes
 const users = new Map();
 
 // Initialize default admin user
@@ -56,51 +39,37 @@ if (!users.has('admin@azora.world')) {
 
 const router = express.Router();
 
-/**
- * POST /api/vigil/auth/login - User login
- */
-router.post('/login', async (req: Request, res: Response) => {
+// POST /api/vigil/auth/login - User login
+router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-
     if (!email || !password) {
       return res.status(400).json({ error: 'Email and password are required' });
     }
-
     const user = users.get(email);
     if (!user || !user.isActive) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
-
-    // Check password (in production, compare hashed password)
     const isValidPassword = user.passwordHash
       ? await bcrypt.compare(password, user.passwordHash)
-      : password === user.password; // Fallback for plain text (dev only)
-
+      : password === user.password;
     if (!isValidPassword) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
-
-    // Update last login
     user.lastLoginAt = new Date().toISOString();
-
-    // Generate JWT token
     const tokenPayload = {
       sub: user.id,
       name: user.name,
       email: user.email,
       role: user.role,
       iat: Math.floor(Date.now() / 1000),
-      exp: Math.floor(Date.now() / 1000) + (parseInt(process.env.JWT_EXPIRES_IN || '3600')) // 1 hour default
+      exp: Math.floor(Date.now() / 1000) + (parseInt(process.env.JWT_EXPIRES_IN) || 3600)
     };
-
     const token = jwt.sign(
       tokenPayload,
       process.env.JWT_PRIVATE_KEY || process.env.JWT_SECRET || 'default-secret',
       { algorithm: process.env.JWT_PRIVATE_KEY ? 'RS256' : 'HS256' }
     );
-
-    // Return user info without sensitive data
     const userResponse = {
       id: user.id,
       name: user.name,
@@ -109,7 +78,6 @@ router.post('/login', async (req: Request, res: Response) => {
       createdAt: user.createdAt,
       lastLoginAt: user.lastLoginAt
     };
-
     res.json({
       token,
       user: userResponse,
@@ -121,28 +89,20 @@ router.post('/login', async (req: Request, res: Response) => {
   }
 });
 
-/**
- * POST /api/vigil/auth/logout - User logout (client-side token removal)
- */
-router.post('/logout', optionalAuth, (req: Request, res: Response) => {
-  // In a stateless JWT system, logout is handled client-side by removing the token
-  // In production, you might want to implement token blacklisting
+// POST /api/vigil/auth/logout - User logout (client-side token removal)
+router.post('/logout', optionalAuth, (req, res) => {
   res.json({ message: 'Logged out successfully' });
 });
 
-/**
- * GET /api/vigil/auth/me - Get current user info
- */
-router.get('/me', optionalAuth, (req: VigilRequest, res: Response) => {
+// GET /api/vigil/auth/me - Get current user info
+router.get('/me', optionalAuth, (req, res) => {
   if (!req.user) {
     return res.status(401).json({ error: 'Not authenticated' });
   }
-
   const user = users.get(req.user.email);
   if (!user || !user.isActive) {
     return res.status(401).json({ error: 'User not found or inactive' });
   }
-
   res.json({
     id: user.id,
     name: user.name,
@@ -153,35 +113,28 @@ router.get('/me', optionalAuth, (req: VigilRequest, res: Response) => {
   });
 });
 
-/**
- * POST /api/vigil/auth/refresh - Refresh JWT token
- */
-router.post('/refresh', optionalAuth, (req: VigilRequest, res: Response) => {
+// POST /api/vigil/auth/refresh - Refresh JWT token
+router.post('/refresh', optionalAuth, (req, res) => {
   if (!req.user) {
     return res.status(401).json({ error: 'Not authenticated' });
   }
-
   const user = users.get(req.user.email);
   if (!user || !user.isActive) {
     return res.status(401).json({ error: 'User not found or inactive' });
   }
-
-  // Generate new token
   const tokenPayload = {
     sub: user.id,
     name: user.name,
     email: user.email,
     role: user.role,
     iat: Math.floor(Date.now() / 1000),
-    exp: Math.floor(Date.now() / 1000) + (parseInt(process.env.JWT_EXPIRES_IN || '3600'))
+    exp: Math.floor(Date.now() / 1000) + (parseInt(process.env.JWT_EXPIRES_IN) || 3600)
   };
-
   const token = jwt.sign(
     tokenPayload,
     process.env.JWT_PRIVATE_KEY || process.env.JWT_SECRET || 'default-secret',
     { algorithm: process.env.JWT_PRIVATE_KEY ? 'RS256' : 'HS256' }
   );
-
   res.json({
     token,
     expiresIn: tokenPayload.exp - tokenPayload.iat
