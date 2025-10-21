@@ -6,7 +6,7 @@ import MainLayout from "../../../ui/MainLayout"
 export default function Dashboard() {
   const [progress, setProgress] = useState({ completed: [], score: 0 })
   const [examAnalytics, setExamAnalytics] = useState(null)
-  const [user, setUser] = useState({ name: "", access: "free" })
+  const [user, setUser] = useState({ name: "", access: "free", role: "student" })
 
   useEffect(() => {
     fetch("/api/professor-progress")
@@ -26,6 +26,12 @@ export default function Dashboard() {
       })
   }, [])
 
+  useEffect(() => {
+    fetch("/api/auth-session")
+      .then(res => res.json())
+      .then(data => { if (data.email) setUser(data) })
+  }, [])
+
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar collapsed={false} onToggle={() => {}} />
@@ -41,7 +47,7 @@ export default function Dashboard() {
               Total Score: {progress.score}
             </div>
             <div className="mb-4 font-semibold text-lg text-gray-800">
-              Welcome, {user.name} ({user.access === "premium" ? "Premium" : "Free"} Access)
+              Welcome, {user.name || user.email} ({user.role})
             </div>
             {user.access === "premium" && examAnalytics && (
               <div className="mt-8">
