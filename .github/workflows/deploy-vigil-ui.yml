@@ -1,0 +1,18 @@
+name: Deploy Vigil UI to Vercel
+
+on:
+  push:
+    branches: [main]
+    paths: [ 'synapse/vigil-ui/**' ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - run: cd synapse/vigil-ui && npm install
+      - run: npm install -g vercel
+      - run: cd synapse/vigil-ui && vercel --token ${{ secrets.VERCEL_TOKEN }} --confirm --prod

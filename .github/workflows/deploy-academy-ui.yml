@@ -1,0 +1,18 @@
+name: Deploy Academy UI to Vercel
+
+on:
+  push:
+    branches: [main]
+    paths: [ 'synapse/academy-ui/**' ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - run: cd synapse/academy-ui && npm install
+      - run: npm install -g vercel
+      - run: cd synapse/academy-ui && vercel --token ${{ secrets.VERCEL_TOKEN }} --confirm --prod
