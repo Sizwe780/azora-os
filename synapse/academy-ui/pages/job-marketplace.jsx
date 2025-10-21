@@ -5,21 +5,27 @@ import MainLayout from "../../../ui/MainLayout"
 
 export default function JobMarketplacePage() {
   const [jobs, setJobs] = useState([])
-  const [applied, setApplied] = useState(null)
+  const [applied, setApplied] = useState([])
+  const [msg, setMsg] = useState("")
 
   useEffect(() => {
-    fetch("/api/job-marketplace")
+    fetch("/api/jobs")
       .then(res => res.json())
       .then(setJobs)
+    fetch("/api/apply-job")
+      .then(res => res.json())
+      .then(setApplied)
   }, [])
 
   async function handleApply(jobId) {
-    await fetch("/api/job-marketplace", {
+    const res = await fetch("/api/apply-job", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ jobId })
     })
-    setApplied(jobId)
+    const data = await res.json()
+    setMsg(data.ok ? "Applied!" : data.error)
+    if (data.ok) setApplied([...applied, { jobId }])
   }
 
   return (
@@ -39,11 +45,11 @@ export default function JobMarketplacePage() {
                     <div className="text-xs text-gray-600">{job.description}</div>
                   </div>
                   <div>
-                    {applied === job.id ? (
-                      <span className="px-3 py-1 bg-green-600 text-white rounded">Applied</span>
+                    {applied.find(a => a.jobId === job.id) ? (
+                      <span className="px-2 py-1 bg-green-700 text-white rounded text-xs">Applied</span>
                     ) : (
                       <button
-                        className="px-3 py-1 bg-blue-700 text-white rounded"
+                        className="px-4 py-2 bg-blue-700 text-white rounded"
                         onClick={() => handleApply(job.id)}
                       >
                         Apply
@@ -53,6 +59,7 @@ export default function JobMarketplacePage() {
                 </li>
               ))}
             </ul>
+            {msg && <div className="mt-4 text-green-700">{msg}</div>}
             <div className="mt-8 text-center">
               <a
                 href="/alumni"

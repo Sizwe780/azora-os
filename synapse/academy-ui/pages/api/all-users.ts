@@ -12,16 +12,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     if (fs.existsSync(usersPath)) users = JSON.parse(fs.readFileSync(usersPath, "utf8"))
   } catch {}
-  const idx = users.findIndex(u => u.email === email)
-  if (idx === -1) return res.status(404).json({ error: "User not found" })
-  if (req.method === "GET") {
-    return res.status(200).json(users[idx])
-  }
-  if (req.method === "POST") {
-    const { name } = req.body
-    users[idx].name = name
-    fs.writeFileSync(usersPath, JSON.stringify(users, null, 2), "utf8")
-    return res.status(200).json({ ok: true })
-  }
-  res.status(405).json({ error: "Method not allowed" })
+  const user = users.find(u => u.email === email)
+  if (!user || user.role !== "admin") return res.status(403).json({ error: "Forbidden" })
+  res.status(200).json(users)
 }

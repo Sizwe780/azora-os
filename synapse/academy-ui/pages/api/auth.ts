@@ -26,6 +26,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     if (action === "login") {
       const user = users.find(u => u.email === email && u.password === hash(password))
       if (!user) return res.status(401).json({ error: "Invalid" })
+      if (user.deactivated) return res.status(403).json({ error: "Account deactivated" })
+      if (user.locked) return res.status(403).json({ error: "Account locked" })
       return res.status(200).json({ ok: true, role: user.role })
     }
   }

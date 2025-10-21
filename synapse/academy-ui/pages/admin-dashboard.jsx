@@ -20,11 +20,7 @@ export default function AdminDashboard() {
           <div className="max-w-2xl mx-auto bg-white rounded-lg shadow p-8 mt-8">
             <h1 className="text-3xl font-bold mb-6 text-blue-700">Admin Dashboard</h1>
             <ul className="mb-8">
-              <li><a href="/notification-audit" className="text-blue-700 underline">Notification Audit Log</a></li>
-              <li><a href="/export-history" className="text-blue-700 underline">Export History</a></li>
-              <li><a href="/admin-notification-preferences" className="text-blue-700 underline">Notification Preferences</a></li>
-              <li><a href="/compliance-report" className="text-blue-700 underline">Compliance Report</a></li>
-              <li><a href="/regulatory-report" className="text-blue-700 underline">Regulatory Reporting</a></li>
+              <li><a href="/broadcast-notification" className="text-blue-700 underline">Broadcast Notification</a></li>
             </ul>
             <div className="mt-8 p-4 bg-gray-100 rounded">
               <h2 className="text-lg font-bold mb-2">System Health</h2>

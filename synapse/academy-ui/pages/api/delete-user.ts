@@ -11,17 +11,9 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   let users: any[] = []
   try {
     if (fs.existsSync(usersPath)) users = JSON.parse(fs.readFileSync(usersPath, "utf8"))
-  } catch {}
-  const idx = users.findIndex(u => u.email === email)
-  if (idx === -1) return res.status(404).json({ error: "User not found" })
-  if (req.method === "GET") {
-    return res.status(200).json(users[idx])
-  }
-  if (req.method === "POST") {
-    const { name } = req.body
-    users[idx].name = name
+    users = users.filter(u => u.email !== email)
     fs.writeFileSync(usersPath, JSON.stringify(users, null, 2), "utf8")
-    return res.status(200).json({ ok: true })
-  }
-  res.status(405).json({ error: "Method not allowed" })
+  } catch {}
+  res.setHeader("Set-Cookie", cookie.serialize("email", "", { path: "/", maxAge: 0 }))
+  res.status(200).json({ ok: true })
 }
