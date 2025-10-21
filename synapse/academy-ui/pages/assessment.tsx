@@ -1,5 +1,7 @@
 import { useState } from "react"
 import MainLayout from "../components/MainLayout"
+import TopBar from "../../../ui/TopBar"
+import Sidebar from "../../../ui/Sidebar"
 
 export default function AssessmentPage() {
   const [status, setStatus] = useState("")
@@ -38,25 +40,36 @@ export default function AssessmentPage() {
   }
 
   return (
-    <MainLayout>
-      <h1 className="text-2xl font-bold mb-4 text-blue-700">Monitored Assessment</h1>
-      <button className="bg-blue-600 text-white px-4 py-2 rounded" onClick={startAssessment}>
-        Start Assessment
-      </button>
-      {status && <div className="mt-4 text-green-700">{status}</div>}
-      {aiFlags.length > 0 && (
-        <div className="mt-4">
-          <div className="font-semibold">AI Professor Invigilator:</div>
-          <ul className="list-disc ml-6">
-            {aiFlags.map((flag, i) => <li key={i}>{flag}</li>)}
-          </ul>
-        </div>
-      )}
-      {verified && (
-        <div className="mt-4 text-blue-700 font-bold">
-          Blockchain verification: All evidence securely recorded.
-        </div>
-      )}
-    </MainLayout>
+    <div className="flex min-h-screen bg-gray-50">
+      <Sidebar collapsed={false} onToggle={() => {}} />
+      <div className="flex-1 flex flex-col">
+        <TopBar />
+        <MainLayout>
+          <div className="max-w-2xl mx-auto bg-white rounded-lg shadow p-8 mt-8">
+            <h1 className="text-3xl font-bold mb-6 text-blue-700">Monitored Assessment</h1>
+            <button
+              className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
+              onClick={startAssessment}
+            >
+              Start Assessment
+            </button>
+            {status && <div className="mt-6 text-green-700 text-lg">{status}</div>}
+            {aiFlags.length > 0 && (
+              <div className="mt-6">
+                <div className="font-semibold text-blue-700 mb-2">AI Professor Invigilator:</div>
+                <ul className="list-disc ml-6 text-gray-700">
+                  {aiFlags.map((flag, i) => <li key={i}>{flag}</li>)}
+                </ul>
+              </div>
+            )}
+            {verified && (
+              <div className="mt-6 text-blue-700 font-bold text-lg">
+                Blockchain verification: All evidence securely recorded.
+              </div>
+            )}
+          </div>
+        </MainLayout>
+      </div>
+    </div>
   )
 }

@@ -1,8 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 import { AzoraBlockchain } from "../../../../backend/ledger/cryptoLedger"
+import path from "path"
 
 // Initialize blockchain (ensure path is correct for your workspace)
-const blockchain = new AzoraBlockchain("/workspaces/azora-os/backend/ledger/azora-blockchain.json")
+const blockchain = new AzoraBlockchain(path.resolve(process.cwd(), "backend/ledger/azora-blockchain.json"))
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
@@ -21,7 +22,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     aiAnomalyScore
   } = req.body
 
-  // Add proctoring evidence to blockchain
+  // Record proctoring evidence to blockchain
   blockchain.addEntry(`proctoring-${examId}-${studentId}`, {
     type: "proctoring-evidence",
     studentId,
@@ -36,5 +37,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     timestamp: Date.now()
   })
 
-  return res.status(200).json({ ok: true, message: "All proctoring evidence securely recorded on blockchain." })
+  return res.status(200).json({ ok: true, message: "Proctoring evidence securely recorded on blockchain." })
 }
