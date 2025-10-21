@@ -1,135 +1,204 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react'
+import { Link } from 'react-router-dom'
+import SEO from '../components/SEO'
+import EcosystemStats from '../components/EcosystemStats'
 
 export default function LandingPage() {
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
-  const [isInstallable, setIsInstallable] = useState(false);
-  const [isIOS] = useState(/iPad|iPhone|iPod/.test(navigator.userAgent));
-
-  useEffect(() => {
-    const handleBeforeInstall = (e: Event) => {
-      e.preventDefault();
-      setDeferredPrompt(e);
-      setIsInstallable(true);
-    };
-
-    window.addEventListener('beforeinstallprompt', handleBeforeInstall);
-
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js')
-        .then(() => console.log('✅ SW registered'))
-        .catch((err) => console.error('❌ SW failed:', err));
-    }
-
-    return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
-    };
-  }, []);
-
-  const handleInstall = async () => {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') console.log('✅ Installed');
-    setDeferredPrompt(null);
-    setIsInstallable(false);
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-950 to-pink-950 text-white">
-      {/* Install Banner */}
-      {isInstallable && (
-        <div className="fixed top-0 left-0 right-0 bg-cyan-600 p-4 z-50">
-          <div className="container mx-auto flex items-center justify-between">
-            <span className="font-semibold">📱 Install Azora OS</span>
-            <button
-              onClick={handleInstall}
-              className="px-4 py-2 bg-white text-cyan-600 rounded-full font-bold"
-            >
-              Install
+    <>
+      <SEO />
+      <div className="min-h-screen">
+      {/* Hero Section */}
+      <section className="bg-gradient-to-br from-indigo-950 via-purple-950 to-pink-950 text-white py-20">
+        <div className="container mx-auto px-4 text-center">
+          <h1 className="text-4xl md:text-7xl font-bold mb-6 leading-tight">
+            Build the Future,
+            <br />
+            <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
+              Compliantly
+            </span>
+          </h1>
+
+          <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
+            Africa's First Full Software Infrastructure. Learn, earn, and build with AI-powered compliance,
+            decentralized finance, and enterprise-grade cloud solutions.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+            <button className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full font-bold text-lg shadow-2xl hover:from-cyan-600 hover:to-blue-700 transform hover:scale-105 transition-all">
+              🚀 Get Started Free
             </button>
+            <Link to="/services" className="px-8 py-4 bg-white/10 backdrop-blur border border-white/20 rounded-full font-bold text-lg hover:bg-white/20 transition-all">
+              📖 Explore Services
+            </Link>
           </div>
-        </div>
-      )}
 
-      {/* Navigation */}
-      <nav className="sticky top-0 z-40 backdrop-blur-lg bg-white/5 border-b border-white/10">
-        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <span className="text-2xl">🌍</span>
-            <span className="text-xl font-bold">AZORA</span>
+          {/* Ecosystem Stats */}
+          <div className="mt-12 max-w-4xl mx-auto">
+            <EcosystemStats />
           </div>
-          <button className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full text-sm font-semibold">
-            Sign In
-          </button>
-        </div>
-      </nav>
-
-      {/* Hero */}
-      <section className="container mx-auto px-4 py-12 text-center">
-        <h1 className="text-4xl md:text-7xl font-bold mb-4 leading-tight">
-          Africa&apos;s First
-          <br />
-          <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
-            Trillion-Dollar
-          </span>
-          <br />
-          Platform
-        </h1>
-        
-        <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-          Learn, earn real money, and build the future
-        </p>
-
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-          <button className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full font-bold text-lg shadow-2xl">
-            🚀 Start Earning
-          </button>
-          <button className="px-8 py-4 bg-white/10 backdrop-blur border border-white/20 rounded-full font-bold text-lg">
-            📖 Learn More
-          </button>
-        </div>
-
-        {/* Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto">
-          {[
-            { emoji: '⚡', value: '$1.00', label: 'AZR Value' },
-            { emoji: '👥', value: '1,245', label: 'Active Users' },
-            { emoji: '🛡️', value: '147', label: 'Services' }
-          ].map((stat, i) => (
-            <div key={i} className="p-6 bg-white/10 backdrop-blur rounded-2xl border border-white/20">
-              <div className="text-3xl mb-2">{stat.emoji}</div>
-              <div className="text-3xl font-bold text-cyan-400">{stat.value}</div>
-              <div className="text-sm text-gray-400">{stat.label}</div>
-            </div>
-          ))}
         </div>
       </section>
 
-      {/* Features */}
-      <section className="container mx-auto px-4 py-12">
-        <h2 className="text-3xl font-bold text-center mb-8">Why Students Love Azora</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[
-            { emoji: '💰', title: 'Earn Real Money', desc: 'Get paid in AZR tokens' },
-            { emoji: '📚', title: 'Learn Skills', desc: 'Master tech skills' },
-            { emoji: '🚀', title: 'Build Portfolio', desc: 'Real projects' }
-          ].map((f, i) => (
-            <div key={i} className="p-6 bg-white/5 rounded-2xl">
-              <div className="text-4xl mb-3">{f.emoji}</div>
-              <h3 className="text-xl font-bold mb-2">{f.title}</h3>
-              <p className="text-gray-400 text-sm">{f.desc}</p>
-            </div>
-          ))}
+      {/* Value Proposition */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Why Choose Azora OS?
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              We're not just another platform. We're Africa's first comprehensive software infrastructure
+              that combines learning, earning, compliance, and enterprise solutions.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                icon: '🤖',
+                title: 'AI-Powered Compliance',
+                description: 'Automated regulatory compliance with AI-driven insights and real-time monitoring.'
+              },
+              {
+                icon: '💎',
+                title: 'AZR Token Economy',
+                description: 'Earn real value through learning, contributions, and platform participation.'
+              },
+              {
+                icon: '🏗️',
+                title: 'Full Infrastructure',
+                description: 'Complete ecosystem from development tools to enterprise cloud solutions.'
+              }
+            ].map((feature, i) => (
+              <div key={i} className="text-center p-8 rounded-2xl border border-gray-200 hover:shadow-lg transition-shadow">
+                <div className="text-5xl mb-4">{feature.icon}</div>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">{feature.title}</h3>
+                <p className="text-gray-600">{feature.description}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-white/10 py-8 mt-12">
-        <div className="container mx-auto px-4 text-center text-sm text-gray-400">
-          <p>© 2024 Azora OS (Pty) Ltd. All Rights Reserved.</p>
-          <p className="text-cyan-400 mt-2">🇿🇦 From Africa, For Humanity 🚀</p>
+      {/* Service Overview */}
+      <section className="py-20 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Complete Ecosystem
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Everything you need to learn, build, and scale in one integrated platform.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              {
+                name: 'Learn & Earn',
+                subdomain: 'learn.azora.world',
+                icon: '📚',
+                description: 'SAQA-aligned courses with AZR rewards',
+                color: 'from-blue-500 to-cyan-500'
+              },
+              {
+                name: 'AZR Mint',
+                subdomain: 'mint.azora.world',
+                icon: '💰',
+                description: 'Token minting and collateral management',
+                color: 'from-green-500 to-emerald-500'
+              },
+              {
+                name: 'Forge Marketplace',
+                subdomain: 'marketplace.azora.world',
+                icon: '⚒️',
+                description: 'P2P marketplace for digital goods',
+                color: 'from-purple-500 to-pink-500'
+              },
+              {
+                name: 'Compliance Engine',
+                subdomain: 'compliance.azora.world',
+                icon: '🛡️',
+                description: 'AI-powered regulatory compliance',
+                color: 'from-red-500 to-orange-500'
+              },
+              {
+                name: 'Enterprise Portal',
+                subdomain: 'enterprise.azora.world',
+                icon: '🏢',
+                description: 'B2B solutions and cloud services',
+                color: 'from-indigo-500 to-blue-500'
+              },
+              {
+                name: 'Developer Portal',
+                subdomain: 'dev.azora.world',
+                icon: '�',
+                description: 'API access and development tools',
+                color: 'from-gray-700 to-gray-900'
+              }
+            ].map((service, i) => (
+              <div key={i} className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-shadow border border-gray-200">
+                <div className={`w-12 h-12 bg-gradient-to-r ${service.color} rounded-xl flex items-center justify-center mb-4`}>
+                  <span className="text-2xl">{service.icon}</span>
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">{service.name}</h3>
+                <p className="text-gray-600 mb-4">{service.description}</p>
+                <a
+                  href={`https://${service.subdomain}`}
+                  className="text-sm text-cyan-600 hover:text-cyan-700 font-medium"
+                >
+                  Visit {service.subdomain} →
+                </a>
+              </div>
+            ))}
+          </div>
         </div>
-      </footer>
+      </section>
+
+      {/* Trust & Credibility */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Trusted by Organizations
+            </h2>
+            <p className="text-lg text-gray-600">
+              From startups to enterprises, organizations trust Azora OS for compliance and innovation.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center">
+            {/* Placeholder for partner logos */}
+            {['Partner 1', 'Partner 2', 'Partner 3', 'Partner 4'].map((partner, i) => (
+              <div key={i} className="flex items-center justify-center p-8 bg-gray-50 rounded-xl">
+                <span className="text-gray-400 font-semibold">{partner}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Call to Action */}
+      <section className="py-20 bg-gradient-to-r from-cyan-500 to-blue-600 text-white">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            Ready to Build the Future?
+          </h2>
+          <p className="text-lg mb-8 max-w-2xl mx-auto opacity-90">
+            Join thousands of students, developers, and enterprises already building with Azora OS.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button className="px-8 py-4 bg-white text-cyan-600 rounded-full font-bold text-lg hover:bg-gray-100 transform hover:scale-105 transition-all">
+              Start Building Today
+            </button>
+            <Link to="/contact" className="px-8 py-4 bg-white/10 backdrop-blur border border-white/20 rounded-full font-bold text-lg hover:bg-white/20 transition-all">
+              Contact Sales
+            </Link>
+          </div>
+        </div>
+      </section>
     </div>
-  );
+    </>
+  )
 }

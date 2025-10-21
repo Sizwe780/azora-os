@@ -1,0 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model ContactSubmission {
+  id          String   @id @default(cuid())
+  name        String
+  email       String
+  company     String?
+  message     String
+  category    String?  // e.g., "general", "enterprise", "support", "partnership"
+  status      String   @default("new") // "new", "read", "responded", "closed"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("contact_submissions")
+}
+
+model NewsletterSignup {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  source    String?  // e.g., "landing_page", "footer", "news_page"
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  @@map("newsletter_signups")
+}
+
+model UserPreference {
+  id       String @id @default(cuid())
+  userId   String @unique // This would link to Azora Identity user ID
+  dashboard String? // preferred dashboard: "learn", "enterprise", "mint", etc.
+  theme    String @default("light") // "light", "dark"
+  notifications Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("user_preferences")
+}
