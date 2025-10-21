@@ -6,18 +6,17 @@ const blockchain = new AzoraBlockchain("/workspaces/azora-os/backend/ledger/azor
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST") {
-    const { studentId, qualificationId, details } = req.body
-    const credential = await prisma.credential.create({ data: { studentId, qualificationId, details } })
-    // Mint credential as a token on the blockchain
-    blockchain.mintToken(`credential-${credential.id}`, studentId, 1)
-    blockchain.addEntry(`credential-${credential.id}`, {
-      type: "credential-mint",
-      studentId,
-      qualificationId,
-      details,
+    const { name, email, idNumber } = req.body
+    const student = await prisma.student.create({ data: { name, email, idNumber } })
+    // Add to blockchain ledger
+    blockchain.addEntry(`student-${student.id}`, {
+      type: "student-onboard",
+      name,
+      email,
+      idNumber,
       timestamp: Date.now()
     })
-    return res.status(200).json(credential)
+    return res.status(200).json({ ok: true })
   }
   res.status(405).json({ error: "Method not allowed" })
 }
