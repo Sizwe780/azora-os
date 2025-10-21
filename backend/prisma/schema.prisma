@@ -1,0 +1,18 @@
+model Student {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  idNumber  String   @unique
+  createdAt DateTime @default(now())
+  assignments Assignment[]
+  credentials Credential[]
+}
+
+model Credential {
+  id             String   @id @default(uuid())
+  studentId      String
+  qualificationId String
+  details        String
+  createdAt      DateTime @default(now())
+  student        Student  @relation(fields: [studentId], references: [id])
+}
