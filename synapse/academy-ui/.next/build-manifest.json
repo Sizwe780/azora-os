@@ -12,11 +12,6 @@
   ],
   "rootMainFiles": [],
   "pages": {
-    "/": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/index.js"
-    ],
     "/_app": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
@@ -27,15 +22,15 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/courses": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/courses.js"
-    ],
     "/courses/[courseId]": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/courses/[courseId].js"
+    ],
+    "/courses/[courseId]/lessons/[lessonId]": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/courses/[courseId]/lessons/[lessonId].js"
     ]
   },
   "ampFirstPages": []

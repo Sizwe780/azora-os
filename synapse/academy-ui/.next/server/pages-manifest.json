@@ -2,7 +2,7 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/": "pages/index.js",
-  "/courses": "pages/courses.js",
-  "/courses/[courseId]": "pages/courses/[courseId].js"
+  "/courses/[courseId]": "pages/courses/[courseId].js",
+  "/courses/[courseId]/lessons/[lessonId]": "pages/courses/[courseId]/lessons/[lessonId].js",
+  "/api/ai-tutor": "pages/api/ai-tutor.js"
 }
