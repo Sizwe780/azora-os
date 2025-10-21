@@ -1,0 +1,70 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  azrEarned Int      @default(0)
+  achievements Achievement[]
+  studyTasks StudyTask[]
+}
+
+model Achievement {
+  id     String @id @default(uuid())
+  title  String
+  icon   String
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+}
+
+model Leaderboard {
+  id   String @id @default(uuid())
+  name String
+  azr  Int
+}
+
+model Notification {
+  id      String @id @default(uuid())
+  message String
+  user    User   @relation(fields: [userId], references: [id])
+  userId  String
+}
+
+model StudyTask {
+  id     String @id @default(uuid())
+  title  String
+  due    String
+  done   Boolean @default(false)
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+}
+
+model Forum {
+  id        String   @id @default(uuid())
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+  userId    String
+}
+
+model Event {
+  id        String   @id @default(uuid())
+  name      String
+  details   String
+  date      DateTime
+  createdAt DateTime @default(now())
+  userId    String
+}
