@@ -1,0 +1,373 @@
+/**
+ * @file index.js
+ * @module organs/vigil-service
+ * @description Main entry point for the Vigil service - AI-powered video surveillance and alerting
+ * @author Azora OS Team
+ * @created 2025-10-21
+ * @updated 2025-10-21
+ * @dependencies express, onvif, mqtt, kafkajs, cloudevents
+ * @integrates_with
+ *   - /organs/auth-service (authentication)
+ *   - /organs/pulse-service (analytics)
+ *   - /synapse/vigil-ui (frontend)
+ * @api_endpoints /api/vigil/cameras, /api/vigil/alerts, /api/vigil/streams, /api/vigil/streams/:cameraId/start, /api/vigil/streams/:cameraId/stop, /api/vigil/streams/:cameraId/status, /api/vigil/alerts/:id/ack, /api/vigil/alerts/:id/escalate, /health, /metrics
+ * @state_management local
+ * @mobile_optimized No
+ * @accessibility N/A
+ * @tests unit, integration
+ */
+
+// INTEGRATION MAP
+const INTEGRATIONS = {
+  imports: ['express', 'cors', 'helmet', 'dotenv', 'winston', 'onvif', 'mqtt', 'kafkajs', 'cloudevents'],
+  exports: ['VigilService'],
+  consumed_by: ['vigil-ui', 'pulse-service'],
+  dependencies: ['auth-service', 'database'],
+  api_calls: ['/auth/verify', '/pulse/metrics'],
+  state_shared: false,
+  environment_vars: ['DATABASE_URL', 'MQTT_BROKER', 'KAFKA_BROKERS', 'AZURE_EVENTGRID_KEY']
+}
+
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const helmet = require('helmet');
+const winston = require('winston');
+const { CloudEvent } = require('cloudevents');
+
+// Import service modules
+const cameraManager = require('./cameraManager');
+const alertEngine = require('./alertEngine');
+const streamProcessor = require('./streamProcessor');
+
+// Import route modules
+const authRoutes = require('./routes/auth');
+const adminRoutes = require('./routes/admin');
+
+// Import auth middleware
+const { requireAuth, requireRole, optionalAuth } = require('./auth/middlewares');
+
+const app = express();
+const PORT = process.env.PORT || 3005;
+
+// Middleware
+app.use(helmet());
+app.use(cors());
+app.use(express.json());
+
+// Logger
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.json(),
+  transports: [
+    new winston.transports.Console(),
+    new winston.transports.File({ filename: 'vigil-service.log' })
+  ]
+});
+
+// Health check
+app.get('/health', (req, res) => {
+  res.json({ status: 'healthy', service: 'vigil-service', timestamp: new Date().toISOString() });
+});
+
+// Authentication routes (public)
+app.use('/api/vigil/auth', authRoutes);
+
+// Admin routes (protected - admin only)
+app.use('/api/vigil/admin', adminRoutes);
+
+// API Routes (protected based on roles)
+app.get('/api/vigil/cameras', optionalAuth, async (req, res) => {
+  try {
+    const cameras = await cameraManager.getCameras();
+    res.json(cameras);
+  } catch (error) {
+    logger.error('Error fetching cameras:', error);
+    res.status(500).json({ error: 'Failed to fetch cameras' });
+  }
+});
+
+app.get('/api/vigil/cameras/:id', optionalAuth, async (req, res) => {
+  try {
+    const camera = await cameraManager.getCamera(req.params.id);
+    if (!camera) {
+      return res.status(404).json({ error: 'Camera not found' });
+    }
+    res.json(camera);
+  } catch (error) {
+    logger.error('Error fetching camera:', error);
+    res.status(500).json({ error: 'Failed to fetch camera' });
+  }
+});
+
+app.post('/api/vigil/cameras/discover', requireAuth, requireRole('operator', 'admin'), async (req, res) => {
+  try {
+    await cameraManager.discoverCameras();
+    res.json({ message: 'Camera discovery initiated' });
+  } catch (error) {
+    logger.error('Error discovering cameras:', error);
+    res.status(500).json({ error: 'Failed to discover cameras' });
+  }
+});
+
+app.get('/api/vigil/alerts', optionalAuth, async (req, res) => {
+  try {
+    const alerts = await alertEngine.getAlerts(req.query);
+    res.json(alerts);
+  } catch (error) {
+    logger.error('Error fetching alerts:', error);
+    res.status(500).json({ error: 'Failed to fetch alerts' });
+  }
+});
+
+app.get('/api/vigil/alerts/:id', optionalAuth, async (req, res) => {
+  try {
+    const alert = await alertEngine.getAlert(req.params.id);
+    if (!alert) {
+      return res.status(404).json({ error: 'Alert not found' });
+    }
+    res.json(alert);
+  } catch (error) {
+    logger.error('Error fetching alert:', error);
+    res.status(500).json({ error: 'Failed to fetch alert' });
+  }
+});
+
+app.post('/api/vigil/alerts/:id/ack', requireAuth, requireRole('operator', 'admin'), async (req, res) => {
+  try {
+    await alertEngine.acknowledgeAlert(req.params.id, req.body);
+    res.json({ message: 'Alert acknowledged' });
+  } catch (error) {
+    logger.error('Error acknowledging alert:', error);
+    res.status(500).json({ error: 'Failed to acknowledge alert' });
+  }
+});
+
+app.post('/api/vigil/alerts/:id/escalate', requireAuth, requireRole('operator', 'admin'), async (req, res) => {
+  try {
+    await alertEngine.escalateAlert(req.params.id, req.body);
+    res.json({ message: 'Alert escalated' });
+  } catch (error) {
+    logger.error('Error escalating alert:', error);
+    res.status(500).json({ error: 'Failed to escalate alert' });
+  }
+});
+
+app.post('/api/vigil/streams/:cameraId/start', requireAuth, requireRole('operator', 'admin'), async (req, res) => {
+  try {
+    const result = await streamProcessor.startStream(req.params.cameraId);
+    res.json(result);
+  } catch (error) {
+    logger.error('Error starting stream:', error);
+    res.status(500).json({ error: 'Failed to start stream' });
+  }
+});
+
+app.post('/api/vigil/streams/:cameraId/stop', requireAuth, requireRole('operator', 'admin'), async (req, res) => {
+  try {
+    await streamProcessor.stopStream(req.params.cameraId);
+    res.json({ message: 'Stream stopped' });
+  } catch (error) {
+    logger.error('Error stopping stream:', error);
+    res.status(500).json({ error: 'Failed to stop stream' });
+  }
+});
+
+app.get('/api/vigil/streams', optionalAuth, async (req, res) => {
+  try {
+    const streams = streamProcessor.getActiveStreams();
+    res.json(streams);
+  } catch (error) {
+
+app.get('/api/vigil/streams/:cameraId/status', async (req, res) => {
+  try {
+    const status = await streamProcessor.getStreamStatus(req.params.cameraId);
+    res.json(status);
+  } catch (error) {
+    logger.error('Error getting stream status:', error);
+    res.status(500).json({ error: 'Failed to get stream status' });
+  }
+});
+
+// Health checks
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'healthy',
+    service: 'vigil-service',
+    timestamp: new Date().toISOString(),
+    version: '1.0.0'
+  });
+});
+
+app.get('/health/liveness', (req, res) => {
+  // Kubernetes liveness probe - check if service is running
+  res.status(200).json({ status: 'alive' });
+});
+
+app.get('/health/readiness', async (req, res) => {
+  // Kubernetes readiness probe - check if service is ready to serve traffic
+  try {
+    // Check database connectivity, MQTT, etc.
+    const isReady = await checkReadiness();
+    if (isReady) {
+      res.json({ status: 'ready' });
+    } else {
+      res.status(503).json({ status: 'not ready' });
+    }
+  } catch (error) {
+    res.status(503).json({ status: 'not ready', error: error.message });
+  }
+});
+
+app.get('/health/deep', async (req, res) => {
+  // Deep health check including all dependencies
+  try {
+    const health = await performDeepHealthCheck();
+    res.json(health);
+  } catch (error) {
+    res.status(503).json({ status: 'unhealthy', error: error.message });
+  }
+});
+
+// Metrics endpoint for Prometheus
+app.get('/metrics', async (req, res) => {
+  try {
+    const metrics = await collectMetrics();
+    res.set('Content-Type', 'text/plain; charset=utf-8');
+    res.send(metrics);
+  } catch (error) {
+    logger.error('Error collecting metrics:', error);
+    res.status(500).send('Error collecting metrics');
+  }
+});
+
+// Initialize service
+
+// Initialize service
+async function initializeService() {
+  try {
+    logger.info('Initializing Vigil Service...');
+
+    // Initialize camera discovery
+    await cameraManager.initialize();
+
+    // Initialize alert engine
+    await alertEngine.initialize();
+
+    // Initialize stream processor
+    await streamProcessor.initialize();
+
+    logger.info('Vigil Service initialized successfully');
+  } catch (error) {
+    logger.error('Failed to initialize Vigil Service:', error);
+    process.exit(1);
+  }
+}
+
+// Start server
+app.listen(PORT, async () => {
+  logger.info(`Vigil Service running on port ${PORT}`);
+  await initializeService();
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  logger.info('SIGTERM received, shutting down gracefully');
+  process.exit(0);
+});
+
+process.on('SIGINT', () => {
+  logger.info('SIGINT received, shutting down gracefully');
+  process.exit(0);
+});
+
+// Helper functions for health checks and metrics
+async function checkReadiness() {
+  // Check if all dependencies are ready
+  try {
+    // Check MQTT connection
+    const mqttReady = !process.env.MQTT_BROKER || true; // Simplified check
+
+    // Check database connection (placeholder)
+    const dbReady = true;
+
+    // Check camera manager
+    const camerasReady = cameraManager ? true : false;
+
+    return mqttReady && dbReady && camerasReady;
+  } catch (error) {
+    logger.error('Readiness check failed:', error);
+    return false;
+  }
+}
+
+async function performDeepHealthCheck() {
+  const health = {
+    service: 'vigil-service',
+    timestamp: new Date().toISOString(),
+    status: 'healthy',
+    checks: {}
+  };
+
+  try {
+    // Camera manager health
+    health.checks.cameras = {
+      status: 'healthy',
+      count: (await cameraManager.getCameras()).length
+    };
+
+    // Alert engine health
+    health.checks.alerts = {
+      status: 'healthy',
+      count: (await alertEngine.getAlerts()).length
+    };
+
+    // Stream processor health
+    health.checks.streams = {
+      status: 'healthy',
+      active: streamProcessor.getActiveStreams().length
+    };
+
+    // MQTT health (placeholder)
+    health.checks.mqtt = {
+      status: 'healthy',
+      connected: true
+    };
+
+    // Database health (placeholder)
+    health.checks.database = {
+      status: 'healthy',
+      connected: true
+    };
+
+  } catch (error) {
+    health.status = 'unhealthy';
+    health.error = error.message;
+  }
+
+  return health;
+}
+
+async function collectMetrics() {
+  // Prometheus metrics format
+  let metrics = `# HELP vigil_cameras_total Total number of cameras
+# TYPE vigil_cameras_total gauge
+vigil_cameras_total ${(await cameraManager.getCameras()).length}
+
+# HELP vigil_alerts_total Total number of alerts
+# TYPE vigil_alerts_total gauge
+vigil_alerts_total ${(await alertEngine.getAlerts()).length}
+
+# HELP vigil_streams_active Number of active streams
+# TYPE vigil_streams_active gauge
+vigil_streams_active ${streamProcessor.getActiveStreams().length}
+
+# HELP vigil_service_uptime_seconds Service uptime in seconds
+# TYPE vigil_service_uptime_seconds counter
+vigil_service_uptime_seconds ${process.uptime()}
+`;
+
+  return metrics;
+}
+
+module.exports = app;

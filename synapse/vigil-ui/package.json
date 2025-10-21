@@ -1,0 +1,41 @@
+{
+  "name": "vigil-ui",
+  "version": "1.0.0",
+  "description": "Azora Vigil - AI-powered surveillance dashboard and monitoring interface",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "jest"
+  },
+  "dependencies": {
+    "next": "^14.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "@mui/material": "^5.14.0",
+    "@mui/icons-material": "^5.14.0",
+    "@emotion/react": "^11.11.0",
+    "@emotion/styled": "^11.11.0",
+    "axios": "^1.5.0",
+    "socket.io-client": "^4.7.0",
+    "react-player": "^2.13.0",
+    "recharts": "^2.7.0",
+    "date-fns": "^2.30.0",
+    "jwt-decode": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.5.0",
+    "@types/react": "^18.2.0",
+    "typescript": "^5.1.0",
+    "eslint": "^8.49.0",
+    "eslint-config-next": "^13.4.0",
+    "jest": "^29.6.0",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/jest-dom": "^6.1.0"
+  },
+  "keywords": ["azora", "vigil", "surveillance", "dashboard", "monitoring"],
+  "author": "Azora OS",
+  "license": "SEE LICENSE IN LICENSE FILE"
+}

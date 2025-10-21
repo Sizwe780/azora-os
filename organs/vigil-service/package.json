@@ -1,0 +1,40 @@
+{
+  "name": "vigil-service",
+  "version": "1.0.0",
+  "description": "Azora Vigil - AI-powered video surveillance and alerting service",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "jest",
+    "lint": "eslint --config .eslintrc.js src",
+    "build": "npm run lint && npm test"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.0.0",
+    "dotenv": "^16.3.1",
+    "winston": "^3.10.0",
+    "joi": "^17.9.2",
+    "onvif": "^0.6.4",
+    "node-rtsp-stream": "^0.0.9",
+    "mqtt": "^4.3.7",
+    "kafkajs": "^2.2.4",
+    "pg": "^8.11.3",
+    "weaviate-ts-client": "^1.4.0",
+    "@azure/eventgrid": "^4.15.0",
+    "cloudevents": "^8.0.0",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "jest": "^29.6.4",
+    "eslint": "^8.49.0",
+    "@types/node": "^20.5.0"
+  },
+  "keywords": ["azora", "vigil", "ai", "surveillance", "video", "monitoring", "alerting"],
+  "author": "Azora OS",
+  "license": "SEE LICENSE IN LICENSE FILE"
+}
