@@ -13,7 +13,10 @@ export default function NavBar() {
       <Link href="/career" className="mr-6 hover:text-blue-500">Career</Link>
       <Link href="/profile" className="mr-6 hover:text-blue-500">Profile</Link>
       <Link href="/ecosystem-stats" className="mr-6 hover:text-blue-500">Ecosystem Stats</Link>
+      <Link href="/qualifications" className="mr-6 hover:text-blue-500">Qualifications</Link>
+      <Link href="/degrees" className="mr-6 hover:text-blue-500">Degrees</Link>
       <Link href="https://identity.azora.world/login" className="ml-auto px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Login</Link>
     </nav>
   )
+
 }
