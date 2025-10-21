@@ -10,7 +10,7 @@
  *   - /organs/auth-service (authentication)
  *   - /organs/pulse-service (analytics)
  *   - /synapse/vigil-ui (frontend)
- * @api_endpoints /api/vigil/cameras, /api/vigil/alerts, /api/vigil/streams, /api/vigil/streams/:cameraId/start, /api/vigil/streams/:cameraId/stop, /api/vigil/streams/:cameraId/status, /api/vigil/streams/:cameraId/endpoints, /api/vigil/alerts/:id/ack, /api/vigil/alerts/:id/escalate, /api/vigil/alerts/:id/resolve, /api/vigil/alerts/stats, /api/vigil/system/metrics, /api/vigil/auth/login, /api/vigil/auth/me, /api/vigil/admin/users, /health, /metrics
+ * @api_endpoints /api/vigil/cameras, /api/vigil/alerts, /api/vigil/streams, /api/vigil/streams/:cameraId/start, /api/vigil/streams/:cameraId/stop, /api/vigil/streams/:cameraId/status, /api/vigil/alerts/:id/ack, /api/vigil/alerts/:id/escalate, /health, /metrics
  * @state_management local
  * @mobile_optimized No
  * @accessibility N/A
@@ -47,21 +47,7 @@ const adminRoutes = require('./routes/admin');
 // Import auth middleware
 const { requireAuth, requireRole, optionalAuth } = require('./auth/middlewares');
 
-// Import Socket.io
-const { Server } = require('socket.io');
-const http = require('http');
-
 const app = express();
-const server = http.createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: process.env.UI_ORIGIN?.split(',') || ["http://localhost:3000"],
-    methods: ["GET", "POST"],
-    credentials: true
-  },
-  path: '/socket.io'
-});
-
 const PORT = process.env.PORT || 3005;
 
 // Middleware
@@ -69,81 +55,15 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
-// Socket.io connection handling
-io.on('connection', (socket) => {
-  console.log('Client connected:', socket.id);
-
-  socket.on('join-camera', (cameraId) => {
-    socket.join(`camera:${cameraId}`);
-    console.log(`Client ${socket.id} joined camera:${cameraId}`);
-  });
-
-  socket.on('leave-camera', (cameraId) => {
-    socket.leave(`camera:${cameraId}`);
-    console.log(`Client ${socket.id} left camera:${cameraId}`);
-  });
-
-  socket.on('join-dashboard', () => {
-    socket.join('dashboard');
-    console.log(`Client ${socket.id} joined dashboard`);
-  });
-
-  socket.on('disconnect', () => {
-    console.log('Client disconnected:', socket.id);
-  });
+// Logger
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.json(),
+  transports: [
+    new winston.transports.Console(),
+    new winston.transports.File({ filename: 'vigil-service.log' })
+  ]
 });
-
-// Function to publish real-time metrics
-function publishMetrics() {
-  setInterval(async () => {
-    try {
-      // Get camera metrics
-      const cameras = await cameraManager.getCameras();
-      const activeStreams = streamProcessor.getActiveStreams();
-
-      // Calculate system-wide metrics
-      const systemMetrics = {
-        timestamp: new Date().toISOString(),
-        cameras: {
-          total: cameras.length,
-          online: cameras.filter(c => c.status === 'online').length
-        },
-        streams: {
-          active: activeStreams.length,
-          totalProcessed: activeStreams.reduce((sum, s) => sum + s.frameCount, 0)
-        },
-        alerts: {
-          total: (await alertEngine.getAlerts()).length,
-          recent: (await alertEngine.getAlerts()).filter(a =>
-            new Date(a.timestamp) > new Date(Date.now() - 3600000) // Last hour
-          ).length
-        }
-      };
-
-      // Publish to dashboard subscribers
-      io.to('dashboard').emit('system-metrics', systemMetrics);
-
-      // Publish per-camera metrics
-      for (const camera of cameras) {
-        const cameraMetrics = {
-          cameraId: camera.id,
-          timestamp: new Date().toISOString(),
-          status: camera.status,
-          fps: activeStreams.find(s => s.cameraId === camera.id)?.fps || 0,
-          latency: Math.random() * 100 + 50, // Placeholder - would come from inference
-          alertsLastHour: (await alertEngine.getAlerts()).filter(a =>
-            a.event.source.includes(camera.id) &&
-            new Date(a.timestamp) > new Date(Date.now() - 3600000)
-          ).length
-        };
-
-        io.to(`camera:${camera.id}`).emit('camera-metrics', cameraMetrics);
-      }
-    } catch (error) {
-      console.error('Error publishing metrics:', error);
-    }
-  }, 5000); // Update every 5 seconds
-}
 
 // Health check
 app.get('/health', (req, res) => {
@@ -233,67 +153,6 @@ app.post('/api/vigil/alerts/:id/escalate', requireAuth, requireRole('operator', 
   }
 });
 
-app.post('/api/vigil/alerts/:id/resolve', requireAuth, requireRole('operator', 'admin'), async (req, res) => {
-  try {
-    const alert = await alertEngine.getAlert(req.params.id);
-    if (!alert) {
-      return res.status(404).json({ error: 'Alert not found' });
-    }
-
-    // Mark alert as resolved
-    alert.resolved = true;
-    alert.resolvedAt = new Date().toISOString();
-    alert.resolvedBy = req.user.id;
-    alert.resolution = req.body.resolution || 'Resolved by user';
-
-    res.json({
-      message: 'Alert resolved',
-      alert: {
-        id: alert.id,
-        resolved: alert.resolved,
-        resolvedAt: alert.resolvedAt,
-        resolvedBy: alert.resolvedBy,
-        resolution: alert.resolution
-      }
-    });
-  } catch (error) {
-    logger.error('Error resolving alert:', error);
-    res.status(500).json({ error: 'Failed to resolve alert' });
-  }
-});
-
-app.get('/api/vigil/alerts/stats', optionalAuth, async (req, res) => {
-  try {
-    const alerts = await alertEngine.getAlerts();
-    const now = new Date();
-    const last24h = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-    const last7d = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-
-    const stats = {
-      total: alerts.length,
-      acknowledged: alerts.filter(a => a.acknowledged).length,
-      escalated: alerts.filter(a => a.escalated).length,
-      resolved: alerts.filter(a => a.resolved).length,
-      bySeverity: {
-        critical: alerts.filter(a => a.event.data.severity === 'critical').length,
-        high: alerts.filter(a => a.event.data.severity === 'high').length,
-        medium: alerts.filter(a => a.event.data.severity === 'medium').length,
-        low: alerts.filter(a => a.event.data.severity === 'low').length
-      },
-      recent: {
-        last24h: alerts.filter(a => new Date(a.timestamp) > last24h).length,
-        last7d: alerts.filter(a => new Date(a.timestamp) > last7d).length
-      },
-      avgResolutionTime: calculateAvgResolutionTime(alerts)
-    };
-
-    res.json(stats);
-  } catch (error) {
-    logger.error('Error fetching alert stats:', error);
-    res.status(500).json({ error: 'Failed to fetch alert statistics' });
-  }
-});
-
 app.post('/api/vigil/streams/:cameraId/start', requireAuth, requireRole('operator', 'admin'), async (req, res) => {
   try {
     const result = await streamProcessor.startStream(req.params.cameraId);
@@ -320,95 +179,13 @@ app.get('/api/vigil/streams', optionalAuth, async (req, res) => {
     res.json(streams);
   } catch (error) {
 
-app.get('/api/vigil/streams/:cameraId/status', optionalAuth, async (req, res) => {
+app.get('/api/vigil/streams/:cameraId/status', async (req, res) => {
   try {
     const status = await streamProcessor.getStreamStatus(req.params.cameraId);
     res.json(status);
   } catch (error) {
     logger.error('Error getting stream status:', error);
     res.status(500).json({ error: 'Failed to get stream status' });
-  }
-});
-
-app.get('/api/vigil/streams/:cameraId/endpoints', optionalAuth, async (req, res) => {
-  try {
-    const cameraId = req.params.cameraId;
-    const camera = await cameraManager.getCamera(cameraId);
-
-    if (!camera) {
-      return res.status(404).json({ error: 'Camera not found' });
-    }
-
-    // Determine available streaming endpoints based on camera capabilities
-    const endpoints = {
-      webrtc: null,
-      hls: null,
-      dash: null,
-      rtsp: camera.streamUrl // Original RTSP stream
-    };
-
-    // Check if WebRTC is available (would be configured per camera)
-    if (camera.capabilities?.webrtc) {
-      endpoints.webrtc = {
-        wsUrl: `ws://localhost:${PORT}/webrtc/${cameraId}`,
-        iceServers: [
-          { urls: 'stun:stun.l.google.com:19302' }
-        ]
-      };
-    }
-
-    // Check if HLS is available
-    if (camera.capabilities?.hls) {
-      endpoints.hls = `http://localhost:${PORT}/hls/${cameraId}/stream.m3u8`;
-    }
-
-    // Check if DASH is available
-    if (camera.capabilities?.dash) {
-      endpoints.dash = `http://localhost:${PORT}/dash/${cameraId}/manifest.mpd`;
-    }
-
-    res.json(endpoints);
-  } catch (error) {
-    logger.error('Error getting stream endpoints:', error);
-    res.status(500).json({ error: 'Failed to get stream endpoints' });
-  }
-});
-
-app.get('/api/vigil/system/metrics', optionalAuth, async (req, res) => {
-  try {
-    const cameras = await cameraManager.getCameras();
-    const activeStreams = streamProcessor.getActiveStreams();
-    const alerts = await alertEngine.getAlerts();
-
-    const metrics = {
-      timestamp: new Date().toISOString(),
-      cameras: {
-        total: cameras.length,
-        online: cameras.filter(c => c.status === 'online').length
-      },
-      streams: {
-        active: activeStreams.length,
-        totalProcessed: activeStreams.reduce((sum, s) => sum + s.frameCount, 0)
-      },
-      alerts: {
-        total: alerts.length,
-        recent: alerts.filter(a =>
-          new Date(a.timestamp) > new Date(Date.now() - 3600000) // Last hour
-        ).length,
-        bySeverity: {
-          critical: alerts.filter(a => a.event.data.severity === 'critical').length,
-          high: alerts.filter(a => a.event.data.severity === 'high').length,
-          medium: alerts.filter(a => a.event.data.severity === 'medium').length,
-          low: alerts.filter(a => a.event.data.severity === 'low').length
-        }
-      },
-      uptime: process.uptime()
-    };
-
-    res.json(metrics);
-  } catch (error) {
-    logger.error('Error fetching system metrics:', error);
-    res.status(500).json({ error: 'Failed to fetch system metrics' });
   }
 });
 
@@ -488,10 +265,9 @@ async function initializeService() {
 }
 
 // Start server
-server.listen(PORT, async () => {
+app.listen(PORT, async () => {
   logger.info(`Vigil Service running on port ${PORT}`);
   await initializeService();
-  publishMetrics(); // Start real-time metrics publishing
 });
 
 // Graceful shutdown
@@ -570,20 +346,6 @@ async function performDeepHealthCheck() {
   }
 
   return health;
-}
-
-function calculateAvgResolutionTime(alerts) {
-  const resolvedAlerts = alerts.filter(a => a.resolved && a.resolvedAt && a.timestamp);
-
-  if (resolvedAlerts.length === 0) return 0;
-
-  const totalTime = resolvedAlerts.reduce((sum, alert) => {
-    const created = new Date(alert.timestamp);
-    const resolved = new Date(alert.resolvedAt);
-    return sum + (resolved.getTime() - created.getTime());
-  }, 0);
-
-  return totalTime / resolvedAlerts.length / 1000; // Return in seconds
 }
 
 async function collectMetrics() {

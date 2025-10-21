@@ -73,7 +73,14 @@ class CameraManager {
           config: cameraConfig,
           cam: cam,
           status: 'connected',
-          capabilities: await this.getCapabilities(cam)
+          capabilities: await this.getCapabilities(cam),
+          streaming: {
+            webrtc: cameraConfig.webrtc || false,
+            hls: cameraConfig.hls || true, // Default to HLS available
+            dash: cameraConfig.dash || false,
+            rtsp: true // RTSP is always available
+          },
+          streamUrl: `rtsp://${cameraConfig.username}:${cameraConfig.password}@${cameraConfig.hostname}:${cameraConfig.port || 554}/streaming/channels/1`
         });
 
       } catch (error) {
@@ -82,7 +89,14 @@ class CameraManager {
           id: cameraConfig.id,
           config: cameraConfig,
           status: 'disconnected',
-          error: error.message
+          error: error.message,
+          streaming: {
+            webrtc: cameraConfig.webrtc || false,
+            hls: cameraConfig.hls || true,
+            dash: cameraConfig.dash || false,
+            rtsp: true
+          },
+          streamUrl: `rtsp://${cameraConfig.username}:${cameraConfig.password}@${cameraConfig.hostname}:${cameraConfig.port || 554}/streaming/channels/1`
         });
       }
     }
