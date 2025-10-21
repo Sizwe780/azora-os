@@ -39,8 +39,33 @@ const seedDatabase = async () => {
       );
     }
 
-    console.log('✅ Database seeded successfully');
-    process.exit(0);
+    // Seed courses
+    const courses = [
+      {
+        title: 'Introduction to Web Development',
+        description: 'Learn the basics of HTML, CSS, JavaScript, and React for web development.',
+        saqa_unit_standard: 'IT: End User Computing (NQF Level 3/4)',
+        nqf_level: 4
+      },
+      {
+        title: 'Practical AI for Small Business',
+        description: 'Leverage AI tools for marketing, customer service, and data analysis.',
+        saqa_unit_standard: 'Business Administration (NQF Level 4/5)',
+        nqf_level: 4
+      }
+    ];
+
+    for (const course of courses) {
+      const result = await db.query(
+        `INSERT INTO courses (title, description, saqa_unit_standard, nqf_level)
+         VALUES ($1, $2, $3, $4)
+         ON CONFLICT DO NOTHING RETURNING id`,
+        [course.title, course.description, course.saqa_unit_standard, course.nqf_level]
+      );
+      if (result.rows.length > 0) {
+        console.log(`✅ Course "${course.title}" seeded`);
+      }
+    }
   } catch (error) {
     console.error('❌ Seeding failed:', error);
     process.exit(1);

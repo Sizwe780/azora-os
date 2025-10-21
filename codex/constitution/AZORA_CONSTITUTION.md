@@ -2,7 +2,7 @@
 
 **Established:** December 2024  
 **Location:** South Africa 🇿🇦  
-**Mission:** Build Africa's First Trillion-Dollar Software Infrastructure  
+**Mission:** Build Africa's First Full Software Infrastructure  
 **Status:** Living Document - Version 2.1
 
 ---
@@ -12,7 +12,7 @@
 We, the founders and builders of Azora OS, united in purpose to create the first
 complete, self-sufficient software infrastructure owned and operated from Africa,
 do hereby establish this Constitution to govern our operations, economics, and
-path to trillion-dollar valuation.
+path to full software architecture to compete with global giants.
 
 ---
 
@@ -20,7 +20,7 @@ path to trillion-dollar valuation.
 
 ### Section 1: Core Values
 
-1. **Open Source First** - All code is open-source (MIT/Apache 2.0)
+1. **Proprietary Innovation** - Core technology protected under Azora Proprietary License
 2. **African Ownership** - Majority control remains in African hands
 3. **Student Empowerment** - Students earn real money through learning
 4. **Complete Independence** - Build our own infrastructure, reduce external dependencies
@@ -30,7 +30,7 @@ path to trillion-dollar valuation.
 
 ### Section 2: Vision Statement
 
-**"To create the world's first trillion-dollar company born from Africa, built on 
+**"To create the world's first super software company born from Africa, built on 
 complete software infrastructure independence, powered by open-source innovation, 
 and governed by constitutional principles that serve humanity first."**
 
@@ -55,9 +55,6 @@ Year 2:         $10.00 → $100.00 (10x from scale)
 Year 3:         $100.00 → $1,000.00 (10x from network effects)
 Year 5:         $1,000.00 → $10,000.00 (10x from dominance)
 
-Target: $1,000,000 per AZR = $1 Trillion Market Cap
-Timeline: 5-7 years
-```
 
 ### Section 3: Reinvestment Formula
 
@@ -353,7 +350,7 @@ Azora operates under:
 - Own data centers
 - Industry leadership
 
-**Phase 5: Trillion ($100B - $1T)**
+**Phase 5: Full Scale ($100B - $1T)**
 - 10,000,000+ users
 - Complete ecosystem
 - Global standard
@@ -551,7 +548,7 @@ Preparation for quantum computing:
 
 ## SIGNATURES & RATIFICATION
 
-This constitution is ratified by the founding board on December 2024.
+This constitution is ratified by the founding board on October 2025.
 
 **Board Signatures:**
 - [ ] Technical Lead
@@ -570,6 +567,7 @@ This constitution is ratified by the founding board on December 2024.
 - v2.1 - Added special withdrawal provision for Sizwe Ngwenya (Oct 2025)
 - v3.0 - Biological, Cosmological, and Natural Principles Integration (Oct 2025)
 - v3.1 - Phoenix Protocol and Living Coin Genetic Metadata (Oct 2025)
+- v3.2 - Frontend Governance and Subdomain Architecture (Oct 2025)
 
 ---
 
@@ -653,6 +651,66 @@ Services are Dormant-by-Default, awakening only on demand to minimize metabolic 
 
 ### Section 6: Bicameral AI Mind
 Brainstem (Neural Broker) handles automatic processes; Cortex (Main AI) handles conscious tasks.
+
+---
+
+## ARTICLE XV: FRONTEND GOVERNANCE
+
+### Section 1: Subdomain Architecture
+Azora shall maintain a subdomain-based frontend architecture to serve different user segments and industries, ensuring each user experiences Azora tailored to their needs.
+
+**Core Subdomains:**
+- **azora.world** - Main platform landing and general access
+- **learn.azora.world** - Student learning and earning platform
+- **enterprise.azora.world** - Business solutions and SaaS products
+- **marketplace.azora.world** - Service marketplace and P2P transactions
+- **pay.azora.world** - Payment processing and financial services
+- **cloud.azora.world** - Infrastructure hosting and cloud services
+- **dev.azora.world** - Developer tools and API access
+- **compliance.azora.world** - Regulatory compliance and reporting
+
+### Section 2: Frontend Independence Principle
+Each frontend shall operate as an autonomous application while adhering to constitutional principles, service APIs, and shared design systems.
+
+**Requirements:**
+- Constitutional compliance enforced via AI Polymerase
+- Service integration through standardized APIs
+- Shared UI components and design tokens
+- Independent deployment and scaling
+
+### Section 3: User Experience Personalization
+Frontends shall leverage AI services to provide personalized experiences based on user type, industry, and behavior patterns.
+
+**Personalization Engines:**
+- Student frontends prioritize learning paths and earning opportunities
+- Enterprise frontends focus on ROI and compliance
+- Developer frontends emphasize tooling and documentation
+
+### Section 4: Service Integration Mandate
+All frontends must integrate with relevant Azora services, ensuring seamless functionality and data flow.
+
+**Integration Requirements:**
+- Authentication via Azora Auth service
+- Payments via Azora Pay service
+- AI features via Azora Nexus and AI services
+- Marketplace via Azora Forge
+- Compliance via Azora Aegis
+
+### Section 5: Subdomain Governance
+Subdomain creation and management follows constitutional governance.
+
+**Approval Process:**
+- New subdomains require 3/5 board approval
+- Must demonstrate market need and service alignment
+- Annual review of subdomain performance and relevance
+
+### Section 6: Frontend Evolution Protocol
+Frontends evolve through A/B testing and user feedback, following the Cannibal Protocol for competing implementations.
+
+**Evolution Rules:**
+- Parallel frontend versions may compete
+- Superior UX metrics determine winner
+- Failed experiments feed Decomposition Engine
 
 ---
 

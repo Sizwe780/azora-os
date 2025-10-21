@@ -3,24 +3,46 @@
  * @description Dedicated database management for student earnings with connection pooling
  */
 
-const { Pool } = require('pg');
+const sqlite3 = require('sqlite3').verbose();
+const { promisify } = require('util');
 
-const pool = new Pool({
-  host: process.env.STUDENT_DB_HOST || 'student-earnings-db',
-  port: process.env.STUDENT_DB_PORT || 5432,
-  database: process.env.STUDENT_DB_NAME || 'student_earnings_db',
-  user: process.env.STUDENT_DB_USER || 'student_earnings_user',
-  password: process.env.STUDENT_DB_PASSWORD || 'secure_student_earnings_pass',
-  max: 20, // Maximum pool size
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+// Use SQLite for development
+const db = new sqlite3.Database('./student_earnings.db', (err) => {
+  if (err) {
+    console.error('Error opening database:', err.message);
+  } else {
+    console.log('Connected to SQLite database.');
+  }
 });
 
-pool.on('error', (err) => {
-  console.error('Unexpected error on idle database client', err);
-  process.exit(-1);
-});
+// Promisify database methods
+const dbRun = promisify(db.run.bind(db));
+const dbGet = promisify(db.get.bind(db));
+const dbAll = promisify(db.all.bind(db));
+
+// Create a pool-like interface for compatibility
+const pool = {
+  query: async (text, params = []) => {
+    return new Promise((resolve, reject) => {
+      if (text.trim().toUpperCase().startsWith('SELECT')) {
+        db.all(text, params, (err, rows) => {
+          if (err) reject(err);
+          else resolve(rows);
+        });
+      } else {
+        db.run(text, params, function(err) {
+          if (err) reject(err);
+          else resolve({ rowCount: this.changes || 0 });
+        });
+      }
+    });
+  },
+  connect: async () => ({
+    query: pool.query,
+    release: () => {} // No-op for SQLite
+  }),
+  end: () => db.close()
+};
 
 /**
  * Initialize all database tables and indexes
@@ -30,220 +52,247 @@ const initializeDatabase = async () => {
   try {
     console.log('🔧 Initializing Student Earnings Database...');
 
-    // Enable extensions
-    await client.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
-    await client.query('CREATE EXTENSION IF NOT EXISTS "pgcrypto"');
-
-    // Student Wallets Table
+    // Learning Platform Tables
     await client.query(`
-      CREATE TABLE IF NOT EXISTS student_wallets (
-        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-        student_id VARCHAR(255) UNIQUE NOT NULL,
-        wallet_address VARCHAR(255) UNIQUE NOT NULL,
-        balance DECIMAL(20, 8) DEFAULT 0 CHECK (balance >= 0),
-        pending_balance DECIMAL(20, 8) DEFAULT 0 CHECK (pending_balance >= 0),
-        total_earned DECIMAL(20, 8) DEFAULT 0,
-        total_withdrawn DECIMAL(20, 8) DEFAULT 0,
-        kyc_verified BOOLEAN DEFAULT FALSE,
-        kyc_verified_at TIMESTAMP,
-        tax_number VARCHAR(50),
-        id_number VARCHAR(50),
-        phone_number VARCHAR(20),
-        email VARCHAR(255),
-        banking_details JSONB,
-        wallet_status VARCHAR(50) DEFAULT 'active' CHECK (wallet_status IN ('active', 'suspended', 'closed')),
-        risk_score INTEGER DEFAULT 0 CHECK (risk_score >= 0 AND risk_score <= 100),
-        created_at TIMESTAMP DEFAULT NOW(),
-        updated_at TIMESTAMP DEFAULT NOW(),
-        last_activity_at TIMESTAMP DEFAULT NOW()
-      );
+      CREATE TABLE IF NOT EXISTS courses (
+        id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(4))) || '-' || lower(hex(randomblob(2))) || '-4' || substr(lower(hex(randomblob(2))),2) || '-' || substr('89ab',abs(random()) % 4 + 1, 1) || substr(lower(hex(randomblob(2))),2) || '-' || lower(hex(randomblob(6)))),
+        title TEXT NOT NULL,
+        description TEXT,
+        saqa_unit_standard TEXT,
+        nqf_level INTEGER,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
 
-      CREATE INDEX IF NOT EXISTS idx_student_wallets_student_id ON student_wallets(student_id);
-      CREATE INDEX IF NOT EXISTS idx_student_wallets_wallet_address ON student_wallets(wallet_address);
-      CREATE INDEX IF NOT EXISTS idx_student_wallets_kyc ON student_wallets(kyc_verified);
-      CREATE INDEX IF NOT EXISTS idx_student_wallets_status ON student_wallets(wallet_status);
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS modules (
+        id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(4))) || '-' || lower(hex(randomblob(2))) || '-4' || substr(lower(hex(randomblob(2))),2) || '-' || substr('89ab',abs(random()) % 4 + 1, 1) || substr(lower(hex(randomblob(2))),2) || '-' || lower(hex(randomblob(6)))),
+        course_id TEXT REFERENCES courses(id) ON DELETE CASCADE,
+        title TEXT NOT NULL,
+        description TEXT,
+        order_index INTEGER NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS lessons (
+        id TEXT PRIMARY KEY DEFAULT (hex(randomblob(16))),
+        module_id TEXT REFERENCES modules(id) ON DELETE CASCADE,
+        title TEXT NOT NULL,
+        content TEXT,
+        video_url TEXT,
+        order_index INTEGER NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS quizzes (
+        id TEXT PRIMARY KEY DEFAULT (hex(randomblob(16))),
+        lesson_id TEXT REFERENCES lessons(id) ON DELETE CASCADE,
+        question TEXT NOT NULL,
+        options TEXT NOT NULL, -- JSON string
+        correct_answer TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id TEXT PRIMARY KEY DEFAULT (hex(randomblob(16))),
+        email TEXT UNIQUE NOT NULL,
+        name TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS enrollments (
+        id TEXT PRIMARY KEY DEFAULT (hex(randomblob(16))),
+        user_id TEXT REFERENCES users(id) ON DELETE CASCADE,
+        course_id TEXT REFERENCES courses(id) ON DELETE CASCADE,
+        enrolled_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE(user_id, course_id)
+      )
+    `);
+
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS lesson_progress (
+        id TEXT PRIMARY KEY DEFAULT (hex(randomblob(16))),
+        user_id TEXT REFERENCES users(id) ON DELETE CASCADE,
+        lesson_id TEXT REFERENCES lessons(id) ON DELETE CASCADE,
+        completed BOOLEAN DEFAULT FALSE,
+        quiz_score REAL,
+        completed_at DATETIME,
+        UNIQUE(user_id, lesson_id)
+      )
+    `);
+
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS azr_transactions (
+        id TEXT PRIMARY KEY DEFAULT (hex(randomblob(16))),
+        user_id TEXT REFERENCES users(id) ON DELETE CASCADE,
+        amount REAL NOT NULL,
+        reason TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
     `);
 
     // Minting Activities Table
     await client.query(`
       CREATE TABLE IF NOT EXISTS minting_activities (
-        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-        student_id VARCHAR(255) NOT NULL,
-        activity_type VARCHAR(100) NOT NULL,
-        tokens_earned DECIMAL(20, 8) NOT NULL CHECK (tokens_earned > 0),
-        blockchain_tx_hash VARCHAR(255),
-        metadata JSONB DEFAULT '{}',
+        id TEXT PRIMARY KEY DEFAULT (hex(randomblob(16))),
+        student_id TEXT NOT NULL,
+        activity_type TEXT NOT NULL,
+        tokens_earned REAL NOT NULL CHECK (tokens_earned > 0),
+        blockchain_tx_hash TEXT,
+        metadata TEXT, -- JSON string
         compliance_verified BOOLEAN DEFAULT FALSE,
-        compliance_check_data JSONB,
-        activity_status VARCHAR(50) DEFAULT 'completed' CHECK (activity_status IN ('pending', 'completed', 'failed', 'reversed')),
-        source_system VARCHAR(100),
-        academic_year VARCHAR(20),
-        semester VARCHAR(20),
-        course_code VARCHAR(50),
-        created_at TIMESTAMP DEFAULT NOW(),
-        processed_at TIMESTAMP,
+        compliance_check_data TEXT, -- JSON string
+        activity_status TEXT DEFAULT 'completed' CHECK (activity_status IN ('pending', 'completed', 'failed', 'reversed')),
+        source_system TEXT,
+        academic_year TEXT,
+        semester TEXT,
+        course_code TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        processed_at DATETIME,
         FOREIGN KEY (student_id) REFERENCES student_wallets(student_id) ON DELETE CASCADE
-      );
-
-      CREATE INDEX IF NOT EXISTS idx_minting_student_id ON minting_activities(student_id);
-      CREATE INDEX IF NOT EXISTS idx_minting_activity_type ON minting_activities(activity_type);
-      CREATE INDEX IF NOT EXISTS idx_minting_created_at ON minting_activities(created_at DESC);
-      CREATE INDEX IF NOT EXISTS idx_minting_status ON minting_activities(activity_status);
-      CREATE INDEX IF NOT EXISTS idx_minting_blockchain_tx ON minting_activities(blockchain_tx_hash);
+      )
     `);
+
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_minting_student_id ON minting_activities(student_id)`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_minting_activity_type ON minting_activities(activity_type)`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_minting_created_at ON minting_activities(created_at DESC)`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_minting_status ON minting_activities(activity_status)`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_minting_blockchain_tx ON minting_activities(blockchain_tx_hash)`);
 
     // Instant Withdrawals Table
     await client.query(`
       CREATE TABLE IF NOT EXISTS instant_withdrawals (
-        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-        student_id VARCHAR(255) NOT NULL,
-        amount DECIMAL(20, 8) NOT NULL CHECK (amount > 0),
-        destination_account VARCHAR(255) NOT NULL,
-        destination_type VARCHAR(50) DEFAULT 'bank' CHECK (destination_type IN ('bank', 'crypto', 'mobile_money', 'ewallet')),
-        status VARCHAR(50) DEFAULT 'pending' CHECK (status IN ('pending', 'processing', 'completed', 'failed', 'cancelled', 'reversed')),
-        blockchain_tx_hash VARCHAR(255),
-        compliance_check JSONB,
-        compliance_status VARCHAR(50) DEFAULT 'pending',
+        id TEXT PRIMARY KEY DEFAULT (hex(randomblob(16))),
+        student_id TEXT NOT NULL,
+        amount REAL NOT NULL CHECK (amount > 0),
+        destination_account TEXT NOT NULL,
+        destination_type TEXT DEFAULT 'bank' CHECK (destination_type IN ('bank', 'crypto', 'mobile_money', 'ewallet')),
+        status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'processing', 'completed', 'failed', 'cancelled', 'reversed')),
+        blockchain_tx_hash TEXT,
+        compliance_check TEXT, -- JSON string
+        compliance_status TEXT DEFAULT 'pending',
         failure_reason TEXT,
-        fees_charged DECIMAL(20, 8) DEFAULT 0,
-        net_amount DECIMAL(20, 8),
+        fees_charged REAL DEFAULT 0,
+        net_amount REAL,
         processing_time_seconds INTEGER,
-        processed_at TIMESTAMP,
-        completed_at TIMESTAMP,
-        created_at TIMESTAMP DEFAULT NOW(),
+        processed_at DATETIME,
+        completed_at DATETIME,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (student_id) REFERENCES student_wallets(student_id) ON DELETE CASCADE
-      );
-
-      CREATE INDEX IF NOT EXISTS idx_withdrawals_student_id ON instant_withdrawals(student_id);
-      CREATE INDEX IF NOT EXISTS idx_withdrawals_status ON instant_withdrawals(status);
-      CREATE INDEX IF NOT EXISTS idx_withdrawals_created_at ON instant_withdrawals(created_at DESC);
-      CREATE INDEX IF NOT EXISTS idx_withdrawals_blockchain_tx ON instant_withdrawals(blockchain_tx_hash);
+      )
     `);
+
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_withdrawals_student_id ON instant_withdrawals(student_id)`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_withdrawals_status ON instant_withdrawals(status)`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_withdrawals_created_at ON instant_withdrawals(created_at DESC)`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_withdrawals_blockchain_tx ON instant_withdrawals(blockchain_tx_hash)`);
 
     // Transaction Ledger Table (Double-entry bookkeeping)
     await client.query(`
       CREATE TABLE IF NOT EXISTS transaction_ledger (
-        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-        student_id VARCHAR(255) NOT NULL,
-        transaction_type VARCHAR(50) NOT NULL CHECK (transaction_type IN ('credit', 'debit', 'reversal', 'fee')),
-        amount DECIMAL(20, 8) NOT NULL,
-        balance_before DECIMAL(20, 8) NOT NULL,
-        balance_after DECIMAL(20, 8) NOT NULL,
-        reference_id UUID,
-        reference_type VARCHAR(50) CHECK (reference_type IN ('minting', 'withdrawal', 'adjustment', 'bonus', 'penalty')),
+        id TEXT PRIMARY KEY DEFAULT (hex(randomblob(16))),
+        student_id TEXT NOT NULL,
+        transaction_type TEXT NOT NULL CHECK (transaction_type IN ('credit', 'debit', 'reversal', 'fee')),
+        amount REAL NOT NULL,
+        balance_before REAL NOT NULL,
+        balance_after REAL NOT NULL,
+        reference_id TEXT,
+        reference_type TEXT CHECK (reference_type IN ('minting', 'withdrawal', 'adjustment', 'bonus', 'penalty')),
         description TEXT,
-        metadata JSONB DEFAULT '{}',
-        created_at TIMESTAMP DEFAULT NOW(),
+        metadata TEXT, -- JSON string
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (student_id) REFERENCES student_wallets(student_id) ON DELETE CASCADE
-      );
-
-      CREATE INDEX IF NOT EXISTS idx_ledger_student_id ON transaction_ledger(student_id);
-      CREATE INDEX IF NOT EXISTS idx_ledger_created_at ON transaction_ledger(created_at DESC);
-      CREATE INDEX IF NOT EXISTS idx_ledger_reference ON transaction_ledger(reference_id, reference_type);
-      CREATE INDEX IF NOT EXISTS idx_ledger_transaction_type ON transaction_ledger(transaction_type);
+      )
     `);
+
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_ledger_student_id ON transaction_ledger(student_id)`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_ledger_created_at ON transaction_ledger(created_at DESC)`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_ledger_reference ON transaction_ledger(reference_id, reference_type)`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_ledger_transaction_type ON transaction_ledger(transaction_type)`);
 
     // Compliance Audit Log
     await client.query(`
       CREATE TABLE IF NOT EXISTS compliance_audit_log (
-        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-        student_id VARCHAR(255) NOT NULL,
-        action VARCHAR(100) NOT NULL,
-        compliance_type VARCHAR(50) NOT NULL CHECK (compliance_type IN ('KYC', 'AML', 'TAX', 'TRANSACTION_LIMIT', 'IDENTITY', 'SANCTIONS')),
-        status VARCHAR(50) NOT NULL CHECK (status IN ('passed', 'failed', 'pending', 'flagged')),
-        check_data JSONB,
-        risk_assessment JSONB,
-        flags JSONB DEFAULT '[]',
-        reviewed_by VARCHAR(255),
-        reviewed_at TIMESTAMP,
-        created_at TIMESTAMP DEFAULT NOW(),
+        id TEXT PRIMARY KEY DEFAULT (hex(randomblob(16))),
+        student_id TEXT NOT NULL,
+        action TEXT NOT NULL,
+        compliance_type TEXT NOT NULL CHECK (compliance_type IN ('KYC', 'AML', 'TAX', 'TRANSACTION_LIMIT', 'IDENTITY', 'SANCTIONS')),
+        status TEXT NOT NULL CHECK (status IN ('passed', 'failed', 'pending', 'flagged')),
+        check_data TEXT, -- JSON string
+        risk_assessment TEXT, -- JSON string
+        flags TEXT, -- JSON string
+        reviewed_by TEXT,
+        reviewed_at DATETIME,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (student_id) REFERENCES student_wallets(student_id) ON DELETE CASCADE
-      );
-
-      CREATE INDEX IF NOT EXISTS idx_audit_student_id ON compliance_audit_log(student_id);
-      CREATE INDEX IF NOT EXISTS idx_audit_compliance_type ON compliance_audit_log(compliance_type);
-      CREATE INDEX IF NOT EXISTS idx_audit_status ON compliance_audit_log(status);
-      CREATE INDEX IF NOT EXISTS idx_audit_created_at ON compliance_audit_log(created_at DESC);
+      )
     `);
+
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_audit_student_id ON compliance_audit_log(student_id)`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_audit_compliance_type ON compliance_audit_log(compliance_type)`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_audit_status ON compliance_audit_log(status)`);
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_audit_created_at ON compliance_audit_log(created_at DESC)`);
 
     // Daily Aggregates for Performance
     await client.query(`
       CREATE TABLE IF NOT EXISTS daily_earning_aggregates (
-        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-        student_id VARCHAR(255) NOT NULL,
-        date DATE NOT NULL,
-        total_earned DECIMAL(20, 8) DEFAULT 0,
-        total_withdrawn DECIMAL(20, 8) DEFAULT 0,
+        id TEXT PRIMARY KEY DEFAULT (hex(randomblob(16))),
+        student_id TEXT NOT NULL,
+        date TEXT NOT NULL,
+        total_earned REAL DEFAULT 0,
+        total_withdrawn REAL DEFAULT 0,
         activities_count INTEGER DEFAULT 0,
         withdrawals_count INTEGER DEFAULT 0,
-        created_at TIMESTAMP DEFAULT NOW(),
-        updated_at TIMESTAMP DEFAULT NOW(),
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         UNIQUE(student_id, date),
         FOREIGN KEY (student_id) REFERENCES student_wallets(student_id) ON DELETE CASCADE
-      );
-
-      CREATE INDEX IF NOT EXISTS idx_daily_agg_student_date ON daily_earning_aggregates(student_id, date DESC);
+      )
     `);
+
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_daily_agg_student_date ON daily_earning_aggregates(student_id, date DESC)`);
 
     // Activity Type Configuration
     await client.query(`
       CREATE TABLE IF NOT EXISTS activity_type_config (
-        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-        activity_type VARCHAR(100) UNIQUE NOT NULL,
-        tokens_reward DECIMAL(20, 8) NOT NULL CHECK (tokens_reward >= 0),
+        id TEXT PRIMARY KEY DEFAULT (hex(randomblob(16))),
+        activity_type TEXT UNIQUE NOT NULL,
+        tokens_reward REAL NOT NULL CHECK (tokens_reward >= 0),
         description TEXT,
         is_active BOOLEAN DEFAULT TRUE,
         requires_verification BOOLEAN DEFAULT FALSE,
-        category VARCHAR(50),
-        multiplier DECIMAL(4, 2) DEFAULT 1.00,
-        created_at TIMESTAMP DEFAULT NOW(),
-        updated_at TIMESTAMP DEFAULT NOW()
-      );
-
-      CREATE INDEX IF NOT EXISTS idx_activity_type_active ON activity_type_config(is_active);
+        category TEXT,
+        multiplier REAL DEFAULT 1.00,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
     `);
+
+    await client.query(`CREATE INDEX IF NOT EXISTS idx_activity_type_active ON activity_type_config(is_active)`);
 
     // Insert default activity types
     await client.query(`
-      INSERT INTO activity_type_config (activity_type, tokens_reward, description, category, requires_verification)
+      INSERT OR IGNORE INTO activity_type_config (activity_type, tokens_reward, description, category, requires_verification)
       VALUES 
-        ('coursework_completion', 10, 'Completed coursework assignment', 'academic', true),
-        ('quiz_passed', 5, 'Passed a quiz with 70% or higher', 'academic', true),
-        ('project_submission', 25, 'Submitted a major project', 'academic', true),
-        ('peer_review', 3, 'Completed a peer review', 'collaboration', false),
-        ('community_contribution', 15, 'Made a community contribution', 'community', false),
-        ('research_paper', 50, 'Published a research paper', 'research', true),
-        ('hackathon_participation', 100, 'Participated in a hackathon', 'events', true),
-        ('tutorial_completion', 8, 'Completed an online tutorial', 'learning', false),
-        ('attendance_milestone', 20, 'Perfect attendance for a month', 'academic', true),
-        ('mentorship_session', 12, 'Completed a mentorship session', 'collaboration', false)
-      ON CONFLICT (activity_type) DO NOTHING;
-    `);
-
-    // Create triggers for updated_at
-    await client.query(`
-      CREATE OR REPLACE FUNCTION update_updated_at_column()
-      RETURNS TRIGGER AS $$
-      BEGIN
-        NEW.updated_at = NOW();
-        RETURN NEW;
-      END;
-      $$ language 'plpgsql';
-
-      DROP TRIGGER IF EXISTS update_student_wallets_updated_at ON student_wallets;
-      CREATE TRIGGER update_student_wallets_updated_at 
-        BEFORE UPDATE ON student_wallets 
-        FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
-      DROP TRIGGER IF EXISTS update_activity_type_config_updated_at ON activity_type_config;
-      CREATE TRIGGER update_activity_type_config_updated_at 
-        BEFORE UPDATE ON activity_type_config 
-        FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
-      DROP TRIGGER IF EXISTS update_daily_aggregates_updated_at ON daily_earning_aggregates;
-      CREATE TRIGGER update_daily_aggregates_updated_at 
-        BEFORE UPDATE ON daily_earning_aggregates 
-        FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+        ('coursework_completion', 10, 'Completed coursework assignment', 'academic', 1),
+        ('quiz_passed', 5, 'Passed a quiz with 70% or higher', 'academic', 1),
+        ('project_submission', 25, 'Submitted a major project', 'academic', 1),
+        ('peer_review', 3, 'Completed a peer review', 'collaboration', 0),
+        ('community_contribution', 15, 'Made a community contribution', 'community', 0),
+        ('research_paper', 50, 'Published a research paper', 'research', 1),
+        ('hackathon_participation', 100, 'Participated in a hackathon', 'events', 1),
+        ('tutorial_completion', 8, 'Completed an online tutorial', 'learning', 0),
+        ('attendance_milestone', 20, 'Perfect attendance for a month', 'academic', 1),
+        ('mentorship_session', 12, 'Completed a mentorship session', 'collaboration', 0)
     `);
 
     console.log('✅ Student Earnings Database initialized successfully');

@@ -10,6 +10,7 @@ const visionApi = require('./api/vision');
 const chatApi = require('./api/chat');
 const authApi = require('./api/auth');
 const reputationApi = require('./api/reputation');
+const learnApi = require('./api/learn');
 
 const app = express();
 app.use(express.json());
@@ -21,6 +22,7 @@ app.use('/api/quantum', quantumApi);
 app.use('/api/voice', voiceApi);
 app.use('/api/vision', visionApi);
 app.use('/api/reputation', reputationApi);
+app.use('/api/learn', learnApi);
 
 mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/azora', {
   useNewUrlParser: true,

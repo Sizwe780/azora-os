@@ -4,6 +4,11 @@ import { useState, useEffect, useMemo } from 'react';
 export default function LandingPage() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isInstallable, setIsInstallable] = useState(false);
+  const [platformData, setPlatformData] = useState({
+    azrValue: '$1.00',
+    activeUsers: '1,245',
+    services: '147'
+  });
   
   // Use useMemo to avoid re-computing on every render
   const isIOS = useMemo(() => /iPad|iPhone|iPod/.test(navigator.userAgent), []);
@@ -41,6 +46,34 @@ export default function LandingPage() {
     setDeferredPrompt(null);
     setIsInstallable(false);
   };
+
+  // Fetch platform data on mount
+  useEffect(() => {
+    const fetchPlatformData = async () => {
+      try {
+        // Fetch AZR value from valuation service
+        const valuationResponse = await fetch('http://localhost:6789/api/valuation-proof');
+        if (valuationResponse.ok) {
+          const valuationData = await valuationResponse.json();
+          // Assuming it returns { valuation: '$10,000,000' } or similar
+          if (valuationData.valuation) {
+            setPlatformData(prev => ({ ...prev, azrValue: valuationData.valuation }));
+          } else if (valuationData.proof) {
+            // If it's a proof, show $10M
+            setPlatformData(prev => ({ ...prev, azrValue: '$10,000,000' }));
+          }
+        }
+
+        // For now, keep user count and services as default or fetch from other services
+        // TODO: Add endpoints for user count and services count
+      } catch (error) {
+        console.error('Error fetching platform data:', error);
+        // Keep default values
+      }
+    };
+
+    fetchPlatformData();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-950 to-pink-950 text-white">
@@ -82,17 +115,17 @@ export default function LandingPage() {
           </button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto">
           <div className="bg-white/5 backdrop-blur p-6 rounded-2xl">
-            <div className="text-3xl font-bold text-cyan-400">$1.00</div>
+            <div className="text-3xl font-bold text-cyan-400">{platformData.azrValue}</div>
             <div className="text-sm text-gray-400">AZR Value</div>
           </div>
           <div className="bg-white/5 backdrop-blur p-6 rounded-2xl">
-            <div className="text-3xl font-bold text-cyan-400">1,245</div>
+            <div className="text-3xl font-bold text-cyan-400">{platformData.activeUsers}</div>
             <div className="text-sm text-gray-400">Active Users</div>
           </div>
           <div className="bg-white/5 backdrop-blur p-6 rounded-2xl">
-            <div className="text-3xl font-bold text-cyan-400">147</div>
+            <div className="text-3xl font-bold text-cyan-400">{platformData.services}</div>
             <div className="text-sm text-gray-400">Services</div>
           </div>
         </div>

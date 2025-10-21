@@ -6,11 +6,23 @@ Azora OS is a modular, API-first platform that integrates AI, blockchain, and en
 
 ## Current Status
 
-- **12+ Services Upgraded**: Enterprise-grade with TypeScript, Prisma ORM, PostgreSQL persistence, and comprehensive audit trails
+- **50+ Services Upgraded**: Enterprise-grade with TypeScript, Prisma ORM, PostgreSQL persistence, and comprehensive audit trails
 - **Constitutional Governance**: AI-driven compliance with biological, cosmological, and natural principles
 - **Production Ready**: Docker, health checks, and scalable architecture
 
 ## Architecture
+
+### Frontend Applications
+Azora OS features a multi-frontend architecture with subdomain-based access for different user segments:
+
+- **azora.world** - Main platform (synapse frontend) (synapse frontend)
+- **learn.azora.world** - Student learning platform (learn-ui)
+- **enterprise.azora.world** - Business solutions (enterprise-ui)
+- **marketplace.azora.world** - Service marketplace (marketplace-ui)
+- **pay.azora.world** - Payment processing (pay-ui)
+- **cloud.azora.world** - Infrastructure hosting (cloud-ui)
+- **dev.azora.world** - Developer tools (dev-ui)
+- **compliance.azora.world** - Compliance dashboard (compliance-ui)
 
 ### Core Services (Upgraded)
 - **ai-unified**: Unified AI task routing and model management

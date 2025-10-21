@@ -49,6 +49,32 @@ router.get('/training/:user', async (req, res) => {
   }
 });
 
+// GET /api/compliance/dashboard
+router.get('/dashboard', async (req, res) => {
+  try {
+    const totalIncidents = await Incident.countDocuments();
+    const pendingIncidents = await Incident.countDocuments({ status: 'reported' });
+    const totalTraining = await TrainingRecord.countDocuments();
+    const completedTraining = await TrainingRecord.countDocuments({ status: 'completed' });
+    const recentAudits = await AuditLog.find().sort({ timestamp: -1 }).limit(10).lean();
+
+    const data = {
+      overview: {
+        totalIncidents,
+        pendingIncidents,
+        totalTraining,
+        completedTraining,
+        complianceRate: totalTraining > 0 ? (completedTraining / totalTraining * 100).toFixed(1) : 0
+      },
+      recentAudits
+    };
+
+    res.json({ data });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // GET /api/compliance/audit-logs
 router.get('/audit-logs', async (req, res) => {
   try {
