@@ -77,18 +77,23 @@ class AlertEngine {
         snapshotUrl: alertData.snapshotUrl,
         videoClipUrl: alertData.videoClipUrl,
         model: alertData.model || 'default',
+        cameraId: alertData.cameraId,
         cameraFov: alertData.cameraId,
         rules: alertData.rules || []
       }
     });
 
     // Store alert
-    this.alerts.push({
+    const alert = {
       id: event.id,
       event: event,
       timestamp: event.time,
+      acknowledged: false,
+      escalated: false,
+      resolved: false,
       processed: false
-    });
+    };
+    this.alerts.push(alert);
 
     // Publish to MQTT
     if (this.mqttClient) {
@@ -136,10 +141,96 @@ class AlertEngine {
     return 'alert-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
   }
 
+  // Test-compatible methods
+  async createAlert(alertData) {
+    // Extract data from the event structure used in tests
+    const eventData = alertData.event || alertData;
+    
+    // Validate alert data
+    if (!eventData.type || eventData.type.trim() === '') {
+      throw new Error('Invalid alert event type');
+    }
+
+    if (!eventData.data) {
+      throw new Error('Alert event data is required');
+    }
+
+    const generateData = {
+      type: eventData.type.replace('vigil.azora.alert.', ''),
+      site: alertData.site,
+      cameraId: eventData.data.cameraId,
+      severity: eventData.data.severity,
+      confidence: eventData.data.confidence,
+      zone: alertData.zone,
+      frameTs: eventData.data.frameTs,
+      trackId: eventData.data.trackId,
+      bbox: eventData.data.bbox,
+      snapshotUrl: eventData.data.snapshotUrl,
+      videoClipUrl: eventData.data.videoClipUrl,
+      model: eventData.data.model,
+      rules: eventData.data.rules
+    };
+
+    await this.generateAlert(generateData);
+    // Return the last alert that was created
+    return this.alerts[this.alerts.length - 1];
+  }
+
+  async acknowledgeAlert(id, userId, notes) {
+    const alert = this.alerts.find(a => a.id === id);
+    if (alert) {
+      alert.acknowledged = true;
+      alert.acknowledgedAt = new Date().toISOString();
+      alert.acknowledgedBy = userId || 'system';
+      alert.notes = notes || '';
+
+      console.log(`Alert ${id} acknowledged by ${alert.acknowledgedBy}`);
+      return true;
+    }
+    return false;
+  }
+
+  async escalateAlert(id, level, notes) {
+    const alert = this.alerts.find(a => a.id === id);
+    if (alert) {
+      alert.escalated = true;
+      alert.escalatedAt = new Date().toISOString();
+      alert.escalationLevel = level || 'high';
+      alert.escalationNotes = notes || '';
+
+      // Send escalated alert to additional channels
+      await this.sendEscalatedAlert(alert);
+
+      console.log(`Alert ${id} escalated to ${alert.escalationLevel}`);
+      return true;
+    }
+    return false;
+  }
+
+  async resolveAlert(id, userId, notes) {
+    const alert = this.alerts.find(a => a.id === id);
+    if (alert) {
+      alert.resolved = true;
+      alert.resolvedAt = new Date().toISOString();
+      alert.resolvedBy = userId || 'system';
+      alert.resolutionNotes = notes || '';
+
+      console.log(`Alert ${id} resolved by ${alert.resolvedBy}`);
+      return true;
+    }
+    return false;
+  }
+
   async getAlerts(filters = {}) {
     let filteredAlerts = [...this.alerts];
 
     // Apply filters
+    if (filters.type) {
+      filteredAlerts = filteredAlerts.filter(alert =>
+        alert.event.type === filters.type
+      );
+    }
+
     if (filters.severity) {
       filteredAlerts = filteredAlerts.filter(alert =>
         alert.event.data.severity === filters.severity
@@ -148,7 +239,7 @@ class AlertEngine {
 
     if (filters.cameraId) {
       filteredAlerts = filteredAlerts.filter(alert =>
-        alert.event.source.includes(filters.cameraId)
+        alert.event.data.cameraId === filters.cameraId
       );
     }
 
@@ -164,6 +255,18 @@ class AlertEngine {
       );
     }
 
+    if (filters.startTime || filters.endTime) {
+      filteredAlerts = filteredAlerts.filter(alert => {
+        const alertTime = new Date(alert.timestamp);
+        const startTime = filters.startTime ? new Date(filters.startTime) : null;
+        const endTime = filters.endTime ? new Date(filters.endTime) : null;
+
+        if (startTime && alertTime < startTime) return false;
+        if (endTime && alertTime > endTime) return false;
+        return true;
+      });
+    }
+
     // Sort by timestamp (newest first)
     filteredAlerts.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
@@ -171,38 +274,117 @@ class AlertEngine {
   }
 
   async getAlert(id) {
-    return this.alerts.find(alert => alert.id === id);
+    return this.alerts.find(alert => alert.id === id) || null;
   }
 
-  async acknowledgeAlert(id, ackData = {}) {
+  async getAlertStatistics() {
+    const total = this.alerts.length;
+    const acknowledged = this.alerts.filter(a => a.acknowledged).length;
+    const escalated = this.alerts.filter(a => a.escalated).length;
+    const resolved = this.alerts.filter(a => a.resolved).length;
+
+    const bySeverity = {};
+    this.alerts.forEach(alert => {
+      const severity = alert.event.data.severity || 'unknown';
+      bySeverity[severity] = (bySeverity[severity] || 0) + 1;
+    });
+
+    const recent = this.alerts
+      .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+      .slice(0, 10)
+      .map(alert => ({
+        id: alert.id,
+        type: alert.event.type,
+        severity: alert.event.data.severity,
+        timestamp: alert.timestamp
+      }));
+
+    return {
+      total,
+      acknowledged,
+      escalated,
+      resolved,
+      bySeverity,
+      recent
+    };
+  }
+
+  async getRecentAlerts(limit = 10) {
+    return this.alerts
+      .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+      .slice(0, limit);
+  }
+
+  async getAlertsByTimePeriod(period) {
+    const now = new Date();
+    let startTime;
+
+    switch (period) {
+      case 'hour':
+        startTime = new Date(now.getTime() - 60 * 60 * 1000);
+        break;
+      case 'day':
+        startTime = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+        break;
+      case 'week':
+        startTime = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        break;
+      default:
+        startTime = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    }
+
+    return this.alerts.filter(alert =>
+      new Date(alert.timestamp) >= startTime
+    ).length;
+  }
+
+  setNotifier(notifier) {
+    this.notifier = notifier;
+  }
+
+  async acknowledgeAlert(id, userId, notes) {
     const alert = this.alerts.find(a => a.id === id);
     if (alert) {
       alert.acknowledged = true;
       alert.acknowledgedAt = new Date().toISOString();
-      alert.acknowledgedBy = ackData.userId || 'system';
-      alert.notes = ackData.notes || '';
+      alert.acknowledgedBy = userId || 'system';
+      alert.notes = notes || '';
 
       console.log(`Alert ${id} acknowledged by ${alert.acknowledgedBy}`);
-    } else {
-      throw new Error('Alert not found');
+      return true;
     }
+    return false;
   }
 
-  async escalateAlert(id, escalationData = {}) {
+  async escalateAlert(id, level, notes) {
     const alert = this.alerts.find(a => a.id === id);
     if (alert) {
       alert.escalated = true;
       alert.escalatedAt = new Date().toISOString();
-      alert.escalationLevel = escalationData.level || 'high';
-      alert.escalationNotes = escalationData.notes || '';
+      alert.escalationLevel = level || 'high';
+      alert.escalationNotes = notes || '';
 
       // Send escalated alert to additional channels
       await this.sendEscalatedAlert(alert);
 
       console.log(`Alert ${id} escalated to ${alert.escalationLevel}`);
-    } else {
-      throw new Error('Alert not found');
+      return true;
     }
+    return false;
+  }
+
+  async resolveAlert(id, userId, notes) {
+    const alert = this.alerts.find(a => a.id === id);
+    if (alert) {
+      alert.resolved = true;
+      alert.resolvedAt = new Date().toISOString();
+      alert.resolvedBy = userId || 'system';
+      alert.resolutionNotes = notes || '';
+
+      console.log(`Alert ${id} resolved by ${alert.resolvedBy}`);
+      return true;
+    }
+    return false;
   }
 
   async sendEscalatedAlert(alert) {
@@ -215,6 +397,16 @@ class AlertEngine {
         // Implementation for sending to escalation channels
       } catch (error) {
         console.error(`Failed to send escalated alert to ${channel.type}:`, error);
+      }
+    }
+  }
+
+  async notifyAlert(alert) {
+    if (this.notifier) {
+      try {
+        await this.notifier(alert);
+      } catch (error) {
+        console.error('Failed to send alert notification:', error);
       }
     }
   }

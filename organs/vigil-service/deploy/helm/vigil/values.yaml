@@ -1,0 +1,125 @@
+# Default values for vigil chart
+replicaCount: 2
+
+image:
+  repository: azora/vigil-api
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 3005
+  annotations: {}
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+    # cert-manager.io/cluster-issuer: letsencrypt-prod
+  hosts:
+    - host: vigil.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+  #  - secretName: vigil-tls
+  #    hosts:
+  #      - vigil.local
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 2Gi
+  requests:
+    cpu: 500m
+    memory: 1Gi
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# Application configuration
+config:
+  nodeEnv: production
+  port: 3005
+  jwtSecret: "change-this-in-production"
+  uiOrigin: "https://vigil.azora.world"
+  logLevel: info
+
+  # Database
+  database:
+    host: timescaledb
+    port: 5432
+    name: vigil
+    user: vigil
+    password: "change-this-in-production"
+
+  # Message brokers
+  mqtt:
+    broker: "mqtt://mqtt:1883"
+
+  kafka:
+    brokers: "kafka:9092"
+
+  # External services
+  azure:
+    eventGrid:
+      topic: ""
+      key: ""
+
+# Secrets - these should be created separately or use external secret management
+secrets:
+  jwtSecret: "change-this-in-production"
+  dbPassword: "change-this-in-production"
+  azureEventGridKey: ""
+
+# Monitoring
+monitoring:
+  prometheus:
+    enabled: true
+    scrapeInterval: 30s
+  grafana:
+    enabled: false
+    dashboards: true
+
+# Persistence
+persistence:
+  enabled: false
+  size: 10Gi
+  storageClass: ""
+
+# Network policies
+networkPolicy:
+  enabled: false

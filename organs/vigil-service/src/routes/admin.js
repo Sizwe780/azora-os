@@ -1,5 +1,5 @@
 /**
- * @file admin.ts
+ * @file admin.js
  * @module organs/vigil-service/src/routes
  * @description Admin routes for user and role management
  * @author Azora OS Team
@@ -15,17 +15,6 @@
  * @accessibility N/A
  * @tests unit, integration
  */
-
-import { Request, Response } from 'express';
-
-interface VigilRequest extends Request {
-  user?: {
-    sub: string;
-    name: string;
-    email: string;
-    role: string;
-  };
-}
 
 const express = require('express');
 const jwt = require('jsonwebtoken');
@@ -44,7 +33,7 @@ if (!users.has('admin@azora.world')) {
     role: 'admin',
     createdAt: new Date().toISOString(),
     isActive: true,
-    password: process.env.ADMIN_DEFAULT_PASSWORD || 'admin123' // Change in production!
+    password: process.env.ADMIN_DEFAULT_PASSWORD || 'admin123'
   });
 }
 
@@ -54,10 +43,8 @@ const router = express.Router();
 router.use(requireAuth);
 router.use(requireRole('admin'));
 
-/**
- * GET /api/vigil/admin/users - List all users
- */
-router.get('/users', (req: VigilRequest, res: Response) => {
+// GET /api/vigil/admin/users - List all users
+router.get('/users', (req, res) => {
   try {
     const userList = Array.from(users.values()).map(user => ({
       id: user.id,
@@ -68,7 +55,6 @@ router.get('/users', (req: VigilRequest, res: Response) => {
       lastLoginAt: user.lastLoginAt,
       isActive: user.isActive
     }));
-
     res.json(userList);
   } catch (error) {
     console.error('Error fetching users:', error);
@@ -76,25 +62,19 @@ router.get('/users', (req: VigilRequest, res: Response) => {
   }
 });
 
-/**
- * POST /api/vigil/admin/users - Create new user
- */
-router.post('/users', (req: VigilRequest, res: Response) => {
+// POST /api/vigil/admin/users - Create new user
+router.post('/users', (req, res) => {
   try {
     const { name, email, role, password } = req.body;
-
     if (!name || !email || !role || !password) {
       return res.status(400).json({ error: 'Missing required fields: name, email, role, password' });
     }
-
     if (!['admin', 'operator', 'viewer'].includes(role)) {
       return res.status(400).json({ error: 'Invalid role. Must be admin, operator, or viewer' });
     }
-
     if (users.has(email)) {
       return res.status(409).json({ error: 'User with this email already exists' });
     }
-
     const newUser = {
       id: `user-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       name,
@@ -102,12 +82,9 @@ router.post('/users', (req: VigilRequest, res: Response) => {
       role,
       createdAt: new Date().toISOString(),
       isActive: true,
-      password // In production, hash this!
+      password
     };
-
     users.set(email, newUser);
-
-    // Return user without password
     const { password: _, ...userResponse } = newUser;
     res.status(201).json(userResponse);
   } catch (error) {
@@ -116,22 +93,16 @@ router.post('/users', (req: VigilRequest, res: Response) => {
   }
 });
 
-/**
- * PUT /api/vigil/admin/users/:userId/role - Update user role
- */
-router.put('/users/:userId/role', (req: VigilRequest, res: Response) => {
+// PUT /api/vigil/admin/users/:userId/role - Update user role
+router.put('/users/:userId/role', (req, res) => {
   try {
     const { userId } = req.params;
     const { role } = req.body;
-
     if (!role || !['admin', 'operator', 'viewer'].includes(role)) {
       return res.status(400).json({ error: 'Invalid role. Must be admin, operator, or viewer' });
     }
-
-    // Find user by ID
     let targetUser = null;
     let targetEmail = null;
-
     for (const [email, user] of users) {
       if (user.id === userId) {
         targetUser = user;
@@ -139,18 +110,13 @@ router.put('/users/:userId/role', (req: VigilRequest, res: Response) => {
         break;
       }
     }
-
     if (!targetUser) {
       return res.status(404).json({ error: 'User not found' });
     }
-
-    // Prevent admin from demoting themselves
-    if (req.user && targetUser.id === req.user.sub && role !== 'admin') {
+    if (targetUser.id === req.user.sub && role !== 'admin') {
       return res.status(403).json({ error: 'Cannot change your own admin role' });
     }
-
     targetUser.role = role;
-
     res.json({
       id: targetUser.id,
       name: targetUser.name,
@@ -164,16 +130,12 @@ router.put('/users/:userId/role', (req: VigilRequest, res: Response) => {
   }
 });
 
-/**
- * DELETE /api/vigil/admin/users/:userId - Deactivate user
- */
-router.delete('/users/:userId', (req: VigilRequest, res: Response) => {
+// DELETE /api/vigil/admin/users/:userId - Deactivate user
+router.delete('/users/:userId', (req, res) => {
   try {
     const { userId } = req.params;
-    // Find user by ID
     let targetUser = null;
     let targetEmail = null;
-
     for (const [email, user] of users) {
       if (user.id === userId) {
         targetUser = user;
@@ -181,18 +143,13 @@ router.delete('/users/:userId', (req: VigilRequest, res: Response) => {
         break;
       }
     }
-
     if (!targetUser) {
       return res.status(404).json({ error: 'User not found' });
     }
-
-    // Prevent admin from deactivating themselves
-    if (req.user && targetUser.id === req.user.sub) {
+    if (targetUser.id === req.user.sub) {
       return res.status(403).json({ error: 'Cannot deactivate your own account' });
     }
-
     targetUser.isActive = false;
-
     res.json({ message: 'User deactivated successfully' });
   } catch (error) {
     console.error('Error deactivating user:', error);
@@ -200,30 +157,23 @@ router.delete('/users/:userId', (req: VigilRequest, res: Response) => {
   }
 });
 
-/**
- * POST /api/vigil/admin/roles/assign - Bulk role assignment
- */
-router.post('/roles/assign', (req: VigilRequest, res: Response) => {
+// POST /api/vigil/admin/roles/assign - Bulk role assignment
+router.post('/roles/assign', (req, res) => {
   try {
     const { userIds, role } = req.body;
-
     if (!Array.isArray(userIds) || !role) {
       return res.status(400).json({ error: 'Missing required fields: userIds (array), role' });
     }
-
     if (!['admin', 'operator', 'viewer'].includes(role)) {
       return res.status(400).json({ error: 'Invalid role. Must be admin, operator, or viewer' });
     }
-
     const updatedUsers = [];
     const notFoundUsers = [];
-
     for (const userId of userIds) {
       let found = false;
       for (const [email, user] of users) {
         if (user.id === userId && user.isActive) {
-          // Prevent changing own role via bulk operation
-          if (!req.user || user.id !== req.user.sub) {
+          if (user.id !== req.user.sub) {
             user.role = role;
             updatedUsers.push({
               id: user.id,
@@ -240,7 +190,6 @@ router.post('/roles/assign', (req: VigilRequest, res: Response) => {
         notFoundUsers.push(userId);
       }
     }
-
     res.json({
       updated: updatedUsers,
       notFound: notFoundUsers,

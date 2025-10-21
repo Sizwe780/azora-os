@@ -25,6 +25,6 @@
       "@/*": ["apps/main-app/*"]
     }
   },
-  "include": ["apps/main-app/**/*"],
-  "exclude": ["node_modules", "dist", "services", "**/*.css", "apps/main-app/index.css", "*.css"]
+  "include": ["organs/**/*", "synapse/**/*", "vite-project/**/*", "cloud-ui/**/*", "compliance-ui/**/*", "dev-ui/**/*", "learn-ui/**/*", "marketplace-ui/**/*", "pay-ui/**/*", "shared/**/*"],
+  "exclude": ["node_modules", "dist", "services", "**/*.css", "apps/main-app/index.css", "*.css", "**/*.js"]
 }

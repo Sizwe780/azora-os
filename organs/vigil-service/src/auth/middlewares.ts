@@ -16,19 +16,22 @@
  * @tests unit
  */
 
-// INTEGRATION MAP
-const INTEGRATIONS = {
-  imports: ['jsonwebtoken', 'express'],
-  exports: ['requireAuth', 'requireRole', 'optionalAuth'],
-  consumed_by: ['routes/*.ts', 'index.js'],
-  dependencies: [],
-  api_calls: [],
-  state_shared: false,
-  environment_vars: ['JWT_PUBLIC_KEY', 'JWT_PRIVATE_KEY']
+import { Request, Response, NextFunction } from 'express';
+
+declare global {
+  namespace Express {
+    interface Request {
+      user?: {
+        sub: string;
+        name: string;
+        email: string;
+        role: string;
+      };
+    }
+  }
 }
 
 const jwt = require('jsonwebtoken');
-const { VigilJwt, VigilRole } = require('./types');
 
 /**
  * Middleware to require authentication for protected routes
@@ -36,7 +39,7 @@ const { VigilJwt, VigilRole } = require('./types');
  * @param {import('express').Response} res
  * @param {import('express').NextFunction} next
  */
-function requireAuth(req, res, next) {
+function requireAuth(req: Request, res: Response, next: NextFunction) {
   const authHeader = req.headers.authorization || '';
   const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : undefined;
 
@@ -52,7 +55,7 @@ function requireAuth(req, res, next) {
     req.user = decoded;
     next();
   } catch (error) {
-    console.error('JWT verification failed:', error.message);
+    console.error('JWT verification failed:', (error as Error).message);
     return res.status(401).json({ error: 'Unauthorized - Invalid token' });
   }
 }
@@ -62,8 +65,8 @@ function requireAuth(req, res, next) {
  * @param {...VigilRole} roles - Allowed roles for the route
  * @returns {Function} Express middleware function
  */
-function requireRole(...roles) {
-  return (req, res, next) => {
+function requireRole(...roles: string[]) {
+  return (req: Request, res: Response, next: NextFunction) => {
     if (!req.user) {
       return res.status(401).json({ error: 'Unauthorized - Authentication required' });
     }
@@ -86,7 +89,7 @@ function requireRole(...roles) {
  * @param {import('express').Response} res
  * @param {import('express').NextFunction} next
  */
-function optionalAuth(req, res, next) {
+function optionalAuth(req: Request, res: Response, next: NextFunction) {
   const authHeader = req.headers.authorization || '';
   const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : undefined;
 
@@ -98,7 +101,7 @@ function optionalAuth(req, res, next) {
       req.user = decoded;
     } catch (error) {
       // Silently ignore invalid tokens for optional auth
-      console.warn('Optional auth token invalid:', error.message);
+      console.warn('Optional auth token invalid:', (error as Error).message);
     }
   }
 
