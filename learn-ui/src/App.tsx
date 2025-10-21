@@ -8,13 +8,12 @@ const Dashboard = lazy(() => import('./components/panels/Dashboard').then(module
 const CoursesPanel = lazy(() => import('./components/panels/CoursesPanel').then(module => ({ default: module.CoursesPanel })))
 const ProgressPanel = lazy(() => import('./components/panels/ProgressPanel').then(module => ({ default: module.ProgressPanel })))
 const EarningsPanel = lazy(() => import('./components/panels/EarningsPanel').then(module => ({ default: module.EarningsPanel })))
+const LessonPanel = lazy(() => import('./components/panels/LessonPanel').then(module => ({ default: module.LessonPanel })))
 
 function App() {
   const [activeView, setActiveView] = useState<'dashboard' | 'courses' | 'progress' | 'earnings'>('dashboard')
-  function App() {
-  const [activeView, setActiveView] = useState<'dashboard' | 'courses' | 'progress' | 'earnings' | 'lesson'>('dashboard')
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null)
-  const [userId, setUserId] = useState<string>('user1') // Mock user ID
+  const userId = 'user1' // Mock user ID
 
   // Fetch learning data from the backend API
   const { data: learningData, isLoading, error, refetch } = useQuery({
@@ -84,16 +83,13 @@ function App() {
 
     switch (activeView) {
       case 'courses':
-        return <CoursesPanel courses={learningData.courses} onCourseSelect={(courseId) => {
-          setSelectedCourseId(courseId)
-          setActiveView('lesson')
-        }} />
+        return selectedCourseId ? 
+          <LessonPanel courseId={selectedCourseId} userId={userId} onBack={() => setSelectedCourseId(null)} /> :
+          <CoursesPanel courses={learningData.courses} onCourseSelect={setSelectedCourseId} />
       case 'progress':
         return <ProgressPanel progress={learningData.progress} courses={learningData.courses} />
       case 'earnings':
         return <EarningsPanel earnings={learningData.earnings} />
-      case 'lesson':
-        return selectedCourseId ? <LessonPanel courseId={selectedCourseId} userId={userId} onBack={() => setActiveView('courses')} /> : <Dashboard data={learningData} />
       default:
         return <Dashboard data={learningData} />
     }

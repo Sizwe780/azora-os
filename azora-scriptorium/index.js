@@ -201,7 +201,8 @@ const startServer = async () => {
         });
     } catch (err) {
         logger.error('Failed to start service', { error: err.message });
-        process.exit(1);
+        // Don't exit in development, just log the error
+        console.error('Service failed to start:', err);
     }
 };
 
