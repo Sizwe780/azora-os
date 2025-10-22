@@ -1,6 +1,11 @@
 import { logger } from '../utils/logger';
-import { toolRegistry } from './index';
-import { constitutionalGovernor, ActionPlan, ValidationResult } from './constitutional-governor';
+import { LLMReasoningEngine } from './llm-reasoning';
+import { ConstitutionalGovernor } from './constitutional-governor';
+import { MemorySystem } from './memory-system';
+import { UserStateTracker } from './user-state-tracker';
+import { DataAccessControls } from './data-access-controls';
+import { ObservationLoop } from './observation-loop';
+import { CoreCapabilities } from './core-capabilities';
 
 export interface AgentState {
   id: string;
@@ -57,9 +62,31 @@ export class AutonomousCore {
   private state: AgentState;
   private isRunning: boolean = false;
   private perceptionQueue: Perception[] = [];
-  private llmClient: any; // Will be initialized with LangChain/LlamaIndex
 
-  constructor() {
+  // Integrated components
+  private llmEngine: LLMReasoningEngine;
+  private governor: ConstitutionalGovernor;
+  private memorySystem: MemorySystem;
+  private userTracker: UserStateTracker;
+  private accessControls: DataAccessControls;
+  private observationLoop: ObservationLoop;
+  private coreCapabilities: CoreCapabilities;
+
+  constructor(
+    llmEngine: LLMReasoningEngine,
+    governor: ConstitutionalGovernor,
+    memorySystem: MemorySystem,
+    userTracker: UserStateTracker,
+    accessControls: DataAccessControls,
+    observationLoop: ObservationLoop
+  ) {
+    this.llmEngine = llmEngine;
+    this.governor = governor;
+    this.memorySystem = memorySystem;
+    this.userTracker = userTracker;
+    this.accessControls = accessControls;
+    this.observationLoop = observationLoop;
+
     this.state = {
       id: `agent-${Date.now()}`,
       status: 'idle',
@@ -75,13 +102,24 @@ export class AutonomousCore {
       },
     };
 
-    this.initializeLLM();
+    // Initialize core capabilities
+    this.coreCapabilities = new CoreCapabilities(
+      llmEngine,
+      governor,
+      memorySystem,
+      userTracker,
+      accessControls,
+      observationLoop
+    );
+
+    this.setupEventListeners();
   }
 
-  private async initializeLLM(): Promise<void> {
-    // TODO: Initialize LangChain/LlamaIndex client
-    // This will be enhanced with fine-tuned model for Azora knowledge
-    logger.info('LLM client initialized (placeholder)');
+  private setupEventListeners(): void {
+    // Listen for observation loop events
+    this.observationLoop.on('system-event', this.handleSystemEvent.bind(this));
+    this.observationLoop.on('event-analysis', this.handleEventAnalysis.bind(this));
+    this.observationLoop.on('store-event', this.handleStoreEvent.bind(this));
   }
 
   async start(): Promise<void> {
@@ -93,6 +131,9 @@ export class AutonomousCore {
     this.isRunning = true;
     logger.info('Autonomous core started', { agentId: this.state.id });
 
+    // Initialize all components
+    await this.initializeComponents();
+
     // Start the main autonomous loop
     this.runAutonomousLoop();
   }
@@ -100,7 +141,26 @@ export class AutonomousCore {
   async stop(): Promise<void> {
     this.isRunning = false;
     this.state.status = 'idle';
+
+    // Stop observation loop
+    await this.observationLoop.stop();
+
     logger.info('Autonomous core stopped', { agentId: this.state.id });
+  }
+
+  private async initializeComponents(): Promise<void> {
+    try {
+      // Initialize user state tracker
+      await this.userTracker.initialize();
+
+      // Start observation loop
+      await this.observationLoop.start();
+
+      logger.info('All components initialized successfully');
+    } catch (error: any) {
+      logger.error('Failed to initialize components', { error: error.message });
+      throw error;
+    }
   }
 
   private async runAutonomousLoop(): Promise<void> {
@@ -138,8 +198,8 @@ export class AutonomousCore {
       await this.processPerception(perception);
     }
 
-    // Check for new perceptions from observation loop
-    await this.checkObservationLoop();
+    // Check for proactive opportunities
+    await this.checkProactiveOpportunities();
   }
 
   private async processPerception(perception: Perception): Promise<void> {
@@ -170,69 +230,98 @@ export class AutonomousCore {
   }
 
   private async handleUserInput(perception: Perception): Promise<void> {
-    // Use NLU to understand user intent
-    const intent = await this.analyzeIntent(perception.content);
+    const { content, context = {} } = perception;
+
+    // Use LISTEN capability to understand user intent
+    const intentAnalysis = await this.coreCapabilities.executeCapability('listen', {
+      userInput: content,
+      userId: context.userId || 'anonymous',
+      sessionId: context.sessionId || `session-${Date.now()}`,
+      context,
+    }, context.userId || 'anonymous', context.sessionId || `session-${Date.now()}`);
 
     // Create task based on intent
     const task: Task = {
       id: `task-${Date.now()}`,
       type: 'user_request',
       priority: perception.priority,
-      description: intent.description,
-      parameters: intent.parameters,
-      userId: perception.context?.userId,
-      context: perception.context,
+      description: intentAnalysis.intent,
+      parameters: {
+        ...intentAnalysis.entities,
+        originalInput: content,
+        clarificationNeeded: intentAnalysis.clarificationNeeded,
+        suggestedActions: intentAnalysis.suggestedActions,
+      },
+      userId: context.userId,
+      context,
       createdAt: new Date(),
       status: 'pending',
       progress: 0,
       steps: [],
     };
 
-    // Add to task queue (would be implemented as priority queue)
+    // Add to task queue
     await this.queueTask(task);
   }
 
-  private async handleSystemEvent(perception: Perception): Promise<void> {
-    // Analyze system event for potential issues or opportunities
-    const analysis = await this.analyzeSystemEvent(perception.content);
+  private handleSystemEvent(event: any): void {
+    // Convert system event to perception
+    const perception: Perception = {
+      type: 'system_event',
+      source: event.source,
+      content: event,
+      context: event.data,
+      timestamp: new Date(event.timestamp),
+      priority: this.mapSeverityToPriority(event.severity),
+    };
 
-    if (analysis.requiresAction) {
+    this.addPerception(perception);
+  }
+
+  private handleEventAnalysis(data: any): void {
+    const { event, analysis } = data;
+
+    if (analysis.requiresAttention) {
+      // Create system maintenance task
       const task: Task = {
-        id: `system-task-${Date.now()}`,
-        type: analysis.taskType || 'system_maintenance',
-        priority: analysis.priority || 'medium',
-        description: analysis.description,
-        parameters: analysis.parameters || {},
-        context: perception.context,
+        id: `system-${Date.now()}`,
+        type: 'system_maintenance',
+        priority: analysis.priority === 'high' ? 'high' : 'medium',
+        description: `Address system event: ${event.message}`,
+        parameters: {
+          event,
+          analysis,
+          suggestedActions: analysis.suggestedActions,
+        },
+        context: event.data,
         createdAt: new Date(),
         status: 'pending',
         progress: 0,
         steps: [],
       };
 
-      await this.queueTask(task);
+      this.queueTask(task);
     }
   }
 
-  private async handleErrorAlert(perception: Perception): Promise<void> {
-    // Immediate response to errors
-    const task: Task = {
-      id: `error-task-${Date.now()}`,
-      type: 'system_maintenance',
-      priority: 'high',
-      description: `Handle error: ${perception.content.message}`,
-      parameters: {
-        error: perception.content,
-        source: perception.source,
-      },
-      context: perception.context,
-      createdAt: new Date(),
-      status: 'pending',
-      progress: 0,
-      steps: [],
-    };
+  private handleStoreEvent(event: any): void {
+    // Store event in memory system
+    this.memorySystem.store('system_events', event, {
+      type: 'system_event',
+      source: event.source,
+      severity: event.severity,
+    }).catch(error => {
+      logger.error('Failed to store system event', { error: error.message });
+    });
+  }
 
-    await this.queueTask(task);
+  private async handleErrorAlert(perception: Perception): Promise<void> {
+    // Use HEAL capability for error handling
+    await this.coreCapabilities.executeCapability('heal', {
+      component: perception.source,
+      issue: perception.content.message,
+      severity: perception.priority,
+    }, 'system', 'system-session');
   }
 
   private async handleScheduledTask(perception: Perception): Promise<void> {
@@ -253,6 +342,33 @@ export class AutonomousCore {
     await this.queueTask(task);
   }
 
+  private async checkProactiveOpportunities(): Promise<void> {
+    // Check for opportunities to use DISCOVER capability
+    const insights = await this.coreCapabilities.executeCapability('discover', {
+      query: 'system optimization opportunities',
+      scope: 'internal',
+      userId: 'system',
+    }, 'system', 'system-session');
+
+    if (insights.insights.length > 0) {
+      // Create research task
+      const task: Task = {
+        id: `research-${Date.now()}`,
+        type: 'research',
+        priority: 'low',
+        description: 'Explore system optimization opportunities',
+        parameters: { insights },
+        context: {},
+        createdAt: new Date(),
+        status: 'pending',
+        progress: 0,
+        steps: [],
+      };
+
+      await this.queueTask(task);
+    }
+  }
+
   private async plan(): Promise<void> {
     this.state.status = 'planning';
 
@@ -267,7 +383,13 @@ export class AutonomousCore {
     const plan = await this.createExecutionPlan(task);
 
     // Validate plan against constitution
-    const validation = await this.validatePlan(plan);
+    const validation = await this.governor.validateAction({
+      id: `plan-${task.id}`,
+      type: 'execute_plan',
+      description: `Execute task: ${task.description}`,
+      parameters: plan,
+      timestamp: new Date(),
+    });
 
     if (!validation.allowed) {
       task.status = 'failed';
@@ -309,21 +431,23 @@ export class AutonomousCore {
       step.executedAt = new Date();
 
       try {
-        const result = await toolRegistry.executeTool(
-          step.tool,
-          step.operation,
-          step.parameters
-        );
-
-        if (result.success) {
-          step.status = 'completed';
-          step.result = result.data;
-          task.progress = (task.steps.filter(s => s.status === 'completed').length / task.steps.length) * 100;
+        // Execute using core capabilities or direct tool calls
+        let result;
+        if (step.tool === 'capability') {
+          result = await this.coreCapabilities.executeCapability(
+            step.operation,
+            step.parameters,
+            task.userId || 'system',
+            task.context?.sessionId || 'system-session'
+          );
         } else {
-          step.status = 'failed';
-          step.error = result.error;
-          throw new Error(result.error);
+          // Direct tool execution (would need tool registry)
+          result = { success: true, data: 'Tool execution placeholder' };
         }
+
+        step.status = 'completed';
+        step.result = result;
+        task.progress = (task.steps.filter(s => s.status === 'completed').length / task.steps.length) * 100;
 
       } catch (error: any) {
         step.status = 'failed';
@@ -360,10 +484,25 @@ export class AutonomousCore {
     // Update metrics
     this.state.metrics.lastActivity = new Date();
 
+    // Update user state if applicable
+    if (task.userId) {
+      await this.userTracker.addInteraction(task.userId, {
+        id: task.id,
+        timestamp: new Date(),
+        type: 'action',
+        content: task.description,
+        outcome: task.status === 'completed' ? 'success' : 'failure',
+      });
+    }
+
     // Clean up completed tasks
     if (task.status === 'completed' || task.status === 'failed') {
       // Store in long-term memory for future reference
-      await this.storeTaskInMemory(task);
+      await this.memorySystem.store('completed_tasks', task, {
+        type: 'task',
+        status: task.status,
+        userId: task.userId,
+      });
 
       // Clear current task
       this.state.currentTask = undefined;
@@ -372,47 +511,7 @@ export class AutonomousCore {
     this.state.status = 'idle';
   }
 
-  // Perception methods
-  addPerception(perception: Perception): void {
-    this.perceptionQueue.push(perception);
-    logger.debug('Perception added to queue', {
-      type: perception.type,
-      priority: perception.priority
-    });
-  }
-
-  private async checkObservationLoop(): Promise<void> {
-    // TODO: Check azora-lattice event bus for new events
-    // This would subscribe to real-time system events
-  }
-
   // Planning methods
-  private async analyzeIntent(content: any): Promise<{
-    description: string;
-    parameters: Record<string, any>;
-  }> {
-    // TODO: Use LLM for intent analysis
-    // Placeholder implementation
-    return {
-      description: `Process user request: ${content}`,
-      parameters: { content },
-    };
-  }
-
-  private async analyzeSystemEvent(content: any): Promise<{
-    requiresAction: boolean;
-    taskType?: string;
-    priority?: string;
-    description?: string;
-    parameters?: Record<string, any>;
-  }> {
-    // TODO: Use LLM for system event analysis
-    // Placeholder implementation
-    return {
-      requiresAction: false,
-    };
-  }
-
   private async createExecutionPlan(task: Task): Promise<{
     steps: Array<{
       description: string;
@@ -421,54 +520,125 @@ export class AutonomousCore {
       parameters: Record<string, any>;
     }>;
   }> {
-    // TODO: Use LLM to create detailed execution plan
-    // Placeholder implementation
-    return {
-      steps: [
-        {
-          description: 'Execute the requested action',
-          tool: 'auth', // placeholder
-          operation: 'get',
-          parameters: { endpoint: '/health' },
-        },
-      ],
-    };
+    // Use LLM to create detailed execution plan
+    const planPrompt = `Create a detailed execution plan for this task: ${task.description}
+Parameters: ${JSON.stringify(task.parameters)}
+Context: ${JSON.stringify(task.context)}
+
+Provide a step-by-step plan with specific tools and operations needed.`;
+
+    const planResponse = await this.llmEngine.generateResponse(planPrompt, {
+      userId: task.userId || 'system',
+      sessionId: task.context?.sessionId || 'system-session',
+    });
+
+    // Parse the plan response into structured steps
+    // This is a simplified parsing - in practice, you'd want more robust parsing
+    const steps = this.parsePlanResponse(planResponse);
+
+    return { steps };
   }
 
-  private async validatePlan(plan: any): Promise<ValidationResult> {
-    // Create action plan for constitutional validation
-    const actionPlan: ActionPlan = {
-      id: `plan-${Date.now()}`,
-      type: 'execute_plan',
-      description: 'Execute agent action plan',
-      parameters: plan,
-      timestamp: new Date(),
-    };
+  private parsePlanResponse(planText: string): Array<{
+    description: string;
+    tool: string;
+    operation: string;
+    parameters: Record<string, any>;
+  }> {
+    // Simple parsing logic - split by numbered steps
+    const lines = planText.split('\n').filter(line => line.trim());
+    const steps = [];
 
-    return await constitutionalGovernor.validateAction(actionPlan);
+    for (const line of lines) {
+      if (line.match(/^\d+\./)) {
+        // Extract step description
+        const description = line.replace(/^\d+\.\s*/, '');
+
+        // Determine tool and operation based on keywords
+        let tool = 'capability';
+        let operation = 'do'; // default
+
+        if (description.toLowerCase().includes('help')) {
+          operation = 'help';
+        } else if (description.toLowerCase().includes('heal') || description.toLowerCase().includes('fix')) {
+          operation = 'heal';
+        } else if (description.toLowerCase().includes('discover') || description.toLowerCase().includes('explore')) {
+          operation = 'discover';
+        } else if (description.toLowerCase().includes('develop') || description.toLowerCase().includes('code')) {
+          operation = 'develop';
+        }
+
+        steps.push({
+          description,
+          tool,
+          operation,
+          parameters: {},
+        });
+      }
+    }
+
+    return steps.length > 0 ? steps : [{
+      description: 'Execute the requested task',
+      tool: 'capability',
+      operation: 'do',
+      parameters: {},
+    }];
   }
 
-  // Task management (placeholder implementations)
+  // Task management
+  private taskQueue: Task[] = [];
+
   private async queueTask(task: Task): Promise<void> {
-    // TODO: Implement priority queue for tasks
-    logger.info('Task queued', { taskId: task.id, priority: task.priority });
+    this.taskQueue.push(task);
+
+    // Sort by priority
+    this.taskQueue.sort((a, b) => {
+      const priorityOrder = { critical: 4, high: 3, medium: 2, low: 1 };
+      return priorityOrder[b.priority] - priorityOrder[a.priority];
+    });
+
+    logger.info('Task queued', { taskId: task.id, priority: task.priority, queueLength: this.taskQueue.length });
   }
 
   private async getNextTask(): Promise<Task | null> {
-    // TODO: Get highest priority task from queue
-    return null;
+    return this.taskQueue.shift() || null;
   }
 
   // Learning and memory methods
   private async analyzeTaskExecution(task: Task): Promise<void> {
-    // TODO: Analyze successful/failed executions for learning
-  }
-
-  private async storeTaskInMemory(task: Task): Promise<void> {
-    // TODO: Store task in long-term memory system
+    if (task.status === 'completed') {
+      // Learn from successful execution
+      await this.memorySystem.store('successful_patterns', {
+        taskType: task.type,
+        description: task.description,
+        steps: task.steps.length,
+        executionTime: Date.now() - task.createdAt.getTime(),
+      }, {
+        type: 'learning',
+        category: 'successful_execution',
+      });
+    } else if (task.status === 'failed') {
+      // Learn from failures
+      await this.memorySystem.store('failure_patterns', {
+        taskType: task.type,
+        description: task.description,
+        failureReason: task.steps.find(s => s.error)?.error,
+      }, {
+        type: 'learning',
+        category: 'failure_analysis',
+      });
+    }
   }
 
   // Public interface methods
+  addPerception(perception: Perception): void {
+    this.perceptionQueue.push(perception);
+    logger.debug('Perception added to queue', {
+      type: perception.type,
+      priority: perception.priority
+    });
+  }
+
   getState(): AgentState {
     return { ...this.state };
   }
@@ -477,13 +647,24 @@ export class AutonomousCore {
     return { ...this.state.metrics };
   }
 
+  getCoreCapabilities(): CoreCapabilities {
+    return this.coreCapabilities;
+  }
+
   async forceExecuteTask(task: Task): Promise<void> {
     this.state.currentTask = task;
     await this.plan();
     await this.act();
     await this.reflect();
   }
-}
 
-// Global autonomous core instance
-export const autonomousCore = new AutonomousCore();
+  // Utility methods
+  private mapSeverityToPriority(severity: string): 'low' | 'medium' | 'high' | 'critical' {
+    switch (severity) {
+      case 'critical': return 'critical';
+      case 'high': return 'high';
+      case 'medium': return 'medium';
+      default: return 'low';
+    }
+  }
+}

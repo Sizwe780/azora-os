@@ -1,0 +1,43 @@
+{
+  "pages": {
+    "/_not-found/page": [
+      "static/chunks/511a0_next_dist_c2559fce._.js",
+      "static/chunks/synapse_vault-ui_src_app_favicon_ico_mjs_38e90024._.js",
+      "static/chunks/[next]_internal_font_google_inter_5972bc34_module_e80b9c0d.css",
+      "static/chunks/511a0_80e42fac._.js",
+      "static/chunks/synapse_vault-ui_src_app_ThemeProvider_tsx_a10b8b16._.js",
+      "static/chunks/synapse_vault-ui_src_app_layout_tsx_12f64362._.js",
+      "static/chunks/[turbopack]_browser_dev_hmr-client_hmr-client_ts_9293b1a2._.js",
+      "static/chunks/511a0_next_dist_compiled_react-dom_95379306._.js",
+      "static/chunks/511a0_next_dist_compiled_next-devtools_index_77c6ddf5.js",
+      "static/chunks/511a0_next_dist_compiled_7d2e2f13._.js",
+      "static/chunks/511a0_next_dist_client_979bdca6._.js",
+      "static/chunks/511a0_next_dist_d201e953._.js",
+      "static/chunks/511a0_@swc_helpers_cjs_f77bbcb8._.js",
+      "static/chunks/synapse_vault-ui_a0ff3932._.js",
+      "static/chunks/turbopack-synapse_vault-ui_0ec0e117._.js"
+    ],
+    "/page": [
+      "static/chunks/511a0_next_dist_c2559fce._.js",
+      "static/chunks/synapse_vault-ui_src_app_favicon_ico_mjs_38e90024._.js",
+      "static/chunks/[next]_internal_font_google_inter_5972bc34_module_e80b9c0d.css",
+      "static/chunks/511a0_ab33816f._.js",
+      "static/chunks/synapse_vault-ui_src_app_layout_tsx_12f64362._.js",
+      "static/chunks/511a0_next_dist_client_components_builtin_global-error_ac35d489.js",
+      "static/chunks/511a0_@mui_material_esm_34230d57._.js",
+      "static/chunks/511a0_axios_lib_04d6bfde._.js",
+      "static/chunks/511a0_dad40215._.js",
+      "static/chunks/synapse_vault-ui_src_app_page_tsx_40d46bce._.js",
+      "static/chunks/synapse_vault-ui_src_app_page_tsx_ac35d489._.js",
+      "static/chunks/[turbopack]_browser_dev_hmr-client_hmr-client_ts_9293b1a2._.js",
+      "static/chunks/511a0_next_dist_compiled_react-dom_95379306._.js",
+      "static/chunks/511a0_next_dist_compiled_next-devtools_index_77c6ddf5.js",
+      "static/chunks/511a0_next_dist_compiled_7d2e2f13._.js",
+      "static/chunks/511a0_next_dist_client_979bdca6._.js",
+      "static/chunks/511a0_next_dist_d201e953._.js",
+      "static/chunks/511a0_@swc_helpers_cjs_f77bbcb8._.js",
+      "static/chunks/synapse_vault-ui_a0ff3932._.js",
+      "static/chunks/turbopack-synapse_vault-ui_0ec0e117._.js"
+    ]
+  }
+}

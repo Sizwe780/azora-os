@@ -1,0 +1,55 @@
+globalThis.__BUILD_MANIFEST = {
+  "pages": {
+    "/_app": [
+      "static/chunks/511a0_next_dist_compiled_next-devtools_index_1895052d.js",
+      "static/chunks/511a0_next_dist_compiled_73f8bf98._.js",
+      "static/chunks/511a0_next_dist_shared_lib_8ac6ad3c._.js",
+      "static/chunks/511a0_next_dist_client_fb1e52ff._.js",
+      "static/chunks/511a0_next_dist_bf2c427b._.js",
+      "static/chunks/511a0_next_app_ea4a9a92.js",
+      "static/chunks/[next]_entry_page-loader_ts_6ca78723._.js",
+      "static/chunks/511a0_react-dom_8eafdf34._.js",
+      "static/chunks/511a0_87c863b5._.js",
+      "static/chunks/[root-of-the-server]__9f906050._.js",
+      "static/chunks/synapse_vault-ui_pages__app_2da965e7._.js",
+      "static/chunks/turbopack-synapse_vault-ui_pages__app_a87b495e._.js"
+    ],
+    "/_error": [
+      "static/chunks/511a0_next_dist_compiled_next-devtools_index_1895052d.js",
+      "static/chunks/511a0_next_dist_compiled_73f8bf98._.js",
+      "static/chunks/511a0_next_dist_shared_lib_934720be._.js",
+      "static/chunks/511a0_next_dist_client_fb1e52ff._.js",
+      "static/chunks/511a0_next_dist_2eb7874e._.js",
+      "static/chunks/511a0_next_error_99ea0297.js",
+      "static/chunks/[next]_entry_page-loader_ts_99740cdf._.js",
+      "static/chunks/511a0_react-dom_8eafdf34._.js",
+      "static/chunks/511a0_87c863b5._.js",
+      "static/chunks/[root-of-the-server]__0390203f._.js",
+      "static/chunks/synapse_vault-ui_pages__error_2da965e7._.js",
+      "static/chunks/turbopack-synapse_vault-ui_pages__error_93dcae82._.js"
+    ]
+  },
+  "devFiles": [],
+  "ampDevFiles": [],
+  "polyfillFiles": [
+    "static/chunks/511a0_next_dist_build_polyfills_polyfill-nomodule.js"
+  ],
+  "lowPriorityFiles": [],
+  "rootMainFiles": [
+    "static/chunks/[turbopack]_browser_dev_hmr-client_hmr-client_ts_9293b1a2._.js",
+    "static/chunks/511a0_next_dist_compiled_react-dom_95379306._.js",
+    "static/chunks/511a0_next_dist_compiled_next-devtools_index_77c6ddf5.js",
+    "static/chunks/511a0_next_dist_compiled_7d2e2f13._.js",
+    "static/chunks/511a0_next_dist_client_979bdca6._.js",
+    "static/chunks/511a0_next_dist_d201e953._.js",
+    "static/chunks/511a0_@swc_helpers_cjs_f77bbcb8._.js",
+    "static/chunks/synapse_vault-ui_a0ff3932._.js",
+    "static/chunks/turbopack-synapse_vault-ui_0ec0e117._.js"
+  ],
+  "ampFirstPages": []
+};
+globalThis.__BUILD_MANIFEST.lowPriorityFiles = [
+"/static/" + process.env.__NEXT_BUILD_ID + "/_buildManifest.js",
+,"/static/" + process.env.__NEXT_BUILD_ID + "/_ssgManifest.js",
+
+];

@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///workspaces/azora-os/synapse/vault-ui/src/app/ThemeProvider.tsx"],"sourcesContent":["'use client';\n\nimport { createTheme, ThemeProvider } from '@mui/material/styles';\nimport CssBaseline from '@mui/material/CssBaseline';\nimport { useState } from 'react';\n\nconst theme = createTheme({\n  palette: {\n    mode: 'light',\n    primary: {\n      main: '#1976d2',\n    },\n    secondary: {\n      main: '#dc004e',\n    },\n  },\n});\n\nexport default function ThemeProviderWrapper({ children }: { children: React.ReactNode }) {\n  return (\n    <ThemeProvider theme={theme}>\n      <CssBaseline />\n      {children}\n    </ThemeProvider>\n  );\n}"],"names":[],"mappings":";;;;;AAEA;AAAA;AACA;AAHA;;;;AAMA,MAAM,QAAQ,IAAA,uPAAW,EAAC;IACxB,SAAS;QACP,MAAM;QACN,SAAS;YACP,MAAM;QACR;QACA,WAAW;YACT,MAAM;QACR;IACF;AACF;AAEe,SAAS,qBAAqB,KAA2C;QAA3C,EAAE,QAAQ,EAAiC,GAA3C;IAC3C,qBACE,uNAAC,6PAAa;QAAC,OAAO;;0BACpB,uNAAC,8MAAW;;;;;YACX;;;;;;;AAGP;KAPwB","debugId":null}}]
+}

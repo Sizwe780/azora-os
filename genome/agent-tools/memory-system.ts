@@ -409,6 +409,44 @@ export class MemorySystem {
     }
   }
 
+  // Generic store method for backwards compatibility
+  async store(type: string, data: any, metadata?: any): Promise<void> {
+    switch (type) {
+      case 'user_profiles':
+      case 'user_contexts':
+      case 'agent_actions':
+      case 'system_events':
+      case 'completed_tasks':
+      case 'successful_patterns':
+      case 'failure_patterns':
+        // Store in short-term memory with appropriate TTL
+        const key = `${type}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        const ttl = type.includes('events') || type.includes('tasks') ? 3600 : 86400; // 1 hour or 24 hours
+        await this.storeShortTerm(key, { data, metadata, timestamp: new Date() }, ttl);
+        break;
+      default:
+        // Store as long-term memory
+        const entry: MemoryEntry = {
+          id: `${type}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+          type: 'semantic',
+          content: data,
+          metadata: {
+            ...metadata,
+            timestamp: new Date(),
+            importance: 0.5,
+          },
+        };
+        await this.storeLongTerm(entry);
+    }
+  }
+
+  // Generic retrieve method for backwards compatibility
+  async retrieve(type: string, filter?: any): Promise<any[]> {
+    // For now, return empty array as this is a simplified implementation
+    // In a full implementation, this would search the appropriate storage
+    return [];
+  }
+
   async close(): Promise<void> {
     await this.redis.quit();
     await this.postgres.end();

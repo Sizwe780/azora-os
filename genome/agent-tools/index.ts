@@ -1,6 +1,27 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { logger } from '../utils/logger';
 
+// Import all agent components
+import { LLMReasoningEngine } from './llm-reasoning';
+import { ConstitutionalGovernor } from './constitutional-governor';
+import { MemorySystem } from './memory-system';
+import { UserStateTracker } from './user-state-tracker';
+import { DataAccessControls } from './data-access-controls';
+import { ObservationLoop } from './observation-loop';
+import { CoreCapabilities } from './core-capabilities';
+import { AutonomousCore } from './autonomous-core';
+
+// Re-export all agent components
+export { LLMReasoningEngine } from './llm-reasoning';
+export { ConstitutionalGovernor } from './constitutional-governor';
+export { MemorySystem } from './memory-system';
+export { UserStateTracker } from './user-state-tracker';
+export { DataAccessControls } from './data-access-controls';
+export { ObservationLoop } from './observation-loop';
+export { CoreCapabilities } from './core-capabilities';
+export { AutonomousCore } from './autonomous-core';
+
+// Tool interfaces and classes
 export interface ToolResult {
   success: boolean;
   data?: any;
@@ -44,9 +65,6 @@ export class AgentTool {
       (response) => {
         logger.info(`AgentTool: ${config.serviceName} - ${response.config.method?.toUpperCase()} ${response.config.url}`, {
           status: response.status,
-          duration: response.config.metadata?.startTime
-            ? Date.now() - response.config.metadata.startTime
-            : 0
         });
         return response;
       },
@@ -54,9 +72,6 @@ export class AgentTool {
         logger.error(`AgentTool: ${config.serviceName} - ${error.config?.method?.toUpperCase()} ${error.config?.url}`, {
           error: error.message,
           status: error.response?.status,
-          duration: error.config?.metadata?.startTime
-            ? Date.now() - error.config.metadata.startTime
-            : 0
         });
         return Promise.reject(error);
       }
@@ -233,3 +248,148 @@ export class ToolRegistry {
 
 // Global tool registry instance
 export const toolRegistry = new ToolRegistry();
+
+// Integrated Azora Nexus Agent
+export class AzoraNexusAgent {
+  private llmEngine: LLMReasoningEngine;
+  private governor: ConstitutionalGovernor;
+  private memorySystem: MemorySystem;
+  private userTracker: UserStateTracker;
+  private accessControls: DataAccessControls;
+  private observationLoop: ObservationLoop;
+  private autonomousCore: AutonomousCore;
+
+  constructor() {
+    // Initialize all components
+    this.llmEngine = new LLMReasoningEngine();
+    this.governor = new ConstitutionalGovernor();
+    this.memorySystem = new MemorySystem();
+    this.userTracker = new UserStateTracker(this.memorySystem);
+    this.accessControls = new DataAccessControls(this.userTracker);
+    this.observationLoop = new ObservationLoop();
+
+    // Initialize autonomous core with all components
+    this.autonomousCore = new AutonomousCore(
+      this.llmEngine,
+      this.governor,
+      this.memorySystem,
+      this.userTracker,
+      this.accessControls,
+      this.observationLoop
+    );
+  }
+
+  async initialize(): Promise<void> {
+    logger.info('Initializing Azora Nexus Agent');
+
+    try {
+      // Components are initialized in their constructors
+      // LLM knowledge base is initialized on first use
+      // Constitution is loaded in ConstitutionalGovernor constructor
+      // Memory system connections are established in constructor
+
+      logger.info('Azora Nexus Agent initialized successfully');
+    } catch (error: any) {
+      logger.error('Failed to initialize Azora Nexus Agent', { error: error.message });
+      throw error;
+    }
+  }
+
+  async start(): Promise<void> {
+    logger.info('Starting Azora Nexus Agent');
+    await this.autonomousCore.start();
+  }
+
+  async stop(): Promise<void> {
+    logger.info('Stopping Azora Nexus Agent');
+    await this.autonomousCore.stop();
+  }
+
+  // Public API for interacting with the agent
+  async processUserInput(
+    userInput: string,
+    userId: string = 'anonymous',
+    sessionId?: string,
+    context?: Record<string, any>
+  ): Promise<any> {
+    // Add user input as a perception
+    this.autonomousCore.addPerception({
+      type: 'user_input',
+      source: 'user',
+      content: userInput,
+      context: {
+        userId,
+        sessionId: sessionId || `session-${Date.now()}`,
+        ...context,
+      },
+      timestamp: new Date(),
+      priority: 'medium',
+    });
+
+    // Wait a bit for processing (in production, this would be async)
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    // Return current agent state for immediate response
+    return {
+      status: 'processing',
+      agentState: this.autonomousCore.getState(),
+      message: 'Your request is being processed by the Azora Nexus Agent',
+    };
+  }
+
+  // Direct capability execution
+  async executeCapability(
+    capabilityName: string,
+    params: Record<string, any>,
+    userId: string,
+    sessionId: string
+  ): Promise<any> {
+    const coreCapabilities = this.autonomousCore.getCoreCapabilities();
+    return await coreCapabilities.executeCapability(capabilityName, params, userId, sessionId);
+  }
+
+  // Get agent status and metrics
+  getStatus(): {
+    agentState: any;
+    metrics: any;
+    capabilities: any;
+    activeUsers: number;
+    totalProfiles: number;
+  } {
+    const agentState = this.autonomousCore.getState();
+    const metrics = this.autonomousCore.getMetrics();
+    const capabilities = this.autonomousCore.getCoreCapabilities().getAvailableCapabilities();
+    const userStats = this.userTracker.getStats();
+
+    return {
+      agentState,
+      metrics,
+      capabilities,
+      activeUsers: userStats.activeUsers,
+      totalProfiles: userStats.totalProfiles,
+    };
+  }
+
+  // Administrative methods
+  async createUserProfile(userId: string, profile: any): Promise<void> {
+    await this.userTracker.updateUserProfile(userId, profile);
+  }
+
+  getUserInsights(userId: string): Promise<any> {
+    return this.userTracker.getUserInsights(userId);
+  }
+
+  // Emergency controls
+  enableEmergencyMode(): void {
+    this.accessControls.enableEmergencyMode();
+    logger.warn('Emergency mode enabled');
+  }
+
+  disableEmergencyMode(): void {
+    this.accessControls.disableEmergencyMode();
+    logger.info('Emergency mode disabled');
+  }
+}
+
+// Global agent instance
+export const azoraNexusAgent = new AzoraNexusAgent();

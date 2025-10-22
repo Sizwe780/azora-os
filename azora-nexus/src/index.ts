@@ -16,28 +16,8 @@ import analysisRoutes from '@/routes/analysis';
 import { logger } from '@/utils/logger';
 import { startMetricsServer } from '@/utils/metrics';
 
-// Import new agent components (temporarily disabled for initial setup)
-// import { initializeTools } from '../../../../genome/agent-tools/services';
-// import { autonomousCore } from '../../../../genome/agent-tools/autonomous-core';
-// import { constitutionalGovernor } from '../../../../genome/agent-tools/constitutional-governor';
-// import { memorySystem } from '../../../../genome/agent-tools/memory-system';
-
-// Placeholder agent components for initial setup
-const autonomousCore = {
-  getState: () => ({ status: 'initializing', id: 'placeholder' }),
-  getMetrics: () => ({ tasksCompleted: 0, tasksFailed: 0, averageResponseTime: 0, lastActivity: new Date() }),
-  addPerception: (perception: any) => {},
-  start: async () => {},
-  forceExecuteTask: async (task: any) => {},
-};
-
-const constitutionalGovernor = {
-  getConstitutionSummary: () => ({ total: 0, byCategory: {} }),
-};
-
-const memorySystem = {
-  getMemoryStats: async () => ({ shortTerm: { keys: 0 }, longTerm: { episodic: 0, semantic: 0, procedural: 0 } }),
-};
+// Import new agent components
+import { azoraNexusAgent } from '@genome/agent-tools';
 
 const app = express();
 const PORT = process.env.PORT || 3006;
@@ -45,8 +25,13 @@ const PORT = process.env.PORT || 3006;
 // Connect to MongoDB
 connectDB();
 
-// Initialize agent tools and systems (temporarily disabled)
+// Initialize agent tools and systems
 // initializeTools();
+
+// Initialize the Azora Nexus Agent
+azoraNexusAgent.initialize().catch(error => {
+  logger.error('Failed to initialize Azora Nexus Agent', { error: error.message });
+});
 
 // Security middleware
 app.use(helmet({
@@ -87,15 +72,17 @@ app.use(metricsMiddleware);
 
 // Health check endpoint
 app.get('/health', (req, res) => {
+  const status = azoraNexusAgent.getStatus();
   res.status(200).json({
     status: 'healthy',
     timestamp: new Date().toISOString(),
     service: 'azora-nexus',
     version: '1.0.0',
     agent: {
-      status: autonomousCore.getState().status,
-      tasksCompleted: autonomousCore.getMetrics().tasksCompleted,
-      constitution: constitutionalGovernor.getConstitutionSummary(),
+      status: status.agentState.status,
+      tasksCompleted: status.metrics.tasksCompleted,
+      activeUsers: status.activeUsers,
+      totalProfiles: status.totalProfiles,
     }
   });
 });
@@ -105,21 +92,15 @@ app.post('/api/agent/interact', authMiddleware, async (req, res) => {
   try {
     const { message, userId, context } = req.body;
 
-    // Add user input to agent's perception queue
-    autonomousCore.addPerception({
-      type: 'user_input',
-      source: 'api',
-      content: message,
-      context: { userId, ...context },
-      timestamp: new Date(),
-      priority: 'medium',
-    });
+    // Process user input through the agent
+    const result = await azoraNexusAgent.processUserInput(
+      message,
+      userId || (req as any).user?.id,
+      undefined,
+      context
+    );
 
-    res.json({
-      status: 'received',
-      message: 'Agent is processing your request',
-      agentState: autonomousCore.getState().status,
-    });
+    res.json(result);
 
   } catch (error: any) {
     logger.error('Agent interaction error', { error: error.message });
@@ -128,43 +109,30 @@ app.post('/api/agent/interact', authMiddleware, async (req, res) => {
 });
 
 app.get('/api/agent/status', authMiddleware, (req, res) => {
-  res.json({
-    agent: autonomousCore.getState(),
-    metrics: autonomousCore.getMetrics(),
-    constitution: constitutionalGovernor.getConstitutionSummary(),
-    memory: memorySystem.getMemoryStats(),
-  });
+  const status = azoraNexusAgent.getStatus();
+  res.json(status);
 });
 
 app.post('/api/agent/task', authMiddleware, async (req, res) => {
   try {
-    const { type, description, parameters, priority = 'medium' } = req.body;
+    const { capability, parameters, userId, sessionId } = req.body;
 
-    const task = {
-      id: `manual-task-${Date.now()}`,
-      type,
-      priority,
-      description,
+    // Execute capability directly
+    const result = await azoraNexusAgent.executeCapability(
+      capability,
       parameters,
-      userId: (req as any).user?.id || 'system',
-      context: req.body.context,
-      createdAt: new Date(),
-      status: 'pending',
-      progress: 0,
-      steps: [],
-    };
-
-    await autonomousCore.forceExecuteTask(task);
+      userId || (req as any).user?.id,
+      sessionId || `session-${Date.now()}`
+    );
 
     res.json({
       status: 'executed',
-      taskId: task.id,
-      finalStatus: task.status,
+      result,
     });
 
   } catch (error: any) {
-    logger.error('Manual task execution error', { error: error.message });
-    res.status(500).json({ error: 'Task execution failed' });
+    logger.error('Capability execution error', { error: error.message });
+    res.status(500).json({ error: 'Capability execution failed' });
   }
 });
 
@@ -184,8 +152,8 @@ app.use(errorHandler);
 startMetricsServer();
 
 // Start autonomous agent
-autonomousCore.start().catch(error => {
-  logger.error('Failed to start autonomous core', { error: error.message });
+azoraNexusAgent.start().catch(error => {
+  logger.error('Failed to start Azora Nexus Agent', { error: error.message });
 });
 
 app.listen(PORT, () => {
