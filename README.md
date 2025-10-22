@@ -16,6 +16,7 @@ Azora OS is a modular, API-first platform that integrates AI, blockchain, and en
 Azora OS features a multi-frontend architecture with subdomain-based access for different user segments:
 
 - **azora.world** - Main platform (synapse frontend) (synapse frontend)
+- **academy.azora.world** - AI university
 - **learn.azora.world** - Student learning platform (learn-ui)
 - **enterprise.azora.world** - Business solutions (enterprise-ui)
 - **marketplace.azora.world** - Service marketplace (marketplace-ui)
