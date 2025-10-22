@@ -1,8 +1,17 @@
-# Azora OS
+# Azora ES - Enterprise Suite
 
-**Enterprise-grade AI platform with autonomous services, built on biological and natural principles.**
+**Constitutional AI enterprise platform with autonomous services and ethical governance.**
 
-Azora OS is a modular, API-first platform that integrates AI, blockchain, and enterprise services following constitutional governance principles inspired by biological systems, quantum computing, and natural ecosystems.
+Azora ES is a comprehensive enterprise suite that integrates constitutional artificial intelligence, biological systems architecture, and enterprise-grade services. Built on principles of ethical AI governance, human oversight, and autonomous operations, Azora ES empowers organizations to achieve digital transformation while maintaining compliance and transparency.
+
+## Enterprise Mission
+
+Azora ES advances enterprise transformation through:
+- **Constitutional AI**: AI systems with built-in ethical constraints and human oversight
+- **Biological Architecture**: Self-healing, resilient infrastructure inspired by natural systems
+- **Enterprise Integration**: Seamless integration with existing enterprise systems
+- **Compliance Automation**: Automated regulatory compliance and audit trails
+- **Azora Academy**: Integrated learning and training platform for enterprise teams
 
 ## Current Status
 
@@ -40,139 +49,186 @@ Azora OS features a multi-frontend architecture with subdomain-based access for 
 - **ai-ml-engine**: Machine learning pipeline orchestration
 
 ### Technology Stack
-- **Backend**: TypeScript, Express.js, Prisma ORM
-- **Database**: PostgreSQL with per-service databases
-- **AI Integration**: OpenAI, custom models, unified API
-- **Blockchain**: Ethereum, Azora Coin smart contracts
-- **Deployment**: Docker, Kubernetes, multi-cloud
-- **Security**: Zero-trust, audit logging, compliance frameworks
+- **Frontend**: Next.js 15, React 19, TypeScript, Material-UI v7
+- **Backend**: Node.js, Express.js, Prisma ORM, PostgreSQL
+- **AI/ML**: Custom models, TensorFlow.js, OpenAI integration
+- **Enterprise Tools**: Workflow automation, reporting, compliance management
+- **Deployment**: Docker, Kubernetes, multi-cloud enterprise environments
 
-## Quick Start
+## Enterprise Partnerships
 
-### Prerequisites
-- Node.js 18+
-- PostgreSQL 15+
-- Docker & Docker Compose
+### Business Collaborations
+Azora ES partners with leading enterprises and organizations:
+- **Fortune 500 Companies**: Large-scale enterprise deployments
+- **Government Agencies**: Public sector digital transformation
+- **Financial Institutions**: Regulated industry compliance solutions
+- **Healthcare Organizations**: Medical data management and compliance
 
-### Development Setup
+### Technology Integrations
+- **Enterprise Systems**: SAP, Oracle, Microsoft integration
+- **Cloud Platforms**: AWS, Azure, GCP enterprise deployments
+- **Security Solutions**: Integration with enterprise security platforms
+- **Compliance Frameworks**: SOX, GDPR, HIPAA compliance automation
 
-1. **Clone and install:**
+## Getting Started
+
+### For Enterprises
+
+1. **Enterprise Assessment:**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/Sizwe780/azora-os
    cd azora-os
    npm install
    ```
 
-2. **Start databases:**
+2. **Start Enterprise Environment:**
    ```bash
-   docker-compose -f docker/production.yml up postgres-primary -d
+   cd synapse
+   npm run dev
    ```
 
-3. **Start a service:**
-   ```bash
-   cd services/ai-unified
-   npm run build
-   npm start
-   ```
+3. **Access Enterprise Interfaces:**
+   - Atlas UI: http://localhost:3000/atlas
+   - Council UI: http://localhost:3000/council
+   - Enterprise Dashboard: http://localhost:3000/enterprise
 
-4. **Access health check:**
-   ```bash
-   curl http://localhost:3000/health
-   ```
+### For Implementation Teams
 
-### Production Deployment
+1. **Solution Consultation:** Contact enterprise@azora.world
+2. **Technical Assessment:** Enterprise architecture evaluation
+3. **Implementation Planning:** Custom deployment and integration roadmap
+4. **Support Services:** Enterprise support and maintenance agreements
 
-```bash
-docker-compose -f docker/production.yml up -d
-```
+## Enterprise Applications
 
-## Constitution & Governance
+### Constitutional AI Governance
+- **Enterprise AI Framework**: AI systems with governance and compliance built-in
+- **Human Oversight Systems**: Human-in-the-loop enterprise decision making
+- **Transparency Solutions**: Explainable AI for enterprise applications
+- **Audit & Compliance**: Automated compliance reporting and audit trails
 
-Azora OS operates under the Azora Constitution, implementing:
+### Biological Systems Architecture
+- **Self-Healing Infrastructure**: Automatic error detection and system recovery
+- **Adaptive Enterprise Systems**: Evolutionary improvement of business processes
+- **Scalable Architecture**: Biological patterns for enterprise scalability
+- **Resilient Operations**: Fault-tolerant enterprise infrastructure
 
-- **Biological Principles**: Immune systems, organelle architecture, DNA polymerase validation
-- **Cosmological Economics**: Fusion energy models, black hole economics, multiverse value creation
-- **Natural Governance**: Mycelial networks, trophic levels, keystone species resilience
-- **Phoenix Protocol**: Genetic resurrection and evolutionary adaptation
+### Enterprise AI Solutions
+- **Bias Detection**: Fairness monitoring in enterprise AI applications
+- **Privacy Protection**: Enterprise data protection and compliance
+- **Business Impact**: AI-driven business process optimization
+- **Regulatory Compliance**: Automated compliance with industry regulations
 
-## Development
+## Enterprise Solutions
 
-### Service Upgrade Pattern
+### Implementation Services
+- **Enterprise Deployment**: Full-scale enterprise implementation and integration
+- **Custom Development**: Tailored solutions for specific business needs
+- **Migration Services**: Legacy system migration and modernization
+- **Training Programs**: Enterprise user training and certification
 
-Each service follows this upgrade pattern:
+### Support & Maintenance
+- **24/7 Enterprise Support**: Round-the-clock technical support
+- **System Monitoring**: Proactive enterprise system health monitoring
+- **Security Updates**: Regular security patches and compliance updates
+- **Performance Optimization**: Continuous enterprise system optimization
 
-1. **TypeScript Migration**: Convert to TypeScript with proper types
-2. **Database Integration**: Add Prisma ORM with PostgreSQL
-3. **AI Integration**: Connect to unified AI services
-4. **Audit & Compliance**: Add comprehensive audit trails
-5. **Health Checks**: Implement `/health` endpoints
-6. **Testing**: Add unit and integration tests
+## Governance & Compliance
 
-### Contributing
+### Enterprise Ethics
+Azora ES enterprise solutions adhere to strict ethical standards:
+- **Data Privacy**: Enterprise data protection and GDPR compliance
+- **Security Standards**: SOC 2, ISO 27001, and enterprise security frameworks
+- **Regulatory Compliance**: Automated compliance with industry regulations
+- **Business Ethics**: Ethical AI deployment and responsible innovation
 
-1. Follow the constitutional principles
-2. Maintain audit trails for all operations
-3. Ensure services are API-first and modular
-4. Add comprehensive error handling
-5. Include health checks and monitoring
+### Constitutional Principles
+Our enterprise solutions implement constitutional AI principles:
+- **Human Oversight**: Enterprise systems require human approval for critical decisions
+- **Transparency**: All enterprise AI decisions are explainable and auditable
+- **Accountability**: Clear responsibility for enterprise AI system behavior
+- **Ethical Constraints**: Built-in limitations on harmful enterprise AI actions
+
+## Enterprise Community
+
+### Business Partnerships
+- **Enterprise Customers**: Fortune 500 and large enterprise deployments
+- **Technology Partners**: Integration with enterprise technology platforms
+- **Consulting Firms**: Implementation and professional services partnerships
+- **Industry Associations**: Participation in enterprise technology associations
+
+### Implementation Support
+- **Professional Services**: Enterprise implementation and integration services
+- **Training Programs**: Enterprise user training and certification
+- **Technical Support**: 24/7 enterprise support and maintenance
+- **Community Forums**: Enterprise user communities and knowledge sharing
+
+## Future Enterprise Directions
+
+### Emerging Solutions
+- **Quantum Enterprise AI**: Advanced enterprise AI for quantum computing environments
+- **Multi-Agent Enterprise Systems**: Constitutional frameworks for enterprise AI collectives
+- **Global Enterprise Compliance**: International enterprise governance standards
+- **Advanced Enterprise Security**: Next-generation enterprise security and compliance
+
+### Enterprise Expansion
+- **Industry Solutions**: Specialized solutions for healthcare, finance, manufacturing
+- **Global Deployments**: International enterprise deployments and localization
+- **Technology Integration**: Advanced integration with emerging enterprise technologies
+- **Regulatory Evolution**: Adapting to changing enterprise compliance requirements
+
+## Contact & Resources
+
+### Enterprise Team
+- **CEO & Founder**: Sizwe Ngwenya
+- **Enterprise Solutions**: enterprise@azora.world
+- **Technical Support**: support@azora.world
+- **Partnerships**: partnerships@azora.world
+
+### Enterprise Resources
+- **Enterprise Portal**: enterprise.azora.world
+- **Implementation Guides**: Technical deployment and integration guides
+- **API Documentation**: Enterprise API references and documentation
+- **Support Center**: Enterprise support portal and knowledge base
 
 ## License
 
-See LICENSE file for details.
-
-## Contact
-
-- **Founder**: Sizwe Ngwenya
-- **Email**: legal@azora.world
-- **Domain**: azora.world
+See LICENSE file for enterprise usage terms.
 
 ---
 
-## For Developers
+## For Enterprise Contributors
 
-- **Onboarding:**  
-  - Start with `/onboarding-wizard/`
-  - See `/docs/DEVELOPER_GUIDE.md`
-- **Structure:**  
-  - `/apps` — Frontend, mobile, PWA
-  - `/services` — All microservices
-  - `/shared` — Shared libs
-  - `/k8s` — Kubernetes manifests
-  - `/scripts` — DevOps, launch
-- **Env:**  
-  - Copy `.env.example` to `.env` and configure.
+### Enterprise Onboarding
+- **Getting Started**: See `/docs/ENTERPRISE_GUIDE.md`
+- **Implementation**: Follow `/docs/DEPLOYMENT.md`
+- **Integration**: Review `/docs/INTEGRATION.md`
 
----
-
-## Feedback, Analytics & Adoption
-
-- **Feedback loop:**  
-  - In-app feedback panel (see `/services/feedback/`)
-  - User journey and analytics (`/services/analytics/`)
-- **Automated onboarding:**  
-  - `/onboarding-wizard/` guides new users and tracks progress.
-- **Scale:**  
-  - Plugin new modules via `/plugins/`.
-  - Use `/scripts/scale.sh` for horizontal/vertical scaling.
+### Repository Structure
+- `/synapse` — Enterprise applications and user interfaces
+- `/codex` — Enterprise documentation and implementation guides
+- `/services` — Enterprise services and APIs
+- `/docs` — Enterprise documentation and deployment guides
 
 ---
 
-## Security & Compliance
+## Enterprise Impact
 
-- **Zero Trust:** All APIs gated by policy.
-- **Audit Logs:** Real-time compliance audit.
-- **Data Residency:** Sovereign and multi-cloud, region control.
-- **Open APIs:** OIDC, OAuth2, JWT, DID supported.
+### Business Metrics
+- **ROI Achievement**: Measurable return on enterprise investment
+- **Efficiency Gains**: Operational efficiency and productivity improvements
+- **Compliance Success**: Regulatory compliance and audit success rates
+- **User Adoption**: Enterprise user engagement and satisfaction
+
+### Industry Impact
+- **Digital Transformation**: Enabling enterprise digital transformation
+- **Innovation Adoption**: Enterprise adoption of AI and automation
+- **Competitive Advantage**: Enterprise competitive positioning
+- **Market Leadership**: Industry leadership in constitutional AI
 
 ---
 
-## Contributing
+**Azora ES — Constitutional AI for Enterprise Transformation**
+*Building the Future of Ethical Enterprise AI*
 
-- PRs & issues welcome!
-- Write tests, follow atomic/component conventions.
-- See `/docs/CONTRIBUTING.md` for guidelines.
-
----
-
-**Azora OS — Build the Future, Compliantly.**  
-azora.world
+**Contact**: enterprise@azora.world | **Website**: azora.world
