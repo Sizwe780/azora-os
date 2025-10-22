@@ -21,7 +21,7 @@ Azora ES advances enterprise transformation through:
 ## Architecture
 
 ### Frontend Applications
-Azora OS features a multi-frontend architecture with subdomain-based access for different user segments:
+Azora ES features a multi-frontend architecture with subdomain-based access for different user segments:
 
 - **azora.world** - Main platform (synapse frontend) (synapse frontend)
 - **academy.azora.world** - 

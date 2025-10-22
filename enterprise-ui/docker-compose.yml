@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  enterprise-ui:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: azora-enterprise-ui
+    ports:
+      - "80:80"
+    depends_on:
+      - compliance-dashboard
+    environment:
+      - NODE_ENV=production
+    networks:
+      - azora-network
+    restart: unless-stopped
+
+  compliance-dashboard:
+    build:
+      context: ../services/compliance-dashboard
+      dockerfile: Dockerfile
+    container_name: azora-compliance-dashboard
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=production
+      - PORT=4000
+    networks:
+      - azora-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  azora-network:
+    driver: bridge

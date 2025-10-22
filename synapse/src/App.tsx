@@ -10,11 +10,12 @@ import PrivacyPage from './pages/PrivacyPage'
 import TermsPage from './pages/TermsPage'
 import NewsPage from './pages/NewsPage'
 import { AuthProvider } from './contexts/AuthContext'
+import { ThemeProvider } from './components/ui/theme-provider'
 import './index.css'
 
 function AppContent() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Header />
       <Routes>
         <Route path="/" element={<LandingPage />} />
@@ -32,11 +33,13 @@ function AppContent() {
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <AppContent />
-      </Router>
-    </AuthProvider>
+    <ThemeProvider defaultTheme="dark" storageKey="azora-ui-theme">
+      <AuthProvider>
+        <Router>
+          <AppContent />
+        </Router>
+      </AuthProvider>
+    </ThemeProvider>
   )
 }
 

@@ -207,9 +207,9 @@ ALLOWED_ORIGINS=http://localhost:5173,http://localhost:5174
 LOG_LEVEL=info
 ```
 
-## Integration with Azora OS
+## Integration with Azora ES
 
-Azora Ledger integrates seamlessly with other Azora OS services:
+Azora Ledger integrates seamlessly with other Azora ES services:
 
 - **Compliance Service**: Provides compliance data for Proof of Compliance consensus
 - **API Gateway**: Routes requests to ledger operations
@@ -274,7 +274,7 @@ The value of Azora coins is directly tied to the information stored in the ledge
 
 ## Contributing
 
-Azora Ledger is part of the Azora OS ecosystem. Contributions should align with our mission to create Africa's most advanced data center ledger software.
+Azora Ledger is part of the Azora ES ecosystem. Contributions should align with our mission to create Africa's most advanced data center ledger software.
 
 ### Development Guidelines
 - All code must pass comprehensive security audits

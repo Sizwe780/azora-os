@@ -253,7 +253,7 @@ export class ConstitutionalGovernor {
 
   async logViolation(action: ActionPlan, result: ValidationResult): Promise<void> {
     // Log to audit system (would integrate with azora-covenant)
-    logger.error('Constitutional violation detected', {
+    const violation = {
       actionId: action.id,
       actionType: action.type,
       userId: action.userId,
@@ -261,10 +261,21 @@ export class ConstitutionalGovernor {
       ruleId: result.metadata.ruleId,
       severity: result.metadata.severity,
       timestamp: new Date(),
-    });
+    };
 
-    // TODO: Send to azora-covenant for immutable logging
-    // TODO: Alert security team if critical violation
+    logger.error('Constitutional violation detected', violation);
+
+    // Send to azora-covenant for immutable logging
+    try {
+      await this.logToBlockchain(violation);
+    } catch (error) {
+      console.error('Failed to log violation to blockchain:', error);
+    }
+
+    // Alert security team if critical violation
+    if (result.metadata.severity === 'critical') {
+      await this.alertSecurityTeam(violation);
+    }
   }
 
   getConstitutionSummary(): { total: number; byCategory: Record<string, number> } {
@@ -277,6 +288,52 @@ export class ConstitutionalGovernor {
       total: this.constitution.length,
       byCategory,
     };
+  }
+
+  private async logToBlockchain(violation: any): Promise<void> {
+    // Integration with azora-covenant for immutable logging
+    try {
+      // This would make an API call to azora-covenant
+      // For now, we'll log to console as placeholder
+      console.log('Logging violation to blockchain:', violation);
+
+      // TODO: Implement actual blockchain logging
+      // const response = await fetch('http://azora-covenant:5050/api/transactions', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({
+      //     fromAddress: 'system',
+      //     toAddress: 'audit-log',
+      //     amount: 0,
+      //     type: 'constitutional_violation',
+      //     metadata: violation
+      //   })
+      // });
+
+    } catch (error) {
+      console.error('Blockchain logging failed:', error);
+      throw error;
+    }
+  }
+
+  private async alertSecurityTeam(violation: any): Promise<void> {
+    // Alert security team for critical violations
+    try {
+      console.log('🚨 CRITICAL CONSTITUTIONAL VIOLATION ALERT 🚨');
+      console.log('Security team notification would be sent here');
+      console.log('Violation details:', violation);
+
+      // TODO: Implement actual security alerting
+      // This could integrate with:
+      // - Azora Aegis security service
+      // - Email notifications
+      // - SMS alerts
+      // - Slack/Discord webhooks
+
+    } catch (error) {
+      console.error('Security alert failed:', error);
+      throw error;
+    }
   }
 }
 

@@ -22,6 +22,39 @@ Security & Compliance
 
 Monitoring & SEO 
 
+# Azora ES Development Constitution
+
+## 5-Version Upgrade Policy (Effective October 22, 2025)
+
+### Core Principles
+1. **Quality Assurance**: All major features require 5 version iterations before production deployment
+2. **Version Progression**: Alpha (Ix0) → Beta (I) → Gamma (II) → Delta (III) → Epsilon (IV) → Omega (V)
+3. **Branch Management**: No direct pushes to main branch; all changes through approved branches
+4. **Quality Gates**: Each version must pass comprehensive testing, security audits, and constitutional review
+5. **Rollback Protocol**: Automatic rollback capability for any version showing instability
+
+### Development Laws
+1. **No Mock Implementation**: All code must be production-ready with real infrastructure
+2. **Constitutional Compliance**: Every feature must align with Azora Constitution
+3. **Enterprise Standards**: All APIs must be enterprise-grade and externally consumable
+4. **Self-Sufficiency**: System must operate autonomously with minimal human intervention
+5. **Scalability Requirements**: All services must handle enterprise-scale operations
+
+### Version Milestones
+- **Ix0 (Current)**: Core infrastructure, constitutional AI framework, basic services
+- **I (Beta)**: Complete service interconnections, AI executive roles, funding agent
+- **II (Gamma)**: Enterprise API marketplace, government partnerships
+- **III (Delta)**: Autonomous university, advanced AI professors
+- **IV (Epsilon)**: Global expansion, sovereign AI platform
+- **V (Omega)**: Full enterprise deployment, self-sufficient ecosystem
+
+### Constitutional Requirements
+- **Article XVI**: No Mock Protocol - Zero tolerance for placeholder code
+- **Article VIII**: Economic Constitution - Value-backed token economics
+- **Article IV**: AI Ethics - Constitutional AI governance and oversight
+
+This development constitution ensures Azora ES evolves responsibly, maintaining enterprise-grade quality and constitutional compliance throughout its development lifecycle. 
+
  
 
 1. Platform Architecture Overview 

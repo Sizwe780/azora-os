@@ -1,6 +1,6 @@
 # Chamber of Ghosts
 
-Cognitive Simulation Engine for Azora OS - Constitutional AI consciousness with three AI "ghosts" performing Monte Carlo analysis, historical optimization, and future prediction for ICV (Intelligent Collective Valuation).
+Cognitive Simulation Engine for Azora ES - Constitutional AI consciousness with three AI "ghosts" performing Monte Carlo analysis, historical optimization, and future prediction for ICV (Intelligent Collective Valuation).
 
 ## Features
 

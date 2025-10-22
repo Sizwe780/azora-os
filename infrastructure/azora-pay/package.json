@@ -1,7 +1,7 @@
 {
   "name": "@azora/azora-pay",
   "version": "1.0.0",
-  "description": "Self-hosted payment processor for Azora OS",
+  "description": "Self-hosted payment processor for Azora ES",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",

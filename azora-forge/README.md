@@ -1,6 +1,6 @@
 # Azora Forge - P2P Marketplace Service
 
-Azora Forge is the P2P marketplace component of the Azora OS, enabling users to exchange digital goods and services using AZR tokens. This service implements the "Tuckshop Protocol" for permissionless value exchange between neurons (users) in the ecosystem.
+Azora Forge is the P2P marketplace component of the Azora ES, enabling users to exchange digital goods and services using AZR tokens. This service implements the "Tuckshop Protocol" for permissionless value exchange between neurons (users) in the ecosystem.
 
 ## Features
 
@@ -170,7 +170,7 @@ This service implements Article VIII.5 of the Azora Constitution:
 2. Add tests for new features
 3. Update API documentation
 4. Ensure all health checks pass
-5. Follow the Azora OS development guidelines
+5. Follow the Azora ES development guidelines
 
 ## License
 

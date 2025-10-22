@@ -95,4 +95,4 @@ This library is maintained by the Azora development team. For contributions:
 
 This project is licensed under the AZORA PROPRIETARY LICENSE - see the LICENSE file for details.
 
-Built in South Africa by Sizwe Ngwenya © 2024 Azora OS
+Built in South Africa by Sizwe Ngwenya © 2024 Azora ES

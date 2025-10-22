@@ -1,60 +1,96 @@
-import { formatDistanceToNow } from 'date-fns'
-import { AuditLogEntry } from '../../types'
+/*
+AZORA PROPRIETARY LICENSE
 
-interface RecentActivityProps {
-  activities: AuditLogEntry[]
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
+import { Activity, CheckCircle, AlertTriangle, XCircle, Clock } from 'lucide-react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+
+interface ActivityItem {
+  id: string
+  type: 'compliance-check' | 'policy-update' | 'alert' | 'system'
+  title: string
+  description: string
+  timestamp: string
+  status: 'success' | 'warning' | 'error' | 'info'
+  framework?: string
 }
 
-const actionIcons: Record<string, string> = {
-  compliance_status_update: '🔄',
-  alert_acknowledged: '✅',
-  compliance_report_generated: '📊',
-  alert_generated: '🚨',
-  notification_sent: '📧',
-  framework_status_check: '🔍'
+interface RecentActivityProps {
+  activities: ActivityItem[]
+}
+
+const activityConfig = {
+  success: {
+    icon: CheckCircle,
+    badge: 'default' as const,
+    className: 'text-green-600'
+  },
+  warning: {
+    icon: AlertTriangle,
+    badge: 'secondary' as const,
+    className: 'text-yellow-600'
+  },
+  error: {
+    icon: XCircle,
+    badge: 'destructive' as const,
+    className: 'text-red-600'
+  },
+  info: {
+    icon: Clock,
+    badge: 'outline' as const,
+    className: 'text-blue-600'
+  }
 }
 
 export function RecentActivity({ activities }: RecentActivityProps) {
-  const recentActivities = activities.slice(0, 10)
-
   return (
-    <div className="card">
-      <h3 className="text-lg font-medium text-gray-900 mb-4">Recent Activity</h3>
-      <div className="space-y-3">
-        {recentActivities.length === 0 ? (
-          <p className="text-gray-500 text-sm">No recent activity</p>
-        ) : (
-          recentActivities.map((activity) => (
-            <div key={activity.logId} className="flex items-start space-x-3">
-              <div className="flex-shrink-0">
-                <span className="text-lg">
-                  {actionIcons[activity.action] || '📝'}
-                </span>
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 capitalize">
-                  {activity.action.replace(/_/g, ' ')}
-                </p>
-                <p className="text-xs text-gray-500">
-                  {formatDistanceToNow(new Date(activity.timestamp), { addSuffix: true })}
-                </p>
-                {activity.details && (
-                  <div className="mt-1 text-xs text-gray-600">
-                    {typeof activity.details === 'string'
-                      ? activity.details
-                      : Object.entries(activity.details).slice(0, 2).map(([key, value]) => (
-                          <span key={key} className="mr-2">
-                            {key}: {String(value)}
-                          </span>
-                        ))
-                    }
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center">
+          <Activity className="h-5 w-5 mr-2" />
+          Recent Activity
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          {activities.map((activity) => {
+            const config = activityConfig[activity.status]
+            const Icon = config.icon
+
+            return (
+              <div key={activity.id} className="flex items-start space-x-3">
+                <Icon className={`h-5 w-5 mt-0.5 ${config.className}`} />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm font-medium text-gray-900 truncate">
+                      {activity.title}
+                    </p>
+                    <Badge variant={config.badge} className="ml-2">
+                      {activity.status}
+                    </Badge>
                   </div>
-                )}
+                  <p className="text-sm text-gray-500 mt-1">
+                    {activity.description}
+                  </p>
+                  {activity.framework && (
+                    <p className="text-xs text-gray-400 mt-1">
+                      Framework: {activity.framework}
+                    </p>
+                  )}
+                  <p className="text-xs text-gray-400 mt-1">
+                    {new Date(activity.timestamp).toLocaleString()}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))
-        )}
-      </div>
-    </div>
+            )
+          })}
+        </div>
+      </CardContent>
+    </Card>
   )
 }

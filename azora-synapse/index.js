@@ -31,7 +31,7 @@ app.get('/', (req, res) => {
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Azora OS Valuation Dashboard</title>
+    <title>Azora ES Valuation Dashboard</title>
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -76,7 +76,7 @@ app.get('/', (req, res) => {
   </head>
   <body>
     <div class="header">
-      <h1>Azora OS Valuation Dashboard</h1>
+      <h1>Azora ES Valuation Dashboard</h1>
       <p>Constitutional AI Enterprise Platform</p>
       <div class="metric-value">$26,500,000</div>
       <div class="metric-label">Total Valuation</div>
@@ -146,7 +146,7 @@ app.get('/', (req, res) => {
 
     <div style="text-align: center; margin-top: 30px; color: #666;">
       <p>Last updated: ${new Date().toLocaleString()}</p>
-      <p>Azora OS - Constitutional AI for Enterprise Transformation</p>
+      <p>Azora ES - Constitutional AI for Enterprise Transformation</p>
     </div>
   </body>
   </html>

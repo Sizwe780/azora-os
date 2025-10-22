@@ -1,7 +1,7 @@
 {
   "name": "constitution-service",
   "version": "1.0.0",
-  "description": "Azora OS - constitution-service",
+  "description": "Azora ES - constitution-service",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",

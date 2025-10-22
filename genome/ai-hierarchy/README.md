@@ -1,4 +1,4 @@
-# 🤖 AI Hierarchy System - Azora OS
+# 🤖 AI Hierarchy System - Azora ES
 
 A comprehensive hierarchical AI architecture that expands AI agents across all azora-* backends, creating a system of specialized agents (angels) coordinated by a Super AI (higher deity) that provides fully interactive AI assistance.
 
@@ -326,7 +326,7 @@ This project is licensed under the AZORA PROPRIETARY LICENSE - see the LICENSE f
 
 ## 🙏 Acknowledgments
 
-- Azora OS team for the vision
+- Azora ES team for the vision
 - Chamber of Ghosts for temporal intelligence
 - All contributors to the AI hierarchy system
 

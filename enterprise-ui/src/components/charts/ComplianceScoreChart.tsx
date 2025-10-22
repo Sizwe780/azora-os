@@ -1,86 +1,118 @@
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts'
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
+import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts'
 import { ComplianceMetrics } from '../../types'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
 
 interface ComplianceScoreChartProps {
   metrics?: ComplianceMetrics
 }
 
 const COLORS = {
-  compliant: '#10B981',     // green
-  needsAttention: '#F59E0B', // yellow
-  nonCompliant: '#EF4444',   // red
-  unreachable: '#6B7280'     // gray
+  low: 'hsl(var(--chart-1))',
+  medium: 'hsl(var(--chart-2))',
+  high: 'hsl(var(--chart-3))',
+  critical: 'hsl(var(--chart-4))'
+}
+
+const chartConfig = {
+  low: {
+    label: 'Low Risk',
+    color: COLORS.low,
+  },
+  medium: {
+    label: 'Medium Risk',
+    color: COLORS.medium,
+  },
+  high: {
+    label: 'High Risk',
+    color: COLORS.high,
+  },
+  critical: {
+    label: 'Critical Risk',
+    color: COLORS.critical,
+  },
 }
 
 export function ComplianceScoreChart({ metrics }: ComplianceScoreChartProps) {
   if (!metrics?.riskDistribution) {
     return (
-      <div className="card">
-        <h3 className="text-lg font-medium text-gray-900 mb-4">Risk Distribution</h3>
-        <div className="flex items-center justify-center h-64 text-gray-500">
-          No data available
-        </div>
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Risk Distribution</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-center h-64 text-muted-foreground">
+            No data available
+          </div>
+        </CardContent>
+      </Card>
     )
   }
 
   const data = [
     {
-      name: 'Low Risk',
+      risk: 'low',
       value: metrics.riskDistribution.low,
-      color: COLORS.compliant
+      fill: COLORS.low
     },
     {
-      name: 'Medium Risk',
+      risk: 'medium',
       value: metrics.riskDistribution.medium,
-      color: COLORS.needsAttention
+      fill: COLORS.medium
     },
     {
-      name: 'High Risk',
+      risk: 'high',
       value: metrics.riskDistribution.high,
-      color: COLORS.nonCompliant
+      fill: COLORS.high
     },
     {
-      name: 'Critical Risk',
+      risk: 'critical',
       value: metrics.riskDistribution.critical,
-      color: COLORS.unreachable
+      fill: COLORS.critical
     }
   ].filter(item => item.value > 0)
 
   const total = data.reduce((sum, item) => sum + item.value, 0)
 
   return (
-    <div className="card">
-      <h3 className="text-lg font-medium text-gray-900 mb-4">Risk Distribution</h3>
-      <div className="h-64">
-        <ResponsiveContainer width="100%" height="100%">
+    <Card>
+      <CardHeader>
+        <CardTitle>Risk Distribution</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <ChartContainer config={chartConfig} className="h-64">
           <PieChart>
+            <ChartTooltip
+              cursor={false}
+              content={<ChartTooltipContent hideLabel />}
+            />
             <Pie
               data={data}
-              cx="50%"
-              cy="50%"
-              innerRadius={60}
-              outerRadius={80}
-              paddingAngle={5}
               dataKey="value"
+              nameKey="risk"
+              innerRadius={60}
+              strokeWidth={5}
             >
               {data.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.color} />
+                <Cell key={`cell-${index}`} fill={entry.fill} />
               ))}
             </Pie>
-            <Tooltip
-              formatter={(value: number) => [`${value} frameworks`, 'Count']}
-              labelFormatter={(label) => `${label}`}
-            />
-            <Legend />
           </PieChart>
-        </ResponsiveContainer>
-      </div>
-      <div className="mt-4 text-center">
-        <p className="text-sm text-gray-600">
-          Total Frameworks: <span className="font-medium">{total}</span>
-        </p>
-      </div>
-    </div>
+        </ChartContainer>
+        <div className="mt-4 text-center">
+          <p className="text-sm text-muted-foreground">
+            Total Frameworks: <span className="font-medium">{total}</span>
+          </p>
+        </div>
+      </CardContent>
+    </Card>
   )
 }

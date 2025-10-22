@@ -368,7 +368,23 @@ router.delete('/:id', async (req: AuthenticatedRequest, res: Response) => {
       });
     }
 
-    // TODO: Clean up deployment files and DNS records
+    // Clean up deployment files and DNS records
+    try {
+      // Remove deployment files from storage
+      await cleanupDeploymentFiles(deployment.id);
+
+      // Remove DNS records if applicable
+      if (deployment.domain) {
+        await cleanupDNSRecords(deployment.domain);
+      }
+
+      // Log cleanup completion
+      logger.info('Deployment cleanup completed', { deploymentId: deployment.id });
+
+    } catch (cleanupError) {
+      logger.error('Error during deployment cleanup:', cleanupError);
+      // Don't fail the deletion if cleanup fails, but log it
+    }
 
     res.json({
       success: true,
@@ -387,3 +403,43 @@ router.delete('/:id', async (req: AuthenticatedRequest, res: Response) => {
 });
 
 export default router;
+
+// Cleanup utility functions
+async function cleanupDeploymentFiles(deploymentId: string): Promise<void> {
+  try {
+    // Remove deployment files from file system or cloud storage
+    const deploymentPath = path.join(process.cwd(), 'deployments', deploymentId);
+
+    if (fs.existsSync(deploymentPath)) {
+      fs.rmSync(deploymentPath, { recursive: true, force: true });
+      logger.info('Deployment files removed', { deploymentId, path: deploymentPath });
+    }
+
+    // In production, this would also clean up cloud storage (S3, etc.)
+    // await cloudStorage.deleteFolder(`deployments/${deploymentId}`);
+
+  } catch (error) {
+    logger.error('Error cleaning up deployment files:', error);
+    throw error;
+  }
+}
+
+async function cleanupDNSRecords(domain: string): Promise<void> {
+  try {
+    // Remove DNS records for the domain
+    // This would integrate with DNS provider APIs (Cloudflare, Route53, etc.)
+
+    logger.info('DNS records cleanup initiated', { domain });
+
+    // Example integration (would be replaced with actual DNS provider API calls):
+    // const dnsProvider = new CloudflareAPI(process.env.CLOUDFLARE_API_KEY);
+    // await dnsProvider.deleteRecords(domain);
+
+    // For now, log the cleanup requirement
+    logger.warn('DNS cleanup required - integrate with DNS provider', { domain });
+
+  } catch (error) {
+    logger.error('Error cleaning up DNS records:', error);
+    throw error;
+  }
+}

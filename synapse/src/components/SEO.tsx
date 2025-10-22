@@ -86,15 +86,15 @@ export default function SEO({
     structuredDataScript.textContent = JSON.stringify({
       "@context": "https://schema.org",
       "@type": "Organization",
-      "name": "Azora OS",
+      "name": "Azora ES",
       "url": "https://azora.world",
-      "logo": "https://azora.world/logo.png",
+      "logo": "https://azora.world/azora-light.png",
       "description": description,
       "foundingDate": "2024",
       "founders": [
         {
           "@type": "Person",
-          "name": "Azora OS Team"
+          "name": "Azora ES Team"
         }
       ],
       "address": {
@@ -110,9 +110,9 @@ export default function SEO({
         "email": "hello@azora.world"
       },
       "sameAs": [
-        "https://twitter.com/AzoraOS",
-        "https://linkedin.com/company/azora-os",
-        "https://github.com/azora-os"
+        "https://twitter.com/AzoraES",
+        "https://linkedin.com/company/azora-es",
+        "https://github.com/azora-es"
       ]
     })
 

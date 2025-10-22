@@ -1,7 +1,7 @@
 {
   "name": "maintenance-service",
   "version": "1.0.0",
-  "description": "Predictive maintenance with AI, automated scheduling, and digital twin integration for Azora OS",
+  "description": "Predictive maintenance with AI, automated scheduling, and digital twin integration for Azora ES",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",

@@ -2,7 +2,7 @@
 
 ## 🚀 Advanced AI Security Monitoring Service
 
-An enterprise-grade AI security monitoring service featuring real-time computer vision, advanced threat detection, and intelligent surveillance capabilities for the Azora OS ecosystem.
+An enterprise-grade AI security monitoring service featuring real-time computer vision, advanced threat detection, and intelligent surveillance capabilities for the Azora ES ecosystem.
 
 ## ✨ Features
 
@@ -15,7 +15,7 @@ An enterprise-grade AI security monitoring service featuring real-time computer 
 - **Camera Management**: Comprehensive camera registration and monitoring
 
 ### Enterprise Features
-- **Event Bus Integration**: Seamless integration with Azora OS event streaming
+- **Event Bus Integration**: Seamless integration with Azora ES event streaming
 - **MongoDB Storage**: Persistent analysis results and historical data
 - **Redis Caching**: High-performance caching and real-time data storage
 - **Rate Limiting**: API protection and abuse prevention
@@ -113,7 +113,7 @@ node validate.js
 6. **Threat Classification**: Severity scoring and alert generation
 7. **Data Persistence**: MongoDB storage with Redis caching
 8. **Real-time Updates**: WebSocket broadcasting to connected clients
-9. **Event Publishing**: Integration with Azora OS event bus
+9. **Event Publishing**: Integration with Azora ES event bus
 
 ## 📊 Data Models
 
@@ -146,7 +146,7 @@ node validate.js
 ## 🔗 Integration Points
 
 ### Event Bus
-Publishes threat events to the Azora OS event bus:
+Publishes threat events to the Azora ES event bus:
 ```javascript
 {
   topic: "security.event.threat_detected",
@@ -201,4 +201,4 @@ This project is licensed under the AZORA PROPRIETARY LICENSE - see the LICENSE f
 
 ---
 
-**Azora OS Security Suite** - Making surveillance intelligent, secure, and ethical.
+**Azora ES Security Suite** - Making surveillance intelligent, secure, and ethical.

@@ -21,6 +21,23 @@ const router = Router();
 // Note: AuthenticatedRequest is defined globally via Express namespace extension
 type AuthenticatedRequest = Request;
 
+// Middleware for registration rate limiting
+const registrationRateLimitMiddleware = async (req: AuthenticatedRequest, res: Response, next: Function) => {
+  try {
+    const userId = req.user?.id || req.ip || 'anonymous';
+    await registrationRateLimiter.consume(userId);
+    next();
+  } catch (rejRes) {
+    res.status(429).json({
+      success: false,
+      error: {
+        message: 'Too many registration attempts, please try again later.',
+        statusCode: 429
+      }
+    });
+  }
+};
+
 /**
  * @swagger
  * /api/v1/domains/check:
@@ -163,7 +180,7 @@ router.post('/check', async (req: AuthenticatedRequest, res: Response) => {
  *                 data:
  *                   $ref: '#/components/schemas/DomainListing'
  */
-router.post('/register', registrationRateLimiter, async (req: AuthenticatedRequest, res: Response) => {
+router.post('/register', registrationRateLimitMiddleware, async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { domain, category, description, tags } = req.body;
     const userId = req.user?.id || 'anonymous';

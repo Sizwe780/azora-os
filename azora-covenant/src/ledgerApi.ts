@@ -55,24 +55,71 @@ router.get('/entry/:key', async (req, res) => {
 export default router;
 
 class LedgerService {
+  private static ledger: Map<string, any> = new Map();
+  private static checkpoints: any[] = [];
+
   static async createCheckpoint(nodeid: string, stateroot: string, signature: string, snapshot_locator: string): Promise<any> {
-    // TODO: Implement logic to create a checkpoint
-    return { nodeid, stateroot, signature, snapshot_locator };
+    const checkpoint = {
+      id: `checkpoint-${Date.now()}`,
+      nodeid,
+      stateroot,
+      signature,
+      snapshot_locator,
+      timestamp: new Date().toISOString(),
+      ledgerSize: this.ledger.size,
+      stateHash: this.calculateStateHash(),
+    };
+
+    this.checkpoints.push(checkpoint);
+
+    logger.info('Checkpoint created', { checkpointId: checkpoint.id, nodeId: nodeid });
+
+    return checkpoint;
   }
 
   static async getState(): Promise<any> {
-    // TODO: Implement logic to get the state
-    return { state: 'mockState' };
+    return {
+      size: this.ledger.size,
+      entries: Array.from(this.ledger.entries()),
+      lastCheckpoint: this.checkpoints[this.checkpoints.length - 1] || null,
+      timestamp: new Date().toISOString(),
+    };
   }
 
   static async addEntry(key: string, value: string): Promise<any> {
-    // TODO: Implement logic to add an entry
-    return { key, value };
+    const entry = {
+      key,
+      value,
+      timestamp: new Date().toISOString(),
+      hash: this.hashEntry(key, value),
+    };
+
+    this.ledger.set(key, entry);
+
+    logger.info('Entry added to ledger', { key, hash: entry.hash });
+
+    return entry;
   }
 
   static async getEntry(key: string): Promise<any> {
-    // TODO: Implement logic to retrieve an entry by key from the ledger
-    // For now, return a mock object or fetch from your data source
-    return { key, value: 'mockValue' };
+    const entry = this.ledger.get(key);
+
+    if (!entry) {
+      throw new Error(`Entry not found for key: ${key}`);
+    }
+
+    return entry;
+  }
+
+  private static calculateStateHash(): string {
+    const crypto = require('crypto');
+    const stateData = JSON.stringify(Array.from(this.ledger.entries()).sort());
+    return crypto.createHash('sha256').update(stateData).digest('hex');
+  }
+
+  private static hashEntry(key: string, value: string): string {
+    const crypto = require('crypto');
+    const data = JSON.stringify({ key, value, timestamp: Date.now() });
+    return crypto.createHash('sha256').update(data).digest('hex');
   }
 }

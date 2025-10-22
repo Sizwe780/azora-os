@@ -223,4 +223,4 @@ This project is licensed under the AZORA PROPRIETARY LICENSE - see the LICENSE f
 
 ## Support
 
-For support, please contact the Azora OS development team or create an issue in the project repository.
+For support, please contact the Azora ES development team or create an issue in the project repository.

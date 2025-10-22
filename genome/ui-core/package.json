@@ -1,7 +1,7 @@
 {
   "name": "@azora/ui-core",
   "version": "1.0.0",
-  "description": "Azora OS UI Design System",
+  "description": "Azora ES UI Design System",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
