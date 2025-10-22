@@ -96,7 +96,7 @@ router.post('/check', async (req: AuthenticatedRequest, res: Response) => {
     // 2. In database but marked as available
     const available = !existingListing || existingListing.status === 'available';
 
-    customMetrics.searchQueriesTotal.inc();
+    customMetrics.listingsCreatedTotal.inc();
 
     res.json({
       success: true,
