@@ -41,7 +41,8 @@ Azora ES Enterprise Suite
 │   ├── Council UI - Governance & Compliance ✅
 │   ├── Pulse UI - Business Intelligence ✅
 │   ├── Vigil UI - Enterprise Security ✅
-│   └── Signal UI - Enterprise Communications ✅
+│   ├── Signal UI - Enterprise Communications ✅
+│   └── Azora Academy - Enterprise Learning & Training ✅
 ├── Nexus Layer (AI Enterprise Services)
 ├── Covenant Layer (Constitutional Contracts)
 ├── Forge Layer (Enterprise Tools)

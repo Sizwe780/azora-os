@@ -11,12 +11,14 @@ Azora ES advances enterprise transformation through:
 - **Biological Architecture**: Self-healing, resilient infrastructure inspired by natural systems
 - **Enterprise Integration**: Seamless integration with existing enterprise systems
 - **Compliance Automation**: Automated regulatory compliance and audit trails
+- **Azora Academy**: Integrated learning and training platform for enterprise teams
 
 ## Current Status
 
 - **Constitutional AI Framework**: Enterprise AI with governance and ethical constraints
 - **Biological Systems Architecture**: Self-healing and adaptive enterprise infrastructure
 - **Multi-Application Suite**: Specialized UIs for different enterprise functions
+- **Azora Academy**: Integrated enterprise learning and certification platform
 - **Enterprise-Grade Security**: Zero-trust security with comprehensive audit trails
 
 ## Enterprise Architecture
@@ -29,12 +31,14 @@ Azora ES features specialized enterprise interfaces for different business domai
 - **Pulse UI** - Business intelligence and performance analytics
 - **Vigil UI** - Security monitoring and threat detection
 - **Signal UI** - Enterprise communication and collaboration
+- **Azora Academy** - Enterprise learning, training, and certification platform
 
 ### Core Enterprise Services
 - **Constitutional AI Engine**: Enterprise AI with ethical constraints
 - **Biological Architecture Framework**: Self-healing enterprise systems
 - **Enterprise Analytics**: Business intelligence and performance monitoring
 - **Compliance Automation**: Regulatory compliance and audit management
+- **Azora Academy Services**: Enterprise training, certification, and knowledge management
 
 ### Technology Stack
 - **Frontend**: Next.js 15, React 19, TypeScript, Material-UI v7
