@@ -13,9 +13,12 @@ export class AuditService {
   static async log(eventType: string, details: any, userId?: string) {
     await prisma.auditLog.create({
       data: {
-        eventType: eventType,
-        details,
-        userId,
+        entityType: "abtest",
+        entityId: userId || "system",
+        action: eventType,
+        userId: userId || "system",
+        metadata: JSON.stringify(details),
+        hash: "placeholder", // TODO: generate proper hash
       },
     });
   }

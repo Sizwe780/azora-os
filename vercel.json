@@ -1,72 +1,9 @@
 {
   "version": 2,
   "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "framework": "vite",
+  "outputDirectory": ".next",
+  "framework": "nextjs",
   "env": {
-    "ENABLE_EXPERIMENTAL_COREPACK": "0",
     "NODE_VERSION": "20"
-  },
-  "routes": [
-    {
-      "src": "/api/v1/ledger",
-      "dest": "/api/v1/ledger/index.ts"
-    },
-    {
-      "src": "/api/ai-orchestrator/(.*)",
-      "dest": "/services/ai-orchestrator/index.js"
-    },
-    {
-      "src": "/api/klipp/(.*)",
-      "dest": "/services/klipp-service/index.js"
-    },
-    {
-      "src": "/api/neural/(.*)",
-      "dest": "/services/neural-context-engine/index.js"
-    },
-    {
-      "src": "/api/retail/(.*)",
-      "dest": "/services/retail-partner-integration/index.js"
-    },
-    {
-      "src": "/api/coldchain/(.*)",
-      "dest": "/services/cold-chain-quantum/index.js"
-    },
-    {
-      "src": "/api/safety/(.*)",
-      "dest": "/services/universal-safety/index.js"
-    },
-    {
-      "src": "/api/autonomous/(.*)",
-      "dest": "/services/autonomous-operations/index.js"
-    },
-    {
-      "src": "/api/tracking/(.*)",
-      "dest": "/services/quantum-tracking/index.js"
-    },
-    {
-      "src": "/api/hr-ai/(.*)",
-      "dest": "/services/hr-ai-deputy/index.js"
-    },
-    {
-      "src": "/api/onboarding/(.*)",
-      "dest": "/services/onboarding-service/index.js"
-    },
-    {
-      "src": "/api/compliance/(.*)",
-      "dest": "/services/compliance-service/index.js"
-    },
-    {
-      "src": "/api/traffic/(.*)",
-      "dest": "/services/traffic-routing/index.js"
-    },
-    {
-      "handle": "filesystem"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html",
-      "check": true
-    }
-  ]
+  }
 }

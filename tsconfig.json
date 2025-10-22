@@ -60,6 +60,7 @@
     "node_modules",
     "dist",
     "services",
+    "organs",
     "**/*.css",
     "apps/main-app/index.css",
     "*.css",

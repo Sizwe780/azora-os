@@ -1,9 +1,0 @@
-/*
-AZORA PROPRIETARY LICENSE
-
-Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
-
-See LICENSE file for details.
-*/
-
-self.__BUILD_MANIFEST=function(e,r,t){return{__rewrites:{afterFiles:[],beforeFiles:[],fallback:[]},__routerFilterStatic:{numItems:0,errorRate:1e-4,numBits:0,numHashes:null,bitArray:[]},__routerFilterDynamic:{numItems:e,errorRate:1e-4,numBits:e,numHashes:null,bitArray:[]},"/_error":["static/chunks/pages/_error-cb2a52f75f2162e2.js"],sortedPages:["/_app","/_error"]}}(0,1e-4,null),self.__BUILD_MANIFEST_CB&&self.__BUILD_MANIFEST_CB();
