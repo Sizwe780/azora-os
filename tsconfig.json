@@ -6,6 +6,7 @@
     "jsx": "preserve",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "downlevelIteration": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,

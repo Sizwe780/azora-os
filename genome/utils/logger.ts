@@ -1,4 +1,6 @@
-import winston from 'winston';
+import * as winston from 'winston';
+import * as fs from 'fs';
+import * as path from 'path';
 
 export const logger = winston.createLogger({
   level: process.env.LOG_LEVEL || 'info',
@@ -26,9 +28,6 @@ export const logger = winston.createLogger({
 });
 
 // Ensure logs directory exists
-import fs from 'fs';
-import path from 'path';
-
 const logsDir = path.join(process.cwd(), 'logs');
 if (!fs.existsSync(logsDir)) {
   fs.mkdirSync(logsDir, { recursive: true });
