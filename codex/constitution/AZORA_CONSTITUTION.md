@@ -654,7 +654,72 @@ Brainstem (Neural Broker) handles automatic processes; Cortex (Main AI) handles 
 
 ---
 
-## ARTICLE XV: FRONTEND GOVERNANCE
+## ARTICLE XVI: NO MOCK PROTOCOL
+
+### Section 1: Absolute Prohibition of Mocks
+
+**No Mock Mandate:**
+No mocks, stubs, placeholders, fake data, or simulated implementations shall exist in the Azora OS codebase. All code must be production-ready, fully functional, and backed by real infrastructure.
+
+**Constitutional Enforcement:**
+- All development must use actual implementations
+- No TODO comments, FIXME tags, or placeholder code
+- No skipped tests or incomplete features
+- No fake APIs, mock services, or simulated data
+- All claims must be verifiable and backed by working code
+
+### Section 2: Validation Requirements
+
+**Automated Validation:**
+The No Mock Validator (`infrastructure/no-mock-validator.js`) shall run on every commit and deployment, rejecting any code containing:
+- Mock functions or stub implementations
+- TODO/FIXME comments
+- Placeholder or dummy data
+- Skipped tests
+- Fake API endpoints
+
+**Manual Review:**
+All pull requests must pass manual constitutional review to ensure no mock implementations are introduced.
+
+### Section 3: Exceptions and Extensions
+
+**Allowed Exceptions:**
+- Unit test mocks for isolated testing (must be clearly documented)
+- Development environment configurations
+- Feature flags for gradual rollouts
+
+**Extension Protocol:**
+If the No Mock Protocol is violated, the offending code must be immediately removed or replaced with functional implementations. Repeated violations result in contributor suspension.
+
+**Constitutional Override:**
+The No Mock Protocol supersedes all other development practices. Any code not meeting production standards shall be rejected.
+
+### Section 1: Verifiable Claims Only
+
+**Truth Mandate:**
+All marketing materials, documentation, and public communications must contain only verifiable facts backed by working code and real metrics.
+
+**Prohibited Claims:**
+- Fake user numbers, revenue figures, or valuation claims
+- Unsubstantiated partnership announcements
+- Premature "production ready" or "enterprise-grade" claims
+- Hypothetical future capabilities presented as current features
+
+### Section 2: Evidence Requirements
+
+**Claim Validation:**
+Every public claim must be supported by:
+- Working code in the repository
+- Real usage metrics from production systems
+- Verifiable third-party validations
+- Auditable documentation
+
+**Transparency Protocol:**
+All claims must include methodology for verification and be updated quarterly with real data.
+
+---
+
+## ARTICLE XVIII: CONSTITUTIONAL ENFORCEMENT
 
 ### Section 1: Subdomain Architecture
 Azora shall maintain a subdomain-based frontend architecture to serve different user segments and industries, ensuring each user experiences Azora tailored to their needs.

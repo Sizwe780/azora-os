@@ -26,6 +26,25 @@ model Lead {
   createdAt DateTime @default(now())
 }
 
+model Listing {
+  id        String   @id @default(cuid())
+  item      String
+  price     Float
+  userId    String
+  status    String   @default("active")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Transaction {
+  id        String   @id @default(cuid())
+  listingId String
+  buyerId   String
+  amount    Float
+  status    String   @default("completed")
+  createdAt DateTime @default(now())
+}
+
 model AuditLog {
   id        String   @id @default(cuid())
   eventType String

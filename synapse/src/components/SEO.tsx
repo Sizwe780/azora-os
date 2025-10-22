@@ -1,14 +1,3 @@
-import { Helmet } from 'react-helmet-async'
-
-interface SEOProps {
-  title?: string
-  description?: string
-  keywords?: string
-  image?: string
-  url?: string
-  type?: string
-}
-
 import { useEffect } from 'react'
 
 interface SEOProps {
