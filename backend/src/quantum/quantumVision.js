@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 // QuantumVision: Quantum AI for Vision Service
 // Quantum-enhanced analytics for real-time vision processing
 

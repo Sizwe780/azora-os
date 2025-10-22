@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 export type GraphNode = { id: string; type: string; label: string; score: number };
 export type GraphEdge = { from: string; to: string; relation: string };
 

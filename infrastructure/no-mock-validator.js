@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 /**
  * No Mock Protocol Validator
  * Scans entire codebase to ensure ZERO mocks, stubs, or placeholders

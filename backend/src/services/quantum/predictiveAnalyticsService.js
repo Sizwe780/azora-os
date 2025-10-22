@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 // Quantum Predictive Analytics Service
 // Quantum-enhanced analytics for loss prevention, scheduling, and logistics optimization
 

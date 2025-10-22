@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 import { Router, Request, Response } from 'express';
 import { WebsiteDeployment, WebsiteGeneration } from '../models/Website';
 import { customMetrics } from '../middleware/metrics';
@@ -8,12 +16,18 @@ import { deployWebsite } from '../services/deploymentService';
 const router = Router();
 
 // Extend Request interface to include user
-interface AuthenticatedRequest extends Request {
-  user?: {
-    id: string;
-    email?: string;
-  };
+declare global {
+  namespace Express {
+    interface Request {
+      user?: {
+        id: string;
+        email?: string;
+      };
+    }
+  }
 }
+
+type AuthenticatedRequest = Request;
 
 /**
  * @swagger

@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 /**
  * Azora OS - Autonomous Self-Healing Infrastructure Orchestrator
  * Monitors all services, detects failures, and automatically heals

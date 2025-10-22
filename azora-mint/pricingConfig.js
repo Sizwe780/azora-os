@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 /**
  * Azora OS Pricing Configuration
  * Trial: 1 month free, then 50% off for 2 months

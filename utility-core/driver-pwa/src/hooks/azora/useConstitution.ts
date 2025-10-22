@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 // TODO: Implement real useConstitution hook with API integration
 // Remove stub implementation and connect to actual constitution service
 

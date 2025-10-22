@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 export async function capturePCM(seconds = 4): Promise<{ pcm: Float32Array; sampleRate: number }> {
   const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
   const ctx = new AudioContext(); const source = ctx.createMediaStreamSource(stream); const proc = ctx.createScriptProcessor(4096,1,1);

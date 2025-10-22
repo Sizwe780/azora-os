@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 import { analyzeSentiment } from './sentiment';
 import { summarizeProposal } from './proposalSummarizer';
 import { predictOutcome, adjustForecastWithSentiment } from './predictor';

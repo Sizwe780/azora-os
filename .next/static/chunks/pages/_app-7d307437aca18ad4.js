@@ -1,1 +1,9 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 (self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[636],{326:(_,n,p)=>{(window.__NEXT_P=window.__NEXT_P||[]).push(["/_app",function(){return p(5139)}])}},_=>{var n=n=>_(_.s=n);_.O(0,[593,792],()=>(n(326),n(6763))),_N_E=_.O()}]);

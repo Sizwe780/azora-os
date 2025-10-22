@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 // Compliance and Safety Reporting API Route
 // Provides REST endpoints for incident reporting, training, and audit logs
 

@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 import { useEffect, useRef } from "react";
 import { io } from "socket.io-client";
 export default function useVideoSignaling(room, onSignal, onPeer) {

@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 module.exports = [
 "[project]/synapse/main-ui/node_modules/picocolors/picocolors.js [postcss] (ecmascript)", ((__turbopack_context__, module, exports) => {
 

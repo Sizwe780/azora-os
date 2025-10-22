@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 // Minimal stub for CaaS API key generation & billing activation.
 // This file is scaffold only — do not run in production without security review.
 

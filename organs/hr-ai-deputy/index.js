@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 /**
  * HR AI DEPUTY CEO - Autonomous Human Resources Management System
  * Acts as Deputy CEO and Board Chair ensuring work completion

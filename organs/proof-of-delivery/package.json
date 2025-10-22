@@ -9,7 +9,7 @@
     "test": "echo \"No tests specified\""
   },
   "author": "Autonomous Logistics Team",
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "AZORA PROPRIETARY LICENSE",
   "dependencies": {
     "express": "^4.21.2"
   },

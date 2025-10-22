@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 type STTListener = (text: string, isFinal: boolean) => void;
 export class VoiceEngine {
   private recognition?: SpeechRecognition; private sttListener?: STTListener; private wakeActive = true; private listening = false;

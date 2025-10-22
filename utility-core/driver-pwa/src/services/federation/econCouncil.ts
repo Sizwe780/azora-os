@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 export type CouncilMember = { id: string; name: string; reputation: number };
 export type AdvisoryProposal = { id: string; title: string; content: string; votes: number };
 

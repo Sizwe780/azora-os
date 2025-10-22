@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 export type TextSizeType = 'Small' | 'Medium' | 'Large' | 'XL';
 export type ColorBlindModeType = 'None' | 'Protanopia' | 'Deuteranopia' | 'Tritanopia';
 

@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 import { logger } from '../utils/logger';
 import { LLMReasoningEngine } from './llm-reasoning';
 import { ConstitutionalGovernor } from './constitutional-governor';

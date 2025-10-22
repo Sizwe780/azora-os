@@ -197,7 +197,7 @@ Real-time updates via Socket.IO:
 
 ## 📄 License
 
-SEE LICENSE IN LICENSE
+This project is licensed under the AZORA PROPRIETARY LICENSE - see the LICENSE file for details.
 
 ---
 

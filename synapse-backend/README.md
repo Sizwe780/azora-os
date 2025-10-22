@@ -98,4 +98,6 @@ The service is designed to run in Docker containers and can be deployed to servi
 
 ## License
 
+This project is licensed under the AZORA PROPRIETARY LICENSE - see the LICENSE file for details.
+
 Copyright Azora OS (Pty) Ltd

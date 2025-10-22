@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 import { Router, Request, Response } from 'express';
 import Email from '../models/Email'; // Assuming Email model has .canRetry()
 import Domain from '../models/Domain'; // Assuming Domain model has smtpConfig

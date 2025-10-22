@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 // Notification service
 async function sendNotification(userId, message, type = 'info') {
   // In production, integrate with push/email/SMS

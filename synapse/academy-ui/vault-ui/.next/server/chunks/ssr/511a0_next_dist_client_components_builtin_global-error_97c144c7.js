@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 module.exports = [
 "[project]/synapse/vault-ui/node_modules/next/dist/client/components/builtin/global-error.js [app-rsc] (client reference proxy) <module evaluation>", ((__turbopack_context__, module, exports) => {
 

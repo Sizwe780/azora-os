@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 import { Router, Request, Response, NextFunction } from 'express';
 import complianceService from '../services/compliance.service';
 import tenderService from '../services/tender.service';

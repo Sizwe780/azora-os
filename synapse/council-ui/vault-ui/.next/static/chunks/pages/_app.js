@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 __turbopack_load_page_chunks__("/_app", [
   "static/chunks/511a0_next_dist_compiled_next-devtools_index_1895052d.js",
   "static/chunks/511a0_next_dist_compiled_73f8bf98._.js",

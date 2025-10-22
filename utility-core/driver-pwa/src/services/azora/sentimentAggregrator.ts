@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 export type SentimentScore = { positive: number; neutral: number; negative: number };
 
 export function aggregateSentiment(messages: string[]): SentimentScore {

@@ -156,7 +156,7 @@ docker run -p 5100:5100 azora/procurement-corridor
 
 ## 📝 License
 
-Proprietary - AZORA World (Pty) Ltd
+This project is licensed under the AZORA PROPRIETARY LICENSE - see the LICENSE file for details.
 
 ## 👥 Team
 

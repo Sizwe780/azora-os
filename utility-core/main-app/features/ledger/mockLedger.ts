@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 import { FileText, DollarSign, Truck, User, Building, AlertTriangle } from 'lucide-react';
 
 export type LedgerEntry = {

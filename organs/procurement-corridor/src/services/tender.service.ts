@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 import { Tender, Bid, TenderStatus, BidStatus } from '../types/tender.types';
 import { logger } from '../utils/logger';
 import blockchainService from './blockchain.service';

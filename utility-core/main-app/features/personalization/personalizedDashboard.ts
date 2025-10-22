@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 // features/personalization/personalizedDashboard.ts
 // Hyper-personalized dashboard logic for Azora OS
 

@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 var R=require("./build/chunks/[turbopack]_runtime.js")("postcss.js")
 R.c("build/chunks/[turbopack-node]_transforms_postcss_ts_20d67c08._.js")
 R.c("build/chunks/[root-of-the-server]__1844987f._.js")

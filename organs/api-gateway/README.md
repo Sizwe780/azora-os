@@ -248,4 +248,4 @@ The service includes Kubernetes manifests for production deployment with:
 
 ## License
 
-See LICENSE file in the root directory.
+This project is licensed under the AZORA PROPRIETARY LICENSE - see the LICENSE file for details.

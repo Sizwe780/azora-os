@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 /**
  * @file Advanced Event Bus Service
  * @description Production-grade event bus with Kafka/RabbitMQ integration, event sourcing, CQRS patterns, and enterprise messaging features

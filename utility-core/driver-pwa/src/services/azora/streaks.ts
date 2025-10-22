@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 export function calculateStreak(actions: { date: string }[]): number {
     const today = new Date().toDateString();
     let streak = 0;

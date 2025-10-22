@@ -284,7 +284,7 @@ Azora Ledger is part of the Azora OS ecosystem. Contributions should align with 
 
 ## License
 
-This project is licensed under the Azora OS License - see LICENSE file for details.
+This project is licensed under the AZORA PROPRIETARY LICENSE - see LICENSE file for details.
 
 ## Disclaimer
 

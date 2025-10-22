@@ -19,7 +19,7 @@
     "azora"
   ],
   "author": "Azora OS",
-  "license": "MIT",
+  "license": "AZORA PROPRIETARY LICENSE",
   "dependencies": {
     "@langchain/community": "^0.0.20",
     "@langchain/core": "^0.1.0",

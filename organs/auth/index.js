@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 /**
  * @file Advanced Authentication Service
  * @description Multi-tenant authentication with OAuth2, SAML, MFA, biometric auth, and enterprise security features

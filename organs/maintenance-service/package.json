@@ -9,7 +9,7 @@
   },
   "keywords": ["maintenance", "predictive", "ai", "fleet-management", "digital-twin"],
   "author": "Sizwe Ngwenya <sizwe.ngwenya@azora.world>",
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "AZORA PROPRIETARY LICENSE",
   "dependencies": {
     "express": "^4.21.2",
     "body-parser": "^2.2.0"

@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 import { useEffect, useState } from 'react';
 import { fetchProtocolUpgrades, stakeOnUpgrade } from '../../src/services/azora/protocolUpgrade';
 import { ProtocolUpgradeProposal } from '../../types/azora/protocolUpgrade';

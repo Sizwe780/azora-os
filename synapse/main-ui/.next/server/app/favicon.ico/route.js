@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 var R=require("../../chunks/[turbopack]_runtime.js")("server/app/favicon.ico/route.js")
 R.c("server/chunks/[root-of-the-server]__e95cc18b._.js")
 R.c("server/chunks/[root-of-the-server]__57652cf7._.js")

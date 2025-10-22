@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 // Panel components
 export { Dashboard } from './panels/Dashboard'
 export { CoursesPanel } from './panels/CoursesPanel'

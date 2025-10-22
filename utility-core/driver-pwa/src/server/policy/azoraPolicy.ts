@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 // src/server/policy/azoraPolicy.ts
 export type HosPolicy = {
     cycleHoursMax: number;        // e.g., 70 over 8 days

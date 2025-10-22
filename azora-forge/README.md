@@ -174,4 +174,4 @@ This service implements Article VIII.5 of the Azora Constitution:
 
 ## License
 
-This service is part of the Azora OS and follows the project's licensing terms.
+This project is licensed under the AZORA PROPRIETARY LICENSE - see the LICENSE file for details.

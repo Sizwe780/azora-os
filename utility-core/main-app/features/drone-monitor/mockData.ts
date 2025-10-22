@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 import { Drone, BatteryCharging, PowerOff, Wrench, CheckCircle, AlertTriangle, XCircle } from 'lucide-react';
 import { subHours, subMinutes, formatDistanceToNow } from 'date-fns';
 

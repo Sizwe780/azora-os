@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 import { SpecializedAgent, AgentTask, TaskResult, HealthMetrics, AgentInsight } from '../specialized-agents/base-agent';
 import { NexusAgent } from '../specialized-agents/nexus-agent';
 import { MintAgent } from '../specialized-agents/mint-agent';
@@ -107,7 +115,7 @@ export class SuperAI {
   private async gatherAgentInsights(): Promise<Map<string, AgentInsight[]>> {
     const insights = new Map<string, AgentInsight[]>();
 
-    for (const [name, agent] of this.agents) {
+    for (const [name, agent] of Array.from(this.agents.entries())) {
       try {
         const agentInsights = await agent.getInsights();
         insights.set(name, agentInsights);

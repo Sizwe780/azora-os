@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 /**
  * Azora AI Personal Assistant - "ARIA" (Azora Responsive Intelligence Agent)
  * Sci-fi level personal assistant with:

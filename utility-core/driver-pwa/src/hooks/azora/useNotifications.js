@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 import { createContext, useContext, useState } from 'react';
 const NotificationCtx = createContext(null);
 export function NotificationProvider({ children }) {

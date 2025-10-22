@@ -13,7 +13,7 @@
   },
   "keywords": ["marketplace", "p2p", "blockchain", "azora"],
   "author": "Azora OS",
-  "license": "MIT",
+  "license": "AZORA PROPRIETARY LICENSE",
   "dependencies": {
     "express": "^4.18.2",
     "mongoose": "^8.0.3",

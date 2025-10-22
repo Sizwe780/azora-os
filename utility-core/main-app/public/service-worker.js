@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 // Azora OS advanced service worker: caching, push, update, and background sync
 
 const CACHE_NAME = 'azora-os-cache-v3';

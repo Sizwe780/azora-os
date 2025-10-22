@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 // Compliance logic for checklists, incidents, and reporting
 const AviationChecklist = require('../models/AviationChecklist');
 const DefenseDrill = require('../models/DefenseDrill');

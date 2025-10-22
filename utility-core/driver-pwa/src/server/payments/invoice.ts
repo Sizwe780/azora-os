@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 // src/server/payments/invoice.ts
 import { jsPDF } from 'jspdf';
 import dayjs from 'dayjs';

@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 // Neural intent classifier (train on intents like 'acknowledge_policy', 'report_incident')
 async function predictIntent(context, partialInput) {
   // Simulate neural prediction: Embed input and classify

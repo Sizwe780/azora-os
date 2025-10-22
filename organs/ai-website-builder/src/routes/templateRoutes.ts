@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 import { Router, Request, Response } from 'express';
 import { WebsiteTemplate } from '../models/Website';
 import { customMetrics } from '../middleware/metrics';
@@ -5,13 +13,8 @@ import logger from '../utils/logger';
 
 const router = Router();
 
-// Extend Request interface to include user
-interface AuthenticatedRequest extends Request {
-  user?: {
-    id: string;
-    email?: string;
-  };
-}
+// Note: AuthenticatedRequest is defined globally via Express namespace extension
+type AuthenticatedRequest = Request;
 
 /**
  * @swagger

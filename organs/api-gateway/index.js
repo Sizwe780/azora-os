@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 /**
  * @file Enterprise API Gateway
  * @description Advanced API Gateway with circuit breaker, service discovery, load balancing, metrics, and enterprise features

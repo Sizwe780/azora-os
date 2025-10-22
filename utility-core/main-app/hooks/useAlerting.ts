@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 import { useEffect } from 'react';
 import { useMetrics } from '../context/MetricsProvider';
 import { useAlerts } from '../context/AlertProvider';

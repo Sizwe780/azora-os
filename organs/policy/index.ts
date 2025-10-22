@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 type Action = { type: string; payload: Record<string, unknown>; confidence: number; risk: number; context: Record<string, unknown> };
 type Decision = { allow: boolean; requireConfirm?: boolean; reason: string; severity: "low" | "medium" | "high" };
 

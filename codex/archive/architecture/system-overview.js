@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 // filepath: /workspaces/azora-os/services/contracts-service/index.js
 const express = require('express');
 const cors = require('cors');

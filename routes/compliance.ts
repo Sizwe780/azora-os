@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 import express from 'express';
 import { Request, Response } from 'express';
 import ProofOfComplianceService from '../services/proofOfComplianceService';

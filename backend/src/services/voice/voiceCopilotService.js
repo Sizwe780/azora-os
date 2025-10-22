@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 // Voice Copilot Service: Multilingual, South African language support
 // Integrates HuggingFace/Google Speech APIs for voice recognition and NLP
 

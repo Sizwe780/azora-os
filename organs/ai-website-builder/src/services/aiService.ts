@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 import OpenAI from 'openai';
 import { WebsiteGeneration } from '../models/Website';
 import { customMetrics, aiRateLimiter } from '../middleware/metrics';

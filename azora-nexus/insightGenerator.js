@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 // Insight generator miracle edition
 async function generate({ intent, anomaly, quantum }) {
   let summary = `Intent: ${intent}, Anomaly Score: ${anomaly.anomalyScore}, Quantum Confidence: ${quantum.confidence || 'N/A'}`;

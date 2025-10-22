@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 import { SpecializedAgent, AgentTask, TaskResult, HealthMetrics, AgentInsight } from './base-agent';
 import { MemorySystem } from '../../agent-tools/memory-system';
 import { logger } from '../../utils/logger';

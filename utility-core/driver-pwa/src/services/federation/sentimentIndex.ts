@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 export function calculateESI({ moodScore, repVelocity, proposalCount, federationVolume }: any) {
     const moodWeight = moodScore * 0.4;
     const velocityWeight = Math.min(repVelocity / 1000, 1) * 0.3;

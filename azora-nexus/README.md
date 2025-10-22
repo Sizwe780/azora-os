@@ -219,7 +219,7 @@ docker run -p 3006:3006 --env-file .env azora-nexus
 
 ## License
 
-This project is part of the Azora OS ecosystem. See LICENSE file for details.
+This project is licensed under the AZORA PROPRIETARY LICENSE - see the LICENSE file for details.
 
 ## Support
 

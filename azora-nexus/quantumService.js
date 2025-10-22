@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 // Quantum hybrid scoring stub
 const axios = require('axios');
 const QUANTUM_URL = process.env.QUANTUM_SERVICE_URL || 'http://localhost:5000';

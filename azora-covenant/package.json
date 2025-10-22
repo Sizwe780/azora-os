@@ -18,7 +18,7 @@
     "ledger"
   ],
   "author": "Autonomous Logistics Team",
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "AZORA PROPRIETARY LICENSE",
   "dependencies": {
     "express": "^4.21.2",
     "axios": "^1.12.2"

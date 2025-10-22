@@ -19,7 +19,7 @@
     "azora"
   ],
   "author": "Sizwe Ngwenya (Azora World)",
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "AZORA PROPRIETARY LICENSE",
   "dependencies": {
     "express": "^4.18.2"
   },

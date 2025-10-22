@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 const kyber = require('node-pqcrypto/kyber');
 const dilithium = require('node-pqcrypto/dilithium');
 const axios = require('axios');

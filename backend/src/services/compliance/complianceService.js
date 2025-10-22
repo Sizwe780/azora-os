@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 // Compliance and Safety Reporting Service
 // Incident reporting, training modules, immutable audit logs
 const Incident = require('../../models/Incident');

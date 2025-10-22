@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 import { Mail, Phone, Award, Calendar, Shield, Users, Bot, BarChart, Briefcase } from 'lucide-react';
 
 export const FOUNDERS = [

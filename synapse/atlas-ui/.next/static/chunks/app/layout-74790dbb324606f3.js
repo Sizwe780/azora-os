@@ -1,1 +1,9 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 (self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[185],{3364:(e,s,l)=>{Promise.resolve().then(l.t.bind(l,3247,23)),Promise.resolve().then(l.t.bind(l,5214,23))},5214:()=>{},3247:e=>{e.exports={style:{fontFamily:"'Inter', 'Inter Fallback'",fontStyle:"normal"},className:"__className_f367f3"}}},e=>{var s=s=>e(e.s=s);e.O(0,[742,130,215,744],()=>s(3364)),_N_E=e.O()}]);

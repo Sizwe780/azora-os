@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 /**
  * @file Economic Growth & Sovereignty Service
  * @description The strategic core for monitoring, analyzing, and guiding the Azora economy.

@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 import { ReputationBalance, StakeAction, Delegation } from '../../types/azora/reputationEconomy';
 
 // TODO: Replace with real API calls to reputation economy service

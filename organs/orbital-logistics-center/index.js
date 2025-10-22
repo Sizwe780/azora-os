@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 /**
  * Orbital Logistics Center - Advanced Space-Grade Service
  * Using orbital mechanics, quantum optimization, and autonomous coordination

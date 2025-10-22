@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 import { SpecializedAgent, AgentTask, TaskResult, AgentInsight, AgentStatusReport } from '../specialized-agents/base-agent';
 import { SuperAI } from '../super-ai/super-ai';
 import { MemorySystem } from '../../agent-tools/memory-system';

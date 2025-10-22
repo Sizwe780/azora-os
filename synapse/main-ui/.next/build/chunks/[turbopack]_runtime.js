@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 const RUNTIME_PUBLIC_PATH = "build/chunks/[turbopack]_runtime.js";
 const RELATIVE_ROOT_PATH = "../../..";
 const ASSET_PREFIX = "/";

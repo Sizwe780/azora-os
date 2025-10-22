@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 // Vision AI Service: Real-time detection with quantum processing
 // This module provides core logic for vision-based analytics, quantum hooks, and streaming integration.
 

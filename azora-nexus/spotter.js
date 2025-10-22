@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 /**
  * Azora Spotter AI - Advanced Pattern Detection & Anomaly Recognition
  * 1000x more powerful than competitor solutions

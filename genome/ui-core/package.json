@@ -12,7 +12,7 @@
   },
   "keywords": ["azora", "ui", "design-system"],
   "author": "Azora World (Pty) Ltd",
-  "license": "UNLICENSED",
+  "license": "AZORA PROPRIETARY LICENSE",
   "private": true,
   "dependencies": {
     "framer-motion": "^10.16.4",

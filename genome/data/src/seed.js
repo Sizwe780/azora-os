@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 const products = [
   { tenant: "retail-partner", sku: "WW-ALMOND-MILK-1L", name: "Almond Milk 1L", synonyms: ["almond milk"], dietary: ["vegan","dairy-free"], price: 49.99, substitutes: ["WW-SOY-MILK-1L"] },
   { tenant: "retail-partner", sku: "WW-GLUTEN-WRAP", name: "Gluten-free Wraps", synonyms: ["gluten free wraps"], dietary: ["gluten-free"], price: 34.99, promo: "R10 off" },

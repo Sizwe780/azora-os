@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 // filepath: /workspaces/azora-os/services/valuation-dashboard/billion-dollar-metrics.js
 /**
  * Azora OS - Billion Dollar Valuation Metrics

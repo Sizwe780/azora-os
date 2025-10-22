@@ -193,7 +193,7 @@ Our enterprise solutions implement constitutional AI principles:
 
 ## License
 
-See LICENSE file for enterprise usage terms.
+This project is licensed under the AZORA PROPRIETARY LICENSE - see the LICENSE file for details.
 
 ---
 
@@ -209,6 +209,13 @@ See LICENSE file for enterprise usage terms.
 - `/codex` — Enterprise documentation and implementation guides
 - `/services` — Enterprise services and APIs
 - `/docs` — Enterprise documentation and deployment guides
+
+### Licensing Requirements
+- All contributions must comply with the AZORA PROPRIETARY LICENSE
+- Add the standard license header to all new source files (.ts/.js)
+- Update package.json license fields to "AZORA PROPRIETARY LICENSE"
+- Pre-commit hooks will enforce license compliance
+- Contact legal@azora.world for licensing inquiries
 
 ---
 

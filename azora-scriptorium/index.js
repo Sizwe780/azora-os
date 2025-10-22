@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 /**
  * @file Open Source Advancement Service
  * @description Facilitates and rewards open source code contributions in line with the Open Source Code Advancement Act.

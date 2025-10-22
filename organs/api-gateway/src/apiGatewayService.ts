@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 import { PrismaClient } from '@prisma/client';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import CircuitBreaker from 'opossum';

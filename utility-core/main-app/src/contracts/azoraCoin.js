@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 // AzoraCoin ABI - used for interacting with the Azora Coin smart contract
 export const azoraCoinABI = [
   // Basic ERC20 functions

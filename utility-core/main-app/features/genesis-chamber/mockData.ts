@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 import { Zap, User, DollarSign, Package, BarChart, BrainCircuit, Network } from 'lucide-react';
 
 export type GenesisProposal = {

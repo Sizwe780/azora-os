@@ -240,4 +240,4 @@ The service runs several cron jobs:
 
 ## License
 
-This service is part of the Azora OS and follows the project's licensing terms.
+This project is licensed under the AZORA PROPRIETARY LICENSE - see the LICENSE file for details.

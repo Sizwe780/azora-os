@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 // API integration for Azora Mint (Anti-Bank Protocol)
 // Connects vault UI to mint.azora.world service
 

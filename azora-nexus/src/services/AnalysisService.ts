@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 import { Analysis, IAnalysis } from '@/models/Analysis';
 import { User, IUser } from '@/models/User';
 import { NeuralIntent, INeuralIntent } from '@/models/NeuralIntent';

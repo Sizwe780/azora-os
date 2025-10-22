@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 import axios from "axios";
 export async function charge(user, amount) {
   return axios.post("http://localhost:5000/api/payments/charge", { user, amount }).then(r=>r.data);

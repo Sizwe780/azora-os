@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 const { v4: uuidv4 } = require('uuid');
 const axios = require('axios');
 const kyber = require('node-pqcrypto/kyber');
