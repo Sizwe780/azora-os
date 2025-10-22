@@ -83,8 +83,15 @@ export class ObservationLoop extends EventEmitter {
     for (const service of services) {
       const interval = setInterval(async () => {
         try {
-          const response = await fetch(service.url, { timeout: 5000 });
-          const health = await response.json();
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 5000);
+          
+          const response = await fetch(service.url, { 
+            signal: controller.signal 
+          });
+          clearTimeout(timeoutId);
+          
+          const health = await response.json() as { status: string };
 
           if (!response.ok || health.status !== 'healthy') {
             this.emitEvent({

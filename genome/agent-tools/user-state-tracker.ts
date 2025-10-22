@@ -242,7 +242,14 @@ export class UserStateTracker {
     }
   }
 
-  async addInteraction(userId: string, interaction: UserContext['recentInteractions'][0]): Promise<void> {
+  async addInteraction(userId: string, interaction: {
+    id: string;
+    timestamp: Date;
+    type: 'query' | 'action' | 'feedback' | 'error';
+    content: string;
+    outcome?: string;
+    satisfaction?: number;
+  }): Promise<void> {
     const context = await this.getUserContext(userId);
     if (!context) return;
 
@@ -270,7 +277,19 @@ export class UserStateTracker {
     await this.saveUserContext(context);
   }
 
-  async startWorkflow(userId: string, workflow: UserContext['activeWorkflows'][0]): Promise<void> {
+  async startWorkflow(userId: string, workflow: {
+    id: string;
+    name: string;
+    status: 'active' | 'paused' | 'completed' | 'failed';
+    progress: number;
+    steps: Array<{
+      id: string;
+      name: string;
+      status: 'pending' | 'in_progress' | 'completed' | 'failed';
+      startedAt?: Date;
+      completedAt?: Date;
+    }>;
+  }): Promise<void> {
     const context = await this.getUserContext(userId);
     if (!context) return;
 

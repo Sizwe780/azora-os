@@ -1,5 +1,1 @@
-var R=require("../chunks/ssr/[turbopack]_runtime.js")("server/pages/_document.js")
-R.c("server/chunks/ssr/511a0_170000de._.js")
-R.c("server/chunks/ssr/[root-of-the-server]__e6a4d965._.js")
-R.m("[project]/synapse/vault-ui/node_modules/next/document.js [ssr] (ecmascript)")
-module.exports=R.m("[project]/synapse/vault-ui/node_modules/next/document.js [ssr] (ecmascript)").exports
+"use strict";(()=>{var e={};e.id=660,e.ids=[660],e.modules={4691:e=>{e.exports=require("@opentelemetry/api")},2785:e=>{e.exports=require("next/dist/compiled/next-server/pages.runtime.prod.js")},6689:e=>{e.exports=require("react")},997:e=>{e.exports=require("react/jsx-runtime")},5315:e=>{e.exports=require("path")}};var r=require("../webpack-runtime.js");r.C(e);var t=e=>r(r.s=e),s=r.X(0,[682],()=>t(1682));module.exports=s})();

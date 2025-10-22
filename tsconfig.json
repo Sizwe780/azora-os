@@ -3,7 +3,7 @@
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "jsx": "react-jsx",
+    "jsx": "preserve",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
@@ -15,16 +15,53 @@
     "noUncheckedIndexedAccess": false,
     "exactOptionalPropertyTypes": false,
     "allowImportingTsExtensions": true,
-    "lib": ["ESNext", "DOM", "DOM.Iterable"],
-    "types": ["node"],
-    "typeRoots": ["./node_modules/@types"],
+    "lib": [
+      "ESNext",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "types": [
+      "node"
+    ],
+    "typeRoots": [
+      "./node_modules/@types"
+    ],
     "allowJs": true,
     "checkJs": false,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["apps/main-app/*"]
-    }
+      "@/*": [
+        "apps/main-app/*",
+        "synapse/shared-ui/*"
+      ]
+    },
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
-  "include": ["organs/**/*", "synapse/**/*", "vite-project/**/*", "cloud-ui/**/*", "compliance-ui/**/*", "dev-ui/**/*", "learn-ui/**/*", "marketplace-ui/**/*", "pay-ui/**/*", "shared/**/*"],
-  "exclude": ["node_modules", "dist", "services", "**/*.css", "apps/main-app/index.css", "*.css", "**/*.js"]
+  "include": [
+    "cloud-ui/**/*",
+    "compliance-ui/**/*",
+    "dev-ui/**/*",
+    "learn-ui/**/*",
+    "marketplace-ui/**/*",
+    "organs/**/*",
+    "pay-ui/**/*",
+    "shared/**/*",
+    "synapse/**/*",
+    "vite-project/**/*",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "services",
+    "**/*.css",
+    "apps/main-app/index.css",
+    "*.css",
+    "**/*.js"
+  ]
 }
