@@ -61,6 +61,8 @@
     "dist",
     "services",
     "organs",
+    "synapse",
+    "vite-project",
     "**/*.css",
     "apps/main-app/index.css",
     "*.css",
