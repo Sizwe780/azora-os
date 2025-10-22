@@ -15,30 +15,38 @@ Azora ES advances enterprise transformation through:
 
 ## Current Status
 
-- **Constitutional AI Framework**: Enterprise AI with governance and ethical constraints
-- **Biological Systems Architecture**: Self-healing and adaptive enterprise infrastructure
-- **Multi-Application Suite**: Specialized UIs for different enterprise functions
-- **Azora Academy**: Integrated enterprise learning and certification platform
-- **Enterprise-Grade Security**: Zero-trust security with comprehensive audit trails
+- **50+ Services Upgraded**: Enterprise-grade with TypeScript, Prisma ORM, PostgreSQL persistence, and comprehensive audit trails
+- **Constitutional Governance**: AI-driven compliance with biological, cosmological, and natural principles
+- **Production Ready**: Docker, health checks, and scalable architecture
 
-## Enterprise Architecture
+## Architecture
 
-### Enterprise Applications
-Azora ES features specialized enterprise interfaces for different business domains:
+### Frontend Applications
+Azora OS features a multi-frontend architecture with subdomain-based access for different user segments:
 
-- **Atlas UI** - Knowledge management and enterprise data visualization
-- **Council UI** - Governance, compliance, and decision support
-- **Pulse UI** - Business intelligence and performance analytics
-- **Vigil UI** - Security monitoring and threat detection
-- **Signal UI** - Enterprise communication and collaboration
-- **Azora Academy** - Enterprise learning, training, and certification platform
+- **azora.world** - Main platform (synapse frontend) (synapse frontend)
+- **academy.azora.world** - AI university
+- **learn.azora.world** - Student learning platform (learn-ui)
+- **enterprise.azora.world** - Business solutions (enterprise-ui)
+- **marketplace.azora.world** - Service marketplace (marketplace-ui)
+- **pay.azora.world** - Payment processing (pay-ui)
+- **cloud.azora.world** - Infrastructure hosting (cloud-ui)
+- **dev.azora.world** - Developer tools (dev-ui)
+- **compliance.azora.world** - Compliance dashboard (compliance-ui)
 
-### Core Enterprise Services
-- **Constitutional AI Engine**: Enterprise AI with ethical constraints
-- **Biological Architecture Framework**: Self-healing enterprise systems
-- **Enterprise Analytics**: Business intelligence and performance monitoring
-- **Compliance Automation**: Regulatory compliance and audit management
-- **Azora Academy Services**: Enterprise training, certification, and knowledge management
+### Core Services (Upgraded)
+- **ai-unified**: Unified AI task routing and model management
+- **ai-recommendations**: Personalized AI recommendations with user profiling
+- **ai-valuation**: User growth tracking and AI-powered valuation
+- **wallet**: Cryptocurrency wallet with Azora Coin integration
+- **auth**: Authentication and authorization service
+- **analytics**: Real-time analytics and reporting
+- **marketplace**: Service marketplace with AI matching
+- **notification-service**: Multi-channel notification system 
+- **billing-service**: Subscription and payment processing
+- **ledger**: Financial ledger with audit trails
+- **ai-evolution-engine**: AI model evolution and optimization
+- **ai-ml-engine**: Machine learning pipeline orchestration
 
 ### Technology Stack
 - **Frontend**: Next.js 15, React 19, TypeScript, Material-UI v7
