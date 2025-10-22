@@ -35,7 +35,12 @@
     "openai": "^4.24.7",
     "axios": "^1.6.2",
     "redis": "^4.6.10",
-    "node-cron": "^3.0.3"
+    "node-cron": "^3.0.3",
+    "@langchain/core": "^0.1.0",
+    "@langchain/openai": "^0.0.14",
+    "pg": "^8.11.3",
+    "pgvector": "^0.1.7",
+    "ioredis": "^5.3.2"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
