@@ -90,10 +90,7 @@ export function ComplianceScoreChart({ metrics }: ComplianceScoreChartProps) {
       <CardContent>
         <ChartContainer config={chartConfig} className="h-64">
           <PieChart>
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel />}
-            />
+            <Tooltip />
             <Pie
               data={data}
               dataKey="value"

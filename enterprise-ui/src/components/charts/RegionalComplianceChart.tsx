@@ -61,10 +61,7 @@ export function RegionalComplianceChart({ regional }: RegionalComplianceChartPro
               axisLine={false}
             />
             <YAxis hide />
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel />}
-            />
+            <Tooltip />
             <Bar dataKey="compliant" fill="var(--color-compliant)" radius={8} />
           </BarChart>
         </ChartContainer>

@@ -113,7 +113,7 @@ export function Sidebar({ activeView, onViewChange, data }: SidebarProps) {
                 <span className="text-gray-600">Non-Compliant</span>
               </div>
               <Badge variant="outline" className="bg-red-50 border-red-200 text-red-700">
-                {data.nonCompliantFrameworks}
+                {data.totalFrameworks - data.compliantFrameworks}
               </Badge>
             </div>
 
@@ -123,14 +123,14 @@ export function Sidebar({ activeView, onViewChange, data }: SidebarProps) {
                 <span className="text-gray-600">Unreachable</span>
               </div>
               <Badge variant="outline" className="bg-gray-50 border-gray-200 text-gray-700">
-                {data.unreachableFrameworks}
+                {data.needsAttentionFrameworks}
               </Badge>
             </div>
           </div>
 
           <div className="mt-4 pt-3 border-t border-gray-200">
             <div className="text-xs text-gray-500">
-              Last updated: {new Date(data.lastUpdated).toLocaleTimeString()}
+              Last updated: {new Date().toLocaleTimeString()}
             </div>
           </div>
         </div>

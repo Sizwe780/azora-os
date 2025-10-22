@@ -109,50 +109,15 @@ export function ReportsPanel() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {reports && reports.length > 0 ? (
-              reports.map((report) => (
-                <div key={report.reportId} className="border border-gray-200 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center">
-                      <FileText className="h-5 w-5 text-blue-600 mr-3" />
-                      <div>
-                        <h4 className="font-medium capitalize">{report.type} Report</h4>
-                        <p className="text-sm text-gray-600">{report.summary?.period}</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-sm font-medium">Score: {report.complianceScore}/100</div>
-                      <div className="flex items-center text-xs text-gray-500">
-                        <Calendar className="h-4 w-4 mr-1" />
-                        {new Date(report.generatedAt).toLocaleDateString()}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div className="text-sm text-gray-600">
-                      Frameworks: {report.summary?.compliantFrameworks}/{report.summary?.totalFrameworks}
-                    </div>
-                    <div className="flex space-x-2">
-                      {Object.keys(report.formats).map((format) => (
-                        <Button
-                          key={format}
-                          onClick={() => downloadReport(report.reportId, format)}
-                          variant="outline"
-                          size="sm"
-                          className="text-xs flex items-center"
-                        >
-                          <Download className="h-3 w-3 mr-1" />
-                          {format.toUpperCase()}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p className="text-gray-500 text-center py-8">No reports generated yet</p>
-            )}
+            <div className="text-center py-8">
+              <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Compliance Reports</h3>
+              <p className="text-gray-500 mb-4">Generate and download comprehensive compliance reports</p>
+              <Button onClick={() => alert('Report generation coming soon!')}>
+                <Download className="h-4 w-4 mr-2" />
+                Generate Report
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>

@@ -152,17 +152,9 @@ export function AlertsPanel() {
 
                         <p className="text-sm mb-3">{alert.message}</p>
 
-                        {alert.details.length > 0 && (
-                          <div className="mb-3">
-                            <p className="text-sm font-medium mb-1">Details:</p>
-                            <ul className="text-sm space-y-1">
-                              {alert.details.map((detail, index) => (
-                                <li key={index} className="flex items-start">
-                                  <span className="text-xs mr-2">•</span>
-                                  <span>{detail}</span>
-                                </li>
-                              ))}
-                            </ul>
+                        {alert.message && alert.message.length > 0 && (
+                          <div className="mt-2 text-sm text-muted-foreground">
+                            {alert.message}
                           </div>
                         )}
 

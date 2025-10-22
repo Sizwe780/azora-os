@@ -91,7 +91,14 @@ export function Dashboard({ data }: DashboardProps) {
           <FrameworkStatusGrid frameworks={data.frameworks} />
         </div>
         <div>
-          <RecentActivity activities={data.recentActivity} />
+          <RecentActivity activities={data.recentActivity.map(activity => ({
+            id: activity.logId,
+            type: 'system' as const,
+            title: activity.action,
+            description: JSON.stringify(activity.details),
+            status: 'success' as const,
+            timestamp: activity.timestamp
+          }))} />
         </div>
       </div>
     </div>
