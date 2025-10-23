@@ -2,6 +2,8 @@
 
 **Azora OS** is a planetary-scale economic intelligence platform that combines constitutional AI, biological systems architecture, and sovereign economic coordination to create universal prosperity through knowledge-driven economic sovereignty.
 
+*This is a passion project and solo endeavor by the founding architect, building toward a vision of planetary economic flourishing through education and innovation.*
+
 [![License: AZORA PROPRIETARY](https://img.shields.io/badge/License-AZORA%20PROPRIETARY-blue.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-22+-green.svg)](https://nodejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5+-blue.svg)](https://www.typescriptlang.org/)
@@ -34,8 +36,8 @@ Azora OS represents the next evolution of economic intelligence, featuring:
 - **Cryptographic Sovereignty**: Secure, private economic coordination
 - **Universal Prosperity**: Knowledge-driven economic abundance for all
 
-**Current Status**: Planetary deployment active with 2 sovereign economies instantiated
-**Next Milestone**: Complete global instantiation across all 195 nations
+**Current Status**: Planetary economic coordination platform ready for deployment
+**Next Milestone**: Execute Global Genesis Protocol for sovereign economy instantiation
 **Vision**: Universal prosperity through knowledge-driven economic sovereignty
 
 ## 🏗️ System Architecture
@@ -63,6 +65,14 @@ Azora OS features a complete microservices architecture with autonomous AI capab
 - **AI/ML**: OpenAI integration, LangChain, custom constitutional AI
 - **Infrastructure**: Docker, Kubernetes, multi-cloud deployment
 - **Security**: Zero-trust architecture, cryptographic sovereignty
+
+### Genesis Log
+The official [Genesis Log](/docs/genesis-log.json) contains the cryptographic foundation of Azora OS, including:
+- Contract addresses for all core services
+- Sovereign seed grant allocations (195M AZR)
+- Instantiated economies with local token addresses
+- Treasury fund distributions and escrow contracts
+- Governance constitution and security parameters
 
 ## 🚀 Quick Start
 
@@ -163,23 +173,23 @@ WS     ws://localhost:4030             - Real-time rate streaming
 
 ## 🌍 Global Genesis Mandate
 
-### Phase 1: Sovereign Seed Grants ✅ ACTIVE
+### Phase 1: Sovereign Seed Grants ✅ READY
 - **Fund Size**: 195,000,000 AZR allocated
 - **Grant Amount**: 1,000,000 AZR per nation
 - **Coverage**: 193 UN-recognized nations
 - **Status**: Escrowed and ready for activation
 
-### Phase 2: Critical Mass Events ✅ ACTIVE
+### Phase 2: Critical Mass Events ✅ READY
 - **User Threshold**: 10,000+ Global Transfer app users
 - **University Treaty**: Signed Protocol-University Treaty
 - **Founding Team**: Local team petitions The Council
 
-### Phase 3: Instantiation Protocol ✅ ACTIVE
-- **Brazil**: ✅ Instantiated (aBRL token, 15K users)
-- **Kenya**: ✅ Instantiated (aUSD token, University treaty)
-- **Remaining Nations**: 191 ready for activation
+### Phase 3: Instantiation Protocol ✅ READY
+- **Brazil**: Ready for instantiation (aBRL token)
+- **Kenya**: Ready for instantiation (aUSD token)
+- **Remaining Nations**: 193 ready for activation
 
-### Phase 4: Proof-of-Knowledge Protocol ✅ ACTIVE
+### Phase 4: Proof-of-Knowledge Protocol ✅ READY
 - **UBO Fund**: 10,000,000 aZAR allocated (1% of supply)
 - **Reward Categories**: Module completion, assessments, certifications
 - **Payment Triggers**: Automatic instant rewards for learning milestones
@@ -367,7 +377,7 @@ Azora OS represents the next evolution of economic intelligence:
 **Azora OS — Constitutional AI for Planetary Economic Flourishing**
 
 *Building the future of sovereign prosperity through education and innovation*
-- ✅ **Ascension Protocol**: Academic knowledge ingestion and curriculum synthesis active
+- ✅ **Ascension Protocol**: Academic knowledge ingestion and curriculum synthesis ready
 - ✅ **Aegis Citadel**: Sovereign seed grant management operational
 - ✅ **Azora Sapiens**: Universal education platform with Aegis Mobile Sentry
 - ✅ **Azora Mint**: Enhanced with Universal Basic Opportunity (UBO) fund
@@ -536,23 +546,23 @@ WS     ws://localhost:4030             - Real-time rate streaming
 
 ## 🌍 **Global Genesis Mandate - Planetary Deployment**
 
-### **Phase 1: Sovereign Seed Grants** ✅ ACTIVE
+### **Phase 1: Sovereign Seed Grants** ✅ READY
 - **Fund Size**: 195,000,000 AZR allocated
 - **Grant Amount**: 1,000,000 AZR per nation
 - **Coverage**: 193 UN-recognized nations
 - **Status**: Escrowed and ready for activation
 
-### **Phase 2: Critical Mass Events** ✅ ACTIVE
+### **Phase 2: Critical Mass Events** ✅ READY
 - **User Threshold**: 10,000+ Global Transfer app users
 - **University Treaty**: Signed Protocol-University Treaty
 - **Founding Team**: Local team petitions The Council
 
-### **Phase 3: Instantiation Protocol** ✅ ACTIVE
-- **Brazil**: ✅ Instantiated (aBRL token, 15K users)
-- **Kenya**: ✅ Instantiated (aUSD token, University treaty)
-- **Remaining Nations**: 191 ready for activation
+### **Phase 3: Instantiation Protocol** ✅ READY
+- **Brazil**: Ready for instantiation (aBRL token)
+- **Kenya**: Ready for instantiation (aUSD token)
+- **Remaining Nations**: 193 ready for activation
 
-### **Phase 4: Proof-of-Knowledge Protocol** ✅ ACTIVE
+### **Phase 4: Proof-of-Knowledge Protocol** ✅ READY
 - **UBO Fund**: 10,000,000 aZAR allocated (1% of supply)
 - **Reward Categories**: Module completion, assessments, certifications
 - **Payment Triggers**: Automatic instant rewards for learning milestones
@@ -730,6 +740,11 @@ Azora OS is an open-source project that welcomes contributions from developers, 
 - **Documentation**: Comprehensive guides and API references
 - **Examples**: Working code samples and integration guides
 
+### **Join the Conversation**
+- **💬 [Discord Community](https://discord.gg/azora-os)**: Real-time discussions and collaboration
+- **🏛️ [Forum](https://forum.azora.world)**: In-depth technical discussions and proposals
+- **📧 [Newsletter](https://azora.world/newsletter)**: Monthly updates and roadmap insights
+
 ### **Development Community**
 ```bash
 # Join the development community
@@ -761,6 +776,7 @@ Azora OS represents the next evolution of economic intelligence:
 - **Architecture Docs**: 
   - `/docs/AZORA-COMPREHENSIVE-ARCHITECTURE.md` - Complete system architecture
   - `AZORA-SAPIENS-ARCHITECTURE.md` - Azora Sapiens education platform architecture
+  - `/docs/genesis-log.json` - Official Genesis Log with contract addresses and allocations
 
 ---
 
