@@ -1,0 +1,44 @@
+# Code Owners for Azora OS
+# This file defines who owns different parts of the codebase
+# and who should be automatically requested for review
+
+# Global owners (founding architects)
+* @azora-world/founding-architects
+
+# Component-specific owners
+azora-aegis/ @azora-world/security-team
+azora-nexus/ @azora-world/ai-team
+azora-covenant/ @azora-world/blockchain-team
+azora-forge/ @azora-world/marketplace-team
+azora-mint/ @azora-world/defi-team
+
+# Infrastructure and deployment
+.github/ @azora-world/devops-team
+infrastructure/ @azora-world/devops-team
+docker-compose*.yml @azora-world/devops-team
+Dockerfile* @azora-world/devops-team
+
+# Documentation
+*.md @azora-world/docs-team
+docs/ @azora-world/docs-team
+
+# Frontend/UI components
+app/ @azora-world/frontend-team
+components/ @azora-world/frontend-team
+ui/ @azora-world/frontend-team
+
+# Testing
+**/*.test.* @azora-world/qa-team
+**/*.spec.* @azora-world/qa-team
+jest.config.* @azora-world/qa-team
+
+# Security-critical files
+hardhat.config.js @azora-world/security-team
+contracts/ @azora-world/security-team
+prisma/ @azora-world/security-team
+
+# Configuration files
+package.json @azora-world/devops-team
+tsconfig.json @azora-world/devops-team
+eslint.config.js @azora-world/devops-team
+tailwind.config.js @azora-world/devops-team
