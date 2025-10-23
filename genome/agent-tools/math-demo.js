@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 // Mathematical Backing for Elara Voss Predictions
 // Demonstrating the quantitative models behind the claims
 
