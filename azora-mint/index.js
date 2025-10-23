@@ -12,11 +12,11 @@ See LICENSE file for details.
  * This service calculates key economic indicators and has the authority to propose fiscal policy changes.
  */
 
-const express = require('express');
-const cors = require('cors');
-const redis = require('redis');
-const bodyParser = require('body-parser');
-const { Pool } = require('pg');
+import express from 'express';
+import cors from 'cors';
+import { createClient as createRedisClient } from 'redis';
+import bodyParser from 'body-parser';
+import { Pool } from 'pg';
 
 const app = express();
 app.use(cors());
@@ -357,7 +357,7 @@ app.get('/api/knowledge-rewards/stats', async (req, res) => {
 const startServer = async () => {
     try {
         // Connect to Redis for event stream
-        const redisClient = redis.createClient({ url: REDIS_URL });
+        const redisClient = createRedisClient({ url: REDIS_URL });
         redisClient.on('error', (err) => logger.error('Redis Client Error', { error: err }));
         await redisClient.connect();
         await redisClient.subscribe(EVENT_CHANNEL, handleEvent);

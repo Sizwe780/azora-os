@@ -289,6 +289,8 @@ class AzoraSapiens {
             // Trigger Proof-of-Knowledge reward for assessment pass
             if (passed) {
                 this.rewardAssessmentPass(exam.userId, exam.programId, this.ckqPrograms[exam.programId].assessment.type, score);
+                // Also trigger certificate achievement reward
+                this.rewardCertificateAchievement(exam.userId, exam.programId, 'ckq_basic');
             }
 
             // Release Aegis lockdown
@@ -370,6 +372,11 @@ class AzoraSapiens {
                     activeExams: this.activeExams.size,
                     enrolledStudents: this.enrollments.size,
                     aegisClients: this.clients.size
+                },
+                proofOfKnowledge: {
+                    protocol: 'active',
+                    mintService: this.mintServiceUrl,
+                    rewardsEnabled: true
                 },
                 ascensionProtocol: {
                     knowledgeIngestion: 'active',
