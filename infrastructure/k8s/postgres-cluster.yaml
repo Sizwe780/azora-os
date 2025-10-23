@@ -1,0 +1,35 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: azora-postgres
+  namespace: default
+spec:
+  instances: 3
+  imageName: ghcr.io/cloudnative-pg/postgresql:15
+  storage:
+    size: 10Gi
+    storageClass: standard
+  postgresql:
+    parameters:
+      shared_preload_libraries: "pgvector"
+  bootstrap:
+    initdb:
+      database: azora
+      owner: azora_user
+      secret:
+        name: azora-postgres-secret
+  superuserSecret:
+    name: azora-postgres-secret
+  monitoring:
+    enablePodMonitor: true
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: azora-postgres-secret
+  namespace: default
+type: Opaque
+data:
+  username: YXpvcmFfdXNlcg==  # base64 encoded "azora_user"
+  password: cGFzc3dvcmQ=      # base64 encoded "password" (change in production)
+  database: YXpvcmE=          # base64 encoded "azora"

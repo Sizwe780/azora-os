@@ -1,4 +1,5 @@
 {
     "typescript.tsserver.maxTsServerMemory": 4096,
-    "chat.agent.maxRequests": 250
+    "chat.agent.maxRequests": 250,
+    "editor.codeActions.triggerOnFocusChange": true
 }

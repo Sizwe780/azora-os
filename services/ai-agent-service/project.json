@@ -1,0 +1,33 @@
+{
+    "name": "ai-agent-service",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "services/ai-agent-service",
+    "projectType": "application",
+    "targets": {
+        "build": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "cd services/ai-agent-service && go build -o main .",
+                "cwd": "."
+            }
+        },
+        "test": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "cd services/ai-agent-service && go test -v ./...",
+                "cwd": "."
+            }
+        },
+        "lint": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "cd services/ai-agent-service && golangci-lint run",
+                "cwd": "."
+            }
+        }
+    },
+    "tags": [
+        "scope:service",
+        "type:backend"
+    ]
+}

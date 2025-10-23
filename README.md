@@ -4,19 +4,379 @@
 
 Azora ES is a comprehensive enterprise suite that integrates constitutional artificial intelligence, biological systems architecture, and enterprise-grade services. Built on principles of ethical AI governance, human oversight, and autonomous operations, Azora ES empowers organizations to achieve digital transformation while maintaining compliance and transparency.
 
-## Enterprise Mission
+## 🏗️ System Architecture
 
-Azora ES advances enterprise transformation through:
-- **Constitutional AI**: AI systems with built-in ethical constraints and human oversight
-- **Biological Architecture**: Self-healing, resilient infrastructure inspired by natural systems
-- **Enterprise Integration**: Seamless integration with existing enterprise systems
-- **Compliance Automation**: Automated regulatory compliance and audit trails
-- **Azora Academy**: Integrated learning and training platform for enterprise teams
+### Microservices Backend
+Azora ES features a complete microservices architecture with autonomous AI capabilities:
 
-## Current Status
+#### Core Services
+- **User Service** (`:8080`) - User management, authentication, and profiles
+- **Session Service** (`:8083`) - JWT token management and session handling
+- **Course Service** (`:8081`) - Course catalog and content management
+- **Enrollment Service** (`:8082`) - Student enrollment and progress tracking
 
-- **Constitutional Governance**: AI-driven compliance with biological, cosmological, and natural principles
-- **Active Development**: Building towards full software infrastructure independence
+#### AI & Analytics Services
+- **LLM Wrapper Service** (`:8084`) - Standardized interface to LLM providers (OpenAI)
+- **AI Agent Service** (`:8085`) - Autonomous task execution with Plan-then-Execute pattern
+- **Analytics Service** (`:8086`) - Real-time event streaming and analytics with Kafka
+
+#### Infrastructure
+- **PostgreSQL** - Primary database with pgvector for embeddings
+- **Redis** - Caching, sessions, and real-time data
+- **Kafka** - Event streaming for analytics pipeline
+- **API Gateway (Tyk)** - Centralized API management and routing
+
+### Technology Stack
+- **Backend**: Go microservices with Gin framework
+- **Database**: PostgreSQL with pgvector, Redis for caching
+- **Message Queue**: Kafka for event streaming
+- **Infrastructure**: Kubernetes, Docker, Terraform
+- **CI/CD**: GitHub Actions, ECR, ArgoCD
+- **Security**: Zero Trust networking, NetworkPolicies
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Go 1.21+
+- Docker & Docker Compose
+- Kubernetes cluster (for production)
+- PostgreSQL & Redis (or use Docker)
+
+### Local Development
+
+1. **Clone and setup:**
+   ```bash
+   git clone https://github.com/Sizwe780/azora-os
+   cd azora-os
+   npm install
+   ```
+
+2. **Start infrastructure:**
+   ```bash
+   # Using Docker Compose for local development
+   docker-compose up -d postgres redis kafka zookeeper
+   ```
+
+3. **Build and run services:**
+   ```bash
+   # Build all services
+   npx nx run-many --target=build --all
+
+   # Run individual services
+   cd services/user-service && go run main.go
+   cd services/session-service && go run main.go
+   # ... repeat for other services
+   ```
+
+4. **Run tests:**
+   ```bash
+   npx nx run-many --target=test --all
+   ```
+
+## 📋 API Endpoints
+
+### User Service
+```
+GET    /health
+POST   /users
+GET    /users/:id
+PUT    /users/:id
+DELETE /users/:id
+POST   /auth/login
+POST   /auth/register
+```
+
+### Session Service
+```
+GET    /health
+POST   /sessions
+GET    /sessions/:id
+DELETE /sessions/:id
+POST   /validate
+```
+
+### Course Service
+```
+GET    /health
+POST   /courses
+GET    /courses
+GET    /courses/:id
+PUT    /courses/:id
+DELETE /courses/:id
+```
+
+### Enrollment Service
+```
+GET    /health
+POST   /enrollments
+GET    /enrollments/:id
+PUT    /enrollments/:id
+DELETE /enrollments/:id
+GET    /enrollments/user/:userId
+```
+
+### LLM Wrapper Service
+```
+GET    /health
+POST   /generate
+POST   /embed
+POST   /validate-plan
+```
+
+### AI Agent Service
+```
+GET    /health
+POST   /execute
+GET    /plans/:id
+GET    /plans
+POST   /validate-plan
+```
+
+### Analytics Service
+```
+GET    /health
+POST   /events
+POST   /query
+GET    /metrics
+GET    /realtime
+```
+
+## 🐳 Docker Deployment
+
+### Build Images
+```bash
+# Build all service images
+for service in services/*; do
+  if [ -d "$service" ]; then
+    cd "$service"
+    docker build -t "azora-$(basename $service):latest" .
+    cd ../..
+  fi
+done
+```
+
+### Run with Docker Compose
+```yaml
+# docker-compose.yml
+version: '3.8'
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: azora
+      POSTGRES_USER: azora
+      POSTGRES_PASSWORD: password
+
+  redis:
+    image: redis:7-alpine
+
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    depends_on:
+      - zookeeper
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+
+  user-service:
+    build: ./services/user-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+      - redis
+
+  # ... other services
+```
+
+## ☸️ Kubernetes Deployment
+
+### Prerequisites
+- Kubernetes cluster (EKS, GKE, or AKS)
+- kubectl configured
+- Helm (optional)
+
+### Deploy Infrastructure
+```bash
+# Apply Kubernetes manifests
+kubectl apply -f infrastructure/k8s/
+
+# Or use ArgoCD for GitOps
+kubectl apply -f infrastructure/k8s/argocd-app.yaml
+```
+
+### Environment Configuration
+```bash
+# Create secrets
+kubectl create secret generic db-secrets \
+  --from-literal=username=azora \
+  --from-literal=password=password
+
+kubectl create secret generic llm-secrets \
+  --from-literal=openai-api-key=your-api-key
+```
+
+## 🔧 Configuration
+
+### Environment Variables
+```bash
+# Database
+DATABASE_URL=postgresql://user:password@localhost:5432/azora
+
+# Redis
+REDIS_URL=localhost:6379
+
+# Kafka
+KAFKA_BROKERS=localhost:9092
+
+# LLM Service
+LLM_PROVIDER=openai
+OPENAI_API_KEY=your-api-key
+
+# AI Agent
+LLM_SERVICE_URL=http://llm-wrapper-service:8084
+```
+
+## 🧪 Testing
+
+### Unit Tests
+```bash
+# Run all tests
+npx nx run-many --target=test --all
+
+# Run specific service tests
+npx nx test user-service
+```
+
+### Integration Tests
+```bash
+# Run with test database
+npm run test:integration
+```
+
+### Load Testing
+```bash
+# Use tools like k6 or Artillery
+# Example: k6 run load-test.js
+```
+
+## 📊 Monitoring & Observability
+
+### Health Checks
+All services include health check endpoints:
+```bash
+curl http://localhost:8080/health
+curl http://localhost:8083/health
+# ... etc
+```
+
+### Metrics
+- **Analytics Service**: Real-time metrics via `/metrics` endpoint
+- **Prometheus**: Configure Prometheus for service metrics
+- **Grafana**: Dashboard for visualization
+
+### Logging
+- Structured JSON logging across all services
+- Centralized logging with ELK stack or similar
+- Log aggregation for debugging and monitoring
+
+## 🔒 Security
+
+### Zero Trust Architecture
+- Network policies restrict inter-service communication
+- Service mesh (Istio/Linkerd) for secure service-to-service communication
+- End-to-end encryption for data in transit
+
+### Authentication & Authorization
+- JWT-based authentication via Session Service
+- Role-based access control (RBAC)
+- API key management for external integrations
+
+### Compliance
+- GDPR compliance for data handling
+- SOC 2 compliance for security controls
+- Audit trails for all operations
+
+## 🚀 CI/CD Pipeline
+
+### GitHub Actions
+The repository includes comprehensive CI/CD:
+- Automated testing on push/PR
+- Multi-stage Docker builds
+- ECR image publishing
+- Kubernetes manifest updates
+
+### Deployment Strategy
+- Blue-green deployments
+- Rolling updates with zero downtime
+- Automated rollback on failures
+- Environment promotion (dev → staging → prod)
+
+## 📈 Scaling
+
+### Horizontal Scaling
+```bash
+# Scale services based on load
+kubectl scale deployment user-service --replicas=5
+kubectl scale deployment ai-agent-service --replicas=3
+```
+
+### Database Scaling
+- Read replicas for read-heavy workloads
+- Connection pooling with PgBouncer
+- Redis clustering for high availability
+
+### Performance Optimization
+- Database indexing and query optimization
+- Redis caching strategies
+- Message queue partitioning
+
+## 🤝 Contributing
+
+### Development Workflow
+1. Fork the repository
+2. Create a feature branch
+3. Make changes with tests
+4. Submit a pull request
+5. Code review and merge
+
+### Code Standards
+- Go: Follow standard Go conventions
+- Testing: Minimum 80% code coverage
+- Documentation: Update README and API docs
+- Security: Regular security audits
+
+## 📞 Support
+
+### Documentation
+- API Documentation: `/docs/api/`
+- Deployment Guides: `/docs/deployment/`
+- Troubleshooting: `/docs/troubleshooting/`
+
+### Community
+- GitHub Issues: Bug reports and feature requests
+- Discussions: General questions and community support
+- Enterprise Support: enterprise@azora.world
+
+## 📄 License
+
+This project is licensed under the AZORA PROPRIETARY LICENSE - see the LICENSE file for details.
+
+---
+
+## 🏆 Enterprise Impact
+
+Azora ES represents a new paradigm in enterprise software:
+
+- **Autonomous Operations**: AI-driven task execution with human oversight
+- **Ethical AI**: Constitutional constraints ensure responsible AI behavior
+- **Real-time Intelligence**: Event-driven analytics for immediate insights
+- **Scalable Architecture**: Microservices design for enterprise-scale deployments
+- **Compliance Automation**: Built-in compliance and audit capabilities
+
+**Azora ES — Constitutional AI for Enterprise Transformation**
+
+*Building the Future of Ethical Enterprise AI*
 
 ## Architecture
 

@@ -1,0 +1,88 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: ai-agent-service-netpol
+  namespace: azora-es
+spec:
+  podSelector:
+    matchLabels:
+      app: ai-agent-service
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: api-gateway
+    ports:
+    - protocol: TCP
+      port: 8085
+  - from:
+    - podSelector:
+        matchLabels:
+          app: user-service
+    ports:
+    - protocol: TCP
+      port: 8085
+  - from:
+    - podSelector:
+        matchLabels:
+          app: course-service
+    ports:
+    - protocol: TCP
+      port: 8085
+  - from:
+    - podSelector:
+        matchLabels:
+          app: enrollment-service
+    ports:
+    - protocol: TCP
+      port: 8085
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: redis-cluster
+    ports:
+    - protocol: TCP
+      port: 6379
+  - to:
+    - podSelector:
+        matchLabels:
+          app: llm-wrapper-service
+    ports:
+    - protocol: TCP
+      port: 8084
+  - to:
+    - podSelector:
+        matchLabels:
+          app: user-service
+    ports:
+    - protocol: TCP
+      port: 8080
+  - to:
+    - podSelector:
+        matchLabels:
+          app: course-service
+    ports:
+    - protocol: TCP
+      port: 8081
+  - to:
+    - podSelector:
+        matchLabels:
+          app: enrollment-service
+    ports:
+    - protocol: TCP
+      port: 8082
+  - to:
+    - podSelector:
+        matchLabels:
+          app: session-service
+    ports:
+    - protocol: TCP
+      port: 8083
+  - to: []
+    ports:
+    - protocol: TCP
+      port: 443  # HTTPS for external APIs
