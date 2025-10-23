@@ -17,15 +17,11 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
  * @title PIVC Taxation System
  * @dev Proof-of-Impact Value Creation taxation for ecosystem funding.
  *
- * Genesis Protocol - Part II: PIVC Taxation System
+ * Azora Sovereignty Protocol - Layer 3: The Economy
  *
- * Implements a 5% taxation rate on economic activities to fund:
- * - Stability Fund (25% of tax revenue)
- * - Growth Fund (25% of tax revenue)
- * - Immune System (20% of tax revenue)
- * - Constitutional Court (15% of tax revenue)
- * - Citizen's Oversight (10% of tax revenue)
- * - Geopolitical Readiness (5% of tax revenue)
+ * Implements a 5% Protocol-Integrated Value Capture on every transaction:
+ * - 4% -> Growth Fund: Fuels Forge expansion and AZR buy-and-burn mechanism
+ * - 1% -> UBO Fund: Powers Universal Basic Assets and Proof-of-Contribution system
  */
 
 contract PIVCTaxation is Ownable, ReentrancyGuard {
@@ -236,13 +232,13 @@ contract PIVCTaxation is Ownable, ReentrancyGuard {
             }
         }
 
-        // Any remaining amount (due to rounding) goes to Stability Fund
+        // Any remaining amount (due to rounding) goes to Growth Fund
         if (remainingAmount > 0) {
-            // Find Stability Fund allocation
+            // Find Growth Fund allocation
             for (uint256 i = 0; i < taxAllocations.length; i++) {
-                if (keccak256(abi.encodePacked(taxAllocations[i].purpose)) == keccak256(abi.encodePacked("Stability Fund"))) {
+                if (keccak256(abi.encodePacked(taxAllocations[i].purpose)) == keccak256(abi.encodePacked("Growth Fund - Forge expansion and AZR buy-and-burn"))) {
                     IERC20(token).transfer(taxAllocations[i].recipient, remainingAmount);
-                    emit TaxDistributed(token, taxAllocations[i].recipient, remainingAmount, "Stability Fund (rounding)");
+                    emit TaxDistributed(token, taxAllocations[i].recipient, remainingAmount, "Growth Fund (rounding)");
                     break;
                 }
             }
@@ -439,59 +435,27 @@ contract PIVCTaxation is Ownable, ReentrancyGuard {
     // ========== PRIVATE FUNCTIONS ==========
 
     /**
-     * @dev Initialize tax allocations according to Genesis Protocol
+     * @dev Initialize tax allocations according to Azora Sovereignty Protocol
      */
     function _initializeTaxAllocations() private {
-        // Genesis Protocol tax allocations:
-        // - Stability Fund: 25%
-        // - Growth Fund: 25%
-        // - Immune System: 20%
-        // - Constitutional Court: 15%
-        // - Citizen's Oversight: 10%
-        // - Geopolitical Readiness: 5%
+        // Azora Sovereignty Protocol PIVC allocations:
+        // - Growth Fund: 4% (4000 basis points) - Fuels Forge expansion and AZR buy-and-burn
+        // - UBO Fund: 1% (1000 basis points) - Powers Universal Basic Assets and Proof-of-Contribution
 
         // Note: In production, these would be actual deployed contract addresses
         // For now, using placeholder addresses
 
         taxAllocations.push(TaxAllocation({
-            recipient: address(0x1111111111111111111111111111111111111111), // Stability Fund
-            percentage: 2500, // 25%
-            purpose: "Stability Fund",
-            isActive: true
-        }));
-
-        taxAllocations.push(TaxAllocation({
             recipient: address(0x2222222222222222222222222222222222222222), // Growth Fund
-            percentage: 2500, // 25%
-            purpose: "Growth Fund",
+            percentage: 4000, // 4% - 4000 basis points
+            purpose: "Growth Fund - Forge expansion and AZR buy-and-burn",
             isActive: true
         }));
 
         taxAllocations.push(TaxAllocation({
-            recipient: address(0x3333333333333333333333333333333333333333), // AI Immune System
-            percentage: 2000, // 20%
-            purpose: "AI Immune System",
-            isActive: true
-        }));
-
-        taxAllocations.push(TaxAllocation({
-            recipient: address(0x4444444444444444444444444444444444444444), // Constitutional Court
-            percentage: 1500, // 15%
-            purpose: "Constitutional Court",
-            isActive: true
-        }));
-
-        taxAllocations.push(TaxAllocation({
-            recipient: address(0x5555555555555555555555555555555555555555), // Citizen's Oversight
-            percentage: 1000, // 10%
-            purpose: "Citizen's Oversight",
-            isActive: true
-        }));
-
-        taxAllocations.push(TaxAllocation({
-            recipient: address(0x6666666666666666666666666666666666666666), // Geopolitical Readiness
-            percentage: 500,  // 5%
-            purpose: "Geopolitical Readiness",
+            recipient: address(0x7777777777777777777777777777777777777777), // UBO Fund
+            percentage: 1000, // 1% - 1000 basis points
+            purpose: "UBO Fund - Universal Basic Assets and Proof-of-Contribution",
             isActive: true
         }));
     }

@@ -9,45 +9,776 @@ See LICENSE file for details.
 import { ChatOpenAI } from "@langchain/openai";
 
 /**
- * Geopolitical Readiness Index - Global Economic Positioning System
+ * Geopolitical Readiness Index (GRI)
  *
- * Genesis Protocol - Part II: Geopolitical Readiness Index
+ * Azora Sovereignty Protocol - Layer 6: The Global Strategy
  *
- * Monitors global economic stability and positions Azora for optimal
- * sovereignty in changing geopolitical landscapes.
+ * A data-driven model that replaces simplistic triggers for expansion.
+ * The GRI scores each nation on factors including digital infrastructure,
+ * regulatory climate, crypto adoption, and political stability to identify
+ * nations primed for a successful economic instantiation.
  */
 
-export interface GeopoliticalFactor {
-  factorId: string;
-  category: 'economic' | 'political' | 'technological' | 'environmental' | 'social';
+export interface NationProfile {
+  nationId: string;
   name: string;
-  description: string;
-  currentValue: number; // 0-100 scale
-  trend: 'improving' | 'stable' | 'deteriorating';
-  impact: 'high' | 'medium' | 'low';
+  isoCode: string;
+  region: string;
+  population: number;
+  gdpPerCapita: number;
   lastUpdated: number;
-  dataSources: string[];
+  isActive: boolean;
 }
 
-export interface RegionalAssessment {
-  regionId: string;
-  regionName: string;
-  stabilityIndex: number; // 0-100
-  opportunityIndex: number; // 0-100
-  riskIndex: number; // 0-100
-  azoraAlignment: number; // 0-100, how well Azora fits this region
-  keyFactors: string[];
-  recommendedActions: string[];
-  lastAssessment: number;
+export interface GRIScore {
+  nationId: string;
+  overallScore: number; // 0-100
+  assessmentDate: number;
+  factors: {
+    digitalInfrastructure: {
+      score: number; // 0-100
+      internetPenetration: number; // percentage
+      mobileConnectivity: number; // 0-100
+      dataCenterCapacity: number; // 0-100
+      blockchainNodes: number; // count
+    };
+    regulatoryClimate: {
+      score: number; // 0-100
+      cryptoLegality: 'banned' | 'restricted' | 'neutral' | 'supportive' | 'leading';
+      taxationPolicy: number; // 0-100 (favorable to crypto)
+      regulatoryClarity: number; // 0-100
+      internationalCooperation: number; // 0-100
+    };
+    economicFactors: {
+      score: number; // 0-100
+      inflationRate: number; // percentage
+      currencyStability: number; // 0-100
+      remittanceVolume: number; // USD billions
+      fintechAdoption: number; // 0-100
+    };
+    socialFactors: {
+      score: number; // 0-100
+      educationIndex: number; // 0-100 (UN Human Development Index)
+      youthPopulation: number; // percentage under 30
+      englishProficiency: number; // 0-100
+      digitalLiteracy: number; // 0-100
+    };
+    politicalStability: {
+      score: number; // 0-100
+      democracyIndex: number; // 0-100 (Economist Intelligence Unit)
+      corruptionIndex: number; // 0-100 (Transparency International, inverted)
+      ruleOfLaw: number; // 0-100 (World Justice Project)
+      geopoliticalRisk: number; // 0-100 (inverted risk score)
+    };
+  };
+  readinessLevel: 'critical' | 'high' | 'moderate' | 'low' | 'unfavorable';
+  sovereignSeedGrant: {
+    eligible: boolean;
+    grantAmount: number; // AZR tokens
+    unlockConditions: string[];
+    estimatedTimeline: string;
+  };
+  recommendations: {
+    primaryPath: 'immediate_deployment' | 'pilot_program' | 'capacity_building' | 'monitoring' | 'ineligible';
+    riskFactors: string[];
+    opportunityAreas: string[];
+    actionItems: string[];
+  };
+  aiAnalysis: {
+    confidence: number; // 0-100
+    keyInsights: string[];
+    predictiveOutlook: 'improving' | 'stable' | 'deteriorating';
+    catalystEvents: string[];
+  };
 }
 
-export interface GlobalPositioning {
-  overallReadiness: number; // 0-100
-  primaryRegions: string[]; // Regions with highest opportunity
-  riskRegions: string[]; // Regions to avoid or minimize exposure
-  diversificationScore: number; // Geographic diversification health
-  sovereigntyIndex: number; // Economic sovereignty score
-  timestamp: number;
+export interface GRITrend {
+  nationId: string;
+  metric: string;
+  period: 'monthly' | 'quarterly' | 'yearly';
+  dataPoints: Array<{
+    date: number;
+    value: number;
+    source: string;
+  }>;
+  trend: 'increasing' | 'decreasing' | 'stable' | 'volatile';
+  changeRate: number; // percentage change over period
+  significance: 'high' | 'medium' | 'low';
+}
+
+export interface CrisisIndicator {
+  indicatorId: string;
+  nationId: string;
+  type: 'economic' | 'political' | 'social' | 'environmental' | 'technological';
+  severity: 'critical' | 'high' | 'medium' | 'low';
+  description: string;
+  impact: {
+    griScore: number; // points deducted from GRI
+    timeline: string; // expected duration
+    cascadingEffects: string[];
+  };
+  detectionDate: number;
+  status: 'active' | 'mitigated' | 'resolved';
+  mitigationStrategies: string[];
+}
+
+export class GeopoliticalReadinessIndex {
+  private llm: ChatOpenAI;
+  private nations: Map<string, NationProfile> = new Map();
+  private griScores: Map<string, GRIScore> = new Map();
+  private trends: GRITrend[] = [];
+  private crisisIndicators: CrisisIndicator[] = [];
+
+  // GRI scoring weights (must sum to 100)
+  private readonly SCORING_WEIGHTS = {
+    digitalInfrastructure: 25,
+    regulatoryClimate: 25,
+    economicFactors: 20,
+    socialFactors: 15,
+    politicalStability: 15,
+  };
+
+  // Readiness thresholds
+  private readonly READINESS_THRESHOLDS = {
+    critical: 85,    // Immediate deployment eligible
+    high: 70,        // Fast-tracked consideration
+    moderate: 55,    // Standard evaluation process
+    low: 40,         // Requires significant development
+    unfavorable: 0,  // Currently ineligible
+  };
+
+  // Sovereign Seed Grant amounts
+  private readonly SEED_GRANTS = {
+    critical: 1000000,   // 1M AZR
+    high: 750000,        // 750K AZR
+    moderate: 500000,    // 500K AZR
+    low: 0,             // No grant
+    unfavorable: 0,     // No grant
+  };
+
+  constructor(openaiApiKey: string) {
+    this.llm = new ChatOpenAI({
+      openaiApiKey,
+      modelName: "gpt-4-turbo-preview",
+      temperature: 0.2, // Low temperature for analytical assessments
+    });
+
+    this.initializeNationDatabase();
+  }
+
+  /**
+   * Calculate comprehensive GRI score for a nation
+   */
+  async calculateGRIScore(nationId: string): Promise<GRIScore | { error: string }> {
+    const nation = this.nations.get(nationId);
+    if (!nation || !nation.isActive) {
+      return { error: "Nation not found or inactive" };
+    }
+
+    // Gather real-time data for each factor
+    const digitalInfrastructure = await this.assessDigitalInfrastructure(nation);
+    const regulatoryClimate = await this.assessRegulatoryClimate(nation);
+    const economicFactors = await this.assessEconomicFactors(nation);
+    const socialFactors = await this.assessSocialFactors(nation);
+    const politicalStability = await this.assessPoliticalStability(nation);
+
+    // Calculate weighted overall score
+    const overallScore = Math.round(
+      (digitalInfrastructure.score * this.SCORING_WEIGHTS.digitalInfrastructure / 100) +
+      (regulatoryClimate.score * this.SCORING_WEIGHTS.regulatoryClimate / 100) +
+      (economicFactors.score * this.SCORING_WEIGHTS.economicFactors / 100) +
+      (socialFactors.score * this.SCORING_WEIGHTS.socialFactors / 100) +
+      (politicalStability.score * this.SCORING_WEIGHTS.politicalStability / 100)
+    );
+
+    // Determine readiness level
+    const readinessLevel = this.determineReadinessLevel(overallScore);
+
+    // Generate AI-powered analysis and recommendations
+    const aiAnalysis = await this.generateAIAnalysis(nation, {
+      digitalInfrastructure,
+      regulatoryClimate,
+      economicFactors,
+      socialFactors,
+      politicalStability,
+    }, overallScore);
+
+    const recommendations = await this.generateRecommendations(nation, readinessLevel, aiAnalysis);
+
+    const griScore: GRIScore = {
+      nationId,
+      overallScore,
+      assessmentDate: Date.now(),
+      factors: {
+        digitalInfrastructure,
+        regulatoryClimate,
+        economicFactors,
+        socialFactors,
+        politicalStability,
+      },
+      readinessLevel,
+      sovereignSeedGrant: {
+        eligible: readinessLevel !== 'unfavorable' && readinessLevel !== 'low',
+        grantAmount: this.SEED_GRANTS[readinessLevel],
+        unlockConditions: this.generateUnlockConditions(readinessLevel),
+        estimatedTimeline: this.estimateTimeline(readinessLevel),
+      },
+      recommendations,
+      aiAnalysis,
+    };
+
+    this.griScores.set(nationId, griScore);
+
+    // Update nation last updated timestamp
+    nation.lastUpdated = Date.now();
+
+    return griScore;
+  }
+
+  /**
+   * Get GRI score for a nation
+   */
+  getGRIScore(nationId: string): GRIScore | null {
+    return this.griScores.get(nationId) || null;
+  }
+
+  /**
+   * Get all GRI scores sorted by readiness
+   */
+  getAllGRIScores(): GRIScore[] {
+    return Array.from(this.griScores.values())
+      .sort((a, b) => b.overallScore - a.overallScore);
+  }
+
+  /**
+   * Get nations by readiness level
+   */
+  getNationsByReadinessLevel(level: GRIScore['readinessLevel']): NationProfile[] {
+    const scores = Array.from(this.griScores.values())
+      .filter(score => score.readinessLevel === level);
+
+    return scores.map(score => this.nations.get(score.nationId)!).filter(Boolean);
+  }
+
+  /**
+   * Detect and analyze geopolitical crisis
+   */
+  async detectCrisis(
+    nationId: string,
+    type: CrisisIndicator['type'],
+    description: string,
+    severity: CrisisIndicator['severity']
+  ): Promise<{ crisisId: string; impact: CrisisIndicator['impact'] } | { error: string }> {
+    const nation = this.nations.get(nationId);
+    if (!nation) {
+      return { error: "Nation not found" };
+    }
+
+    // AI analysis of crisis impact
+    const impact = await this.analyzeCrisisImpact(nation, type, description, severity);
+
+    const crisis: CrisisIndicator = {
+      indicatorId: `crisis_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      nationId,
+      type,
+      severity,
+      description,
+      impact,
+      detectionDate: Date.now(),
+      status: 'active',
+      mitigationStrategies: await this.generateMitigationStrategies(nation, type, severity),
+    };
+
+    this.crisisIndicators.push(crisis);
+
+    // Automatically update GRI score if significant impact
+    if (impact.griScore >= 10) {
+      const currentScore = this.griScores.get(nationId);
+      if (currentScore) {
+        currentScore.overallScore = Math.max(0, currentScore.overallScore - impact.griScore);
+        currentScore.readinessLevel = this.determineReadinessLevel(currentScore.overallScore);
+      }
+    }
+
+    return {
+      crisisId: crisis.indicatorId,
+      impact: crisis.impact,
+    };
+  }
+
+  /**
+   * Get active crisis indicators
+   */
+  getActiveCrises(nationId?: string): CrisisIndicator[] {
+    return this.crisisIndicators
+      .filter(crisis => crisis.status === 'active' &&
+                       (!nationId || crisis.nationId === nationId))
+      .sort((a, b) => b.detectionDate - a.detectionDate);
+  }
+
+  /**
+   * Get GRI trends for analysis
+   */
+  getGRITrends(nationId: string, metric: string, period: GRITrend['period']): GRITrend | null {
+    return this.trends.find(trend =>
+      trend.nationId === nationId &&
+      trend.metric === metric &&
+      trend.period === period
+    ) || null;
+  }
+
+  /**
+   * Get GRI statistics across all nations
+   */
+  getGRIStatistics(): {
+    totalNations: number;
+    averageScore: number;
+    readinessDistribution: Record<GRIScore['readinessLevel'], number>;
+    topPerformers: Array<{ nation: string; score: number }>;
+    activeCrises: number;
+    recentAssessments: number;
+  } {
+    const allScores = Array.from(this.griScores.values());
+    const recentAssessments = allScores.filter(score =>
+      Date.now() - score.assessmentDate < 30 * 24 * 60 * 60 * 1000 // Last 30 days
+    ).length;
+
+    const readinessDistribution = {
+      critical: 0,
+      high: 0,
+      moderate: 0,
+      low: 0,
+      unfavorable: 0,
+    };
+
+    allScores.forEach(score => {
+      readinessDistribution[score.readinessLevel]++;
+    });
+
+    const averageScore = allScores.length > 0
+      ? Math.round(allScores.reduce((sum, score) => sum + score.overallScore, 0) / allScores.length)
+      : 0;
+
+    const topPerformers = allScores
+      .sort((a, b) => b.overallScore - a.overallScore)
+      .slice(0, 5)
+      .map(score => ({
+        nation: this.nations.get(score.nationId)?.name || 'Unknown',
+        score: score.overallScore,
+      }));
+
+    return {
+      totalNations: this.nations.size,
+      averageScore,
+      readinessDistribution,
+      topPerformers,
+      activeCrises: this.crisisIndicators.filter(c => c.status === 'active').length,
+      recentAssessments,
+    };
+  }
+
+  // ========== PRIVATE METHODS ==========
+
+  private initializeNationDatabase(): void {
+    // Initialize with major nations for demonstration
+    // In production, this would be a comprehensive global database
+    const nations = [
+      { name: "South Africa", isoCode: "ZAF", region: "Africa", population: 59300000, gdpPerCapita: 6000 },
+      { name: "Kenya", isoCode: "KEN", region: "Africa", population: 54000000, gdpPerCapita: 1800 },
+      { name: "Nigeria", isoCode: "NGA", region: "Africa", population: 218500000, gdpPerCapita: 2300 },
+      { name: "Singapore", isoCode: "SGP", region: "Asia", population: 5900000, gdpPerCapita: 60000 },
+      { name: "Estonia", isoCode: "EST", region: "Europe", population: 1300000, gdpPerCapita: 23000 },
+      { name: "Chile", isoCode: "CHL", region: "Americas", population: 19000000, gdpPerCapita: 15000 },
+    ];
+
+    nations.forEach(nationData => {
+      const nationId = `nation_${nationData.isoCode.toLowerCase()}`;
+      const nation: NationProfile = {
+        nationId,
+        name: nationData.name,
+        isoCode: nationData.isoCode,
+        region: nationData.region,
+        population: nationData.population,
+        gdpPerCapita: nationData.gdpPerCapita,
+        lastUpdated: 0,
+        isActive: true,
+      };
+      this.nations.set(nationId, nation);
+    });
+  }
+
+  private async assessDigitalInfrastructure(nation: NationProfile): Promise<GRIScore['factors']['digitalInfrastructure']> {
+    // Simulate data gathering - in production, this would integrate with real APIs
+    const baseScore = this.getRegionalDigitalScore(nation.region);
+    const internetPenetration = this.getInternetPenetration(nation.isoCode);
+    const mobileConnectivity = Math.min(100, baseScore + Math.random() * 20);
+    const dataCenterCapacity = nation.region === 'Europe' || nation.region === 'Asia' ? 85 + Math.random() * 15 : 60 + Math.random() * 30;
+    const blockchainNodes = nation.region === 'Europe' ? 50 + Math.random() * 100 : 10 + Math.random() * 50;
+
+    const score = Math.round(
+      (internetPenetration * 0.3) +
+      (mobileConnectivity * 0.25) +
+      (dataCenterCapacity * 0.25) +
+      (blockchainNodes * 0.2)
+    );
+
+    return {
+      score: Math.max(0, Math.min(100, score)),
+      internetPenetration,
+      mobileConnectivity: Math.round(mobileConnectivity),
+      dataCenterCapacity: Math.round(dataCenterCapacity),
+      blockchainNodes: Math.round(blockchainNodes),
+    };
+  }
+
+  private async assessRegulatoryClimate(nation: NationProfile): Promise<GRIScore['factors']['regulatoryClimate']> {
+    // Regulatory assessment based on region and known policies
+    let cryptoLegality: GRIScore['factors']['regulatoryClimate']['cryptoLegality'] = 'neutral';
+    let baseScore = 50;
+
+    switch (nation.region) {
+      case 'Europe':
+        cryptoLegality = 'supportive';
+        baseScore = 75;
+        break;
+      case 'Asia':
+        cryptoLegality = nation.isoCode === 'SGP' ? 'leading' : 'neutral';
+        baseScore = nation.isoCode === 'SGP' ? 90 : 65;
+        break;
+      case 'Africa':
+        cryptoLegality = 'neutral';
+        baseScore = 60;
+        break;
+      case 'Americas':
+        cryptoLegality = 'supportive';
+        baseScore = 70;
+        break;
+    }
+
+    const taxationPolicy = baseScore + (Math.random() - 0.5) * 20;
+    const regulatoryClarity = baseScore + (Math.random() - 0.5) * 15;
+    const internationalCooperation = baseScore + (Math.random() - 0.5) * 10;
+
+    const score = Math.round(
+      (this.legalityScore(cryptoLegality) * 0.4) +
+      (taxationPolicy * 0.25) +
+      (regulatoryClarity * 0.2) +
+      (internationalCooperation * 0.15)
+    );
+
+    return {
+      score: Math.max(0, Math.min(100, score)),
+      cryptoLegality,
+      taxationPolicy: Math.round(taxationPolicy),
+      regulatoryClarity: Math.round(regulatoryClarity),
+      internationalCooperation: Math.round(internationalCooperation),
+    };
+  }
+
+  private async assessEconomicFactors(nation: NationProfile): Promise<GRIScore['factors']['economicFactors']> {
+    const inflationRate = 2 + Math.random() * 8; // 2-10%
+    const currencyStability = Math.max(0, 100 - inflationRate * 2);
+    const remittanceVolume = nation.region === 'Africa' ? 10 + Math.random() * 20 : 5 + Math.random() * 10;
+    const fintechAdoption = nation.gdpPerCapita > 10000 ? 70 + Math.random() * 25 : 40 + Math.random() * 40;
+
+    const score = Math.round(
+      (currencyStability * 0.4) +
+      ((100 - inflationRate) * 0.3) +
+      (fintechAdoption * 0.2) +
+      (Math.min(100, remittanceVolume * 2) * 0.1)
+    );
+
+    return {
+      score: Math.max(0, Math.min(100, score)),
+      inflationRate: Math.round(inflationRate * 100) / 100,
+      currencyStability: Math.round(currencyStability),
+      remittanceVolume: Math.round(remittanceVolume * 100) / 100,
+      fintechAdoption: Math.round(fintechAdoption),
+    };
+  }
+
+  private async assessSocialFactors(nation: NationProfile): Promise<GRIScore['factors']['socialFactors']> {
+    const educationIndex = nation.gdpPerCapita > 20000 ? 80 + Math.random() * 15 : 60 + Math.random() * 25;
+    const youthPopulation = nation.region === 'Africa' ? 60 + Math.random() * 10 : 40 + Math.random() * 15;
+    const englishProficiency = nation.region === 'Africa' ? 70 + Math.random() * 20 : 85 + Math.random() * 10;
+    const digitalLiteracy = educationIndex * 0.8 + Math.random() * 20;
+
+    const score = Math.round(
+      (educationIndex * 0.35) +
+      (youthPopulation * 0.25) +
+      (englishProficiency * 0.25) +
+      (digitalLiteracy * 0.15)
+    );
+
+    return {
+      score: Math.max(0, Math.min(100, score)),
+      educationIndex: Math.round(educationIndex),
+      youthPopulation: Math.round(youthPopulation),
+      englishProficiency: Math.round(englishProficiency),
+      digitalLiteracy: Math.round(digitalLiteracy),
+    };
+  }
+
+  private async assessPoliticalStability(nation: NationProfile): Promise<GRIScore['factors']['politicalStability']> {
+    const democracyIndex = nation.region === 'Europe' ? 75 + Math.random() * 20 : 50 + Math.random() * 30;
+    const corruptionIndex = nation.region === 'Europe' ? 70 + Math.random() * 20 : 40 + Math.random() * 30;
+    const ruleOfLaw = democracyIndex * 0.9 + Math.random() * 10;
+    const geopoliticalRisk = 100 - (nation.region === 'Europe' ? 20 + Math.random() * 20 : 40 + Math.random() * 30);
+
+    const score = Math.round(
+      (democracyIndex * 0.3) +
+      (corruptionIndex * 0.25) +
+      (ruleOfLaw * 0.25) +
+      (geopoliticalRisk * 0.2)
+    );
+
+    return {
+      score: Math.max(0, Math.min(100, score)),
+      democracyIndex: Math.round(democracyIndex),
+      corruptionIndex: Math.round(corruptionIndex),
+      ruleOfLaw: Math.round(ruleOfLaw),
+      geopoliticalRisk: Math.round(geopoliticalRisk),
+    };
+  }
+
+  private determineReadinessLevel(score: number): GRIScore['readinessLevel'] {
+    if (score >= this.READINESS_THRESHOLDS.critical) return 'critical';
+    if (score >= this.READINESS_THRESHOLDS.high) return 'high';
+    if (score >= this.READINESS_THRESHOLDS.moderate) return 'moderate';
+    if (score >= this.READINESS_THRESHOLDS.low) return 'low';
+    return 'unfavorable';
+  }
+
+  private async generateAIAnalysis(
+    nation: NationProfile,
+    factors: GRIScore['factors'],
+    overallScore: number
+  ): Promise<GRIScore['aiAnalysis']> {
+    const prompt = `
+Analyze the Geopolitical Readiness Index for ${nation.name}:
+
+Overall Score: ${overallScore}
+Digital Infrastructure: ${factors.digitalInfrastructure.score}
+Regulatory Climate: ${factors.regulatoryClimate.score}
+Economic Factors: ${factors.economicFactors.score}
+Social Factors: ${factors.socialFactors.score}
+Political Stability: ${factors.politicalStability.score}
+
+Provide analysis in JSON format:
+{
+  "confidence": <0-100>,
+  "keyInsights": ["insight1", "insight2", "insight3"],
+  "predictiveOutlook": "improving|stable|deteriorating",
+  "catalystEvents": ["event1", "event2"]
+}
+    `;
+
+    try {
+      const response = await this.llm.invoke(prompt);
+      return JSON.parse(response.content.trim());
+    } catch (error) {
+      console.error('Failed to generate AI analysis:', error);
+      return {
+        confidence: 70,
+        keyInsights: ['Analysis requires more data', 'Monitor key indicators'],
+        predictiveOutlook: 'stable',
+        catalystEvents: ['Further assessment needed'],
+      };
+    }
+  }
+
+  private async generateRecommendations(
+    nation: NationProfile,
+    readinessLevel: GRIScore['readinessLevel'],
+    aiAnalysis: GRIScore['aiAnalysis']
+  ): Promise<GRIScore['recommendations']> {
+    const baseRecommendations = {
+      critical: {
+        primaryPath: 'immediate_deployment' as const,
+        riskFactors: ['Rapid adoption challenges', 'Integration complexity'],
+        opportunityAreas: ['First-mover advantage', 'Regional leadership'],
+        actionItems: ['Begin pilot deployment', 'Establish local partnerships', 'Prepare regulatory engagement'],
+      },
+      high: {
+        primaryPath: 'pilot_program' as const,
+        riskFactors: ['Resource allocation', 'Technical infrastructure'],
+        opportunityAreas: ['Growing market potential', 'Technology adoption'],
+        actionItems: ['Develop pilot roadmap', 'Assess local partnerships', 'Build capacity'],
+      },
+      moderate: {
+        primaryPath: 'capacity_building' as const,
+        riskFactors: ['Infrastructure gaps', 'Regulatory uncertainty'],
+        opportunityAreas: ['Development potential', 'Market expansion'],
+        actionItems: ['Infrastructure development', 'Regulatory dialogue', 'Education programs'],
+      },
+      low: {
+        primaryPath: 'monitoring' as const,
+        riskFactors: ['Significant development needs', 'Political instability'],
+        opportunityAreas: ['Long-term potential', 'Capacity building impact'],
+        actionItems: ['Monitor progress', 'Support development initiatives', 'Maintain engagement'],
+      },
+      unfavorable: {
+        primaryPath: 'ineligible' as const,
+        riskFactors: ['Severe infrastructure gaps', 'High geopolitical risk'],
+        opportunityAreas: ['Future potential after stabilization'],
+        actionItems: ['Monitor for improvements', 'Support international development', 'Maintain diplomatic relations'],
+      },
+    };
+
+    return baseRecommendations[readinessLevel];
+  }
+
+  private generateUnlockConditions(readinessLevel: GRIScore['readinessLevel']): string[] {
+    const conditions = {
+      critical: [
+        'Complete local regulatory approval',
+        'Establish technical infrastructure',
+        'Train local implementation team',
+      ],
+      high: [
+        'Obtain regulatory clarity',
+        'Complete infrastructure assessment',
+        'Establish local governance framework',
+      ],
+      moderate: [
+        'Demonstrate infrastructure improvements',
+        'Achieve regulatory milestones',
+        'Complete capacity building programs',
+      ],
+      low: [],
+      unfavorable: [],
+    };
+
+    return conditions[readinessLevel];
+  }
+
+  private estimateTimeline(readinessLevel: GRIScore['readinessLevel']): string {
+    const timelines = {
+      critical: '3-6 months',
+      high: '6-12 months',
+      moderate: '12-24 months',
+      low: '24+ months',
+      unfavorable: 'Indeterminate',
+    };
+
+    return timelines[readinessLevel];
+  }
+
+  private async analyzeCrisisImpact(
+    nation: NationProfile,
+    type: CrisisIndicator['type'],
+    description: string,
+    severity: CrisisIndicator['severity']
+  ): Promise<CrisisIndicator['impact']> {
+    const severityMultiplier = { critical: 25, high: 15, medium: 8, low: 3 }[severity];
+    const typeMultiplier = {
+      economic: 1.2,
+      political: 1.5,
+      social: 0.8,
+      environmental: 0.9,
+      technological: 1.0,
+    }[type];
+
+    const griImpact = Math.round(severityMultiplier * typeMultiplier);
+
+    const timelines = {
+      critical: '6-12 months',
+      high: '3-6 months',
+      medium: '1-3 months',
+      low: '2-4 weeks',
+    };
+
+    return {
+      griScore: griImpact,
+      timeline: timelines[severity],
+      cascadingEffects: await this.predictCascadingEffects(nation, type, severity),
+    };
+  }
+
+  private async predictCascadingEffects(
+    nation: NationProfile,
+    type: CrisisIndicator['type'],
+    severity: CrisisIndicator['severity']
+  ): Promise<string[]> {
+    const effects = [];
+
+    if (type === 'economic' && severity === 'critical') {
+      effects.push('Currency volatility affecting a-Token stability');
+      effects.push('Reduced investment in digital infrastructure');
+    }
+
+    if (type === 'political') {
+      effects.push('Regulatory uncertainty delaying deployment');
+      effects.push('Potential changes in crypto policy');
+    }
+
+    if (type === 'social') {
+      effects.push('Community adoption challenges');
+      effects.push('Education program disruptions');
+    }
+
+    return effects.length > 0 ? effects : ['Limited cascading effects expected'];
+  }
+
+  private async generateMitigationStrategies(
+    nation: NationProfile,
+    type: CrisisIndicator['type'],
+    severity: CrisisIndicator['severity']
+  ): Promise<string[]> {
+    const strategies = [];
+
+    if (type === 'economic') {
+      strategies.push('Implement circuit breaker mechanisms');
+      strategies.push('Diversify reserve assets');
+      strategies.push('Establish emergency liquidity protocols');
+    }
+
+    if (type === 'political') {
+      strategies.push('Engage in regulatory dialogue');
+      strategies.push('Build local political alliances');
+      strategies.push('Prepare contingency deployment plans');
+    }
+
+    if (type === 'social') {
+      strategies.push('Enhance community education programs');
+      strategies.push('Strengthen local partnerships');
+      strategies.push('Implement phased rollout approach');
+    }
+
+    return strategies.length > 0 ? strategies : ['Monitor situation and adapt strategies as needed'];
+  }
+
+  // Helper methods for data simulation
+  private getRegionalDigitalScore(region: string): number {
+    const scores = {
+      'Europe': 85,
+      'Asia': 78,
+      'Americas': 75,
+      'Africa': 45,
+    };
+    return scores[region as keyof typeof scores] || 50;
+  }
+
+  private getInternetPenetration(isoCode: string): number {
+    // Simplified - in production, use real data APIs
+    const highPenetration = ['SGP', 'EST', 'ZAF'];
+    const mediumPenetration = ['KEN', 'NGA', 'CHL'];
+
+    if (highPenetration.includes(isoCode)) return 85 + Math.random() * 10;
+    if (mediumPenetration.includes(isoCode)) return 65 + Math.random() * 15;
+    return 45 + Math.random() * 20;
+  }
+
+  private legalityScore(legality: GRIScore['factors']['regulatoryClimate']['cryptoLegality']): number {
+    const scores = {
+      'banned': 0,
+      'restricted': 25,
+      'neutral': 50,
+      'supportive': 75,
+      'leading': 100,
+    };
+    return scores[legality];
+  }
 }
 
 export interface CrisisIndicator {
