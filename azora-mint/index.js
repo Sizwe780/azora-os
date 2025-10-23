@@ -356,12 +356,16 @@ app.get('/api/knowledge-rewards/stats', async (req, res) => {
 
 const startServer = async () => {
     try {
-        // Connect to Redis for event stream
-        const redisClient = createRedisClient({ url: REDIS_URL });
-        redisClient.on('error', (err) => logger.error('Redis Client Error', { error: err }));
-        await redisClient.connect();
-        await redisClient.subscribe(EVENT_CHANNEL, handleEvent);
-        logger.info(`Subscribed to event channel: ${EVENT_CHANNEL}`);
+        // Connect to Redis for event stream (optional for testing)
+        let redisClient;
+        try {
+            redisClient = createRedisClient({ url: REDIS_URL });
+            await redisClient.connect();
+            await redisClient.subscribe(EVENT_CHANNEL, handleEvent);
+            logger.info(`Subscribed to event channel: ${EVENT_CHANNEL}`);
+        } catch (redisError) {
+            logger.warn('Redis not available, running without event streaming', { error: redisError.message });
+        }
 
         // Schedule periodic full recalculation (e.g., every hour)
         setInterval(recalculateMetrics, 1000 * 60 * 60);

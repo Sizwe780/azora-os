@@ -613,4 +613,7 @@ const azoraSapiens = new AzoraSapiens();
 // Initialize the service
 azoraSapiens.initialize();
 
+// Start the service
+azoraSapiens.start();
+
 module.exports = azoraSapiens;
