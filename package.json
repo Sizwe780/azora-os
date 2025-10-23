@@ -101,7 +101,7 @@
     "zod": "3.25.76"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.9",
+    "@tailwindcss/postcss": "^4.1.16",
     "@types/bcryptjs": "^3.0.0",
     "@types/express": "^5.0.3",
     "@types/express-validator": "^2.20.33",
