@@ -23,6 +23,10 @@ import { elara as elaraCore } from './elara-core';
 import { UnifiedElara, unifiedElara, unifiedElaraApiHandler } from './unified-elara';
 import { reflexivityEngine } from './reflexivity-game-theory-engine';
 import { aiScientist } from './ai-scientist-module';
+import { guardianOraclesCourt, GuardianOraclesCourt, GuardianOracle } from './guardian-oracles';
+import { citizensOversightCouncil, CitizensOversightCouncil } from './citizens-oversight-council';
+import { AIImmuneSystem } from './ai-immune-system';
+import { GeopoliticalReadinessIndex } from './geopolitical-readiness-index';
 
 // Re-export all agent components
 export { LLMReasoningEngine } from './llm-reasoning';
@@ -38,6 +42,10 @@ export { elara as elaraCore } from './elara-core';
 export { UnifiedElara, unifiedElara, unifiedElaraApiHandler } from './unified-elara';
 export { reflexivityEngine } from './reflexivity-game-theory-engine';
 export { aiScientist } from './ai-scientist-module';
+export { guardianOraclesCourt, GuardianOraclesCourt, GuardianOracle } from './guardian-oracles';
+export { citizensOversightCouncil, CitizensOversightCouncil } from './citizens-oversight-council';
+export { AIImmuneSystem } from './ai-immune-system';
+export { GeopoliticalReadinessIndex } from './geopolitical-readiness-index';
 
 // Tool interfaces and classes
 export interface ToolResult {
