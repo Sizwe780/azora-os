@@ -38,7 +38,7 @@ jobs:
           ./deploy.sh run_health_checks
 
       - name: Set up kubectl (optional, for k8s deploy)
-        uses: azure/setup-kubectl@v3
+        uses: azure/setup-kubectl@v4
         with:
           version: 'latest'
 
