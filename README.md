@@ -758,7 +758,9 @@ Azora OS represents the next evolution of economic intelligence:
 - **Enterprise**: enterprise@azora.world
 - **Technical Support**: support@azora.world
 - **API Documentation**: `/docs/API_DOCUMENTATION.md`
-- **Architecture Docs**: `/docs/AZORA-COMPREHENSIVE-ARCHITECTURE.md`
+- **Architecture Docs**: 
+  - `/docs/AZORA-COMPREHENSIVE-ARCHITECTURE.md` - Complete system architecture
+  - `AZORA-SAPIENS-ARCHITECTURE.md` - Azora Sapiens education platform architecture
 
 ---
 
