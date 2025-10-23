@@ -1,0 +1,41 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: llm-wrapper-service-netpol
+  namespace: azora-es
+spec:
+  podSelector:
+    matchLabels:
+      app: llm-wrapper-service
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: api-gateway
+    ports:
+    - protocol: TCP
+      port: 8084
+  - from:
+    - podSelector:
+        matchLabels:
+          app: ai-agent
+    ports:
+    - protocol: TCP
+      port: 8084
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: redis-cluster
+    ports:
+    - protocol: TCP
+      port: 6379
+  - to: []
+    ports:
+    - protocol: TCP
+      port: 443  # HTTPS for external LLM APIs
+    - protocol: TCP
+      port: 80   # HTTP fallback

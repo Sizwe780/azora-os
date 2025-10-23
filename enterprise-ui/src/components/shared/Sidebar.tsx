@@ -1,3 +1,11 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 import {
   LayoutDashboard,
   AlertTriangle,
@@ -8,6 +16,8 @@ import {
   XCircle,
   Clock
 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { ComplianceOverview } from '../../types'
 
 interface SidebarProps {
@@ -53,23 +63,20 @@ export function Sidebar({ activeView, onViewChange, data }: SidebarProps) {
             const isActive = activeView === item.id
 
             return (
-              <button
+              <Button
                 key={item.id}
                 onClick={() => onViewChange(item.id)}
-                className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                  isActive
-                    ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                    : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
-                }`}
+                variant={isActive ? "default" : "ghost"}
+                className={`w-full justify-start ${isActive ? 'bg-blue-50 text-blue-700 border border-blue-200' : ''}`}
               >
                 <Icon className="h-5 w-5 mr-3" />
                 <span className="flex-1 text-left">{item.label}</span>
                 {item.count !== null && item.count > 0 && (
-                  <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+                  <Badge variant="destructive" className="ml-2">
                     {item.count}
-                  </span>
+                  </Badge>
                 )}
-              </button>
+              </Button>
             )
           })}
         </div>
@@ -85,7 +92,9 @@ export function Sidebar({ activeView, onViewChange, data }: SidebarProps) {
                 <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
                 <span className="text-gray-600">Compliant</span>
               </div>
-              <span className="font-medium text-green-600">{data.compliantFrameworks}</span>
+              <Badge variant="outline" className="bg-green-50 border-green-200 text-green-700">
+                {data.compliantFrameworks}
+              </Badge>
             </div>
 
             <div className="flex items-center justify-between text-sm">
@@ -93,7 +102,9 @@ export function Sidebar({ activeView, onViewChange, data }: SidebarProps) {
                 <AlertCircle className="h-4 w-4 text-yellow-500 mr-2" />
                 <span className="text-gray-600">Needs Attention</span>
               </div>
-              <span className="font-medium text-yellow-600">{data.needsAttentionFrameworks}</span>
+              <Badge variant="outline" className="bg-yellow-50 border-yellow-200 text-yellow-700">
+                {data.needsAttentionFrameworks}
+              </Badge>
             </div>
 
             <div className="flex items-center justify-between text-sm">
@@ -101,7 +112,9 @@ export function Sidebar({ activeView, onViewChange, data }: SidebarProps) {
                 <XCircle className="h-4 w-4 text-red-500 mr-2" />
                 <span className="text-gray-600">Non-Compliant</span>
               </div>
-              <span className="font-medium text-red-600">{data.nonCompliantFrameworks}</span>
+              <Badge variant="outline" className="bg-red-50 border-red-200 text-red-700">
+                {data.totalFrameworks - data.compliantFrameworks}
+              </Badge>
             </div>
 
             <div className="flex items-center justify-between text-sm">
@@ -109,13 +122,15 @@ export function Sidebar({ activeView, onViewChange, data }: SidebarProps) {
                 <Clock className="h-4 w-4 text-gray-500 mr-2" />
                 <span className="text-gray-600">Unreachable</span>
               </div>
-              <span className="font-medium text-gray-600">{data.unreachableFrameworks}</span>
+              <Badge variant="outline" className="bg-gray-50 border-gray-200 text-gray-700">
+                {data.needsAttentionFrameworks}
+              </Badge>
             </div>
           </div>
 
           <div className="mt-4 pt-3 border-t border-gray-200">
             <div className="text-xs text-gray-500">
-              Last updated: {new Date(data.lastUpdated).toLocaleTimeString()}
+              Last updated: {new Date().toLocaleTimeString()}
             </div>
           </div>
         </div>

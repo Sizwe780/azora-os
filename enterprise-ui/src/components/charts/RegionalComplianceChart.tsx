@@ -1,19 +1,40 @@
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts'
 import { RegionalMetrics } from '../../types'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart'
 
 interface RegionalComplianceChartProps {
   regional?: Record<string, RegionalMetrics>
 }
 
+const chartConfig = {
+  compliant: {
+    label: 'Compliant',
+    color: 'hsl(var(--chart-1))',
+  },
+}
+
 export function RegionalComplianceChart({ regional }: RegionalComplianceChartProps) {
   if (!regional) {
     return (
-      <div className="card">
-        <h3 className="text-lg font-medium text-gray-900 mb-4">Regional Compliance</h3>
-        <div className="flex items-center justify-center h-64 text-gray-500">
-          No regional data available
-        </div>
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Regional Compliance</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-center h-64 text-muted-foreground">
+            No regional data available
+          </div>
+        </CardContent>
+      </Card>
     )
   }
 
@@ -21,41 +42,40 @@ export function RegionalComplianceChart({ regional }: RegionalComplianceChartPro
     region: region.toUpperCase(),
     compliant: metrics.compliant,
     total: metrics.total,
-    percentage: metrics.percentage
+    percentage: Math.round((metrics.compliant / metrics.total) * 100)
   }))
 
   return (
-    <div className="card">
-      <h3 className="text-lg font-medium text-gray-900 mb-4">Regional Compliance</h3>
-      <div className="h-64">
-        <ResponsiveContainer width="100%" height="100%">
+    <Card>
+      <CardHeader>
+        <CardTitle>Regional Compliance</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <ChartContainer config={chartConfig} className="h-64">
           <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="region" />
-            <YAxis />
-            <Tooltip
-              formatter={(value: number, name: string) => {
-                if (name === 'compliant') {
-                  const item = data.find(d => d.compliant === value)
-                  return [`${value}/${item?.total} (${item?.percentage}%)`, 'Compliant']
-                }
-                return [value, name]
-              }}
+            <CartesianGrid vertical={false} />
+            <XAxis
+              dataKey="region"
+              tickLine={false}
+              tickMargin={10}
+              axisLine={false}
             />
-            <Bar dataKey="compliant" fill="#10B981" name="compliant" />
+            <YAxis hide />
+            <Tooltip content={<ChartTooltipContent />} />
+            <Bar dataKey="compliant" fill="var(--color-compliant)" radius={8} />
           </BarChart>
-        </ResponsiveContainer>
-      </div>
-      <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
-        {data.map((item) => (
-          <div key={item.region} className="text-center">
-            <div className="font-medium text-gray-900">{item.region}</div>
-            <div className="text-gray-600">
-              {item.compliant}/{item.total} ({item.percentage}%)
+        </ChartContainer>
+        <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
+          {data.map((item) => (
+            <div key={item.region} className="text-center">
+              <div className="font-medium">{item.region}</div>
+              <div className="text-muted-foreground">
+                {item.compliant}/{item.total} ({item.percentage}%)
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
-    </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
   )
 }

@@ -203,3 +203,15 @@ enum CoinType {
   AZR
   BONUS_AZR
 }
+
+model Genome {
+  id           String   @id @default(cuid())
+  action       String
+  input        String?
+  output       String?
+  context      Json?
+  timestamp    DateTime @default(now())
+  ethicalCheck Boolean  @default(false)
+  userId       String?
+  sessionId    String?
+}

@@ -1,0 +1,39 @@
+apiVersion: app.redislabs.com/v1
+kind: RedisEnterpriseCluster
+metadata:
+  name: azora-redis
+  namespace: default
+spec:
+  nodes: 3
+  redisEnterpriseImageSpec:
+    imagePullPolicy: IfNotPresent
+    repository: redislabs/redis
+    versionTag: 7.2.4-52
+  redisEnterpriseServicesRiggerImageSpec:
+    imagePullPolicy: IfNotPresent
+    repository: redislabs/redis
+    versionTag: 7.2.4-52
+  persistentSpec:
+    enabled: true
+    storageClassName: standard
+    volumeSize: 10Gi
+  uiServiceType: ClusterIP
+  bootstrapperImageSpec:
+    imagePullPolicy: IfNotPresent
+    repository: redislabs/redis
+    versionTag: 7.2.4-52
+---
+apiVersion: app.redislabs.com/v1
+kind: RedisEnterpriseDatabase
+metadata:
+  name: azora-redis-db
+  namespace: default
+spec:
+  redisEnterpriseCluster:
+    name: azora-redis
+  memorySize: 1GB
+  replication: true
+  persistence: RDB
+  modulesList:
+    - name: search
+      version: 2.6.4

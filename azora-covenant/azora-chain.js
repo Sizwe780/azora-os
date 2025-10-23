@@ -7,10 +7,9 @@ See LICENSE file for details.
 */
 
 /**
- * Azora OS Blockchain Integration
- * 
+ * Azora ES Blockchain Integration
+ *
  * Records all transactions on a secure, immutable ledger
- * Ensures $10 million valuation is verifiable and transparent
  * Enables founder withdrawals with constitutional compliance
  */
 
@@ -543,7 +542,7 @@ app.get('/', (req, res) => {
   <html>
   <head>
     <meta charset="UTF-8">
-    <title>Azora OS Blockchain Explorer</title>
+    <title>Azora ES Blockchain Explorer</title>
     <style>
       body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -658,8 +657,8 @@ app.get('/', (req, res) => {
   <body>
     <div class="header">
       <div>
-        <h1>Azora OS Blockchain Explorer</h1>
-        <div>Transparent verification of Azora's $10 million valuation</div>
+        <h1>Azora ES Blockchain Explorer</h1>
+        <div>Transparent verification of Azora's constitutional compliance</div>
       </div>
       <div>
         <button class="btn" id="mine-btn">Mine Pending Transactions</button>
@@ -811,7 +810,7 @@ app.get('/', (req, res) => {
     </div>
     
     <div class="footer">
-      <p>© 2025 Azora OS | Blockchain verification of $10,000,000 valuation</p>
+      <p>© 2025 Azora ES | Blockchain verification of constitutional compliance</p>
     </div>
     
     <script>

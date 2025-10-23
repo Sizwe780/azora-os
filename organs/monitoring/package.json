@@ -1,7 +1,7 @@
 {
   "name": "monitoring",
   "version": "1.0.0",
-  "description": "Comprehensive monitoring and logging service for Azora OS",
+  "description": "Comprehensive monitoring and logging service for Azora ES",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -23,6 +23,6 @@
     "eslint": "^9.0.0"
   },
   "keywords": ["monitoring", "logging", "health-checks", "metrics", "azora-os"],
-  "author": "Azora OS Team",
+  "author": "Azora ES Team",
   "license": "SEE LICENSE IN LICENSE"
 }

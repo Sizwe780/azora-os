@@ -7,8 +7,8 @@ See LICENSE file for details.
 */
 
 /**
- * Azora OS Blockchain Node
- * 
+ * Azora ES Blockchain Node
+ *
  * Records all founder withdrawals and transactions in an immutable ledger
  * Supports the $10M valuation with transparent, verifiable transaction history
  */
@@ -34,7 +34,7 @@ const PENDING_TX_FILE = path.join(DATA_DIR, 'pending_transactions.json');
 
 // Default blockchain structure
 const DEFAULT_BLOCKCHAIN = {
-  name: 'Azora OS Blockchain',
+  name: 'Azora ES Blockchain',
   symbol: 'AZR',
   blocks: [
     {
@@ -45,7 +45,7 @@ const DEFAULT_BLOCKCHAIN = {
           id: 'genesis-transaction',
           type: 'GENESIS',
           data: {
-            message: 'Azora OS Genesis Block - $10M Valuation',
+            message: 'Azora ES Genesis Block - $10M Valuation',
             totalSupply: 1000000,
             tokenPrice: 10.0
           },

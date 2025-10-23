@@ -15,7 +15,7 @@ export default function Footer() {
               <span className="text-xl font-bold">Azora OS</span>
             </div>
             <p className="text-gray-400 text-sm">
-              Africa's first trillion-dollar software infrastructure platform.
+              Africa's first comprehensive software infrastructure platform.
               Building the future, compliantly.
             </p>
             <div className="flex space-x-4">

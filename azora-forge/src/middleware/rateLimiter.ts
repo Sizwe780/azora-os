@@ -26,3 +26,24 @@ export const aiRateLimiter = new RateLimiterMemory({
   points: 10, // Number of requests
   duration: 60, // Per 60 seconds
 });
+
+// Bidding rate limiter
+export const biddingRateLimiter = new RateLimiterMemory({
+  keyPrefix: 'bidding',
+  points: 5, // Number of bids
+  duration: 60, // Per 60 seconds
+});
+
+// Watchlist rate limiter
+export const watchlistRateLimiter = new RateLimiterMemory({
+  keyPrefix: 'watchlist',
+  points: 10, // Number of watchlist additions
+  duration: 60, // Per 60 seconds
+});
+
+// Registration rate limiter
+export const registrationRateLimiter = new RateLimiterMemory({
+  keyPrefix: 'registration',
+  points: 3, // Number of registrations
+  duration: 3600, // Per hour
+});

@@ -1,17 +1,22 @@
 {
-  "name": "kyc-aml-service",
+  "name": "azora-aegis",
   "version": "1.0.0",
-  "main": "dist/index.js",
+  "description": "Aegis Citadel - Global Genesis Mandate Implementation",
+  "main": "citadel.js",
   "scripts": {
     "dev": "ts-node src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js",
+    "start": "node citadel.js",
+    "citadel": "node citadel.js",
+    "guardian": "node guardian.js",
     "prisma:migrate": "prisma migrate dev --name init",
     "prisma:generate": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^5.0.0",
-    "express": "^4.18.2"
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "ws": "^8.18.3"
   },
   "devDependencies": {
     "prisma": "^5.0.0",

@@ -13,15 +13,23 @@ export class AuditService {
   static async log(eventType: string, details: any, userId?: string) {
     await prisma.auditLog.create({
       data: {
-        eventType: eventType,
-        details,
-        userId,
+        entityType: "abtest",
+        entityId: userId || "system",
+        action: eventType,
+        userId: userId || "system",
+        metadata: JSON.stringify(details),
+        hash: ABTestService.generateEventHash(eventType, details),
       },
     });
   }
 }
 
 export class ABTestService {
+  static generateEventHash(eventType: string, details: any): string {
+    const crypto = require('crypto');
+    const data = JSON.stringify({ eventType, details, timestamp: Date.now() });
+    return crypto.createHash('sha256').update(data).digest('hex').substring(0, 16);
+  }
   static async assignVariant(userId: string): Promise<string> {
     let abTest = await prisma.aBTest.findFirst({ where: { userId } });
     if (!abTest) {

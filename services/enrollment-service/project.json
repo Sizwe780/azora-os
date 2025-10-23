@@ -1,0 +1,27 @@
+{
+  "name": "enrollment-service",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "services/enrollment-service",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cd services/enrollment-service && go build -o dist/enrollment-service ."
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cd services/enrollment-service && go test ./..."
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cd services/enrollment-service && golangci-lint run"
+      }
+    }
+  },
+  "tags": ["scope:enrollment", "type:service"]
+}

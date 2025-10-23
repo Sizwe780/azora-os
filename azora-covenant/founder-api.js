@@ -7,8 +7,8 @@ See LICENSE file for details.
 */
 
 /**
- * Azora OS Founder API
- * 
+ * Azora ES Founder API
+ *
  * Enables instant founder registration and withdrawal
  * with blockchain verification to maintain $10M valuation
  */

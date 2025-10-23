@@ -42,6 +42,24 @@ export const customMetrics = {
     help: 'Total number of marketplace transactions',
     registers: [register],
   }),
+
+  domainsListedTotal: new promClient.Counter({
+    name: 'domains_listed_total',
+    help: 'Total number of domains listed for sale',
+    registers: [register],
+  }),
+
+  bidsPlacedTotal: new promClient.Counter({
+    name: 'bids_placed_total',
+    help: 'Total number of bids placed on domains',
+    registers: [register],
+  }),
+
+  domainsSoldTotal: new promClient.Counter({
+    name: 'domains_sold_total',
+    help: 'Total number of domains sold',
+    registers: [register],
+  }),
 };
 
 export const metricsMiddleware = (req: Request, res: Response, next: NextFunction): void => {

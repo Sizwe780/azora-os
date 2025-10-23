@@ -34,6 +34,23 @@ const biddingRateLimitMiddleware = async (req: AuthenticatedRequest, res: Respon
   }
 };
 
+// Middleware for watchlist rate limiting
+const watchlistRateLimitMiddleware = async (req: AuthenticatedRequest, res: Response, next: Function) => {
+  try {
+    const userId = req.user?.id || req.ip || 'anonymous';
+    await watchlistRateLimiter.consume(userId);
+    next();
+  } catch (rejRes) {
+    res.status(429).json({
+      success: false,
+      error: {
+        message: 'Too many watchlist additions, please try again later.',
+        statusCode: 429
+      }
+    });
+  }
+};
+
 /**
  * @swagger
  * /api/v1/marketplace/list:
@@ -387,7 +404,7 @@ router.post('/buy/:domain', async (req: AuthenticatedRequest, res: Response) => 
  *       201:
  *         description: Domain added to watchlist successfully
  */
-router.post('/watchlist', watchlistRateLimiter, async (req: AuthenticatedRequest, res: Response) => {
+router.post('/watchlist', watchlistRateLimitMiddleware, async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { domain, alertPrice } = req.body;
     const userId = req.user?.id || 'anonymous';

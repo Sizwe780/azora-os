@@ -18,12 +18,13 @@
     "personalization",
     "azora"
   ],
-  "author": "Azora OS",
+  "author": "Azora ES",
   "license": "AZORA PROPRIETARY LICENSE",
   "dependencies": {
     "@langchain/community": "^0.0.20",
     "@langchain/core": "^0.1.0",
     "@langchain/openai": "^0.0.14",
+    "@types/ws": "^8.18.1",
     "axios": "^1.6.2",
     "bcryptjs": "^2.4.3",
     "compression": "^1.7.4",
@@ -48,7 +49,8 @@
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
     "uuid": "^9.0.1",
-    "winston": "^3.11.0"
+    "winston": "^3.11.0",
+    "ws": "^8.18.3"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",

@@ -1,7 +1,7 @@
 {
   "name": "automated-compliance-reporting",
   "version": "1.0.0",
-  "description": "Automated compliance reporting system for Azora OS - generates periodic reports, audit trails, and regulatory filings",
+  "description": "Automated compliance reporting system for Azora ES - generates periodic reports, audit trails, and regulatory filings",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -28,6 +28,6 @@
     "regulatory",
     "azora-os"
   ],
-  "author": "Azora OS",
+  "author": "Azora ES",
   "license": "SEE LICENSE IN LICENSE"
 }

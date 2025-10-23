@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: llm-wrapper-service
+  namespace: azora-es
+  labels:
+    app: llm-wrapper-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: llm-wrapper-service
+  template:
+    metadata:
+      labels:
+        app: llm-wrapper-service
+    spec:
+      containers:
+      - name: llm-wrapper-service
+        image: azora-es/llm-wrapper-service:latest
+        ports:
+        - containerPort: 8084
+        env:
+        - name: LLM_PROVIDER
+          value: "openai"
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: llm-secrets
+              key: openai-api-key
+        - name: REDIS_URL
+          value: "redis-cluster:6379"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8084
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8084
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 2000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: llm-wrapper-service
+  namespace: azora-es
+  labels:
+    app: llm-wrapper-service
+spec:
+  selector:
+    app: llm-wrapper-service
+  ports:
+  - port: 8084
+    targetPort: 8084
+    protocol: TCP
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: llm-secrets
+  namespace: azora-es
+type: Opaque
+data:
+  # Base64 encoded API keys - to be populated during deployment
+  openai-api-key: ""

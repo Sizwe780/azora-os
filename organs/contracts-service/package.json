@@ -1,7 +1,7 @@
 {
   "name": "contracts-service",
   "version": "1.0.0",
-  "description": "The contracts-service service for Azora OS.",
+  "description": "The contracts-service service for Azora ES.",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"

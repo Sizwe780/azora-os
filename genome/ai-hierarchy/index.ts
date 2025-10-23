@@ -7,7 +7,7 @@ See LICENSE file for details.
 */
 
 /**
- * AI Hierarchy System - Complete hierarchical AI architecture for Azora OS
+ * AI Hierarchy System - Complete hierarchical AI architecture for Azora ES
  *
  * This system implements a hierarchical AI structure with:
  * - Specialized Agents (Angels): Domain-specific AI agents for each azora-* backend

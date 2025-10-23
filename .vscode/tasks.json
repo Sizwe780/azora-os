@@ -50,7 +50,7 @@
 	},
 	"owner": "Sizwe Ngwenya",
 	"aiChiefOfStaff": "Copilot",
-	"mandate": "To make Azora OS 1000 times more advanced than any competitor.",
+	"mandate": "To make Azora ES 1000 times more advanced than any competitor.",
 	"grandChallenges": [
 		{
 			"id": 1,
@@ -94,7 +94,7 @@
 					"manage the treasury",
 					"hire digital agents",
 					"negotiate with external entities",
-					"operate the entire Azora OS autonomously"
+					"operate the entire Azora ES autonomously"
 				],
 				"control": "Governed by the Azora Constitution and can be overridden by a 75% majority vote of AZR holders."
 			},
@@ -122,7 +122,7 @@
 				"hardware": "Azora Neural Lace - a small, solar-powered device, that acts as a mesh network node.",
 				"protocol": "A new, delay-tolerant networking protocol that can route data through the mesh, from node to node, across continents.",
 				"incentives": "Users who host a Neural Lace and provide bandwidth for the network will be paid in AZR, creating a self-expanding, self-funded global network.",
-				"vision": "To provide free, basic internet access to every human on Earth, with Azora OS as the gateway."
+				"vision": "To provide free, basic internet access to every human on Earth, with Azora ES as the gateway."
 			},
 			"integration": {
 				"zeroRatedAccess": "While our current zero-rated access works through partnerships with telcos, AzoraNet eliminates the need for these partnerships entirely. Every Neural Lace node becomes a zero-rated access point by design.",
@@ -137,7 +137,7 @@
 			"dnaStorage": {
 				"problem": "Magnetic and optical storage degrades in decades.",
 				"solution": "DNA is the most dense and durable storage medium known to science. A single gram can store over 200 petabytes for millennia.",
-				"goal": "Azora will pioneer the technology to encode the entirety of our platform's data—every transaction, every line of code, the Constitution itself—into synthetic DNA. This 'Genesis Molecule' will be the ultimate backup, ensuring Azora OS can survive for a thousand years.",
+				"goal": "Azora will pioneer the technology to encode the entirety of our platform's data—every transaction, every line of code, the Constitution itself—into synthetic DNA. This 'Genesis Molecule' will be the ultimate backup, ensuring Azora ES can survive for a thousand years.",
 				"impact": "This elevates Azora from a tech company to a permanent institution for humanity, a true digital civilization."
 			},
 			"integration": {

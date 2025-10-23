@@ -69,24 +69,56 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: 18.x
         cache: 'npm'
+    - name: Setup Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
     - name: Install dependencies
       run: npm ci
-    - name: Build application
-      run: npm run build
-    - name: Build compliance dashboard Docker image
+    - name: Nx affected build
+      run: npx nx affected --target=build --base=origin/main
+    - name: Build and push Docker images
       run: |
-        cd services/compliance-dashboard
-        docker build -t compliance-dashboard .
-    - name: Push Docker images
-      run: |
-        echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
-        docker tag compliance-dashboard ${{ secrets.DOCKER_USERNAME }}/compliance-dashboard:latest
-        docker push ${{ secrets.DOCKER_USERNAME }}/compliance-dashboard:latest
+        # Configure AWS credentials for ECR
+        aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws configure set region us-east-1
+        
+        # Login to ECR
+        aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
+        
+        # Build and push images for affected services
+        for service in services/*; do
+          if [ -d "$service" ]; then
+            service_name=$(basename "$service")
+            if npx nx affected --target=build --base=origin/main | grep "$service_name"; then
+              cd "$service"
+              docker build -t "$service_name:$GITHUB_SHA" .
+              docker tag "$service_name:$GITHUB_SHA" ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/azora-$service_name:$GITHUB_SHA
+              docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/azora-$service_name:$GITHUB_SHA
+              cd ..
+            fi
+          fi
+        done
+        
+        # Update Kubernetes manifests with new image tags
+        for service in user-service session-service course-service enrollment-service llm-wrapper-service ai-agent-service analytics-service; do
+          sed -i "s|image: azora-$service:latest|image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/azora-$service:$GITHUB_SHA|g" infrastructure/k8s/$service.yaml
+        done
+        
+        # Commit and push updated manifests
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git add infrastructure/k8s/
+        git commit -m "Update image tags to $GITHUB_SHA"
+        git push
 
   security:
     runs-on: ubuntu-latest

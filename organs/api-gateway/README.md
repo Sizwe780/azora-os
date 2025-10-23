@@ -1,6 +1,6 @@
 # API Gateway Service
 
-Enterprise-grade API Gateway service for Azora OS with intelligent routing, circuit breakers, audit logging, and comprehensive API documentation.
+Enterprise-grade API Gateway service for Azora ES with intelligent routing, circuit breakers, audit logging, and comprehensive API documentation.
 
 ## Features
 

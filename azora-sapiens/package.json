@@ -1,0 +1,25 @@
+{
+    "name": "azora-sapiens",
+    "version": "1.0.0",
+    "description": "Azora Sapiens - Universal Education Platform with Proof-of-Knowledge Protocol",
+    "main": "sapiens-service.js",
+    "scripts": {
+        "start": "node sapiens-service.js",
+        "dev": "node sapiens-service.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "dependencies": {
+        "axios": "^1.6.0",
+        "express": "^4.18.2",
+        "ws": "^8.14.2"
+    },
+    "keywords": [
+        "education",
+        "blockchain",
+        "proof-of-knowledge",
+        "ckq",
+        "aegis"
+    ],
+    "author": "Azora ES (Pty) Ltd",
+    "license": "PROPRIETARY"
+}

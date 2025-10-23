@@ -18,6 +18,11 @@ import { DataAccessControls } from './data-access-controls';
 import { ObservationLoop } from './observation-loop';
 import { CoreCapabilities } from './core-capabilities';
 import { AutonomousCore } from './autonomous-core';
+import { elaraAgent, elaraApiHandler } from './elara-agent';
+import { elara as elaraCore } from './elara-core';
+import { UnifiedElara, unifiedElara, unifiedElaraApiHandler } from './unified-elara';
+import { reflexivityEngine } from './reflexivity-game-theory-engine';
+import { aiScientist } from './ai-scientist-module';
 
 // Re-export all agent components
 export { LLMReasoningEngine } from './llm-reasoning';
@@ -28,6 +33,11 @@ export { DataAccessControls } from './data-access-controls';
 export { ObservationLoop } from './observation-loop';
 export { CoreCapabilities } from './core-capabilities';
 export { AutonomousCore } from './autonomous-core';
+export { elaraAgent, elaraApiHandler } from './elara-agent';
+export { elara as elaraCore } from './elara-core';
+export { UnifiedElara, unifiedElara, unifiedElaraApiHandler } from './unified-elara';
+export { reflexivityEngine } from './reflexivity-game-theory-engine';
+export { aiScientist } from './ai-scientist-module';
 
 // Tool interfaces and classes
 export interface ToolResult {

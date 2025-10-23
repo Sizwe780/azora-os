@@ -1,6 +1,6 @@
 # Azora Mint - Neural Credit Protocol Service
 
-Azora Mint is the AI-driven micro-credit protocol component of the Azora OS, implementing the "Anti-Bank" system that provides liquidity services to users based on their provable value creation and trust scores. This service implements Article VIII.6 of the Azora Constitution.
+Azora Mint is the AI-driven micro-credit protocol component of the Azora ES, implementing the "Anti-Bank" system that provides liquidity services to users based on their provable value creation and trust scores. This service implements Article VIII.6 of the Azora Constitution.
 
 ## Features
 
@@ -236,7 +236,7 @@ The service runs several cron jobs:
 2. Add tests for new features
 3. Update API documentation
 4. Ensure constitution compliance
-5. Follow the Azora OS development guidelines
+5. Follow the Azora ES development guidelines
 
 ## License
 

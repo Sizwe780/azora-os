@@ -1,6 +1,0 @@
-flask
-gunicorn
-pydantic
-qiskit
-qiskit-aer
-pytest

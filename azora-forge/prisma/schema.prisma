@@ -33,3 +33,58 @@ model AuditLog {
   createdAt DateTime @default(now())
   userId    String?
 }
+
+model Listing {
+  id          String   @id @default(cuid())
+  item        String
+  price       Float
+  userId      String
+  status      String   @default("active")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Transaction {
+  id        String   @id @default(cuid())
+  listingId String
+  buyerId   String
+  amount    Float
+  createdAt DateTime @default(now())
+}
+
+model Domain {
+  id          String   @id @default(cuid())
+  domain      String   @unique
+  owner       String
+  status      String   @default("available")
+  price       Float?
+  currency    String   @default("USD")
+  featured    Boolean  @default(false)
+  inquiries   Int       @default(0)
+  buyer       String?
+  soldAt      DateTime?
+  soldPrice   Float?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model DomainBid {
+  id        String   @id @default(cuid())
+  domainId  String
+  bidder    String
+  amount    Float
+  currency  String   @default("USD")
+  message   String?
+  status    String   @default("active")
+  createdAt DateTime @default(now())
+}
+
+model DomainWatchlist {
+  id         String   @id @default(cuid())
+  userId     String
+  domain     String
+  alertPrice Float?
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, domain])
+}

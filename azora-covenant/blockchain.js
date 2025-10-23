@@ -41,8 +41,8 @@ const genesisBlock = {
       id: 'genesis-transaction',
       type: 'system',
       data: {
-        message: 'Azora OS - Progressive Complexity Blockchain Genesis Block',
-        value: '$10,000,000 USD'
+        message: 'Azora ES - Progressive Complexity Blockchain Genesis Block',
+        value: '$0,01 USD'
       },
       signature: 'system'
     }

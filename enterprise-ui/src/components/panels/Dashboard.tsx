@@ -1,8 +1,18 @@
+/*
+AZORA PROPRIETARY LICENSE
+
+Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
+
+See LICENSE file for details.
+*/
+
 import { ComplianceOverview } from '../../types'
 import { ComplianceScoreChart } from '../charts/ComplianceScoreChart'
 import { FrameworkStatusGrid } from '../shared/FrameworkStatusGrid'
 import { RegionalComplianceChart } from '../charts/RegionalComplianceChart'
 import { RecentActivity } from '../shared/RecentActivity'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Shield, CheckCircle, AlertTriangle, AlertCircle } from 'lucide-react'
 
 interface DashboardProps {
   data: ComplianceOverview
@@ -15,68 +25,57 @@ export function Dashboard({ data }: DashboardProps) {
     <div className="space-y-6">
       {/* Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="card">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
-                <span className="text-white font-semibold text-sm">
-                  {compliancePercentage}%
-                </span>
-              </div>
-            </div>
-            <div className="ml-4">
-              <h3 className="text-sm font-medium text-gray-900">Compliance Score</h3>
-              <p className="text-2xl font-bold text-gray-900">
-                {data.metrics?.overallComplianceScore || 0}/100
-              </p>
-            </div>
-          </div>
-        </div>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Compliance Score</CardTitle>
+            <Shield className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{data.metrics?.overallComplianceScore || 0}/100</div>
+            <p className="text-xs text-muted-foreground">
+              {compliancePercentage}% compliant frameworks
+            </p>
+          </CardContent>
+        </Card>
 
-        <div className="card">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
-                <span className="text-white font-semibold text-sm">✓</span>
-              </div>
-            </div>
-            <div className="ml-4">
-              <h3 className="text-sm font-medium text-gray-900">Compliant</h3>
-              <p className="text-2xl font-bold text-gray-900">{data.compliantFrameworks}</p>
-              <p className="text-xs text-gray-500">of {data.totalFrameworks} frameworks</p>
-            </div>
-          </div>
-        </div>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Compliant</CardTitle>
+            <CheckCircle className="h-4 w-4 text-green-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{data.compliantFrameworks}</div>
+            <p className="text-xs text-muted-foreground">
+              of {data.totalFrameworks} frameworks
+            </p>
+          </CardContent>
+        </Card>
 
-        <div className="card">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-yellow-500 rounded-lg flex items-center justify-center">
-                <span className="text-white font-semibold text-sm">!</span>
-              </div>
-            </div>
-            <div className="ml-4">
-              <h3 className="text-sm font-medium text-gray-900">Needs Attention</h3>
-              <p className="text-2xl font-bold text-gray-900">{data.needsAttentionFrameworks}</p>
-              <p className="text-xs text-gray-500">frameworks require review</p>
-            </div>
-          </div>
-        </div>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Needs Attention</CardTitle>
+            <AlertTriangle className="h-4 w-4 text-yellow-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{data.needsAttentionFrameworks}</div>
+            <p className="text-xs text-muted-foreground">
+              frameworks require review
+            </p>
+          </CardContent>
+        </Card>
 
-        <div className="card">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-red-500 rounded-lg flex items-center justify-center">
-                <span className="text-white font-semibold text-sm">⚠</span>
-              </div>
-            </div>
-            <div className="ml-4">
-              <h3 className="text-sm font-medium text-gray-900">Active Alerts</h3>
-              <p className="text-2xl font-bold text-gray-900">{data.activeAlerts?.length || 0}</p>
-              <p className="text-xs text-gray-500">require immediate action</p>
-            </div>
-          </div>
-        </div>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Active Alerts</CardTitle>
+            <AlertCircle className="h-4 w-4 text-red-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{data.activeAlerts?.length || 0}</div>
+            <p className="text-xs text-muted-foreground">
+              require immediate action
+            </p>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Charts Row */}
@@ -91,7 +90,14 @@ export function Dashboard({ data }: DashboardProps) {
           <FrameworkStatusGrid frameworks={data.frameworks} />
         </div>
         <div>
-          <RecentActivity activities={data.recentActivity} />
+          <RecentActivity activities={data.recentActivity.map(activity => ({
+            id: activity.logId,
+            type: 'system' as const,
+            title: activity.action,
+            description: JSON.stringify(activity.details),
+            status: 'success' as const,
+            timestamp: activity.timestamp
+          }))} />
         </div>
       </div>
     </div>

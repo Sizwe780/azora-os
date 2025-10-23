@@ -1,0 +1,30 @@
+{
+  "name": "llm-wrapper-service",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "services/llm-wrapper-service",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cd services/llm-wrapper-service && go build -o dist/llm-wrapper-service ."
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cd services/llm-wrapper-service && go test ./..."
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cd services/llm-wrapper-service && golangci-lint run"
+      }
+    }
+  },
+  "tags": [
+    "scope:llm",
+    "type:service"
+  ]
+}
