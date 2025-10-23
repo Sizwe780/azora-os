@@ -845,14 +845,22 @@ export class AzoraSapiens {
     const studentProfile: StudentProfile = {
       studentId,
       citizenId,
+      personalInfo: {
+        name: "Anonymous", // Would be collected during enrollment
+        email: "",
+        location: "Unknown",
+        dateOfBirth: 0,
+        educationLevel: "Unknown",
+      },
+      enrollmentDate: Date.now(),
+      currentTier: 'ckq',
       enrolledQualifications: [],
       completedModules: [],
       currentModules: [],
       totalCredits: 0,
-      gpa: 0,
-      reputationScore: 50, // Neutral starting reputation
-      proofOfKnowledgeScore: 0,
-      enrolledAt: Date.now(),
+      proofOfKnowledgeBalance: 0,
+      reputationScore: 50,
+      integrityScore: 100,
       lastActivity: Date.now(),
       isActive: true,
     };
@@ -899,17 +907,28 @@ export class AzoraSapiens {
       return { error: "Student not found or inactive" };
     }
 
-    const module = this.learningModules.get(moduleId);
+    const module = this.modules.get(moduleId);
     if (!module) {
       return { error: "Module not found" };
     }
 
-    // Check prerequisites
-    const missingPrereqs = module.prerequisites.filter(prereq =>
+    // Check if student is enrolled in qualification containing this module
+    const hasAccess = student.enrolledQualifications.some(qualId => {
+      const qual = this.qualifications.get(qualId);
+      return qual?.modules.includes(moduleId);
+    });
+
+    if (!hasAccess) {
+      return { error: "Student not enrolled in qualification containing this module" };
+    }
+
+    // Check knowledge prerequisites
+    const missingKnowledge = module.knowledgePrerequisites.filter(prereq =>
       !student.completedModules.includes(prereq)
     );
-    if (missingPrereqs.length > 0) {
-      return { error: `Missing prerequisites: ${missingPrereqs.join(', ')}` };
+
+    if (missingKnowledge.length > 0) {
+      return { error: `Missing knowledge prerequisites: ${missingKnowledge.join(', ')}` };
     }
 
     const sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -919,10 +938,18 @@ export class AzoraSapiens {
       moduleId,
       topic: initialTopic,
       conversationHistory: [],
-      learningOutcomes: [],
-      assessmentScore: 0,
+      currentAxioms: [],
       status: 'active',
+      integrityMetrics: {
+        keystrokeDynamics: 100,
+        screenMonitoring: 100,
+        behavioralAnalysis: 100,
+        overallIntegrity: 100,
+      },
     };
+
+    // Start integrity monitoring
+    await this.startIntegritySession(studentId, `assessment_${sessionId}`, 'sentry');
 
     this.socraticSessions.set(sessionId, session);
 
@@ -937,11 +964,21 @@ export class AzoraSapiens {
    */
   async processSocraticResponse(
     sessionId: string,
-    studentMessage: string
-  ): Promise<{ aiResponse: string; learningOutcomes: string[]; shouldContinue: boolean } | { error: string }> {
+    studentMessage: string,
+    keystrokeData?: any,
+    screenData?: any
+  ): Promise<{ aiResponse: string; axioms: string[]; shouldContinue: boolean } | { error: string }> {
     const session = this.socraticSessions.get(sessionId);
     if (!session || session.status !== 'active') {
       return { error: "Session not found or not active" };
+    }
+
+    // Update integrity metrics
+    if (keystrokeData || screenData) {
+      await this.updateIntegrityMetrics(session.sessionId, {
+        keystrokeDynamics: keystrokeData,
+        screenMonitoring: screenData,
+      });
     }
 
     // Add student message to history
@@ -951,11 +988,12 @@ export class AzoraSapiens {
       timestamp: Date.now(),
     });
 
-    // Generate AI tutor response using constitutional AI
+    // Generate AI tutor response
     const aiResponse = await this.generateConstitutionalSocraticResponse(session, studentMessage);
 
-    // Analyze learning outcomes
-    const learningOutcomes = await this.analyzeLearningOutcomes(session);
+    // Extract axioms discovered
+    const newAxioms = await this.extractAxioms(session, studentMessage, aiResponse);
+    session.currentAxioms.push(...newAxioms);
 
     // Determine if session should continue
     const shouldContinue = await this.shouldContinueSession(session);
@@ -964,7 +1002,19 @@ export class AzoraSapiens {
       session.status = 'completed';
       session.completedAt = Date.now();
       session.assessmentScore = await this.calculateSessionScore(session);
-      session.learningOutcomes = learningOutcomes;
+
+      // End integrity monitoring
+      await this.endIntegritySession(session.sessionId);
+
+      // Calculate and distribute reward
+      const reward = await this.calculateDynamicReward(
+        session.studentId,
+        session.moduleId,
+        'module_complete',
+        session.assessmentScore
+      );
+
+      await this.distributeRewards([reward]);
 
       // Update student progress
       await this.updateStudentProgress(session.studentId, session.moduleId, session.assessmentScore);
@@ -972,7 +1022,7 @@ export class AzoraSapiens {
 
     return {
       aiResponse,
-      learningOutcomes,
+      axioms: newAxioms,
       shouldContinue,
     };
   }
@@ -1016,78 +1066,49 @@ export class AzoraSapiens {
     };
   }
 
-  /**
-   * Get student academic progress
-   */
-  getStudentProgress(studentId: string): StudentProfile | null {
+  // ========== GETTER METHODS ==========
+
+  getStudentProfile(studentId: string): StudentProfile | null {
     return this.students.get(studentId) || null;
   }
 
-  /**
-   * Get available qualifications
-   */
-  getQualifications(): BDeSciQualification[] {
-    return Array.from(this.qualifications.values()).filter(q => q.isActive);
+  getQualification(qualificationId: string): Qualification | null {
+    return this.qualifications.get(qualificationId) || null;
   }
 
-  /**
-   * Get modules for a qualification
-   */
-  getModulesForQualification(qualificationId: string): LearningModule[] {
-    return Array.from(this.learningModules.values())
-      .filter(m => m.qualificationId === qualificationId);
+  getModule(moduleId: string): LearningModule | null {
+    return this.modules.get(moduleId) || null;
   }
 
-  /**
-   * Get Azora Sapiens statistics
-   */
-  getSystemStatistics(): {
-    totalStudents: number;
-    activeStudents: number;
-    totalQualifications: number;
-    totalModules: number;
-    activeSessions: number;
-    pendingSyntheses: number;
-    averageGPA: number;
-  } {
-    const allStudents = Array.from(this.students.values());
-    const activeStudents = allStudents.filter(s => s.isActive);
-    const activeSessions = Array.from(this.socraticSessions.values())
-      .filter(s => s.status === 'active').length;
-    const pendingSyntheses = this.syntheses.filter(s => s.status === 'submitted').length;
+  getSocraticSession(sessionId: string): SocraticSession | null {
+    return this.socraticSessions.get(sessionId) || null;
+  }
 
-    const averageGPA = activeStudents.length > 0
-      ? activeStudents.reduce((sum, s) => sum + s.gpa, 0) / activeStudents.length
-      : 0;
+  getIntegritySession(sessionId: string): AegisIntegritySession | null {
+    return this.integritySessions.get(sessionId) || null;
+  }
 
-    return {
-      totalStudents: allStudents.length,
-      activeStudents: activeStudents.length,
-      totalQualifications: this.qualifications.size,
-      totalModules: this.learningModules.size,
-      activeSessions,
-      pendingSyntheses,
-      averageGPA: Math.round(averageGPA * 100) / 100,
-    };
+  getPartnership(partnershipId: string): UniversityPartnership | null {
+    return this.partnerships.get(partnershipId) || null;
   }
 
   // ========== PRIVATE METHODS ==========
 
   private async generateSocraticPrompt(module: LearningModule, topic: string): Promise<string> {
     const prompt = `
-You are an AI tutor conducting a Socratic dialogue for the Azora Sapiens educational system.
+You are an AI tutor in Azora Sapiens conducting a Socratic dialogue.
 
 Module: ${module.title}
 Topic: ${topic}
 Learning Objectives: ${module.learningObjectives.join(', ')}
-Decentralized Principles: ${module.decentralizedTags.join(', ')}
+Difficulty: ${module.difficulty}
 
-Begin a Socratic dialogue by asking a thought-provoking question that encourages the student to:
-1. Examine their assumptions about ${topic}
-2. Connect ${topic} to decentralized principles
-3. Think about real-world applications
+Begin a Socratic dialogue by asking a thought-provoking question that:
+1. Encourages the student to examine their assumptions about ${topic}
+2. Connects ${topic} to first principles thinking
+3. Prompts deeper understanding rather than surface-level answers
 
-Keep your response concise but engaging. Start with a question.
+Keep your response concise but engaging. Start with a question that reveals the fundamental nature of the topic.
     `;
 
     const response = await this.llm.invoke(prompt);
@@ -1098,10 +1119,10 @@ Keep your response concise but engaging. Start with a question.
     session: SocraticSession,
     studentMessage: string
   ): Promise<string> {
-    const module = this.learningModules.get(session.moduleId)!;
+    const module = this.modules.get(session.moduleId)!;
 
     const prompt = `
-You are conducting a Socratic dialogue in the Azora Sapiens system, guided by Ubuntu principles.
+You are conducting a Socratic dialogue in Azora Sapiens, guided by Ubuntu principles.
 
 Module: ${module.title}
 Current Topic: ${session.topic}
@@ -1110,11 +1131,15 @@ Student's Last Response: "${studentMessage}"
 Previous Conversation:
 ${session.conversationHistory.slice(-3).map(h => `${h.role}: ${h.message}`).join('\n')}
 
+Current Axioms Discovered:
+${session.currentAxioms.join(', ')}
+
 Respond as an AI tutor using Socratic method. Your response should:
 1. Acknowledge the student's insight
 2. Ask a probing question that deepens understanding
-3. Connect to decentralized principles when relevant
-4. Encourage critical thinking about real-world implications
+3. Guide toward fundamental truths (axioms)
+4. Connect to decentralized principles when relevant
+5. Encourage critical thinking about real-world applications
 
 Keep response under 200 words. Focus on one key question or concept.
     `;
@@ -1123,27 +1148,29 @@ Keep response under 200 words. Focus on one key question or concept.
     return response.content.trim();
   }
 
-  private async analyzeLearningOutcomes(session: SocraticSession): Promise<string[]> {
-    const conversationText = session.conversationHistory
-      .map(h => `${h.role}: ${h.message}`)
-      .join('\n');
-
+  private async extractAxioms(session: SocraticSession, studentMessage: string, aiResponse: string): Promise<string[]> {
     const prompt = `
-Analyze this Socratic dialogue and identify key learning outcomes achieved:
+Analyze this Socratic exchange and identify any fundamental truths (axioms) discovered:
 
-${conversationText}
+Student: "${studentMessage}"
+AI Tutor: "${aiResponse}"
 
-List 3-5 specific learning outcomes, focusing on:
-- Understanding of core concepts
-- Application of decentralized principles
-- Critical thinking development
-- Connection to real-world problems
+Context - Current Axioms: ${session.currentAxioms.join(', ')}
 
-Format as bullet points.
+Identify 0-3 new axioms that represent fundamental truths about the topic. Axioms should be:
+- Universal principles
+- Fundamental truths that cannot be further reduced
+- Applicable beyond the immediate context
+
+Return as a JSON array of strings. Return empty array if no new axioms discovered.
     `;
 
-    const response = await this.llm.invoke(prompt);
-    return response.content.split('\n').filter(line => line.trim().startsWith('-'));
+    try {
+      const response = await this.llm.invoke(prompt);
+      return JSON.parse(response.content.trim());
+    } catch (error) {
+      return [];
+    }
   }
 
   private async shouldContinueSession(session: SocraticSession): Promise<boolean> {
@@ -1196,26 +1223,20 @@ Provide only a number between 0-100.
     moduleId: string,
     score: number
   ): Promise<void> {
-    const student = this.students.get(studentId)!;
-    const module = this.learningModules.get(moduleId)!;
+    const student = this.students.get(studentId);
+    const module = this.modules.get(moduleId);
+
+    if (!student || !module) return;
 
     // Add to completed modules
     if (!student.completedModules.includes(moduleId)) {
       student.completedModules.push(moduleId);
       student.totalCredits += module.credits;
-
-      // Remove from current modules if present
-      student.currentModules = student.currentModules.filter(m => m !== moduleId);
     }
 
-    // Update GPA (simple weighted average)
-    const totalPossibleScore = 100;
-    const gradePoints = (score / totalPossibleScore) * 4.0;
-    const newGPA = ((student.gpa * (student.completedModules.length - 1)) + gradePoints) / student.completedModules.length;
-    student.gpa = Math.max(0, Math.min(4.0, newGPA));
-
-    // Update Proof-of-Knowledge score for economic participation
-    student.proofOfKnowledgeScore = Math.min(1000, student.proofOfKnowledgeScore + Math.floor(score / 10));
+    // Update reputation score based on performance
+    const performanceMultiplier = score >= 90 ? 1.1 : score >= 70 ? 1.0 : 0.9;
+    student.reputationScore = Math.min(100, student.reputationScore * performanceMultiplier);
 
     student.lastActivity = Date.now();
   }
