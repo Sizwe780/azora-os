@@ -12,7 +12,6 @@ import { FrameworkStatusGrid } from '../shared/FrameworkStatusGrid'
 import { RegionalComplianceChart } from '../charts/RegionalComplianceChart'
 import { RecentActivity } from '../shared/RecentActivity'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { Shield, CheckCircle, AlertTriangle, AlertCircle } from 'lucide-react'
 
 interface DashboardProps {

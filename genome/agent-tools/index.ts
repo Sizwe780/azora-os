@@ -18,6 +18,7 @@ import { DataAccessControls } from './data-access-controls';
 import { ObservationLoop } from './observation-loop';
 import { CoreCapabilities } from './core-capabilities';
 import { AutonomousCore } from './autonomous-core';
+import { ElaraAgent, elaraAgent, elaraApiHandler } from './elara-agent';
 
 // Re-export all agent components
 export { LLMReasoningEngine } from './llm-reasoning';
@@ -28,6 +29,7 @@ export { DataAccessControls } from './data-access-controls';
 export { ObservationLoop } from './observation-loop';
 export { CoreCapabilities } from './core-capabilities';
 export { AutonomousCore } from './autonomous-core';
+export { ElaraAgent, elaraAgent, elaraApiHandler } from './elara-agent';
 
 // Tool interfaces and classes
 export interface ToolResult {

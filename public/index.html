@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azora AU Agriculture Pilot - Farmer Pest Reporter</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #4facfe;
+        }
+
+        button {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            width: 100%;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .recommendations {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .recommendation {
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #4facfe;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .urgency-high {
+            border-left-color: #ff4757;
+        }
+
+        .urgency-medium {
+            border-left-color: #ffa726;
+        }
+
+        .urgency-low {
+            border-left-color: #4caf50;
+        }
+
+        .timestamp {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .confidence {
+            color: #4facfe;
+            font-weight: 600;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        function App() {
+            const [farmId, setFarmId] = useState('');
+            const [pest, setPest] = useState('');
+            const [description, setDescription] = useState('');
+            const [loading, setLoading] = useState(false);
+            const [message, setMessage] = useState(null);
+            const [recommendations, setRecommendations] = useState([]);
+
+            // Load existing recommendations on mount
+            useEffect(() => {
+                if (farmId) {
+                    loadRecommendations();
+                }
+            }, [farmId]);
+
+            const loadRecommendations = async () => {
+                try {
+                    const response = await fetch(`http://localhost:3001/api/recommendations/${farmId}`);
+                    const data = await response.json();
+                    if (data.success) {
+                        setRecommendations(data.recommendations);
+                    }
+                } catch (error) {
+                    console.error('Error loading recommendations:', error);
+                }
+            };
+
+            const submitReport = async (e) => {
+                e.preventDefault();
+                setLoading(true);
+                setMessage(null);
+
+                try {
+                    const response = await fetch('http://localhost:3001/api/report-pest', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            farmId,
+                            pest,
+                            description
+                        }),
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        setMessage({ type: 'success', text: `Report submitted! Recommendation: ${data.preview}` });
+                        setPest('');
+                        setDescription('');
+                        // Reload recommendations
+                        loadRecommendations();
+                    } else {
+                        setMessage({ type: 'error', text: data.error || 'Failed to submit report' });
+                    }
+                } catch (error) {
+                    setMessage({ type: 'error', text: 'Network error. Please try again.' });
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            const getUrgencyClass = (urgency) => {
+                switch (urgency) {
+                    case 'high': return 'urgency-high';
+                    case 'medium': return 'urgency-medium';
+                    case 'low': return 'urgency-low';
+                    default: return '';
+                }
+            };
+
+            return (
+                <div className="container">
+                    <div className="header">
+                        <h1>🌾 Azora Agriculture Pilot</h1>
+                        <p>Report pests and get AI-powered recommendations instantly</p>
+                    </div>
+
+                    <div className="content">
+                        <form onSubmit={submitReport}>
+                            <div className="form-group">
+                                <label htmlFor="farmId">Farm ID:</label>
+                                <input
+                                    id="farmId"
+                                    type="text"
+                                    value={farmId}
+                                    onChange={(e) => setFarmId(e.target.value)}
+                                    placeholder="Enter your farm ID (e.g., AU-FARM-001)"
+                                    required
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="pest">Pest Type:</label>
+                                <select
+                                    id="pest"
+                                    value={pest}
+                                    onChange={(e) => setPest(e.target.value)}
+                                    required
+                                >
+                                    <option value="">Select a pest...</option>
+                                    <option value="Armyworm">Armyworm</option>
+                                    <option value="Aphids">Aphids</option>
+                                    <option value="Corn Borer">Corn Borer</option>
+                                    <option value="Cutworm">Cutworm</option>
+                                    <option value="Grasshopper">Grasshopper</option>
+                                    <option value="Locust">Locust</option>
+                                    <option value="Spider Mite">Spider Mite</option>
+                                    <option value="Whitefly">Whitefly</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="description">Description:</label>
+                                <textarea
+                                    id="description"
+                                    value={description}
+                                    onChange={(e) => setDescription(e.target.value)}
+                                    placeholder="Describe the pest infestation (location, severity, crop affected, etc.)"
+                                    rows="4"
+                                    required
+                                />
+                            </div>
+
+                            <button type="submit" disabled={loading}>
+                                {loading ? '🔄 Processing Report...' : '🚀 Submit Pest Report'}
+                            </button>
+                        </form>
+
+                        {message && (
+                            <div className={message.type}>
+                                {message.text}
+                            </div>
+                        )}
+
+                        {recommendations.length > 0 && (
+                            <div className="recommendations">
+                                <h3>📋 Your Recommendations</h3>
+                                {recommendations.map((rec) => (
+                                    <div key={rec.id} className={`recommendation ${getUrgencyClass(rec.recommendation.urgency)}`}>
+                                        <div className="timestamp">
+                                            {new Date(rec.createdAt).toLocaleString()}
+                                        </div>
+                                        <strong>Pest:</strong> {rec.pest}<br />
+                                        <strong>Recommendation:</strong> {rec.recommendation.action}<br />
+                                        <strong>Urgency:</strong> {rec.recommendation.urgency.toUpperCase()}<br />
+                                        <div className="confidence">
+                                            Confidence: {(rec.recommendation.confidence * 100).toFixed(1)}%
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+
+</html>
