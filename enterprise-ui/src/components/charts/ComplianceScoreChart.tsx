@@ -6,10 +6,10 @@ Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
 See LICENSE file for details.
 */
 
-import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts'
+import { PieChart, Pie, Cell, Tooltip } from 'recharts'
 import { ComplianceMetrics } from '../../types'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
+import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart'
 
 interface ComplianceScoreChartProps {
   metrics?: ComplianceMetrics
@@ -90,7 +90,7 @@ export function ComplianceScoreChart({ metrics }: ComplianceScoreChartProps) {
       <CardContent>
         <ChartContainer config={chartConfig} className="h-64">
           <PieChart>
-            <Tooltip />
+            <Tooltip content={<ChartTooltipContent />} />
             <Pie
               data={data}
               dataKey="value"

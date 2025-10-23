@@ -9,6 +9,8 @@ import ContactPage from './pages/ContactPage'
 import PrivacyPage from './pages/PrivacyPage'
 import TermsPage from './pages/TermsPage'
 import NewsPage from './pages/NewsPage'
+import ElaraPage from './pages/ElaraPage'
+import FarmerApp from './pages/FarmerApp'
 import { AuthProvider } from './contexts/AuthContext'
 import { ThemeProvider } from './components/ui/theme-provider'
 import './index.css'
@@ -25,6 +27,8 @@ function AppContent() {
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/terms" element={<TermsPage />} />
         <Route path="/news" element={<NewsPage />} />
+        <Route path="/synapse/elara" element={<ElaraPage />} />
+        <Route path="/farmer" element={<FarmerApp />} />
       </Routes>
       <Footer />
     </div>

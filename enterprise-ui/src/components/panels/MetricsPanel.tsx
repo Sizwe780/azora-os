@@ -10,7 +10,6 @@ import { useQuery } from '@tanstack/react-query'
 import { TrendingUp, TrendingDown, Activity, Shield, AlertTriangle, CheckCircle } from 'lucide-react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 
 interface ComplianceMetrics {
   overallScore: number

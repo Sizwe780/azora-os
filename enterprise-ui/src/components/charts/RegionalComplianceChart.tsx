@@ -6,10 +6,10 @@ Copyright © 2025 Azora ES (Pty) Ltd. All Rights Reserved.
 See LICENSE file for details.
 */
 
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts'
 import { RegionalMetrics } from '../../types'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
+import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart'
 
 interface RegionalComplianceChartProps {
   regional?: Record<string, RegionalMetrics>
@@ -61,7 +61,7 @@ export function RegionalComplianceChart({ regional }: RegionalComplianceChartPro
               axisLine={false}
             />
             <YAxis hide />
-            <Tooltip />
+            <Tooltip content={<ChartTooltipContent />} />
             <Bar dataKey="compliant" fill="var(--color-compliant)" radius={8} />
           </BarChart>
         </ChartContainer>
