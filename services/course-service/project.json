@@ -1,0 +1,27 @@
+{
+  "name": "course-service",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "services/course-service",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cd services/course-service && go build -o dist/course-service ."
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cd services/course-service && go test ./..."
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cd services/course-service && golangci-lint run"
+      }
+    }
+  },
+  "tags": ["scope:course", "type:service"]
+}
