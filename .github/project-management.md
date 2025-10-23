@@ -92,9 +92,11 @@
    - Optimize Docker image sizes
 
 8. **Community Building** (`priority: low`, `type: enhancement`)
+   - Set up Discord server for real-time collaboration (discord.gg/azora-os)
+   - Launch forum.azora.world for technical discussions
+   - Create detailed issue templates for contributions
+   - Add good-first-issue labels to beginner-friendly tasks
    - Clarify contributor account structure
-   - Add more detailed contribution guidelines
-   - Create issue templates for different types of contributions
 
 ## Automation Rules
 1. New issues automatically get priority: medium and status: ready

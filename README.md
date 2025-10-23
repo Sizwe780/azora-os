@@ -2,6 +2,8 @@
 
 **Azora OS** is a planetary-scale economic intelligence platform that combines constitutional AI, biological systems architecture, and sovereign economic coordination to create universal prosperity through knowledge-driven economic sovereignty.
 
+*This is a passion project and solo endeavor by the founding architect, building toward a vision of planetary economic flourishing through education and innovation.*
+
 [![License: AZORA PROPRIETARY](https://img.shields.io/badge/License-AZORA%20PROPRIETARY-blue.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-22+-green.svg)](https://nodejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5+-blue.svg)](https://www.typescriptlang.org/)
@@ -63,6 +65,14 @@ Azora OS features a complete microservices architecture with autonomous AI capab
 - **AI/ML**: OpenAI integration, LangChain, custom constitutional AI
 - **Infrastructure**: Docker, Kubernetes, multi-cloud deployment
 - **Security**: Zero-trust architecture, cryptographic sovereignty
+
+### Genesis Log
+The official [Genesis Log](/docs/genesis-log.json) contains the cryptographic foundation of Azora OS, including:
+- Contract addresses for all core services
+- Sovereign seed grant allocations (195M AZR)
+- Instantiated economies with local token addresses
+- Treasury fund distributions and escrow contracts
+- Governance constitution and security parameters
 
 ## 🚀 Quick Start
 
@@ -730,6 +740,11 @@ Azora OS is an open-source project that welcomes contributions from developers, 
 - **Documentation**: Comprehensive guides and API references
 - **Examples**: Working code samples and integration guides
 
+### **Join the Conversation**
+- **💬 [Discord Community](https://discord.gg/azora-os)**: Real-time discussions and collaboration
+- **🏛️ [Forum](https://forum.azora.world)**: In-depth technical discussions and proposals
+- **📧 [Newsletter](https://azora.world/newsletter)**: Monthly updates and roadmap insights
+
 ### **Development Community**
 ```bash
 # Join the development community
@@ -761,6 +776,7 @@ Azora OS represents the next evolution of economic intelligence:
 - **Architecture Docs**: 
   - `/docs/AZORA-COMPREHENSIVE-ARCHITECTURE.md` - Complete system architecture
   - `AZORA-SAPIENS-ARCHITECTURE.md` - Azora Sapiens education platform architecture
+  - `/docs/genesis-log.json` - Official Genesis Log with contract addresses and allocations
 
 ---
 
