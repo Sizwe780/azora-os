@@ -192,6 +192,7 @@ export const runPredictions = async () => {
   // Ethical Certainty
   const ethicsCertainty = calculateEthicalCertainty();
   console.log(`🛡️ Ethical Certainty: ${(ethicsCertainty * 100).toFixed(1)}%`);
+};
 
 // Run predictions if executed directly
 if (require.main === module) {
