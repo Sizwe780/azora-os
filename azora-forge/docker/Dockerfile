@@ -27,13 +27,13 @@ FROM node:18-alpine AS production
 
 # Install Chromium for potential future Puppeteer usage
 RUN apk add --no-cache \
-    chromium \
-    nss \
-    freetype \
-    freetype-dev \
-    harfbuzz \
-    ca-certificates \
-    ttf-freefont
+  chromium \
+  nss \
+  freetype \
+  freetype-dev \
+  harfbuzz \
+  ca-certificates \
+  ttf-freefont
 
 # Create app directory
 WORKDIR /app
