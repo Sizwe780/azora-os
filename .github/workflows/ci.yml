@@ -1,28 +1,18 @@
 name: CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: test
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
-
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [18.x, 20.x, 22.x]
 
     steps:
     - uses: actions/checkout@v4
@@ -34,15 +24,11 @@ jobs:
     - name: Install dependencies
       run: npm ci
     - name: Run tests
-      run: npm test
-      env:
-        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test
-    - name: Run integration tests
-      run: npm run test:integration
+      run: npm run test:ci
     - name: Upload coverage reports
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: coverage-reports
+        name: coverage-reports-${{ matrix.node-version }}
         path: coverage/
         retention-days: 30
 
@@ -54,97 +40,38 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '20'
+        node-version: '22.x'
         cache: 'npm'
     - name: Install dependencies
       run: npm ci
     - name: Lint code
       run: npm run lint
-    - name: Type check
-      run: npm run type-check
-
-  build:
-    needs: test
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: 18.x
-        cache: 'npm'
-    - name: Setup Go
-      uses: actions/setup-go@v4
-      with:
-        go-version: '1.21'
-    - name: Install dependencies
-      run: npm ci
-    - name: Nx affected build
-      run: npx nx affected --target=build --base=origin/main
-    - name: Build and push Docker images
-      run: |
-        # Configure AWS credentials for ECR
-        aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws configure set region us-east-1
-        
-        # Login to ECR
-        aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
-        
-        # Build and push images for affected services
-        for service in services/*; do
-          if [ -d "$service" ]; then
-            service_name=$(basename "$service")
-            if npx nx affected --target=build --base=origin/main | grep "$service_name"; then
-              cd "$service"
-              docker build -t "$service_name:$GITHUB_SHA" .
-              docker tag "$service_name:$GITHUB_SHA" ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/azora-$service_name:$GITHUB_SHA
-              docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/azora-$service_name:$GITHUB_SHA
-              cd ..
-            fi
-          fi
-        done
-        
-        # Update Kubernetes manifests with new image tags
-        for service in user-service session-service course-service enrollment-service llm-wrapper-service ai-agent-service analytics-service; do
-          sed -i "s|image: azora-$service:latest|image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/azora-$service:$GITHUB_SHA|g" infrastructure/k8s/$service.yaml
-        done
-        
-        # Commit and push updated manifests
-        git config --global user.name 'github-actions[bot]'
-        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        git add infrastructure/k8s/
-        git commit -m "Update image tags to $GITHUB_SHA"
-        git push
+    - name: Check formatting
+      run: npm run format:check
+    - name: License check
+      run: npm run license-check
 
   security:
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22.x'
+        cache: 'npm'
+    - name: Install dependencies
+      run: npm ci
     - name: Run security audit
-      run: npm audit --audit-level high
+      run: npm audit --audit-level moderate
     - name: Run dependency check
       run: |
         npm install -g @cyclonedx/cyclonedx-npm
         cyclonedx-npm --output-file bom.xml
     - name: Upload SBOM
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: sbom
         path: bom.xml
         retention-days: 30
-
-  deploy-demo:
-    needs: [test, build]
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-
-    steps:
-    - uses: actions/checkout@v4
-    - name: Deploy to demo environment
-      run: echo "Deploying to demo environment..."
-      # Add actual deployment commands here

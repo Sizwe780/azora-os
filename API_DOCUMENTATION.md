@@ -1,294 +1,304 @@
-# Azora ES API Documentation
+# Azora OS API Documentation
 
-This document provides comprehensive API documentation for the Azora ES microservices platform.
+**Planetary Economic Intelligence Platform - Sovereign API Reference**
 
-## Table of Contents
-- [Overview](#overview)
-- [Authentication](#authentication)
-- [User Service](#user-service)
-- [Session Service](#session-service)
-- [Course Service](#course-service)
-- [Enrollment Service](#enrollment-service)
-- [AI Agent Service](#ai-agent-service)
-- [Analytics Service](#analytics-service)
-- [Error Handling](#error-handling)
-- [Rate Limiting](#rate-limiting)
+This document provides comprehensive API documentation for the Azora OS planetary economic intelligence platform, featuring sovereign economic services, education systems, and constitutional AI governance.
 
-## Overview
+## 🌍 **System Overview**
 
-Azora ES provides a RESTful API across multiple microservices. All services run on different ports and communicate internally.
+Azora OS operates as a distributed Node.js microservices platform with sovereign economic intelligence. All services implement RESTful APIs with WebSocket support for real-time coordination.
 
-### Base URLs
-- **User Service**: `http://localhost:8080` (local) / `https://api.azora.world/users`
-- **Session Service**: `http://localhost:8083` (local) / `https://api.azora.world/sessions`
-- **Course Service**: `http://localhost:8081` (local) / `https://api.azora.world/courses`
-- **Enrollment Service**: `http://localhost:8082` (local) / `https://api.azora.world/enrollments`
-- **AI Agent Service**: `http://localhost:8085` (local) / `https://api.azora.world/ai`
-- **Analytics Service**: `http://localhost:8086` (local) / `https://api.azora.world/analytics`
+### **Service Endpoints**
+- **Aegis Citadel** (`:4099`) - Global Genesis Command Center
+- **Azora Sapiens** (`:4200`) - Universal Education Platform
+- **Azora Mint** (`:4300`) - Economic Sovereignty Engine
+- **Azora Oracle** (`:4030`) - Planetary Intelligence Oracle
+- **Azora Nexus** (`:4000`) - Neural Coordination Hub
+- **Azora Covenant** (`:4400`) - Blockchain Sovereignty
+- **Azora Aegis** (`:4098`) - Security & Compliance
+- **Azora Forge** (`:4500`) - Merchant & Marketplace
 
-### Common Headers
+### **Common Headers**
 ```http
 Content-Type: application/json
-Authorization: Bearer <jwt-token>  # Required for authenticated endpoints
-X-API-Key: <api-key>              # Optional for service-to-service calls
+Authorization: Bearer <jwt-token>          # For authenticated endpoints
+X-API-Key: <sovereign-api-key>             # For cross-service calls
+X-Sovereign-Context: <nation-identifier>   # For economic operations
 ```
 
-## Authentication
+## 🔐 **Authentication & Sovereignty**
 
-### JWT Token Flow
-1. User registers/logs in via User Service
-2. Receives JWT token in response
-3. Include token in `Authorization: Bearer <token>` header for subsequent requests
-4. Token expires after 24 hours (configurable)
+### **JWT Token Flow**
+1. Authenticate via Aegis Citadel or Azora Sapiens
+2. Receive JWT token with sovereign context
+3. Include token in `Authorization: Bearer <token>` header
+4. Tokens include nation sovereignty claims and expire after 24 hours
 
-### Session Management
-- Sessions are managed via Session Service
-- JWT tokens are validated against Redis-backed sessions
-- Automatic cleanup of expired sessions
-
-## User Service
-
-**Port**: 8080
-
-### Register User
-```http
-POST /users/register
-Content-Type: application/json
-
+### **Sovereign Context**
+All economic operations require sovereign context validation:
+```json
 {
-  "email": "user@example.com",
-  "password": "securepassword123",
-  "firstName": "John",
-  "lastName": "Doe",
-  "role": "student"
+  "nation": "ZA",           // ISO country code
+  "sovereignty": "active",  // active, pending, instantiated
+  "permissions": ["economic", "educational", "governance"]
 }
+```
+
+---
+
+## 🏰 **Aegis Citadel API** (`:4099`)
+
+**Global Genesis Command Center - Planetary Economic Instantiation**
+
+### **Genesis Fund Management**
+
+#### **Get Global Fund Status**
+```http
+GET /api/citadel/genesis/status
+Authorization: Bearer <token>
 ```
 
 **Response**:
 ```json
 {
-  "user": {
-    "id": "uuid",
-    "email": "user@example.com",
-    "firstName": "John",
-    "lastName": "Doe",
-    "role": "student",
-    "createdAt": "2024-01-01T00:00:00Z"
+  "fund": {
+    "totalAllocation": 195000000,
+    "allocated": 2000000,
+    "remaining": 193000000,
+    "currency": "AZR"
   },
-  "token": "jwt-token-here"
+  "nations": {
+    "total": 193,
+    "instantiated": 2,
+    "pending": 15,
+    "available": 176
+  },
+  "lastUpdated": "2025-10-23T10:30:00Z"
 }
 ```
 
-### Login User
+#### **Get Nation Seed Grant Details**
 ```http
-POST /users/login
+GET /api/citadel/grants/:country
+Authorization: Bearer <token>
+```
+
+**Parameters**:
+- `country`: ISO country code (e.g., "BR", "KE", "ZA")
+
+**Response**:
+```json
+{
+  "country": "BR",
+  "countryName": "Brazil",
+  "grantAmount": 1000000,
+  "currency": "AZR",
+  "status": "instantiated",
+  "instantiatedAt": "2025-10-15T14:20:00Z",
+  "sovereignToken": "aBRL",
+  "userCount": 15000,
+  "activationTrigger": "university_treaty"
+}
+```
+
+#### **Check Activation Triggers**
+```http
+POST /api/citadel/triggers/check
+Authorization: Bearer <token>
 Content-Type: application/json
 
 {
-  "email": "user@example.com",
-  "password": "securepassword123"
+  "country": "ZA",
+  "triggerType": "user_threshold",
+  "triggerData": {
+    "userCount": 15000,
+    "appUsers": 12000,
+    "treatySigned": false
+  }
 }
 ```
 
-**Response**: Same as register
+**Response**:
+```json
+{
+  "country": "ZA",
+  "eligible": true,
+  "triggers": {
+    "userThreshold": true,
+    "universityTreaty": false,
+    "foundingTeam": false
+  },
+  "nextSteps": [
+    "Sign Protocol-University Treaty",
+    "Reach 10,000 Global Transfer users"
+  ]
+}
+```
 
-### Get User Profile
+#### **Execute Instantiation Protocol**
 ```http
-GET /users/profile
+POST /api/citadel/instantiate/:country
+Authorization: Bearer <sovereign-token>
+Content-Type: application/json
+
+{
+  "confirmation": true,
+  "sovereignAuthority": "council_approved",
+  "economicParameters": {
+    "baseCurrency": "ZAR",
+    "initialPeg": 1.0,
+    "sovereignToken": "aZAR"
+  }
+}
+```
+
+**Response**:
+```json
+{
+  "country": "ZA",
+  "status": "instantiation_started",
+  "transactionId": "tx_1234567890",
+  "estimatedCompletion": "2025-10-23T12:00:00Z",
+  "sovereignToken": "aZAR",
+  "initialSupply": 1000000
+}
+```
+
+#### **Get Instantiated Economies**
+```http
+GET /api/citadel/economies
 Authorization: Bearer <token>
 ```
 
 **Response**:
 ```json
 {
-  "id": "uuid",
-  "email": "user@example.com",
-  "firstName": "John",
-  "lastName": "Doe",
-  "role": "student",
-  "createdAt": "2024-01-01T00:00:00Z",
-  "updatedAt": "2024-01-01T00:00:00Z"
-}
-```
-
-### Update User
-```http
-PUT /users/profile
-Authorization: Bearer <token>
-Content-Type: application/json
-
-{
-  "firstName": "Jane",
-  "lastName": "Smith"
-}
-```
-
-### Delete User
-```http
-DELETE /users/profile
-Authorization: Bearer <token>
-```
-
-## Session Service
-
-**Port**: 8083
-
-### Validate Session
-```http
-GET /sessions/validate
-Authorization: Bearer <token>
-```
-
-**Response**:
-```json
-{
-  "valid": true,
-  "userId": "uuid",
-  "expiresAt": "2024-01-02T00:00:00Z"
-}
-```
-
-### Refresh Token
-```http
-POST /sessions/refresh
-Authorization: Bearer <token>
-```
-
-**Response**:
-```json
-{
-  "token": "new-jwt-token",
-  "expiresAt": "2024-01-02T00:00:00Z"
-}
-```
-
-### Logout
-```http
-POST /sessions/logout
-Authorization: Bearer <token>
-```
-
-## Course Service
-
-**Port**: 8081
-
-### Create Course
-```http
-POST /courses
-Authorization: Bearer <token>
-Content-Type: application/json
-
-{
-  "title": "Introduction to AI",
-  "description": "Learn the basics of artificial intelligence",
-  "instructorId": "uuid",
-  "category": "Technology",
-  "difficulty": "beginner",
-  "duration": 3600,
-  "price": 99.99,
-  "tags": ["AI", "Machine Learning"],
-  "modules": [
+  "economies": [
     {
-      "title": "What is AI?",
-      "content": "AI definition and history...",
-      "order": 1
+      "country": "BR",
+      "countryName": "Brazil",
+      "sovereignToken": "aBRL",
+      "instantiatedAt": "2025-10-15T14:20:00Z",
+      "userCount": 15000,
+      "economicVelocity": 0.85,
+      "status": "active"
+    },
+    {
+      "country": "KE",
+      "countryName": "Kenya",
+      "sovereignToken": "aUSD",
+      "instantiatedAt": "2025-10-18T09:15:00Z",
+      "userCount": 8500,
+      "economicVelocity": 0.72,
+      "status": "active"
+    }
+  ],
+  "total": 2,
+  "globalVelocity": 0.78
+}
+```
+
+### **Health & Monitoring**
+```http
+GET /health
+```
+
+**Response**:
+```json
+{
+  "service": "aegis-citadel",
+  "status": "healthy",
+  "version": "1.0.0",
+  "uptime": "15d 4h 23m",
+  "sovereignFunds": "escrowed",
+  "lastGenesisEvent": "2025-10-18T09:15:00Z"
+}
+```
+
+---
+
+## 🎓 **Azora Sapiens API** (`:4200`)
+
+**Universal Education Platform - Knowledge Qualification & Aegis Assessment**
+
+### **Program Management**
+
+#### **Get Available Programs**
+```http
+GET /api/programs
+Authorization: Bearer <token>
+```
+
+**Response**:
+```json
+{
+  "programs": [
+    {
+      "id": "solar-tech-001",
+      "title": "Solar Grid Technician",
+      "description": "Complete photovoltaic systems training",
+      "category": "Energy",
+      "difficulty": "intermediate",
+      "duration": 480, // minutes
+      "modules": 12,
+      "rewardRange": {
+        "min": 100,
+        "max": 200,
+        "currency": "aZAR"
+      },
+      "aegisRequired": true
+    },
+    {
+      "id": "hydro-farm-002",
+      "title": "Hydroponic Farm Operator",
+      "description": "Advanced hydroponic systems management",
+      "category": "Agriculture",
+      "difficulty": "advanced",
+      "duration": 720,
+      "modules": 18,
+      "rewardRange": {
+        "min": 150,
+        "max": 300,
+        "currency": "aZAR"
+      },
+      "aegisRequired": true
     }
   ]
 }
 ```
 
-### Get Courses
+#### **Enroll in Program**
 ```http
-GET /courses?page=1&limit=10&category=Technology&difficulty=beginner
+POST /api/enroll
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "programId": "solar-tech-001",
+  "userId": "user_123",
+  "consentToAegis": true
+}
 ```
 
 **Response**:
 ```json
 {
-  "courses": [
-    {
-      "id": "uuid",
-      "title": "Introduction to AI",
-      "description": "Learn the basics...",
-      "instructorId": "uuid",
-      "category": "Technology",
-      "difficulty": "beginner",
-      "duration": 3600,
-      "price": 99.99,
-      "rating": 4.5,
-      "enrollmentCount": 150,
-      "tags": ["AI", "Machine Learning"],
-      "createdAt": "2024-01-01T00:00:00Z"
-    }
-  ],
-  "pagination": {
-    "page": 1,
-    "limit": 10,
-    "total": 25,
-    "pages": 3
+  "enrollmentId": "enroll_456",
+  "programId": "solar-tech-001",
+  "status": "active",
+  "enrolledAt": "2025-10-23T10:30:00Z",
+  "aegisSessionId": "aegis_sess_789",
+  "nextModule": {
+    "id": "module_001",
+    "title": "Introduction to Photovoltaics",
+    "estimatedTime": 45
   }
 }
 ```
 
-### Get Course by ID
+#### **Get User Enrollments**
 ```http
-GET /courses/{courseId}
-```
-
-### Update Course
-```http
-PUT /courses/{courseId}
-Authorization: Bearer <token>
-Content-Type: application/json
-
-{
-  "title": "Advanced AI",
-  "price": 149.99
-}
-```
-
-### Delete Course
-```http
-DELETE /courses/{courseId}
-Authorization: Bearer <token>
-```
-
-### Search Courses
-```http
-GET /courses/search?q=artificial+intelligence&category=Technology
-```
-
-## Enrollment Service
-
-**Port**: 8082
-
-### Enroll in Course
-```http
-POST /enrollments
-Authorization: Bearer <token>
-Content-Type: application/json
-
-{
-  "courseId": "uuid",
-  "userId": "uuid"
-}
-```
-
-**Response**:
-```json
-{
-  "id": "uuid",
-  "courseId": "uuid",
-  "userId": "uuid",
-  "status": "active",
-  "progress": 0,
-  "enrolledAt": "2024-01-01T00:00:00Z"
-}
-```
-
-### Get User Enrollments
-```http
-GET /enrollments/user/{userId}
+GET /api/enrollments/:userId
 Authorization: Bearer <token>
 ```
 
@@ -297,389 +307,785 @@ Authorization: Bearer <token>
 {
   "enrollments": [
     {
-      "id": "uuid",
-      "courseId": "uuid",
-      "courseTitle": "Introduction to AI",
-      "status": "active",
+      "id": "enroll_456",
+      "programId": "solar-tech-001",
+      "programTitle": "Solar Grid Technician",
+      "status": "in_progress",
       "progress": 25,
-      "enrolledAt": "2024-01-01T00:00:00Z",
-      "lastAccessedAt": "2024-01-01T12:00:00Z"
+      "enrolledAt": "2025-10-23T10:30:00Z",
+      "lastAccessedAt": "2025-10-23T11:00:00Z",
+      "completedModules": 3,
+      "totalModules": 12,
+      "earnedRewards": 450,
+      "currency": "aZAR"
     }
   ]
 }
 ```
 
-### Update Progress
+### **Module & Assessment**
+
+#### **Complete Module**
 ```http
-PUT /enrollments/{enrollmentId}/progress
+POST /api/module/complete
 Authorization: Bearer <token>
 Content-Type: application/json
 
 {
-  "progress": 50,
-  "lastModuleId": "uuid"
-}
-```
-
-### Complete Course
-```http
-POST /enrollments/{enrollmentId}/complete
-Authorization: Bearer <token>
-```
-
-### Get Course Enrollments (Instructor)
-```http
-GET /enrollments/course/{courseId}
-Authorization: Bearer <token>
-```
-
-## AI Agent Service
-
-**Port**: 8085
-
-### Execute Task
-```http
-POST /ai/execute
-Authorization: Bearer <token>
-Content-Type: application/json
-
-{
-  "task": "Analyze student performance data",
-  "context": {
-    "userId": "uuid",
-    "courseId": "uuid",
-    "timeframe": "last_30_days"
-  },
-  "constraints": [
-    "Ensure data privacy",
-    "Provide actionable insights"
-  ]
+  "enrollmentId": "enroll_456",
+  "moduleId": "module_001",
+  "completionData": {
+    "timeSpent": 42,
+    "score": 95,
+    "attempts": 1
+  }
 }
 ```
 
 **Response**:
 ```json
 {
-  "taskId": "uuid",
-  "status": "processing",
-  "estimatedCompletion": "2024-01-01T00:05:00Z"
-}
-```
-
-### Get Task Status
-```http
-GET /ai/tasks/{taskId}
-Authorization: Bearer <token>
-```
-
-**Response**:
-```json
-{
-  "taskId": "uuid",
+  "moduleId": "module_001",
   "status": "completed",
-  "result": {
-    "insights": [
-      "Students perform better with interactive content",
-      "Peak engagement is between 7-9 PM"
+  "reward": {
+    "amount": 120,
+    "currency": "aZAR",
+    "transactionId": "reward_tx_123",
+    "processedAt": "2025-10-23T11:05:00Z"
+  },
+  "nextModule": {
+    "id": "module_002",
+    "title": "Electrical Safety Standards",
+    "unlocksAt": "2025-10-23T11:05:00Z"
+  },
+  "progress": {
+    "overall": 8.33,
+    "completedModules": 1,
+    "totalModules": 12
+  }
+}
+```
+
+#### **Start Aegis Assessment**
+```http
+POST /api/exam/start
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "enrollmentId": "enroll_456",
+  "assessmentType": "module_quiz",
+  "moduleId": "module_001"
+}
+```
+
+**Response**:
+```json
+{
+  "assessmentId": "assess_789",
+  "sessionId": "aegis_sess_789",
+  "status": "active",
+  "questions": 15,
+  "timeLimit": 1800, // 30 minutes
+  "aegisIntegrity": {
+    "deviceLocked": true,
+    "cameraActive": true,
+    "microphoneActive": true,
+    "sessionValid": true
+  },
+  "startedAt": "2025-10-23T11:10:00Z"
+}
+```
+
+#### **Submit Assessment**
+```http
+POST /api/exam/submit
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "assessmentId": "assess_789",
+  "answers": {
+    "q1": "c",
+    "q2": "a",
+    "q3": "b"
+  },
+  "timeSpent": 1650,
+  "aegisData": {
+    "integrityScore": 98,
+    "anomalies": [],
+    "sessionValid": true
+  }
+}
+```
+
+**Response**:
+```json
+{
+  "assessmentId": "assess_789",
+  "status": "graded",
+  "score": 93,
+  "passed": true,
+  "reward": {
+    "amount": 280,
+    "currency": "aZAR",
+    "category": "assessment_pass",
+    "transactionId": "reward_tx_456"
+  },
+  "feedback": {
+    "strengths": ["Excellent understanding of core concepts"],
+    "improvements": ["Review advanced circuit theory"],
+    "nextSteps": ["Proceed to practical lab module"]
+  },
+  "completedAt": "2025-10-23T11:37:00Z"
+}
+```
+
+### **Knowledge Graph & Ascension**
+
+#### **Get Ascension Protocol Status**
+```http
+GET /api/knowledge-graph/status
+Authorization: Bearer <token>
+```
+
+**Response**:
+```json
+{
+  "ascensionProtocol": {
+    "status": "active",
+    "progress": 23.4,
+    "documentsProcessed": 15420,
+    "knowledgeNodes": 89250,
+    "processingRate": {
+      "documentsPerHour": 45,
+      "nodesPerHour": 280
+    },
+    "targetUniversities": [
+      "MIT", "Stanford", "Oxford", "Harvard", "Cambridge"
     ],
-    "recommendations": [
-      "Add more video content",
-      "Schedule live sessions in evening"
-    ]
+    "lastUpdate": "2025-10-23T10:00:00Z"
   },
-  "completedAt": "2024-01-01T00:03:45Z"
-}
-```
-
-### Constitutional Check
-```http
-POST /ai/constitutional-check
-Content-Type: application/json
-
-{
-  "action": "Generate personalized learning path",
-  "context": "Student data analysis",
-  "potentialImpact": "Privacy implications"
-}
-```
-
-**Response**:
-```json
-{
-  "approved": true,
-  "reasoning": "Action aligns with privacy policies and educational goals",
-  "constraints": [
-    "Anonymize all personal data",
-    "Limit data retention to 1 year"
-  ]
-}
-```
-
-### Get AI Capabilities
-```http
-GET /ai/capabilities
-```
-
-**Response**:
-```json
-{
-  "capabilities": [
-    "student_performance_analysis",
-    "personalized_learning_paths",
-    "content_recommendation",
-    "engagement_prediction",
-    "automated_grading_assistance"
-  ],
-  "models": [
-    "gpt-4",
-    "claude-3",
-    "custom-fine-tuned-model"
-  ]
-}
-```
-
-## Analytics Service
-
-**Port**: 8086
-
-### Record Event
-```http
-POST /analytics/events
-Authorization: Bearer <token>
-Content-Type: application/json
-
-{
-  "eventType": "course_view",
-  "userId": "uuid",
-  "courseId": "uuid",
-  "metadata": {
-    "source": "dashboard",
-    "device": "mobile"
+  "curriculumSynthesis": {
+    "programsOptimized": 15,
+    "firstPrinciplesApplied": true,
+    "effectivenessImprovement": 34.7
   }
 }
 ```
 
-### Get User Analytics
+### **Health Check**
 ```http
-GET /analytics/users/{userId}?startDate=2024-01-01&endDate=2024-01-31
-Authorization: Bearer <token>
+GET /health
 ```
 
 **Response**:
 ```json
 {
-  "userId": "uuid",
-  "metrics": {
-    "coursesEnrolled": 3,
-    "coursesCompleted": 1,
-    "totalStudyTime": 14400,
-    "averageProgress": 65,
-    "engagementScore": 8.2
-  },
-  "timeline": [
-    {
-      "date": "2024-01-01",
-      "studyTime": 3600,
-      "coursesAccessed": 2
-    }
-  ]
+  "service": "azora-sapiens",
+  "status": "healthy",
+  "version": "1.0.0",
+  "activeUsers": 1250,
+  "activeAssessments": 89,
+  "aegisSessions": 67,
+  "rewardTransactions": 2340
 }
-```
-
-### Get Course Analytics
-```http
-GET /analytics/courses/{courseId}?startDate=2024-01-01&endDate=2024-01-31
-Authorization: Bearer <token>
-```
-
-**Response**:
-```json
-{
-  "courseId": "uuid",
-  "metrics": {
-    "totalEnrollments": 150,
-    "completionRate": 0.75,
-    "averageRating": 4.5,
-    "totalRevenue": 14850,
-    "popularModules": ["Introduction", "Advanced Topics"]
-  },
-  "trends": {
-    "enrollments": [
-      {"date": "2024-01-01", "count": 10},
-      {"date": "2024-01-02", "count": 15}
-    ]
-  }
-}
-```
-
-### Get Platform Analytics
-```http
-GET /analytics/platform?startDate=2024-01-01&endDate=2024-01-31
-Authorization: Bearer <token>
-```
-
-**Response**:
-```json
-{
-  "platform": {
-    "totalUsers": 1000,
-    "activeUsers": 750,
-    "totalCourses": 50,
-    "totalEnrollments": 2500,
-    "totalRevenue": 150000
-  },
-  "growth": {
-    "userGrowth": 0.15,
-    "revenueGrowth": 0.22,
-    "engagementGrowth": 0.08
-  }
-}
-```
-
-### Real-time Metrics
-```http
-GET /analytics/realtime?metrics=active_users,course_views,enrollments
-```
-
-**Response**:
-```json
-{
-  "timestamp": "2024-01-01T12:00:00Z",
-  "metrics": {
-    "activeUsers": 1250,
-    "courseViews": 450,
-    "enrollments": 12
-  }
-}
-```
-
-## Error Handling
-
-### Common Error Responses
-
-#### Authentication Error
-```json
-{
-  "error": "Unauthorized",
-  "message": "Invalid or expired token",
-  "code": 401
-}
-```
-
-#### Validation Error
-```json
-{
-  "error": "ValidationError",
-  "message": "Invalid input data",
-  "code": 400,
-  "details": {
-    "email": "Invalid email format",
-    "password": "Password must be at least 8 characters"
-  }
-}
-```
-
-#### Not Found Error
-```json
-{
-  "error": "NotFound",
-  "message": "Resource not found",
-  "code": 404
-}
-```
-
-#### Internal Server Error
-```json
-{
-  "error": "InternalServerError",
-  "message": "An unexpected error occurred",
-  "code": 500,
-  "requestId": "uuid"
-}
-```
-
-#### Rate Limit Error
-```json
-{
-  "error": "RateLimitExceeded",
-  "message": "Too many requests",
-  "code": 429,
-  "retryAfter": 60
-}
-```
-
-### Error Codes
-- `400`: Bad Request - Invalid input
-- `401`: Unauthorized - Authentication required
-- `403`: Forbidden - Insufficient permissions
-- `404`: Not Found - Resource doesn't exist
-- `409`: Conflict - Resource already exists
-- `422`: Unprocessable Entity - Validation failed
-- `429`: Too Many Requests - Rate limit exceeded
-- `500`: Internal Server Error - Server error
-- `503`: Service Unavailable - Service temporarily down
-
-## Rate Limiting
-
-### Limits by Endpoint Type
-- **Authentication**: 10 requests/minute per IP
-- **User operations**: 100 requests/minute per user
-- **Course browsing**: 500 requests/minute per user
-- **AI operations**: 50 requests/minute per user
-- **Analytics**: 200 requests/minute per user
-
-### Headers
-```http
-X-RateLimit-Limit: 100
-X-RateLimit-Remaining: 95
-X-RateLimit-Reset: 1640995200
-X-RateLimit-Retry-After: 60  # Only present when limit exceeded
-```
-
-### Rate Limit Response
-```json
-{
-  "error": "RateLimitExceeded",
-  "message": "API rate limit exceeded",
-  "retryAfter": 60
-}
-```
-
-## SDKs and Tools
-
-### Postman Collection
-Import the Azora ES API collection from `docs/postman_collection.json`
-
-### OpenAPI Specification
-View the complete OpenAPI 3.0 spec at `/docs/openapi.yaml`
-
-### Client Libraries
-- **JavaScript/TypeScript**: `npm install @azora/es-client`
-- **Python**: `pip install azora-es-client`
-- **Go**: `go get github.com/azora/es-client-go`
-
-### Example Usage (JavaScript)
-```javascript
-import { AzoraES } from '@azora/es-client';
-
-const client = new AzoraES({
-  baseURL: 'https://api.azora.world',
-  apiKey: 'your-api-key'
-});
-
-// Authenticate
-const { token } = await client.auth.login('user@example.com', 'password');
-
-// Get courses
-const courses = await client.courses.list({ category: 'AI' });
-
-// Enroll in course
-await client.enrollments.create({
-  courseId: 'course-uuid',
-  userId: 'user-uuid'
-});
 ```
 
 ---
 
-For additional support or enterprise integrations, contact api-support@azora.world
+## 💰 **Azora Mint API** (`:4300`)
+
+**Economic Sovereignty Engine - Proof-of-Knowledge Payments**
+
+### **Health & Metrics**
+```http
+GET /api/health
+```
+
+**Response**:
+```json
+{
+  "service": "azora-mint",
+  "status": "healthy",
+  "version": "1.0.0",
+  "uptime": "12d 8h 15m",
+  "activeEconomies": 2,
+  "totalTransactions": 45670,
+  "uboFundStatus": "active"
+}
+```
+
+#### **Get Economic Metrics**
+```http
+GET /api/metrics
+Authorization: Bearer <token>
+```
+
+**Response**:
+```json
+{
+  "global": {
+    "totalSupply": 1000000000,
+    "circulatingSupply": 25000000,
+    "marketCap": 500000000,
+    "economicVelocity": 0.78
+  },
+  "sovereignTokens": [
+    {
+      "token": "aBRL",
+      "supply": 1000000,
+      "velocity": 0.85,
+      "peggedTo": "BRL",
+      "exchangeRate": 1.02
+    },
+    {
+      "token": "aUSD",
+      "supply": 850000,
+      "velocity": 0.72,
+      "peggedTo": "USD",
+      "exchangeRate": 1.00
+    }
+  ],
+  "uboFund": {
+    "allocation": 10000000,
+    "distributed": 2340000,
+    "remaining": 7660000,
+    "utilizationRate": 23.4
+  }
+}
+```
+
+### **Proof-of-Knowledge Rewards**
+
+#### **Process Knowledge Reward**
+```http
+POST /api/knowledge-reward
+Authorization: Bearer <sovereign-token>
+Content-Type: application/json
+
+{
+  "userId": "user_123",
+  "rewardType": "module_completion",
+  "rewardCategory": "intermediate",
+  "achievement": "Completed Photovoltaic Systems Module",
+  "metadata": {
+    "programId": "solar-tech-001",
+    "moduleId": "module_005",
+    "assessmentScore": 94,
+    "timeSpent": 45
+  }
+}
+```
+
+**Response**:
+```json
+{
+  "transactionId": "reward_tx_789",
+  "userId": "user_123",
+  "amount": 150,
+  "currency": "aZAR",
+  "rewardType": "module_completion",
+  "status": "processed",
+  "walletAddress": "azora_wallet_123",
+  "processedAt": "2025-10-23T11:15:00Z",
+  "confirmation": {
+    "blockHeight": 123456,
+    "transactionHash": "0x1234567890abcdef",
+    "confirmations": 12
+  }
+}
+```
+
+#### **Get User Reward History**
+```http
+GET /api/knowledge-rewards/:userId
+Authorization: Bearer <token>
+```
+
+**Response**:
+```json
+{
+  "userId": "user_123",
+  "totalEarned": 2340,
+  "currency": "aZAR",
+  "transactions": [
+    {
+      "id": "reward_tx_789",
+      "amount": 150,
+      "type": "module_completion",
+      "achievement": "Completed Photovoltaic Systems",
+      "timestamp": "2025-10-23T11:15:00Z",
+      "status": "confirmed"
+    },
+    {
+      "id": "reward_tx_790",
+      "amount": 280,
+      "type": "assessment_pass",
+      "achievement": "Passed Electrical Safety Quiz",
+      "timestamp": "2025-10-23T11:37:00Z",
+      "status": "confirmed"
+    }
+  ],
+  "statistics": {
+    "modulesCompleted": 12,
+    "assessmentsPassed": 8,
+    "certificationsEarned": 2,
+    "averageReward": 195
+  }
+}
+```
+
+#### **Get Reward Statistics**
+```http
+GET /api/knowledge-rewards/stats
+Authorization: Bearer <token>
+```
+
+**Response**:
+```json
+{
+  "global": {
+    "totalRewardsDistributed": 2340000,
+    "totalTransactions": 15670,
+    "averageRewardAmount": 149,
+    "totalBeneficiaries": 8450,
+    "currency": "aZAR"
+  },
+  "byType": {
+    "module_completion": {
+      "count": 12450,
+      "totalAmount": 1870000,
+      "averageAmount": 150
+    },
+    "assessment_pass": {
+      "count": 2890,
+      "totalAmount": 420000,
+      "averageAmount": 145
+    },
+    "certification": {
+      "count": 330,
+      "totalAmount": 50000,
+      "averageAmount": 151
+    }
+  },
+  "byProgram": {
+    "solar-tech-001": {
+      "rewards": 45000,
+      "beneficiaries": 234,
+      "completionRate": 89.2
+    }
+  },
+  "trends": {
+    "daily": [1200, 1450, 1320, 1680, 1520],
+    "weekly": [8500, 9200, 10100, 8900],
+    "monthly": [38000, 42000, 45600]
+  }
+}
+```
+
+#### **Get UBO Fund Status**
+```http
+GET /api/ubo/status
+Authorization: Bearer <token>
+```
+
+**Response**:
+```json
+{
+  "uboFund": {
+    "totalAllocation": 10000000,
+    "distributed": 2340000,
+    "remaining": 7660000,
+    "utilizationRate": 23.4,
+    "currency": "aZAR"
+  },
+  "distribution": {
+    "byCategory": {
+      "module_completion": 79.5,
+      "assessment_pass": 17.9,
+      "certification": 2.6
+    },
+    "byProgram": {
+      "solar_technician": 25.3,
+      "hydroponic_farming": 18.7,
+      "blockchain_basics": 15.2
+    },
+    "byRegion": {
+      "africa": 45.2,
+      "americas": 32.1,
+      "asia": 22.7
+    }
+  },
+  "economicImpact": {
+    "knowledgeEconomyValue": 2340000,
+    "estimatedRealWorldValue": 4680000,
+    "beneficiaries": 8450,
+    "averageMonthlyIncome": 277
+  }
+}
+```
+
+---
+
+## 🔮 **Azora Oracle API** (`:4030`)
+
+**Planetary Intelligence Oracle - Exchange Rates & Knowledge**
+
+### **Exchange Rate Streaming**
+
+#### **Get Current Rates**
+```http
+GET /api/rates
+Authorization: Bearer <token>
+```
+
+**Response**:
+```json
+{
+  "timestamp": "2025-10-23T12:00:00Z",
+  "rates": {
+    "AZR/USD": 2.45,
+    "AZR/EUR": 2.12,
+    "AZR/GBP": 1.89,
+    "AZR/ZAR": 42.50,
+    "aBRL/BRL": 1.02,
+    "aUSD/USD": 1.00,
+    "aZAR/ZAR": 1.00
+  },
+  "volatility": {
+    "AZR": 0.023,
+    "aBRL": 0.015,
+    "aUSD": 0.008
+  },
+  "lastUpdate": "2025-10-23T11:59:45Z"
+}
+```
+
+#### **Get Specific Rate Pair**
+```http
+GET /api/rates/:from/:to
+Authorization: Bearer <token>
+```
+
+**Example**: `/api/rates/AZR/USD`
+
+**Response**:
+```json
+{
+  "pair": "AZR/USD",
+  "rate": 2.45,
+  "inverse": 0.4082,
+  "change24h": 0.023,
+  "changePercent24h": 0.95,
+  "high24h": 2.48,
+  "low24h": 2.42,
+  "volume24h": 1250000,
+  "lastUpdate": "2025-10-23T11:59:45Z"
+}
+```
+
+### **Ascension Protocol**
+
+#### **Get Ingestion Status**
+```http
+GET /api/ascension/ingestion/status
+Authorization: Bearer <token>
+```
+
+**Response**:
+```json
+{
+  "ingestion": {
+    "status": "active",
+    "progress": 23.4,
+    "documentsProcessed": 15420,
+    "totalDocuments": 65000,
+    "processingRate": 45,
+    "estimatedCompletion": "2026-03-15T00:00:00Z"
+  },
+  "sources": [
+    {
+      "university": "MIT",
+      "documents": 3240,
+      "processed": 3240,
+      "status": "completed"
+    },
+    {
+      "university": "Stanford",
+      "documents": 2890,
+      "processed": 2890,
+      "status": "completed"
+    },
+    {
+      "university": "Oxford",
+      "documents": 4120,
+      "processed": 3980,
+      "status": "processing"
+    }
+  ],
+  "knowledgeGraph": {
+    "nodes": 89250,
+    "relationships": 245600,
+    "domains": ["physics", "mathematics", "computer_science", "biology"]
+  }
+}
+```
+
+#### **Start Knowledge Ingestion**
+```http
+POST /api/ascension/ingestion/start
+Authorization: Bearer <sovereign-token>
+Content-Type: application/json
+
+{
+  "source": "university",
+  "university": "Cambridge",
+  "documentTypes": ["research_papers", "textbooks", "lecture_notes"],
+  "priority": "high"
+}
+```
+
+**Response**:
+```json
+{
+  "ingestionId": "ingest_123",
+  "status": "started",
+  "source": "Cambridge",
+  "estimatedDocuments": 3800,
+  "startedAt": "2025-10-23T12:00:00Z"
+}
+```
+
+#### **Search Knowledge Graph**
+```http
+GET /api/ascension/knowledge/search?q=quantum+mechanics&domain=physics&limit=10
+Authorization: Bearer <token>
+```
+
+**Response**:
+```json
+{
+  "query": "quantum mechanics",
+  "domain": "physics",
+  "results": [
+    {
+      "id": "node_12345",
+      "title": "Introduction to Quantum Mechanics",
+      "source": "MIT Physics Department",
+      "type": "lecture_notes",
+      "relevance": 0.95,
+      "firstPrinciples": true,
+      "curriculumFit": ["advanced_physics", "quantum_computing"]
+    },
+    {
+      "id": "node_12346",
+      "title": "Quantum Entanglement Explained",
+      "source": "Stanford Research Paper",
+      "type": "research_paper",
+      "relevance": 0.89,
+      "firstPrinciples": true,
+      "curriculumFit": ["quantum_physics", "information_theory"]
+    }
+  ],
+  "totalResults": 127,
+  "processingTime": 0.234
+}
+```
+
+### **Health Check**
+```http
+GET /health
+```
+
+**Response**:
+```json
+{
+  "service": "azora-oracle",
+  "status": "healthy",
+  "version": "1.0.0",
+  "exchangeRates": "streaming",
+  "ascensionProtocol": "active",
+  "websocketConnections": 1250,
+  "lastRateUpdate": "2025-10-23T11:59:45Z"
+}
+```
+
+### **WebSocket Streaming**
+```javascript
+// Connect to real-time rate streaming
+const ws = new WebSocket('ws://localhost:4030');
+
+// Subscribe to rate updates
+ws.send(JSON.stringify({
+  type: 'subscribe',
+  channels: ['rates', 'volatility'],
+  pairs: ['AZR/USD', 'aBRL/BRL']
+}));
+
+// Receive real-time updates
+ws.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+  console.log('Rate Update:', data);
+  // {
+  //   "type": "rate_update",
+  //   "pair": "AZR/USD",
+  //   "rate": 2.46,
+  //   "timestamp": "2025-10-23T12:00:15Z"
+  // }
+};
+```
+
+---
+
+## 🔗 **Cross-Service Integration**
+
+### **WebSocket Coordination**
+All services support WebSocket connections for real-time coordination:
+
+```javascript
+// Global event streaming
+const ws = new WebSocket('ws://localhost:4000/events');
+
+ws.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+
+  switch(data.type) {
+    case 'genesis_instantiation':
+      // New economy created
+      updateEconomicDashboard(data);
+      break;
+
+    case 'knowledge_reward':
+      // Reward processed
+      updateUserBalance(data);
+      break;
+
+    case 'aegis_alert':
+      // Security event
+      handleSecurityAlert(data);
+      break;
+  }
+};
+```
+
+### **Service Mesh Communication**
+Services communicate via internal APIs with automatic service discovery:
+
+```http
+# Service-to-service calls
+POST /internal/citadel/triggers/check
+X-Service-Auth: <internal-token>
+Content-Type: application/json
+
+{
+  "country": "ZA",
+  "internal": true
+}
+```
+
+---
+
+## ⚠️ **Error Handling**
+
+### **Standard Error Response**
+```json
+{
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Invalid input parameters",
+    "details": {
+      "field": "country",
+      "issue": "Invalid ISO country code"
+    },
+    "requestId": "req_123456",
+    "timestamp": "2025-10-23T12:00:00Z"
+  }
+}
+```
+
+### **Common Error Codes**
+- `AUTHENTICATION_ERROR`: Invalid or expired token
+- `AUTHORIZATION_ERROR`: Insufficient permissions
+- `VALIDATION_ERROR`: Invalid input data
+- `NOT_FOUND`: Resource doesn't exist
+- `RATE_LIMITED`: Too many requests
+- `SOVEREIGNTY_ERROR`: Invalid sovereign context
+- `ECONOMIC_ERROR`: Economic operation failed
+- `INTEGRITY_ERROR`: Aegis integrity violation
+
+### **Sovereign-Specific Errors**
+```json
+{
+  "error": {
+    "code": "SOVEREIGNTY_NOT_INSTANTIATED",
+    "message": "Economic sovereignty not yet instantiated for this nation",
+    "resolution": "Complete activation triggers and petition The Council",
+    "nation": "ZA",
+    "availableTriggers": ["user_threshold", "university_treaty"]
+  }
+}
+```
+
+---
+
+## 📊 **Rate Limiting & Scaling**
+
+### **Rate Limits by Service**
+- **Aegis Citadel**: 1000 req/min (sovereign operations)
+- **Azora Sapiens**: 5000 req/min (educational operations)
+- **Azora Mint**: 10000 req/min (economic transactions)
+- **Azora Oracle**: 2000 req/min (intelligence queries)
+
+### **Response Headers**
+```http
+X-RateLimit-Limit: 1000
+X-RateLimit-Remaining: 950
+X-RateLimit-Reset: 1640995200
+X-Sovereign-Context: ZA
+X-API-Version: 1.0.0
+```
+
+---
+
+## 🔧 **SDKs & Integration**
+
+### **JavaScript/TypeScript SDK**
+```javascript
+import { AzoraOS } from '@azora/os-sdk';
+
+const client = new AzoraOS({
+  apiKey: 'your-sovereign-key',
+  nation: 'ZA'
+});
+
+// Check genesis status
+const status = await client.citadel.getGenesisStatus();
+
+// Process knowledge reward
+const reward = await client.mint.processKnowledgeReward({
+  userId: 'user_123',
+  rewardType: 'module_completion',
+  amount: 150
+});
+
+// Get real-time rates
+client.oracle.onRateUpdate((update) => {
+  console.log(`${update.pair}: ${update.rate}`);
+});
+```
+
+### **OpenAPI Specification**
+Complete OpenAPI 3.0 specs available at:
+- `/docs/citadel-api.yaml`
+- `/docs/sapiens-api.yaml`
+- `/docs/mint-api.yaml`
+- `/docs/oracle-api.yaml`
+
+---
+
+**Azora OS API — Constitutional AI for Planetary Economic Flourishing**
+
+*Building the future of sovereign prosperity through education and innovation*
+
+For enterprise integrations or API support, contact: api@azora.world
