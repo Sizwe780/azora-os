@@ -230,7 +230,7 @@ export class AzoraSapiens {
   constructor(openaiApiKey: string) {
     this.llm = new ChatOpenAI({
       openaiApiKey,
-      modelName: "gpt-4-turbo-preview",
+      modelName: "gpt-4o",
       temperature: 0.7,
     });
 
@@ -255,7 +255,7 @@ export class AzoraSapiens {
       description: "Accelerated practical qualification in computer science fundamentals",
       creditRequirements: 120,
       durationMonths: 6,
-      modules: [],
+      modules: [], // Will be populated after modules are created
       prerequisites: [],
       isActive: true,
     });
@@ -268,7 +268,7 @@ export class AzoraSapiens {
       description: "Accelerated practical qualification in legal fundamentals",
       creditRequirements: 120,
       durationMonths: 6,
-      modules: [],
+      modules: [], // Will be populated after modules are created
       prerequisites: [],
       isActive: true,
     });
@@ -283,8 +283,8 @@ export class AzoraSapiens {
       creditRequirements: 360,
       durationMonths: 42,
       partnerUniversity: "NMU",
-      modules: [],
-      prerequisites: ["ckq-cs"],
+      modules: [], // Will be populated after modules are created
+      prerequisites: ["ckq_cs"],
       isActive: true,
     });
 
@@ -297,8 +297,8 @@ export class AzoraSapiens {
       creditRequirements: 480,
       durationMonths: 60,
       partnerUniversity: "NMU",
-      modules: [],
-      prerequisites: ["ckq-law"],
+      modules: [], // Will be populated after modules are created
+      prerequisites: ["ckq_law"],
       isActive: true,
     });
   }
@@ -308,7 +308,7 @@ export class AzoraSapiens {
    */
   private initializeCoreModules(): void {
     // Foundational modules available to all
-    this.createModule({
+    const firstPrinciplesModule = this.createModule({
       title: "First Principles Thinking",
       description: "Deconstruct complex systems to their axiomatic foundations",
       credits: 15,
@@ -325,7 +325,7 @@ export class AzoraSapiens {
       knowledgePrerequisites: [],
     });
 
-    this.createModule({
+    const decentralizedSystemsModule = this.createModule({
       title: "Decentralized Systems Architecture",
       description: "Understanding distributed trust, consensus, and cryptographic primitives",
       credits: 20,
@@ -342,7 +342,7 @@ export class AzoraSapiens {
       knowledgePrerequisites: ['first_principles'],
     });
 
-    this.createModule({
+    const causalInferenceModule = this.createModule({
       title: "Causal Inference and Decision Making",
       description: "Understanding cause-and-effect relationships in complex systems",
       credits: 18,
@@ -358,6 +358,25 @@ export class AzoraSapiens {
       domainTags: ['statistics', 'causal_inference', 'decision_theory'],
       knowledgePrerequisites: ['decentralized_systems'],
     });
+
+    // Assign modules to qualifications
+    const ckqCs = this.qualifications.get('ckq_cs');
+    const ckqLaw = this.qualifications.get('ckq_law');
+    const bdesciCs = this.qualifications.get('bdesci_cs');
+    const llbDe = this.qualifications.get('llb_de');
+
+    if (ckqCs) {
+      ckqCs.modules = [firstPrinciplesModule.moduleId, decentralizedSystemsModule.moduleId];
+    }
+    if (ckqLaw) {
+      ckqLaw.modules = [firstPrinciplesModule.moduleId, causalInferenceModule.moduleId];
+    }
+    if (bdesciCs) {
+      bdesciCs.modules = [firstPrinciplesModule.moduleId, decentralizedSystemsModule.moduleId, causalInferenceModule.moduleId];
+    }
+    if (llbDe) {
+      llbDe.modules = [firstPrinciplesModule.moduleId, causalInferenceModule.moduleId];
+    }
   }
 
   /**
@@ -378,63 +397,6 @@ export class AzoraSapiens {
       },
       status: 'active',
       startDate: Date.now(),
-    });
-  }
-
-  /**
-   * Initialize core learning modules
-   */
-  private initializeCoreModules(): void {
-    // Foundational modules that all students must complete
-    this.createModule({
-      title: "First Principles Thinking",
-      description: "Deconstruct complex systems to their axiomatic foundations",
-      credits: 15,
-      prerequisites: [],
-      learningObjectives: [
-        "Apply Socratic method to break down complex problems",
-        "Identify fundamental truths underlying domain knowledge",
-        "Synthesize cross-disciplinary solutions"
-      ],
-      assessmentMethod: 'socratic_debate',
-      estimatedHours: 60,
-      difficulty: 'intermediate',
-      domainTags: ['philosophy', 'logic', 'systems_thinking'],
-      decentralizedTags: ['transparency', 'verifiability'],
-    });
-
-    this.createModule({
-      title: "Decentralized Systems Architecture",
-      description: "Understanding distributed trust, consensus, and cryptographic primitives",
-      credits: 20,
-      prerequisites: ['first_principles'],
-      learningObjectives: [
-        "Explain blockchain consensus mechanisms",
-        "Design decentralized applications",
-        "Analyze cryptographic security models"
-      ],
-      assessmentMethod: 'project_based',
-      estimatedHours: 80,
-      difficulty: 'intermediate',
-      domainTags: ['computer_science', 'cryptography', 'distributed_systems'],
-      decentralizedTags: ['cryptographic_security', 'consensus_mechanisms', 'distributed_trust'],
-    });
-
-    this.createModule({
-      title: "Token Economics and Incentive Design",
-      description: "Designing economic systems that align individual and collective incentives",
-      credits: 18,
-      prerequisites: ['decentralized_systems'],
-      learningObjectives: [
-        "Design token economic models",
-        "Analyze incentive compatibility",
-        "Model economic equilibria in decentralized systems"
-      ],
-      assessmentMethod: 'ai_evaluation',
-      estimatedHours: 72,
-      difficulty: 'advanced',
-      domainTags: ['economics', 'game_theory', 'incentive_design'],
-      decentralizedTags: ['token_economics', 'algorithmic_fairness'],
     });
   }
 
@@ -1090,6 +1052,67 @@ export class AzoraSapiens {
 
   getPartnership(partnershipId: string): UniversityPartnership | null {
     return this.partnerships.get(partnershipId) || null;
+  }
+
+  /**
+   * Get system-wide analytics
+   */
+  getSystemAnalytics(): {
+    totalStudents: number;
+    activeStudents: number;
+    totalQualifications: number;
+    totalModules: number;
+    activeSessions: number;
+    averageProofOfKnowledgeBalance: number;
+    averageReputationScore: number;
+    totalCreditsAwarded: number;
+    partnershipMetrics: {
+      activePartnerships: number;
+      totalRevenue: number;
+    };
+  } {
+    const totalStudents = this.students.size;
+    const activeStudents = Array.from(this.students.values()).filter(s => s.isActive).length;
+    const totalQualifications = this.qualifications.size;
+    const totalModules = this.modules.size;
+    const activeSessions = Array.from(this.socraticSessions.values())
+      .filter(s => s.status === 'active').length;
+
+    const totalRewardsDistributed = Array.from(this.students.values())
+      .reduce((sum, student) => sum + student.proofOfKnowledgeBalance, 0);
+
+    const averageProofOfKnowledgeBalance = totalStudents > 0 ? totalRewardsDistributed / totalStudents : 0;
+
+    const averageReputationScore = totalStudents > 0
+      ? Array.from(this.students.values())
+          .reduce((sum, student) => sum + student.reputationScore, 0) / totalStudents
+      : 50;
+
+    const totalCreditsAwarded = Array.from(this.students.values())
+      .reduce((sum, student) => sum + student.totalCredits, 0);
+
+    const activePartnerships = Array.from(this.partnerships.values())
+      .filter(p => p.status === 'active').length;
+
+    // Calculate total partnership revenue (simplified)
+    const totalRevenue = Array.from(this.partnerships.values())
+      .filter(p => p.status === 'active')
+      .reduce((sum, p) => sum + (p.innovationFee * 100), 0); // Assuming 100 students per partnership
+
+    return {
+      totalStudents,
+      activeStudents,
+      totalQualifications,
+      totalModules,
+      activeSessions,
+      averageProofOfKnowledgeBalance: Math.round(averageProofOfKnowledgeBalance),
+      averageReputationScore: Math.round(averageReputationScore),
+      totalCreditsAwarded,
+      partnershipMetrics: {
+        activePartnerships,
+        totalRevenue,
+      },
+    };
   }
 
   // ========== PRIVATE METHODS ==========

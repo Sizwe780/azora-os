@@ -61,6 +61,7 @@
     "compression": "^1.8.1",
     "cors": "^2.8.5",
     "date-fns": "4.1.0",
+    "dotenv": "^17.2.3",
     "embla-carousel-react": "8.5.1",
     "express": "^5.1.0",
     "express-actuator": "^1.8.4",
