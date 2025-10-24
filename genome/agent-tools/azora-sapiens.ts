@@ -2264,1298 +2264,119 @@ export class AzoraSapiens {
       ckqChemical.modules = [firstPrinciplesModule.moduleId, decentralizedSystemsModule.moduleId, adcheModule1.moduleId, adcheModule2.moduleId, adcheModule3.moduleId, adcheModule4.moduleId, adcheModule5.moduleId, adcheModule6.moduleId];
     }
 
-    // ADMIN: Mining Engineering
-    // From [web:130-139]: Mine Design, Mineral Processing, etc.
-    const adminModule1 = this.createModule({
-      qualificationId: 'admin',
-      title: "Digital Mining Technologies",
-      description: "Automation and digital transformation in mining operations.",
-      credits: 15,
-      nqfLevel: 6,
+    // Interdisciplinary Core Modules - Available to all students
+    // Critical Thinking Module
+    const criticalThinkingModule = this.createModule({
+      title: "Advanced Critical Thinking and Analysis",
+      description: "Master the art of critical thinking, logical reasoning, and analytical problem-solving across disciplines.",
+      credits: 20,
+      nqfLevel: 7,
       learningObjectives: [
-        "Design automated mining systems",
-        "Implement IoT for mine monitoring",
-        "Apply AI to resource optimization"
-      ],
-      assessmentMethod: 'project_based',
-      estimatedHours: 60,
-      difficulty: 'advanced',
-      domainTags: ['digital_mining', 'automation'],
-      knowledgePrerequisites: ['decentralized_systems'],
-      isActive: true,
-    });
-
-    const adminModule2 = this.createModule({
-      qualificationId: 'admin',
-      title: "Sustainable Mining Practices",
-      description: "Environmental and social responsibility in mining.",
-      credits: 15,
-      nqfLevel: 6,
-      learningObjectives: [
-        "Design environmentally sustainable mines",
-        "Implement rehabilitation strategies",
-        "Assess social impact of mining operations"
-      ],
-      assessmentMethod: 'peer_review',
-      estimatedHours: 60,
-      difficulty: 'intermediate',
-      domainTags: ['sustainable_mining', 'environmental_impact'],
-      knowledgePrerequisites: ['first_principles'],
-      isActive: true,
-    });
-
-    const adminModule3 = this.createModule({
-      qualificationId: 'admin',
-      title: "Mineral Processing and Extractive Metallurgy",
-      description: "Processing ores and extracting valuable minerals.",
-      credits: 15,
-      nqfLevel: 6,
-      learningObjectives: [
-        "Design mineral processing plants",
-        "Optimize extraction processes",
-        "Apply AI to process control"
-      ],
-      assessmentMethod: 'ai_evaluation',
-      estimatedHours: 60,
-      difficulty: 'expert',
-      domainTags: ['mineral_processing', 'extractive_metallurgy'],
-      knowledgePrerequisites: ['causal_inference'],
-      isActive: true,
-    });
-
-    const adminModule4 = this.createModule({
-      qualificationId: 'admin',
-      title: "Mine Planning and Design",
-      description: "Strategic planning and technical design of mining operations.",
-      credits: 15,
-      nqfLevel: 6,
-      learningObjectives: [
-        "Design open-pit and underground mines",
-        "Perform economic evaluations",
-        "Optimize mine layouts for efficiency"
-      ],
-      assessmentMethod: 'project_based',
-      estimatedHours: 60,
-      difficulty: 'advanced',
-      domainTags: ['mine_planning', 'mine_design'],
-      knowledgePrerequisites: ['causal_inference'],
-      isActive: true,
-    });
-
-    const adminModule5 = this.createModule({
-      qualificationId: 'admin',
-      title: "Rock Mechanics and Ground Control",
-      description: "Stability analysis and support design for underground structures.",
-      credits: 15,
-      nqfLevel: 6,
-      learningObjectives: [
-        "Analyze rock mass properties",
-        "Design ground support systems",
-        "Assess slope stability"
-      ],
-      assessmentMethod: 'peer_review',
-      estimatedHours: 60,
-      difficulty: 'advanced',
-      domainTags: ['rock_mechanics', 'ground_control'],
-      knowledgePrerequisites: ['causal_inference'],
-      isActive: true,
-    });
-
-    const adminModule6 = this.createModule({
-      qualificationId: 'admin',
-      title: "Mining Economics and Management",
-      description: "Business and management aspects of mining operations.",
-      credits: 15,
-      nqfLevel: 6,
-      learningObjectives: [
-        "Perform mining project evaluations",
-        "Manage mining operations",
-        "Apply risk management principles"
+        "Apply advanced logical reasoning frameworks to complex problems",
+        "Evaluate arguments using formal and informal logic",
+        "Identify cognitive biases and mitigate their effects",
+        "Synthesize information from multiple sources and perspectives",
+        "Develop evidence-based decision-making skills",
+        "Construct and deconstruct complex arguments",
+        "Apply critical thinking to real-world ethical dilemmas"
       ],
       assessmentMethod: 'socratic_dialogue',
-      estimatedHours: 60,
-      difficulty: 'intermediate',
-      domainTags: ['mining_economics', 'project_management'],
+      estimatedHours: 80,
+      difficulty: 'advanced',
+      domainTags: ['critical_thinking', 'logic', 'reasoning', 'analysis', 'philosophy'],
       knowledgePrerequisites: ['first_principles'],
       isActive: true,
     });
 
-    // Assign to ADMIN
-    const ckqMining = this.qualifications.get('admin');
-    if (ckqMining) {
-      ckqMining.modules = [firstPrinciplesModule.moduleId, decentralizedSystemsModule.moduleId, adminModule1.moduleId, adminModule2.moduleId, adminModule3.moduleId, adminModule4.moduleId, adminModule5.moduleId, adminModule6.moduleId];
-    }
-
-    // ADENVENG: Environmental Engineering
-    // From [web:140-149]: Water Treatment, Air Pollution, Waste Management, etc.
-    const adenvengModule1 = this.createModule({
-      qualificationId: 'adenveng',
-      title: "Climate Tech Solutions",
-      description: "Technological solutions for climate change mitigation.",
-      credits: 15,
-      nqfLevel: 6,
+    // Creative Problem Solving Module
+    const creativeProblemSolvingModule = this.createModule({
+      title: "Creative Problem Solving and Innovation",
+      description: "Develop innovative thinking patterns, design thinking methodologies, and creative problem-solving techniques.",
+      credits: 18,
+      nqfLevel: 7,
       learningObjectives: [
-        "Design carbon capture systems",
-        "Develop renewable energy solutions",
-        "Apply AI to climate modeling"
+        "Apply design thinking frameworks to complex challenges",
+        "Generate innovative solutions using divergent thinking techniques",
+        "Combine lateral thinking with analytical approaches",
+        "Develop prototyping and iteration skills",
+        "Apply creative problem-solving to interdisciplinary challenges",
+        "Foster innovation through collaborative ideation",
+        "Evaluate creative solutions for feasibility and impact"
       ],
       assessmentMethod: 'project_based',
-      estimatedHours: 60,
+      estimatedHours: 72,
       difficulty: 'advanced',
-      domainTags: ['climate_tech', 'carbon_capture'],
-      knowledgePrerequisites: ['causal_inference'],
+      domainTags: ['creativity', 'innovation', 'design_thinking', 'problem_solving', 'ideation'],
+      knowledgePrerequisites: ['first_principles'],
       isActive: true,
     });
 
-    const adenvengModule2 = this.createModule({
-      qualificationId: 'adenveng',
-      title: "Circular Economy Engineering",
-      description: "Design for circularity and waste minimization.",
-      credits: 15,
+    // Communication Module
+    const communicationModule = this.createModule({
+      title: "Advanced Communication and Presentation Skills",
+      description: "Master effective communication across various mediums, including written, verbal, and digital platforms.",
+      credits: 16,
       nqfLevel: 6,
       learningObjectives: [
-        "Design circular product systems",
-        "Implement industrial symbiosis",
-        "Apply life cycle thinking to engineering"
+        "Craft compelling narratives and arguments in writing",
+        "Deliver effective presentations to diverse audiences",
+        "Apply active listening and empathetic communication techniques",
+        "Communicate complex technical concepts to non-experts",
+        "Utilize digital communication tools and platforms effectively",
+        "Adapt communication style to different cultural contexts",
+        "Provide constructive feedback and receive criticism gracefully"
       ],
       assessmentMethod: 'peer_review',
-      estimatedHours: 60,
+      estimatedHours: 64,
       difficulty: 'intermediate',
-      domainTags: ['circular_economy', 'industrial_symbiosis'],
-      knowledgePrerequisites: ['first_principles'],
+      domainTags: ['communication', 'presentation', 'writing', 'public_speaking', 'digital_communication'],
+      knowledgePrerequisites: [],
       isActive: true,
     });
 
-    const adenvengModule3 = this.createModule({
-      qualificationId: 'adenveng',
-      title: "Water and Wastewater Engineering",
-      description: "Treatment and management of water resources.",
-      credits: 15,
-      nqfLevel: 6,
+    // Ethical Leadership Module
+    const ethicalLeadershipModule = this.createModule({
+      title: "Ethical Leadership and Governance",
+      description: "Develop principled leadership skills grounded in Ubuntu philosophy, ethical decision-making, and sustainable governance.",
+      credits: 22,
+      nqfLevel: 8,
       learningObjectives: [
-        "Design water treatment plants",
-        "Develop wastewater management systems",
-        "Apply AI to water quality monitoring"
-      ],
-      assessmentMethod: 'project_based',
-      estimatedHours: 60,
-      difficulty: 'intermediate',
-      domainTags: ['water_treatment', 'wastewater_management'],
-      knowledgePrerequisites: ['causal_inference'],
-      isActive: true,
-    });
-
-    const adenvengModule4 = this.createModule({
-      qualificationId: 'adenveng',
-      title: "Air Quality and Pollution Control",
-      description: "Control and mitigation of air pollution.",
-      credits: 15,
-      nqfLevel: 6,
-      learningObjectives: [
-        "Design air pollution control systems",
-        "Model atmospheric dispersion",
-        "Implement emission monitoring systems"
+        "Apply Ubuntu principles to leadership and decision-making",
+        "Navigate complex ethical dilemmas in professional contexts",
+        "Develop sustainable governance models for organizations",
+        "Lead diverse teams with cultural intelligence and empathy",
+        "Implement ethical frameworks in technological innovation",
+        "Foster inclusive and equitable organizational cultures",
+        "Balance stakeholder interests with long-term societal impact",
+        "Apply servant leadership principles in practice"
       ],
       assessmentMethod: 'ai_evaluation',
-      estimatedHours: 60,
-      difficulty: 'advanced',
-      domainTags: ['air_quality', 'pollution_control'],
-      knowledgePrerequisites: ['causal_inference'],
-      isActive: true,
-    });
-
-    const adenvengModule5 = this.createModule({
-      qualificationId: 'adenveng',
-      title: "Sustainable Urban Development",
-      description: "Planning and design for sustainable cities.",
-      credits: 15,
-      nqfLevel: 6,
-      learningObjectives: [
-        "Design sustainable urban infrastructure",
-        "Implement green building standards",
-        "Apply systems thinking to urban planning"
-      ],
-      assessmentMethod: 'peer_review',
-      estimatedHours: 60,
-      difficulty: 'intermediate',
-      domainTags: ['sustainable_urban', 'green_building'],
-      knowledgePrerequisites: ['first_principles'],
-      isActive: true,
-    });
-
-    const adenvengModule6 = this.createModule({
-      qualificationId: 'adenveng',
-      title: "Environmental Impact Assessment",
-      description: "Evaluation of environmental consequences of development projects.",
-      credits: 15,
-      nqfLevel: 6,
-      learningObjectives: [
-        "Conduct comprehensive EIAs",
-        "Apply risk assessment methodologies",
-        "Develop mitigation strategies"
-      ],
-      assessmentMethod: 'project_based',
-      estimatedHours: 60,
-      difficulty: 'intermediate',
-      domainTags: ['environmental_assessment', 'risk_assessment'],
-      knowledgePrerequisites: ['causal_inference'],
-      isActive: true,
-    });
-
-    // Assign to ADENVENG
-    const ckqEnvironmental = this.qualifications.get('adenveng');
-    if (ckqEnvironmental) {
-      ckqEnvironmental.modules = [firstPrinciplesModule.moduleId, decentralizedSystemsModule.moduleId, adenvengModule1.moduleId, adenvengModule2.moduleId, adenvengModule3.moduleId, adenvengModule4.moduleId, adenvengModule5.moduleId, adenvengModule6.moduleId];
-    }
-
-    // ADLAW: Law
-    // From [web:150-159]: Contract Law, Constitutional Law, etc.
-    const adlawModule1 = this.createModule({
-      qualificationId: 'adlaw',
-      title: "Smart Contracts and Digital Law",
-      description: "Legal frameworks for blockchain and smart contracts.",
-      credits: 15,
-      nqfLevel: 6,
-      learningObjectives: [
-        "Draft legally enforceable smart contracts",
-        "Analyze contract law in digital contexts",
-        "Apply traditional law to decentralized systems"
-      ],
-      assessmentMethod: 'project_based',
-      estimatedHours: 60,
-      difficulty: 'advanced',
-      domainTags: ['smart_contracts', 'digital_law'],
-      knowledgePrerequisites: ['decentralized_systems'],
-      isActive: true,
-    });
-
-    const adlawModule2 = this.createModule({
-      qualificationId: 'adlaw',
-      title: "Decentralized Governance Law",
-      description: "Legal aspects of DAOs and decentralized governance.",
-      credits: 15,
-      nqfLevel: 6,
-      learningObjectives: [
-        "Design legal frameworks for DAOs",
-        "Analyze governance structures",
-        "Address liability in decentralized organizations"
-      ],
-      assessmentMethod: 'socratic_dialogue',
-      estimatedHours: 60,
+      estimatedHours: 88,
       difficulty: 'expert',
-      domainTags: ['dao_governance', 'organizational_law'],
+      domainTags: ['leadership', 'ethics', 'governance', 'ubuntu', 'servant_leadership', 'cultural_intelligence'],
       knowledgePrerequisites: ['first_principles'],
       isActive: true,
     });
 
-    const adlawModule3 = this.createModule({
-      qualificationId: 'adlaw',
-      title: "Data Privacy and Cybersecurity Law",
-      description: "Legal protection of data and digital security.",
-      credits: 15,
-      nqfLevel: 6,
-      learningObjectives: [
-        "Apply data protection regulations",
-        "Analyze cybersecurity legal frameworks",
-        "Design compliance systems for digital privacy"
-      ],
-      assessmentMethod: 'peer_review',
-      estimatedHours: 60,
-      difficulty: 'intermediate',
-      domainTags: ['data_privacy', 'cybersecurity_law'],
-      knowledgePrerequisites: ['decentralized_systems'],
-      isActive: true,
-    });
-
-    const adlawModule4 = this.createModule({
-      qualificationId: 'adlaw',
-      title: "Intellectual Property in Digital Age",
-      description: "IP law for digital assets and blockchain technology.",
-      credits: 15,
-      nqfLevel: 6,
-      learningObjectives: [
-        "Protect digital assets and NFTs",
-        "Apply copyright law to blockchain content",
-        "Address patent issues in decentralized innovation"
-      ],
-      assessmentMethod: 'project_based',
-      estimatedHours: 60,
-      difficulty: 'advanced',
-      domainTags: ['intellectual_property', 'digital_assets'],
-      knowledgePrerequisites: ['first_principles'],
-      isActive: true,
-    });
-
-    const adlawModule5 = this.createModule({
-      qualificationId: 'adlaw',
-      title: "International Law and Global Regulation",
-      description: "Cross-border legal issues in decentralized systems.",
-      credits: 15,
-      nqfLevel: 6,
-      learningObjectives: [
-        "Navigate international regulatory frameworks",
-        "Address cross-border legal challenges",
-        "Apply conflict of laws principles"
-      ],
-      assessmentMethod: 'socratic_dialogue',
-      estimatedHours: 60,
-      difficulty: 'expert',
-      domainTags: ['international_law', 'global_regulation'],
-      knowledgePrerequisites: ['first_principles'],
-      isActive: true,
-    });
-
-    const adlawModule6 = this.createModule({
-      qualificationId: 'adlaw',
-      title: "Ethics and Professional Responsibility",
-      description: "Ethical considerations in legal practice and technology.",
-      credits: 15,
-      nqfLevel: 6,
-      learningObjectives: [
-        "Apply ethical frameworks to legal technology",
-        "Address professional responsibility in digital contexts",
-        "Balance innovation with legal and ethical standards"
-      ],
-      assessmentMethod: 'peer_review',
-      estimatedHours: 60,
-      difficulty: 'intermediate',
-      domainTags: ['legal_ethics', 'professional_responsibility'],
-      knowledgePrerequisites: ['first_principles'],
-      isActive: true,
-    });
-
-    // Assign to ADLAW
-    const ckqLaw = this.qualifications.get('adlaw');
-    if (ckqLaw) {
-      ckqLaw.modules = [firstPrinciplesModule.moduleId, decentralizedSystemsModule.moduleId, adlawModule1.moduleId, adlawModule2.moduleId, adlawModule3.moduleId, adlawModule4.moduleId, adlawModule5.moduleId, adlawModule6.moduleId];
+    // Add interdisciplinary modules to all qualifications
+    const allQualifications = Array.from(this.qualifications.values());
+    for (const qual of allQualifications) {
+      if (qual.tier === 'degree') {
+        // Add all interdisciplinary modules to degree programs
+        qual.modules.push(
+          criticalThinkingModule.moduleId,
+          creativeProblemSolvingModule.moduleId,
+          communicationModule.moduleId,
+          ethicalLeadershipModule.moduleId
+        );
+      } else if (qual.tier === 'ckq') {
+        // Add core interdisciplinary modules to CKQ programs
+        qual.modules.push(
+          communicationModule.moduleId,
+          criticalThinkingModule.moduleId
+        );
+      }
     }
-
-    // ADENV: Environmental Science
-    // From [web:160-169]: Ecology, Conservation, Environmental Policy, etc.
-    const adenvModule1 = this.createModule({
-      qualificationId: 'adenv',
-      title: "Climate Science and Modeling",
-      description: "Understanding climate systems and predictive modeling.",
-      credits: 15,
-      nqfLevel: 6,
-      learningObjectives: [
-        "Analyze climate data and trends",
-        "Apply AI to climate prediction",
-        "Model climate change impacts"
-      ],
-      assessmentMethod: 'ai_evaluation',
-      estimatedHours: 60,
-      difficulty: 'advanced',
-      domainTags: ['climate_science', 'climate_modeling'],
-      knowledgePrerequisites: ['causal_inference'],
-      isActive: true,
-    });
-
-    const adenvModule2 = this.createModule({
-      qualificationId: 'adenv',
-      title: "Biodiversity and Conservation",
-      description: "Protection and management of biological diversity.",
-      credits: 15,
-      nqfLevel: 6,
-      learningObjectives: [
-        "Assess biodiversity values",
-        "Design conservation strategies",
-        "Apply ecological principles to conservation"
-      ],
-      assessmentMethod: 'project_based',
-      estimatedHours: 60,
-      difficulty: 'intermediate',
-      domainTags: ['biodiversity', 'conservation'],
-      knowledgePrerequisites: ['first_principles'],
-      isActive: true,
-    });
-
-    const adenvModule3 = this.createModule({
-      qualificationId: 'adenv',
-      title: "Sustainable Development and Policy",
-      description: "Policy frameworks for sustainable development.",
-      credits: 15,
-      nqfLevel: 6,
-      learningObjectives: [
-        "Analyze sustainable development policies",
-        "Design environmental policy frameworks",
-        "Evaluate policy effectiveness"
-      ],
-      assessmentMethod: 'peer_review',
-      estimatedHours: 60,
-      difficulty: 'intermediate',
-      domainTags: ['sustainable_development', 'environmental_policy'],
-      knowledgePrerequisites: ['first_principles'],
-      isActive: true,
-    });
-
-    const adenvModule4 = this.createModule({
-      qualificationId: 'adenv',
-      title: "Environmental Monitoring and Assessment",
-      description: "Techniques for environmental data collection and analysis.",
-      credits: 15,
-      nqfLevel: 6,
-      learningObjectives: [
-        "Design environmental monitoring programs",
-        "Apply remote sensing technologies",
-        "Analyze environmental impact data"
-      ],
-      assessmentMethod: 'project_based',
-      estimatedHours: 60,
-      difficulty: 'intermediate',
-      domainTags: ['environmental_monitoring', 'remote_sensing'],
-      knowledgePrerequisites: ['causal_inference'],
-      isActive: true,
-    });
-
-    const adenvModule5 = this.createModule({
-      qualificationId: 'adenv',
-      title: "Ecosystem Services and Valuation",
-      description: "Economic valuation of environmental services.",
-      credits: 15,
-      nqfLevel: 6,
-      learningObjectives: [
-        "Value ecosystem services economically",
-        "Apply valuation methodologies",
-        "Integrate environmental values into decision-making"
-      ],
-      assessmentMethod: 'ai_evaluation',
-      estimatedHours: 60,
-      difficulty: 'advanced',
-      domainTags: ['ecosystem_services', 'environmental_valuation'],
-      knowledgePrerequisites: ['causal_inference'],
-      isActive: true,
-    });
-
-    const adenvModule6 = this.createModule({
-      qualificationId: 'adenv',
-      title: "Environmental Justice and Equity",
-      description: "Social justice aspects of environmental issues.",
-      credits: 15,
-      nqfLevel: 6,
-      learningObjectives: [
-        "Analyze environmental justice issues",
-        "Address equity in environmental policy",
-        "Apply Ubuntu principles to environmental decision-making"
-      ],
-      assessmentMethod: 'socratic_dialogue',
-      estimatedHours: 60,
-      difficulty: 'intermediate',
-      domainTags: ['environmental_justice', 'equity'],
-      knowledgePrerequisites: ['first_principles'],
-      isActive: true,
-    });
-
-    // Assign to ADENV
-    const ckqEnvironmentalScience = this.qualifications.get('adenv');
-    if (ckqEnvironmentalScience) {
-      ckqEnvironmentalScience.modules = [firstPrinciplesModule.moduleId, causalInferenceModule.moduleId, adenvModule1.moduleId, adenvModule2.moduleId, adenvModule3.moduleId, adenvModule4.moduleId, adenvModule5.moduleId, adenvModule6.moduleId];
-    }
-
-    // ADBIOTECH: Biotechnology
-    // From [web:170-179]: Genetic Engineering, Bioprocessing, etc.
-    const adbiotechModule1 = this.createModule({
-      qualificationId: 'adbiotech',
-      title: "Genetic Engineering and CRISPR",
-      description: "Gene editing technologies and applications.",
-      credits: 15,
-      nqfLevel: 6,
-      learningObjectives: [
-        "Apply CRISPR technology to genetic modification",
-        "Design genetic engineering experiments",
-        "Evaluate ethical implications of gene editing"
-      ],
-      assessmentMethod: 'project_based',
-      estimatedHours: 60,
-      difficulty: 'expert',
-      domainTags: ['genetic_engineering', 'crispr'],
-      knowledgePrerequisites: ['causal_inference'],
-      isActive: true,
-    });
-
-    const adbiotechModule2 = this.createModule({
-      qualificationId: 'adbiotech',
-      title: "Synthetic Biology and Bioengineering",
-      description: "Design and construction of biological systems.",
-      credits: 15,
-      nqfLevel: 6,
-      learningObjectives: [
-        "Design synthetic biological circuits",
-        "Apply engineering principles to biology",
-        "Develop bioengineered solutions"
-      ],
-      assessmentMethod: 'ai_evaluation',
-      estimatedHours: 60,
-      difficulty: 'expert',
-      domainTags: ['synthetic_biology', 'bioengineering'],
-      knowledgePrerequisites: ['first_principles'],
-      isActive: true,
-    });
-
-    const adbiotechModule3 = this.createModule({
-      qualificationId: 'adbiotech',
-      title: "Bioinformatics and Computational Biology",
-      description: "Computational analysis of biological data.",
-      credits: 15,
-      nqfLevel: 6,
-      learningObjectives: [
-        "Analyze genomic and proteomic data",
-        "Apply machine learning to biological problems",
-        "Develop bioinformatics tools and algorithms"
-      ],
-      assessmentMethod: 'project_based',
-      estimatedHours: 60,
-      difficulty: 'advanced',
-      domainTags: ['bioinformatics', 'computational_biology'],
-      knowledgePrerequisites: ['causal_inference'],
-      isActive: true,
-    });
-
-    const adbiotechModule4 = this.createModule({
-      qualificationId: 'adbiotech',
-      title: "Biopharmaceuticals and Drug Development",
-      description: "Development of biological drugs and therapies.",
-      credits: 15,
-      nqfLevel: 6,
-      learningObjectives: [
-        "Design biopharmaceutical production processes",
-        "Apply biotechnology to drug discovery",
-        "Develop cell and gene therapies"
-      ],
-      assessmentMethod: 'peer_review',
-      estimatedHours: 60,
-      difficulty: 'expert',
-      domainTags: ['biopharmaceuticals', 'drug_development'],
-      knowledgePrerequisites: ['causal_inference'],
-      isActive: true,
-    });
-
-    const adbiotechModule5 = this.createModule({
-      qualificationId: 'adbiotech',
-      title: "Agricultural Biotechnology",
-      description: "Biotechnology applications in agriculture.",
-      credits: 15,
-      nqfLevel: 6,
-      learningObjectives: [
-        "Develop genetically modified crops",
-        "Apply biotechnology to sustainable agriculture",
-        "Address food security challenges"
-      ],
-      assessmentMethod: 'project_based',
-      estimatedHours: 60,
-      difficulty: 'advanced',
-      domainTags: ['agricultural_biotech', 'gm_crops'],
-      knowledgePrerequisites: ['first_principles'],
-      isActive: true,
-    });
-
-    const adbiotechModule6 = this.createModule({
-      qualificationId: 'adbiotech',
-      title: "Biotechnology Ethics and Regulation",
-      description: "Ethical and regulatory aspects of biotechnology.",
-      credits: 15,
-      nqfLevel: 6,
-      learningObjectives: [
-        "Analyze ethical issues in biotechnology",
-        "Navigate regulatory frameworks",
-        "Apply responsible innovation principles"
-      ],
-      assessmentMethod: 'socratic_dialogue',
-      estimatedHours: 60,
-      difficulty: 'intermediate',
-      domainTags: ['biotech_ethics', 'biotech_regulation'],
-      knowledgePrerequisites: ['first_principles'],
-      isActive: true,
-    });
-
-    // Assign to ADBIOTECH
-    const ckqBiotechnology = this.qualifications.get('adbiotech');
-    if (ckqBiotechnology) {
-      ckqBiotechnology.modules = [firstPrinciplesModule.moduleId, decentralizedSystemsModule.moduleId, adbiotechModule1.moduleId, adbiotechModule2.moduleId, adbiotechModule3.moduleId, adbiotechModule4.moduleId, adbiotechModule5.moduleId, adbiotechModule6.moduleId];
-    }
-
-    // ADECON: Economics
-    // From [web:180-189]: Microeconomics, Macroeconomics, etc.
-    const adeconModule1 = this.createModule({
-      qualificationId: 'adecon',
-      title: "Decentralized Economics and Tokenomics",
-      description: "Economic principles in decentralized systems.",
-      credits: 15,
-      nqfLevel: 6,
-      learningObjectives: [
-        "Analyze token economy design",
-        "Apply economic theory to DeFi",
-        "Design incentive mechanisms"
-      ],
-      assessmentMethod: 'project_based',
-      estimatedHours: 60,
-      difficulty: 'advanced',
-      domainTags: ['tokenomics', 'decentralized_economics'],
-      knowledgePrerequisites: ['causal_inference'],
-      isActive: true,
-    });
-
-    const adeconModule2 = this.createModule({
-      qualificationId: 'adecon',
-      title: "Behavioral Economics in Digital Markets",
-      description: "Human behavior in digital and crypto markets.",
-      credits: 15,
-      nqfLevel: 6,
-      learningObjectives: [
-        "Apply behavioral economics to crypto markets",
-        "Analyze decision-making in decentralized systems",
-        "Design user incentives for adoption"
-      ],
-      assessmentMethod: 'ai_evaluation',
-      estimatedHours: 60,
-      difficulty: 'intermediate',
-      domainTags: ['behavioral_economics', 'digital_markets'],
-      knowledgePrerequisites: ['causal_inference'],
-      isActive: true,
-    });
-
-    const adeconModule3 = this.createModule({
-      qualificationId: 'adecon',
-      title: "Sustainable Economic Development",
-      description: "Economic growth with environmental and social responsibility.",
-      credits: 15,
-      nqfLevel: 6,
-      learningObjectives: [
-        "Design sustainable economic policies",
-        "Apply circular economy principles",
-        "Evaluate development impact"
-      ],
-      assessmentMethod: 'peer_review',
-      estimatedHours: 60,
-      difficulty: 'intermediate',
-      domainTags: ['sustainable_development', 'circular_economy'],
-      knowledgePrerequisites: ['first_principles'],
-      isActive: true,
-    });
-
-    const adeconModule4 = this.createModule({
-      qualificationId: 'adecon',
-      title: "Economic Modeling and Forecasting",
-      description: "Quantitative methods for economic analysis.",
-      credits: 15,
-      nqfLevel: 6,
-      learningObjectives: [
-        "Build economic models",
-        "Apply forecasting techniques",
-        "Analyze economic data with AI"
-      ],
-      assessmentMethod: 'ai_evaluation',
-      estimatedHours: 60,
-      difficulty: 'advanced',
-      domainTags: ['economic_modeling', 'forecasting'],
-      knowledgePrerequisites: ['causal_inference'],
-      isActive: true,
-    });
-
-    const adeconModule5 = this.createModule({
-      qualificationId: 'adecon',
-      title: "International Trade and Globalization",
-      description: "Global economic relationships and trade.",
-      credits: 15,
-      nqfLevel: 6,
-      learningObjectives: [
-        "Analyze international trade theories",
-        "Evaluate globalization impacts",
-        "Design trade policies for digital economies"
-      ],
-      assessmentMethod: 'socratic_dialogue',
-      estimatedHours: 60,
-      difficulty: 'intermediate',
-      domainTags: ['international_trade', 'globalization'],
-      knowledgePrerequisites: ['first_principles'],
-      isActive: true,
-    });
-
-    const adeconModule6 = this.createModule({
-      qualificationId: 'adecon',
-      title: "Economic Policy and Governance",
-      description: "Design and implementation of economic policies.",
-      credits: 15,
-      nqfLevel: 6,
-      learningObjectives: [
-        "Design economic policy frameworks",
-        "Evaluate policy effectiveness",
-        "Apply governance principles to economic systems"
-      ],
-      assessmentMethod: 'project_based',
-      estimatedHours: 60,
-      difficulty: 'advanced',
-      domainTags: ['economic_policy', 'governance'],
-      knowledgePrerequisites: ['first_principles'],
-      isActive: true,
-    });
-
-    // Assign to ADECON
-    const ckqEconomics = this.qualifications.get('adecon');
-    if (ckqEconomics) {
-      ckqEconomics.modules = [firstPrinciplesModule.moduleId, causalInferenceModule.moduleId, adeconModule1.moduleId, adeconModule2.moduleId, adeconModule3.moduleId, adeconModule4.moduleId, adeconModule5.moduleId, adeconModule6.moduleId];
-    }
-
-    // Now implement degree programs with advanced modules building on CKQ foundations
-
-    // BSc Applied AI: Bachelor of Science in Applied Artificial Intelligence (NQF 7, 360 credits)
-    const bscAiModule1 = this.createModule({
-      qualificationId: 'bsc_applied_ai',
-      title: "Foundations of Machine Learning",
-      description: "Core principles of machine learning algorithms and their mathematical foundations.",
-      credits: 30,
-      nqfLevel: 7,
-      learningObjectives: [
-        "Understand fundamental ML algorithms (supervised, unsupervised, reinforcement learning)",
-        "Apply mathematical foundations (linear algebra, probability, optimization)",
-        "Implement basic ML models using industry-standard frameworks"
-      ],
-      assessmentMethod: 'proof_of_knowledge',
-      estimatedHours: 120,
-      difficulty: 'intermediate',
-      domainTags: ['machine_learning', 'mathematics', 'algorithms'],
-      knowledgePrerequisites: ['first_principles', 'decentralized_systems'],
-      isActive: true,
-      learningCycle: {
-        prepare: {
-          asyncContent: "Interactive ML theory modules, mathematical prerequisites review",
-          resources: ["Khan Academy Linear Algebra", "Andrew Ng Coursera ML Course"],
-          estimatedHours: 40
-        },
-        engage: {
-          syncSeminar: "Live Q&A with AI researchers, algorithm walkthroughs",
-          duration: 2,
-          format: "virtual_classroom"
-        },
-        apply: {
-          asyncProject: "Build and train a basic ML model on real dataset",
-          deliverables: ["Jupyter notebook with model implementation", "Performance analysis report"],
-          estimatedHours: 60
-        },
-        demonstrate: {
-          assessmentType: 'proof_of_knowledge',
-          criteria: ["Model accuracy >85%", "Code quality and documentation", "Mathematical understanding demonstrated"],
-          aiEvaluation: true,
-          humanReview: true
-        }
-      }
-    });
-
-    const bscAiModule2 = this.createModule({
-      qualificationId: 'bsc_applied_ai',
-      title: "Deep Learning and Neural Networks",
-      description: "Advanced neural network architectures and deep learning techniques.",
-      credits: 30,
-      nqfLevel: 7,
-      learningObjectives: [
-        "Master deep neural network architectures (CNN, RNN, Transformer)",
-        "Implement advanced DL techniques (transfer learning, fine-tuning)",
-        "Deploy DL models in production environments"
-      ],
-      assessmentMethod: 'proof_of_knowledge',
-      estimatedHours: 120,
-      difficulty: 'advanced',
-      domainTags: ['deep_learning', 'neural_networks', 'computer_vision'],
-      knowledgePrerequisites: ['machine_learning_foundations'],
-      isActive: true,
-      learningCycle: {
-        prepare: {
-          asyncContent: "Advanced neural network theory, architecture deep-dives",
-          resources: ["Deep Learning Book", "PyTorch documentation"],
-          estimatedHours: 40
-        },
-        engage: {
-          syncSeminar: "Live coding sessions with DL experts, architecture discussions",
-          duration: 2,
-          format: "virtual_classroom"
-        },
-        apply: {
-          asyncProject: "Develop a computer vision application using CNNs",
-          deliverables: ["Trained model with >90% accuracy", "Deployment documentation"],
-          estimatedHours: 60
-        },
-        demonstrate: {
-          assessmentType: 'proof_of_knowledge',
-          criteria: ["Model performance metrics", "Architecture justification", "Production deployment"],
-          aiEvaluation: true,
-          humanReview: true
-        }
-      }
-    });
-
-    const bscAiModule3 = this.createModule({
-      qualificationId: 'bsc_applied_ai',
-      title: "MLOps and AI Engineering",
-      description: "Production ML systems, deployment, monitoring, and maintenance.",
-      credits: 30,
-      nqfLevel: 7,
-      learningObjectives: [
-        "Design scalable ML pipelines and infrastructure",
-        "Implement CI/CD for ML models",
-        "Monitor and maintain production ML systems"
-      ],
-      assessmentMethod: 'proof_of_knowledge',
-      estimatedHours: 120,
-      difficulty: 'advanced',
-      domainTags: ['mlops', 'devops', 'cloud_computing'],
-      knowledgePrerequisites: ['deep_learning', 'software_engineering'],
-      isActive: true,
-      learningCycle: {
-        prepare: {
-          asyncContent: "MLOps best practices, cloud infrastructure for ML",
-          resources: ["MLOps Zoomcamp", "AWS ML services documentation"],
-          estimatedHours: 40
-        },
-        engage: {
-          syncSeminar: "Industry case studies, infrastructure design workshops",
-          duration: 2,
-          format: "virtual_classroom"
-        },
-        apply: {
-          asyncProject: "Build end-to-end ML pipeline with deployment",
-          deliverables: ["Complete MLOps pipeline", "Monitoring dashboard", "Documentation"],
-          estimatedHours: 60
-        },
-        demonstrate: {
-          assessmentType: 'proof_of_knowledge',
-          criteria: ["Pipeline reliability", "Monitoring effectiveness", "Scalability demonstrated"],
-          aiEvaluation: true,
-          humanReview: true
-        }
-      }
-    });
-
-    // BSc Cybersecurity & Cloud Computing: Bachelor of Science in Cybersecurity & Cloud Computing (NQF 7, 360 credits)
-    const bscCyberModule1 = this.createModule({
-      qualificationId: 'bsc_cybersecurity_cloud',
-      title: "Network Security Fundamentals",
-      description: "Core principles of network security, protocols, and defense mechanisms.",
-      credits: 30,
-      nqfLevel: 7,
-      learningObjectives: [
-        "Understand network protocols and security vulnerabilities",
-        "Implement basic network security controls (firewalls, IDS/IPS)",
-        "Conduct network security assessments and penetration testing"
-      ],
-      assessmentMethod: 'proof_of_knowledge',
-      estimatedHours: 120,
-      difficulty: 'intermediate',
-      domainTags: ['network_security', 'cybersecurity', 'penetration_testing'],
-      knowledgePrerequisites: ['first_principles', 'decentralized_systems'],
-      isActive: true,
-      learningCycle: {
-        prepare: {
-          asyncContent: "Network protocols, security fundamentals, tools overview",
-          resources: ["Network Security Essentials", "Wireshark tutorials"],
-          estimatedHours: 40
-        },
-        engage: {
-          syncSeminar: "Live network analysis sessions, security demonstrations",
-          duration: 2,
-          format: "virtual_classroom"
-        },
-        apply: {
-          asyncProject: "Conduct network security assessment for a simulated enterprise",
-          deliverables: ["Security assessment report", "Vulnerability findings", "Remediation recommendations"],
-          estimatedHours: 60
-        },
-        demonstrate: {
-          assessmentType: 'proof_of_knowledge',
-          criteria: ["Assessment thoroughness", "Technical accuracy", "Practical recommendations"],
-          aiEvaluation: true,
-          humanReview: true
-        }
-      }
-    });
-
-    const bscCyberModule2 = this.createModule({
-      qualificationId: 'bsc_cybersecurity_cloud',
-      title: "Cloud Security and Infrastructure",
-      description: "Security principles for cloud computing environments and infrastructure.",
-      credits: 30,
-      nqfLevel: 7,
-      learningObjectives: [
-        "Design secure cloud architectures (AWS, Azure, GCP)",
-        "Implement cloud security controls and compliance frameworks",
-        "Manage identity and access in cloud environments"
-      ],
-      assessmentMethod: 'proof_of_knowledge',
-      estimatedHours: 120,
-      difficulty: 'advanced',
-      domainTags: ['cloud_security', 'infrastructure_security', 'compliance'],
-      knowledgePrerequisites: ['network_security'],
-      isActive: true,
-      learningCycle: {
-        prepare: {
-          asyncContent: "Cloud platforms security, compliance frameworks (SOC2, ISO27001)",
-          resources: ["AWS Security Best Practices", "Azure security documentation"],
-          estimatedHours: 40
-        },
-        engage: {
-          syncSeminar: "Cloud security workshops, compliance discussions",
-          duration: 2,
-          format: "virtual_classroom"
-        },
-        apply: {
-          asyncProject: "Design and implement secure cloud infrastructure",
-          deliverables: ["Infrastructure as Code templates", "Security configuration", "Compliance documentation"],
-          estimatedHours: 60
-        },
-        demonstrate: {
-          assessmentType: 'proof_of_knowledge',
-          criteria: ["Security best practices", "Compliance alignment", "Infrastructure robustness"],
-          aiEvaluation: true,
-          humanReview: true
-        }
-      }
-    });
-
-    const bscCyberModule3 = this.createModule({
-      qualificationId: 'bsc_cybersecurity_cloud',
-      title: "Ethical Hacking and Incident Response",
-      description: "Advanced penetration testing and cybersecurity incident management.",
-      credits: 30,
-      nqfLevel: 7,
-      learningObjectives: [
-        "Conduct comprehensive penetration testing and vulnerability assessments",
-        "Develop incident response plans and execute them",
-        "Apply ethical hacking methodologies and tools"
-      ],
-      assessmentMethod: 'proof_of_knowledge',
-      estimatedHours: 120,
-      difficulty: 'expert',
-      domainTags: ['ethical_hacking', 'incident_response', 'penetration_testing'],
-      knowledgePrerequisites: ['cloud_security', 'network_security'],
-      isActive: true,
-      learningCycle: {
-        prepare: {
-          asyncContent: "Advanced pentesting techniques, incident response frameworks",
-          resources: ["CEH curriculum", "NIST incident response guide"],
-          estimatedHours: 40
-        },
-        engage: {
-          syncSeminar: "Ethical hacking demonstrations, incident simulations",
-          duration: 2,
-          format: "virtual_classroom"
-        },
-        apply: {
-          asyncProject: "Complete penetration test and incident response simulation",
-          deliverables: ["Pentest report", "Incident response playbook", "Executive summary"],
-          estimatedHours: 60
-        },
-        demonstrate: {
-          assessmentType: 'proof_of_knowledge',
-          criteria: ["Technical proficiency", "Ethical conduct", "Response effectiveness"],
-          aiEvaluation: true,
-          humanReview: true
-        }
-      }
-    });
-
-    // BCom Digital Finance & Data Analytics: Bachelor of Commerce in Digital Finance & Data Analytics (NQF 7, 360 credits)
-    const bcomFinanceModule1 = this.createModule({
-      qualificationId: 'bcom_digital_finance_data',
-      title: "FinTech Fundamentals and Digital Finance",
-      description: "Core concepts of financial technology and digital financial services.",
-      credits: 30,
-      nqfLevel: 7,
-      learningObjectives: [
-        "Understand FinTech ecosystem and digital payment systems",
-        "Analyze blockchain applications in finance",
-        "Evaluate financial technology innovations and their impact"
-      ],
-      assessmentMethod: 'proof_of_knowledge',
-      estimatedHours: 120,
-      difficulty: 'intermediate',
-      domainTags: ['fintech', 'digital_finance', 'blockchain'],
-      knowledgePrerequisites: ['first_principles', 'decentralized_systems'],
-      isActive: true,
-      learningCycle: {
-        prepare: {
-          asyncContent: "FinTech landscape, digital payment systems, regulatory frameworks",
-          resources: ["FinTech 101", "Blockchain in Finance reports"],
-          estimatedHours: 40
-        },
-        engage: {
-          syncSeminar: "Industry expert panels, FinTech case studies",
-          duration: 2,
-          format: "virtual_classroom"
-        },
-        apply: {
-          asyncProject: "Design a digital financial service or product",
-          deliverables: ["Business case analysis", "Technical specification", "Market analysis"],
-          estimatedHours: 60
-        },
-        demonstrate: {
-          assessmentType: 'proof_of_knowledge',
-          criteria: ["Innovation level", "Market viability", "Technical feasibility"],
-          aiEvaluation: true,
-          humanReview: true
-        }
-      }
-    });
-
-    const bcomFinanceModule2 = this.createModule({
-      qualificationId: 'bcom_digital_finance_data',
-      title: "Data Analytics for Financial Decision Making",
-      description: "Advanced data analytics techniques applied to financial data and decision making.",
-      credits: 30,
-      nqfLevel: 7,
-      learningObjectives: [
-        "Apply statistical analysis and machine learning to financial data",
-        "Build predictive models for financial forecasting",
-        "Create data-driven financial insights and recommendations"
-      ],
-      assessmentMethod: 'proof_of_knowledge',
-      estimatedHours: 120,
-      difficulty: 'advanced',
-      domainTags: ['data_analytics', 'financial_modeling', 'predictive_analytics'],
-      knowledgePrerequisites: ['fintech_fundamentals'],
-      isActive: true,
-      learningCycle: {
-        prepare: {
-          asyncContent: "Statistical methods, financial data analysis, ML for finance",
-          resources: ["Python for Data Analysis", "Financial ML textbooks"],
-          estimatedHours: 40
-        },
-        engage: {
-          syncSeminar: "Financial data analysis workshops, model validation sessions",
-          duration: 2,
-          format: "virtual_classroom"
-        },
-        apply: {
-          asyncProject: "Build predictive financial model using real market data",
-          deliverables: ["Predictive model implementation", "Backtesting results", "Risk analysis"],
-          estimatedHours: 60
-        },
-        demonstrate: {
-          assessmentType: 'proof_of_knowledge',
-          criteria: ["Model accuracy", "Risk assessment", "Business insights"],
-          aiEvaluation: true,
-          humanReview: true
-        }
-      }
-    });
-
-    const bcomFinanceModule3 = this.createModule({
-      qualificationId: 'bcom_digital_finance_data',
-      title: "Digital Services and Financial Innovation",
-      description: "Designing and implementing innovative digital financial services.",
-      credits: 30,
-      nqfLevel: 7,
-      learningObjectives: [
-        "Design user-centric digital financial services",
-        "Implement regulatory technology (RegTech) solutions",
-        "Launch and scale digital financial products"
-      ],
-      assessmentMethod: 'proof_of_knowledge',
-      estimatedHours: 120,
-      difficulty: 'expert',
-      domainTags: ['digital_services', 'regtech', 'financial_innovation'],
-      knowledgePrerequisites: ['data_analytics_finance'],
-      isActive: true,
-      learningCycle: {
-        prepare: {
-          asyncContent: "UX design for finance, RegTech frameworks, product development",
-          resources: ["Digital Finance Innovation", "RegTech case studies"],
-          estimatedHours: 40
-        },
-        engage: {
-          syncSeminar: "Product design workshops, regulatory compliance discussions",
-          duration: 2,
-          format: "virtual_classroom"
-        },
-        apply: {
-          asyncProject: "Develop and prototype a digital financial service",
-          deliverables: ["Product prototype", "User testing results", "Regulatory compliance plan"],
-          estimatedHours: 60
-        },
-        demonstrate: {
-          assessmentType: 'proof_of_knowledge',
-          criteria: ["User experience", "Regulatory compliance", "Market potential"],
-          aiEvaluation: true,
-          humanReview: true
-        }
-      }
-    });
-
-    // BEng Sustainable Energy Systems: Bachelor of Engineering in Sustainable Energy Systems (NQF 7, 360 credits)
-    const bengEnergyModule1 = this.createModule({
-      qualificationId: 'beng_sustainable_energy',
-      title: "Renewable Energy Technologies",
-      description: "Comprehensive study of renewable energy sources and conversion technologies.",
-      credits: 30,
-      nqfLevel: 7,
-      learningObjectives: [
-        "Analyze solar, wind, hydro, and other renewable energy systems",
-        "Design renewable energy conversion systems",
-        "Evaluate energy storage technologies and their applications"
-      ],
-      assessmentMethod: 'proof_of_knowledge',
-      estimatedHours: 120,
-      difficulty: 'intermediate',
-      domainTags: ['renewable_energy', 'energy_conversion', 'sustainable_technology'],
-      knowledgePrerequisites: ['first_principles', 'decentralized_systems'],
-      isActive: true,
-      learningCycle: {
-        prepare: {
-          asyncContent: "Renewable energy physics, conversion technologies, storage systems",
-          resources: ["Renewable Energy Engineering", "Energy storage whitepapers"],
-          estimatedHours: 40
-        },
-        engage: {
-          syncSeminar: "Energy system design workshops, technology demonstrations",
-          duration: 2,
-          format: "virtual_classroom"
-        },
-        apply: {
-          asyncProject: "Design a renewable energy system for a specific application",
-          deliverables: ["System design specification", "Performance calculations", "Economic analysis"],
-          estimatedHours: 60
-        },
-        demonstrate: {
-          assessmentType: 'proof_of_knowledge',
-          criteria: ["Technical accuracy", "System efficiency", "Economic viability"],
-          aiEvaluation: true,
-          humanReview: true
-        }
-      }
-    });
-
-    const bengEnergyModule2 = this.createModule({
-      qualificationId: 'beng_sustainable_energy',
-      title: "Smart Grid and Energy Management",
-      description: "Intelligent energy distribution systems and advanced energy management.",
-      credits: 30,
-      nqfLevel: 7,
-      learningObjectives: [
-        "Design smart grid architectures and control systems",
-        "Implement energy management and optimization algorithms",
-        "Integrate renewable energy sources into grid systems"
-      ],
-      assessmentMethod: 'proof_of_knowledge',
-      estimatedHours: 120,
-      difficulty: 'advanced',
-      domainTags: ['smart_grid', 'energy_management', 'power_systems'],
-      knowledgePrerequisites: ['renewable_energy_technologies'],
-      isActive: true,
-      learningCycle: {
-        prepare: {
-          asyncContent: "Power systems engineering, control theory, optimization algorithms",
-          resources: ["Smart Grid Handbook", "Energy management systems"],
-          estimatedHours: 40
-        },
-        engage: {
-          syncSeminar: "Grid simulation workshops, control system design sessions",
-          duration: 2,
-          format: "virtual_classroom"
-        },
-        apply: {
-          asyncProject: "Develop smart grid control algorithm for renewable integration",
-          deliverables: ["Control algorithm implementation", "Simulation results", "Performance analysis"],
-          estimatedHours: 60
-        },
-        demonstrate: {
-          assessmentType: 'proof_of_knowledge',
-          criteria: ["Algorithm effectiveness", "System stability", "Renewable integration"],
-          aiEvaluation: true,
-          humanReview: true
-        }
-      }
-    });
-
-    const bengEnergyModule3 = this.createModule({
-      qualificationId: 'beng_sustainable_energy',
-      title: "Energy Policy and Sustainable Development",
-      description: "Energy policy frameworks, sustainability principles, and global energy transitions.",
-      credits: 30,
-      nqfLevel: 7,
-      learningObjectives: [
-        "Analyze energy policy frameworks and regulatory environments",
-        "Design sustainable energy transition strategies",
-        "Evaluate environmental and social impacts of energy systems"
-      ],
-      assessmentMethod: 'proof_of_knowledge',
-      estimatedHours: 120,
-      difficulty: 'expert',
-      domainTags: ['energy_policy', 'sustainable_development', 'environmental_engineering'],
-      knowledgePrerequisites: ['smart_grid_energy'],
-      isActive: true,
-      learningCycle: {
-        prepare: {
-          asyncContent: "Energy policy analysis, sustainability frameworks, environmental impact assessment",
-          resources: ["Energy Policy textbooks", "UN Sustainable Development Goals"],
-          estimatedHours: 40
-        },
-        engage: {
-          syncSeminar: "Policy analysis workshops, stakeholder engagement simulations",
-          duration: 2,
-          format: "virtual_classroom"
-        },
-        apply: {
-          asyncProject: "Develop energy policy recommendation for sustainable transition",
-          deliverables: ["Policy analysis report", "Implementation strategy", "Impact assessment"],
-          estimatedHours: 60
-        },
-        demonstrate: {
-          assessmentType: 'proof_of_knowledge',
-          criteria: ["Policy comprehensiveness", "Stakeholder consideration", "Sustainability impact"],
-          aiEvaluation: true,
-          humanReview: true
-        }
-      }
-    });
-
-    // Assign modules to qualifications
-    const degreeAi = this.qualifications.get('bsc_applied_ai');
-    if (degreeAi) {
-      degreeAi.modules = [
-        firstPrinciplesModule.moduleId,
-        decentralizedSystemsModule.moduleId,
-        causalInferenceModule.moduleId,
-        bscAiModule1.moduleId,
-        bscAiModule2.moduleId,
-        bscAiModule3.moduleId
-      ];
-    }
-
-    const degreeCyber = this.qualifications.get('bsc_cybersecurity_cloud');
-    if (degreeCyber) {
-      degreeCyber.modules = [
-        firstPrinciplesModule.moduleId,
-        decentralizedSystemsModule.moduleId,
-        causalInferenceModule.moduleId,
-        bscCyberModule1.moduleId,
-        bscCyberModule2.moduleId,
-        bscCyberModule3.moduleId
-      ];
-    }
-
-    const degreeFinance = this.qualifications.get('bcom_digital_finance_data');
-    if (degreeFinance) {
-      degreeFinance.modules = [
-        firstPrinciplesModule.moduleId,
-        decentralizedSystemsModule.moduleId,
-        causalInferenceModule.moduleId,
-        bcomFinanceModule1.moduleId,
-        bcomFinanceModule2.moduleId,
-        bcomFinanceModule3.moduleId
-      ];
-    }
-
-    const degreeEnergy = this.qualifications.get('beng_sustainable_energy');
-    if (degreeEnergy) {
-      degreeEnergy.modules = [
-        firstPrinciplesModule.moduleId,
-        decentralizedSystemsModule.moduleId,
-        causalInferenceModule.moduleId,
-        bengEnergyModule1.moduleId,
-        bengEnergyModule2.moduleId,
-        bengEnergyModule3.moduleId
-      ];
-    }
-
-    // This completes the comprehensive module curricula implementation for the Azora Sapiens Model
   }
 
   /**
@@ -4818,644 +3639,545 @@ FOLLOW_UP_QUESTIONS:
   }
 
   /**
-   * Update student engagement metrics
+   * Parse JSON response from LLM
    */
-  private async updateStudentEngagementMetrics(studentId: string, engagementScore: number): Promise<void> {
-    const student = this.students.get(studentId);
-    if (!student) return;
-
-    // Update learning path engagement metrics
-    const learningPaths = Array.from(this.learningPaths.values()).filter(lp => lp.studentId === studentId);
-    learningPaths.forEach(path => {
-      // Simplified engagement tracking
-      path.engagementMetrics.averageSessionLength = (path.engagementMetrics.averageSessionLength + 30) / 2; // Assume 30 min sessions
-      path.engagementMetrics.consistencyScore = Math.min(100, path.engagementMetrics.consistencyScore + 1);
-      path.engagementMetrics.knowledgeRetention = Math.min(100, (path.engagementMetrics.knowledgeRetention + engagementScore) / 2);
-    });
-  }
-
-  /**
-   * Update personalized learning path based on student performance and engagement
-   */
-  async updatePersonalizedLearningPath(
-    studentId: string,
-    performanceData: {
-      moduleId: string;
-      score: number;
-      timeSpent: number;
-      engagementScore: number;
-      completionStatus: 'incomplete' | 'completed' | 'struggling';
-    }
-  ): Promise<{
-    pathUpdated: boolean;
-    adjustments: string[];
-    nextRecommendedModules: string[];
-    predictiveInsights: PersonalizedLearningPath['predictiveInsights'];
-  }> {
-    const learningPath = Array.from(this.learningPaths.values())
-      .find(lp => lp.studentId === studentId);
-
-    if (!learningPath) {
-      throw new Error('Learning path not found for student');
-    }
-
-    const adjustments: string[] = [];
-    let pathUpdated = false;
-
-    // Analyze performance and determine adjustments
-    const analysis = await this.analyzePerformanceForAdaptation(performanceData, learningPath);
-
-    // Apply adaptive adjustments
-    if (analysis.needsDifficultyAdjustment) {
-      adjustments.push(`Adjusted difficulty for module ${performanceData.moduleId}`);
-      pathUpdated = true;
-    }
-
-    if (analysis.shouldSkipAhead) {
-      const nextModuleIndex = learningPath.recommendedSequence.indexOf(performanceData.moduleId) + 1;
-      if (nextModuleIndex < learningPath.recommendedSequence.length) {
-        learningPath.currentModule = learningPath.recommendedSequence[nextModuleIndex];
-        adjustments.push(`Advanced to next module: ${learningPath.currentModule}`);
-        pathUpdated = true;
+  private parseJSONResponse(content: string): any {
+    try {
+      // Extract JSON from response
+      const jsonMatch = content.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        return JSON.parse(jsonMatch[0]);
       }
+      return {};
+    } catch (error) {
+      console.warn('Failed to parse JSON response:', error);
+      return {};
     }
-
-    if (analysis.needsReview) {
-      adjustments.push(`Added review session for struggling concepts in ${performanceData.moduleId}`);
-      pathUpdated = true;
-    }
-
-    if (analysis.recommendedInterventions.length > 0) {
-      learningPath.predictiveInsights.recommendedInterventions.push(...analysis.recommendedInterventions);
-      adjustments.push(...analysis.recommendedInterventions);
-      pathUpdated = true;
-    }
-
-    // Record adjustment
-    const adjustment: PersonalizedLearningPath['adaptiveAdjustments'][0] = {
-      trigger: `Performance in ${performanceData.moduleId}: ${performanceData.score}%`,
-      adjustment: adjustments.join('; '),
-      timestamp: Date.now(),
-    };
-
-    learningPath.adaptiveAdjustments.push(adjustment);
-
-    // Update predictive insights
-    const updatedInsights = await this.updatePredictiveInsights(learningPath);
-    learningPath.predictiveInsights = updatedInsights;
-
-    // Determine next recommended modules
-    const nextRecommendedModules = this.calculateNextRecommendedModules(learningPath);
-
-    return {
-      pathUpdated,
-      adjustments,
-      nextRecommendedModules,
-      predictiveInsights: updatedInsights,
-    };
   }
 
   /**
-   * Analyze performance data to determine needed adaptations
+   * Personalized Learning Paths: Develop adaptive algorithms with predictive analytics
    */
-  private async analyzePerformanceForAdaptation(
-    performanceData: any,
-    learningPath: PersonalizedLearningPath
+  async developPersonalizedLearningPath(
+    studentId: string,
+    qualificationId: string,
+    assessmentData: {
+      currentKnowledge: Record<string, number>; // moduleId -> proficiency score 0-100
+      learningStyle: 'visual' | 'auditory' | 'kinesthetic' | 'reading';
+      pacePreference: 'slow' | 'moderate' | 'fast';
+      interests: string[];
+      challenges: string[];
+    }
   ): Promise<{
-    needsDifficultyAdjustment: boolean;
-    shouldSkipAhead: boolean;
-    needsReview: boolean;
-    recommendedInterventions: string[];
-  }> {
-    const { score, engagementScore, completionStatus } = performanceData;
-
-    const needsDifficultyAdjustment = score < 60 || (score < 75 && engagementScore < 50);
-    const shouldSkipAhead = score >= 90 && engagementScore >= 80 && completionStatus === 'completed';
-    const needsReview = score < 70 && completionStatus === 'struggling';
-
-    const recommendedInterventions: string[] = [];
-
-    if (needsReview) {
-      recommendedInterventions.push('Schedule additional tutoring sessions');
-    }
-
-    if (engagementScore < 50) {
-      recommendedInterventions.push('Implement gamification elements to increase engagement');
-    }
-
-    if (score >= 85) {
-      recommendedInterventions.push('Consider accelerating to advanced modules');
-    }
-
-    return {
-      needsDifficultyAdjustment,
-      shouldSkipAhead,
-      needsReview,
-      recommendedInterventions,
+    learningPath: PersonalizedLearningPath;
+    predictiveInsights: {
+      estimatedCompletion: number;
+      successProbability: number;
+      atRiskIndicators: string[];
+      recommendedInterventions: string[];
+      optimalSchedule: {
+        dailyHours: number;
+        weeklySessions: number;
+        breakPatterns: string;
+      };
     };
-  }
-
-  /**
-   * Update predictive insights for learning path
-   */
-  private async updatePredictiveInsights(
-    learningPath: PersonalizedLearningPath
-  ): Promise<PersonalizedLearningPath['predictiveInsights']> {
-    const student = this.students.get(learningPath.studentId);
-    if (!student) {
-      return learningPath.predictiveInsights;
-    }
-
-    // Calculate completion estimate based on current progress and performance
-    const completedModules = student.completedModules.length;
-    const totalModules = learningPath.recommendedSequence.length;
-    const progressRatio = completedModules / totalModules;
-
-    // Estimate time based on engagement and performance
-    const avgEngagement = learningPath.engagementMetrics.consistencyScore;
-    const baseTimePerModule = 30 * 24 * 60 * 60 * 1000; // 30 days in ms
-    const adjustedTimePerModule = baseTimePerModule * (100 / Math.max(avgEngagement, 50));
-
-    const remainingModules = totalModules - completedModules;
-    const estimatedCompletion = remainingModules * adjustedTimePerModule;
-
-    // Identify at-risk indicators
-    const atRiskIndicators: string[] = [];
-    if (learningPath.engagementMetrics.consistencyScore < 60) {
-      atRiskIndicators.push('Low engagement consistency');
-    }
-    if (learningPath.engagementMetrics.knowledgeRetention < 70) {
-      atRiskIndicators.push('Poor knowledge retention');
-    }
-    if (progressRatio < 0.3 && Date.now() - student.enrollmentDate > 90 * 24 * 60 * 60 * 1000) {
-      atRiskIndicators.push('Slow progress relative to enrollment time');
-    }
-
-    return {
-      estimatedCompletion,
-      atRiskIndicators,
-      recommendedInterventions: learningPath.predictiveInsights.recommendedInterventions,
-    };
-  }
-
-  /**
-   * Calculate next recommended modules based on current progress and adaptations
-   */
-  private calculateNextRecommendedModules(learningPath: PersonalizedLearningPath): string[] {
-    const currentIndex = learningPath.recommendedSequence.indexOf(learningPath.currentModule);
-    if (currentIndex === -1) return [learningPath.recommendedSequence[0]];
-
-    const nextModules: string[] = [];
-    const remainingSequence = learningPath.recommendedSequence.slice(currentIndex + 1);
-
-    // Return next 3 modules, considering any adaptive adjustments
-    for (let i = 0; i < Math.min(3, remainingSequence.length); i++) {
-      nextModules.push(remainingSequence[i]);
-    }
-
-    return nextModules;
-  }
-
-  /**
-   * Conduct Socratic dialogue for critical thinking development
-   */
-  async conductSocraticDialogue(
-    tutorId: string,
-    topic: string,
-    studentResponses: string[],
-    depth: 'surface' | 'intermediate' | 'deep' = 'intermediate'
-  ): Promise<{
-    dialogueSession: {
-      questions: string[];
-      analysis: string;
-      criticalThinkingScore: number;
-      keyInsights: string[];
-    };
-    nextSteps: string[];
-  }> {
-    const tutor = this.aiTutors.get(tutorId);
-    if (!tutor) {
-      throw new Error('Tutor not found');
-    }
-
-    // Generate Socratic questions based on topic and depth
-    const questions = await this.generateSocraticQuestions(topic, depth, studentResponses);
-
-    // Analyze the dialogue for critical thinking
-    const analysis = await this.analyzeCriticalThinking(studentResponses, questions);
-
-    // Calculate critical thinking score
-    const criticalThinkingScore = await this.assessCriticalThinkingLevel(
-      studentResponses,
-      topic,
-      depth
-    );
-
-    // Extract key insights from the dialogue
-    const keyInsights = await this.extractDialogueInsights(studentResponses, analysis);
-
-    // Determine next steps for continued learning
-    const nextSteps = this.determineDialogueNextSteps(criticalThinkingScore, depth, topic);
-
-    return {
-      dialogueSession: {
-        questions,
-        analysis,
-        criticalThinkingScore,
-        keyInsights,
-      },
-      nextSteps,
-    };
-  }
-
-  /**
-   * Generate Socratic questions based on topic and depth
-   */
-  private async generateSocraticQuestions(
-    topic: string,
-    depth: 'surface' | 'intermediate' | 'deep',
-    previousResponses: string[]
-  ): Promise<string[]> {
-    const depthConfig = {
-      surface: { count: 3, focus: 'basic understanding and definitions' },
-      intermediate: { count: 5, focus: 'analysis and connections' },
-      deep: { count: 7, focus: 'synthesis and evaluation' },
-    };
-
-    const config = depthConfig[depth];
-
-    const prompt = `
-Generate ${config.count} Socratic questions about: "${topic}"
-
-Focus on ${config.focus}.
-Previous student responses: ${previousResponses.join('; ')}
-
-Questions should:
-- Encourage critical thinking
-- Build progressively deeper understanding
-- Challenge assumptions
-- Connect to broader concepts
-- Be open-ended rather than closed-ended
-
-Format as numbered list.
-    `;
-
-    const response = await this.llm.invoke(prompt);
-    const questions = response.content.trim()
-      .split('\n')
-      .map(line => line.replace(/^\d+\.\s*/, '').trim())
-      .filter(line => line.length > 0);
-
-    return questions.slice(0, config.count);
-  }
-
-  /**
-   * Analyze critical thinking in student responses
-   */
-  private async analyzeCriticalThinking(
-    responses: string[],
-    questions: string[]
-  ): Promise<string> {
-    const prompt = `
-Analyze the critical thinking demonstrated in these student responses:
-
-Questions asked:
-${questions.map((q, i) => `${i + 1}. ${q}`).join('\n')}
-
-Student responses:
-${responses.map((r, i) => `Response ${i + 1}: ${r}`).join('\n')}
-
-Provide a comprehensive analysis covering:
-1. Depth of understanding
-2. Analytical thinking
-3. Connection making
-4. Assumption challenging
-5. Evidence-based reasoning
-6. Areas for improvement
-
-Be constructive and encouraging.
-    `;
-
-    const response = await this.llm.invoke(prompt);
-    return response.content.trim();
-  }
-
-  /**
-   * Assess critical thinking level
-   */
-  private async assessCriticalThinkingLevel(
-    responses: string[],
-    topic: string,
-    depth: 'surface' | 'intermediate' | 'deep'
-  ): Promise<number> {
-    const prompt = `
-Rate the critical thinking level demonstrated in these responses about "${topic}":
-
-${responses.join('\n\n')}
-
-Consider:
-- Analytical depth (appropriate for ${depth} level)
-- Logical reasoning
-- Evidence-based arguments
-- Assumption identification
-- Connection to broader concepts
-- Original insights
-
-Provide a score from 0-100, where:
-0-20: Basic recall, no analysis
-21-40: Some analysis, surface level
-41-60: Moderate critical thinking
-61-80: Strong analytical skills
-81-100: Advanced critical thinking with synthesis
-
-Return only the number.
-    `;
-
-    const response = await this.llm.invoke(prompt);
-    const score = parseInt(response.content.trim());
-    return Math.max(0, Math.min(100, score || 50));
-  }
-
-  /**
-   * Extract key insights from dialogue
-   */
-  private async extractDialogueInsights(
-    responses: string[],
-    analysis: string
-  ): Promise<string[]> {
-    const prompt = `
-From this analysis and student responses, extract 3-5 key insights about the student's thinking:
-
-Analysis: ${analysis}
-
-Responses: ${responses.join('; ')}
-
-Focus on:
-- Strengths in reasoning
-- Patterns in thinking
-- Misconceptions identified
-- Learning progress indicators
-- Areas showing growth
-
-Format as bullet points.
-    `;
-
-    const response = await this.llm.invoke(prompt);
-    return response.content.trim()
-      .split('\n')
-      .map(line => line.replace(/^[-•*]\s*/, '').trim())
-      .filter(line => line.length > 0)
-      .slice(0, 5);
-  }
-
-  /**
-   * Determine next steps for continued dialogue
-   */
-  private determineDialogueNextSteps(
-    criticalThinkingScore: number,
-    depth: 'surface' | 'intermediate' | 'deep',
-    topic: string
-  ): string[] {
-    const nextSteps: string[] = [];
-
-    if (criticalThinkingScore < 50) {
-      nextSteps.push('Continue with foundational questions to build understanding');
-      nextSteps.push('Provide examples and analogies for complex concepts');
-    } else if (criticalThinkingScore < 75) {
-      nextSteps.push('Move to application questions connecting theory to practice');
-      nextSteps.push('Encourage comparison with alternative perspectives');
-    } else {
-      nextSteps.push('Advance to synthesis questions requiring integration of multiple concepts');
-      nextSteps.push('Challenge with counterarguments and edge cases');
-    }
-
-    if (depth === 'surface' && criticalThinkingScore > 60) {
-      nextSteps.push('Ready to progress to intermediate depth questioning');
-    } else if (depth === 'intermediate' && criticalThinkingScore > 75) {
-      nextSteps.push('Prepared for deep analysis and evaluation questions');
-    }
-
-    nextSteps.push(`Schedule follow-up dialogue on related topics to "${topic}"`);
-
-    return nextSteps;
-  }
-
-  /**
-   * Analyze tutor effectiveness and student learning outcomes
-   */
-  async analyzeTutorEffectiveness(
-    tutorId: string,
-    timeRange?: { start: number; end: number }
-  ): Promise<{
-    effectivenessMetrics: {
-      studentEngagement: number;
-      learningProgress: number;
-      criticalThinkingDevelopment: number;
-      overallSatisfaction: number;
-    };
-    performanceInsights: string[];
-    recommendations: string[];
-    comparativeAnalysis: {
-      vsAverageEngagement: number;
-      vsAverageProgress: number;
-      vsAverageCriticalThinking: number;
+    adaptiveStrategy: {
+      initialSequence: string[];
+      contingencyPlans: Record<string, string[]>;
+      milestoneCheckpoints: Array<{
+        milestone: string;
+        assessmentCriteria: string[];
+        interventionTriggers: string[];
+      }>;
     };
   }> {
-    const tutor = this.aiTutors.get(tutorId);
-    if (!tutor) {
-      throw new Error('Tutor not found');
-    }
-
-    const student = this.students.get(tutor.studentId);
+    const student = this.students.get(studentId);
     if (!student) {
       throw new Error('Student not found');
     }
 
-    // Gather data for analysis
-    const learningPath = Array.from(this.learningPaths.values())
-      .find(lp => lp.studentId === tutor.studentId);
+    const qualification = this.qualifications.get(qualificationId);
+    if (!qualification) {
+      throw new Error('Qualification not found');
+    }
 
-    const timeFilter = timeRange || {
-      start: Date.now() - (30 * 24 * 60 * 60 * 1000), // Last 30 days
-      end: Date.now()
-    };
+    // Generate initial learning sequence
+    const initialSequence = await this.generateOptimalSequence(
+      qualification.modules,
+      assessmentData,
+      student
+    );
 
-    // Calculate effectiveness metrics
-    const effectivenessMetrics = await this.calculateEffectivenessMetrics(
-      tutor,
+    // Calculate predictive insights
+    const predictiveInsights = await this.generatePredictiveInsights(
       student,
+      qualification,
+      assessmentData,
+      initialSequence
+    );
+
+    // Develop adaptive strategy
+    const adaptiveStrategy = await this.developAdaptiveStrategy(
+      student,
+      qualification,
+      assessmentData,
+      initialSequence
+    );
+
+    // Create personalized learning path
+    const learningPath: PersonalizedLearningPath = {
+      pathId: `path_${studentId}_${qualificationId}_${Date.now()}`,
+      studentId,
+      qualificationId,
+      currentModule: initialSequence[0],
+      recommendedSequence: initialSequence,
+      adaptiveAdjustments: [],
+      predictiveInsights,
+      engagementMetrics: {
+        averageSessionLength: 45, // minutes
+        consistencyScore: 70,
+        knowledgeRetention: 75,
+      },
+    };
+
+    // Store the learning path
+    this.learningPaths.set(learningPath.pathId, learningPath);
+
+    return {
       learningPath,
-      timeFilter
-    );
-
-    // Generate performance insights
-    const performanceInsights = await this.generatePerformanceInsights(
-      tutor,
-      effectivenessMetrics,
-      learningPath
-    );
-
-    // Create recommendations for improvement
-    const recommendations = this.generateTutorRecommendations(
-      effectivenessMetrics,
-      performanceInsights
-    );
-
-    // Comparative analysis
-    const comparativeAnalysis = await this.performComparativeAnalysis(
-      effectivenessMetrics
-    );
-
-    return {
-      effectivenessMetrics,
-      performanceInsights,
-      recommendations,
-      comparativeAnalysis,
+      predictiveInsights,
+      adaptiveStrategy,
     };
   }
 
   /**
-   * Calculate effectiveness metrics for the tutor
+   * Generate optimal learning sequence based on assessment data
    */
-  private async calculateEffectivenessMetrics(
-    tutor: SocraticAITutor,
-    student: StudentProfile,
-    learningPath?: PersonalizedLearningPath,
-    timeRange?: { start: number; end: number }
-  ): Promise<{
-    studentEngagement: number;
-    learningProgress: number;
-    criticalThinkingDevelopment: number;
-    overallSatisfaction: number;
-  }> {
-    // Student engagement (based on interaction frequency and quality)
-    const engagementScore = learningPath?.engagementMetrics.consistencyScore || 50;
-
-    // Learning progress (based on modules completed and performance)
-    const progressScore = student.completedModules.length > 0
-      ? Math.min(100, (student.completedModules.length / 10) * 100) // Simplified
-      : 0;
-
-    // Critical thinking development (based on dialogue analysis)
-    const criticalThinkingScore = await this.assessOverallCriticalThinking(tutor);
-
-    // Overall satisfaction (simplified - would be based on student feedback)
-    const satisfactionScore = (engagementScore + progressScore + criticalThinkingScore) / 3;
-
-    return {
-      studentEngagement: Math.round(engagementScore),
-      learningProgress: Math.round(progressScore),
-      criticalThinkingDevelopment: Math.round(criticalThinkingScore),
-      overallSatisfaction: Math.round(satisfactionScore),
-    };
-  }
-
-  /**
-   * Assess overall critical thinking development
-   */
-  private async assessOverallCriticalThinking(tutor: SocraticAITutor): Promise<number> {
-    if (tutor.learningHistory.length === 0) return 50;
-
-    // Analyze learning history for critical thinking indicators
-    const avgEngagement = tutor.learningHistory.reduce((sum, h) => sum + h.averageEngagement, 0) /
-      tutor.learningHistory.length;
-
-    const totalInteractions = tutor.learningHistory.reduce((sum, h) => sum + h.interactionCount, 0);
-
-    // Simplified scoring based on engagement and interaction volume
-    const criticalThinkingScore = Math.min(100,
-      (avgEngagement * 0.7) + (Math.min(totalInteractions / 20, 1) * 30)
-    );
-
-    return Math.round(criticalThinkingScore);
-  }
-
-  /**
-   * Generate performance insights
-   */
-  private async generatePerformanceInsights(
-    tutor: SocraticAITutor,
-    metrics: any,
-    learningPath?: PersonalizedLearningPath
+  private async generateOptimalSequence(
+    availableModules: string[],
+    assessmentData: any,
+    student: StudentProfile
   ): Promise<string[]> {
-    const insights: string[] = [];
+    // Get module details
+    const modules = availableModules
+      .map(id => this.modules.get(id))
+      .filter(m => m) as LearningModule[];
 
-    if (metrics.studentEngagement > 80) {
-      insights.push('High student engagement indicates effective interaction style');
-    } else if (metrics.studentEngagement < 60) {
-      insights.push('Low engagement suggests need for more interactive or varied approaches');
-    }
+    // Sort by priority based on assessment data
+    const sortedModules = modules.sort((a, b) => {
+      const aProficiency = assessmentData.currentKnowledge[a.moduleId] || 0;
+      const bProficiency = assessmentData.currentKnowledge[b.moduleId] || 0;
 
-    if (metrics.learningProgress > 75) {
-      insights.push('Strong learning progress shows effective knowledge transfer');
-    } else if (metrics.learningProgress < 50) {
-      insights.push('Slow progress indicates potential need for simplified explanations or additional support');
-    }
+      // Prioritize modules with lower proficiency first
+      if (aProficiency !== bProficiency) {
+        return aProficiency - bProficiency;
+      }
 
-    if (metrics.criticalThinkingDevelopment > 80) {
-      insights.push('Excellent critical thinking development through Socratic method');
-    } else if (metrics.criticalThinkingDevelopment < 60) {
-      insights.push('Critical thinking development needs more focus on questioning techniques');
-    }
+      // Then by difficulty (easier first for beginners)
+      const difficultyOrder = { 'beginner': 0, 'intermediate': 1, 'advanced': 2, 'expert': 3 };
+      return difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty];
+    });
 
-    if (learningPath && learningPath.adaptiveAdjustments.length > 0) {
-      insights.push(`${learningPath.adaptiveAdjustments.length} adaptive adjustments made, showing responsive teaching`);
-    }
-
-    return insights;
+    return sortedModules.map(m => m.moduleId);
   }
 
   /**
-   * Generate recommendations for tutor improvement
+   * Generate predictive insights for learning success
    */
-  private generateTutorRecommendations(
-    metrics: any,
-    insights: string[]
-  ): string[] {
-    const recommendations: string[] = [];
-
-    if (metrics.studentEngagement < 70) {
-      recommendations.push('Incorporate more interactive elements and real-world examples');
-      recommendations.push('Adjust communication tone to better match student preferences');
-    }
-
-    if (metrics.learningProgress < 60) {
-      recommendations.push('Break down complex concepts into smaller, manageable parts');
-      recommendations.push('Provide more structured guidance for struggling students');
-    }
-
-    if (metrics.criticalThinkingDevelopment < 70) {
-      recommendations.push('Increase use of Socratic questioning techniques');
-      recommendations.push('Encourage students to challenge their own assumptions');
-    }
-
-    if (metrics.overallSatisfaction < 75) {
-      recommendations.push('Gather direct student feedback to identify specific improvement areas');
-      recommendations.push('Consider personality profile adjustments based on student responses');
-    }
-
-    recommendations.push('Continue monitoring engagement metrics and adapt teaching strategies accordingly');
-
-    return recommendations;
-  }
-
-  /**
-   * Perform comparative analysis against averages
-   */
-  private async performComparativeAnalysis(metrics: any): Promise<{
-    vsAverageEngagement: number;
-    vsAverageProgress: number;
-    vsAverageCriticalThinking: number;
+  private async generatePredictiveInsights(
+    student: StudentProfile,
+    qualification: Qualification,
+    assessmentData: any,
+    sequence: string[]
+  ): Promise<{
+    estimatedCompletion: number;
+    successProbability: number;
+    atRiskIndicators: string[];
+    recommendedInterventions: string[];
+    optimalSchedule: {
+      dailyHours: number;
+      weeklySessions: number;
+      breakPatterns: string;
+    };
   }> {
-    // Simplified comparative analysis - in real implementation would compare against historical data
-    const averageEngagement = 65;
-    const averageProgress = 60;
-    const averageCriticalThinking = 55;
+    // Calculate estimated completion time
+    const totalCredits = qualification.creditRequirements;
+    const averageCreditsPerMonth = assessmentData.pacePreference === 'fast' ? 15 :
+                                  assessmentData.pacePreference === 'moderate' ? 10 : 6;
+    const estimatedMonths = totalCredits / averageCreditsPerMonth;
+    const estimatedCompletion = Date.now() + (estimatedMonths * 30 * 24 * 60 * 60 * 1000);
+
+    // Calculate success probability based on various factors
+    let successProbability = 70; // Base probability
+
+    // Adjust based on current knowledge
+    const avgProficiency = Object.values(assessmentData.currentKnowledge).reduce((sum: number, score: number) => sum + score, 0) /
+                          Math.max(1, Object.keys(assessmentData.currentKnowledge).length);
+    successProbability += (avgProficiency - 50) * 0.3;
+
+    // Adjust based on past performance
+    successProbability += (student.reputationScore - 50) * 0.2;
+
+    successProbability = Math.max(10, Math.min(95, successProbability));
+
+    // Identify at-risk indicators
+    const atRiskIndicators: string[] = [];
+    if (avgProficiency < 40) atRiskIndicators.push('Low baseline knowledge in key areas');
+    if (student.integrityScore < 60) atRiskIndicators.push('Integrity concerns may impact assessments');
+    if (assessmentData.challenges.length > 3) atRiskIndicators.push('Multiple self-identified challenges');
+    if (assessmentData.pacePreference === 'fast' && avgProficiency < 60) {
+      atRiskIndicators.push('Fast pace preference may not align with current knowledge level');
+    }
+
+    // Generate recommended interventions
+    const recommendedInterventions: string[] = [];
+    if (atRiskIndicators.includes('Low baseline knowledge in key areas')) {
+      recommendedInterventions.push('Additional preparatory modules and tutoring support');
+    }
+    if (atRiskIndicators.includes('Integrity concerns may impact assessments')) {
+      recommendedInterventions.push('Enhanced Aegis monitoring and integrity coaching');
+    }
+    if (atRiskIndicators.length === 0) {
+      recommendedInterventions.push('Regular progress check-ins and advanced challenge modules');
+    }
+
+    // Calculate optimal schedule
+    const optimalSchedule = this.calculateOptimalSchedule(assessmentData, estimatedMonths);
 
     return {
-      vsAverageEngagement: metrics.studentEngagement - averageEngagement,
-      vsAverageProgress: metrics.learningProgress - averageProgress,
-      vsAverageCriticalThinking: metrics.criticalThinkingDevelopment - averageCriticalThinking,
+      estimatedCompletion,
+      successProbability: Math.round(successProbability),
+      atRiskIndicators,
+      recommendedInterventions,
+      optimalSchedule,
     };
+  }
+
+  /**
+   * Calculate optimal learning schedule
+   */
+  private calculateOptimalSchedule(
+    assessmentData: any,
+    estimatedMonths: number
+  ): {
+    dailyHours: number;
+    weeklySessions: number;
+    breakPatterns: string;
+  } {
+    let dailyHours: number;
+    let weeklySessions: number;
+
+    switch (assessmentData.pacePreference) {
+      case 'fast':
+        dailyHours = 3;
+        weeklySessions = 6;
+        break;
+      case 'moderate':
+        dailyHours = 2;
+        weeklySessions = 5;
+        break;
+      default: // slow
+        dailyHours = 1.5;
+        weeklySessions = 4;
+    }
+
+    // Adjust based on learning style
+    if (assessmentData.learningStyle === 'kinesthetic') {
+      dailyHours *= 1.2; // More hands-on activities take longer
+    }
+
+    const breakPatterns = assessmentData.pacePreference === 'fast'
+      ? 'Short breaks every 45 minutes'
+      : 'Regular breaks every 60 minutes with longer breaks between sessions';
+
+    return {
+      dailyHours: Math.round(dailyHours * 10) / 10,
+      weeklySessions,
+      breakPatterns,
+    };
+  }
+
+  /**
+   * Develop adaptive strategy with contingency plans
+   */
+  private async developAdaptiveStrategy(
+    student: StudentProfile,
+    qualification: Qualification,
+    assessmentData: any,
+    sequence: string[]
+  ): Promise<{
+    initialSequence: string[];
+    contingencyPlans: Record<string, string[]>;
+    milestoneCheckpoints: Array<{
+      milestone: string;
+      assessmentCriteria: string[];
+      interventionTriggers: string[];
+    }>;
+  }> {
+    const contingencyPlans: Record<string, string[]> = {
+      'low_engagement': [
+        'Increase interactive elements and real-world examples',
+        'Adjust communication style to be more engaging',
+        'Introduce gamification elements',
+      ],
+      'knowledge_gaps': [
+        'Insert remedial modules for weak areas',
+        'Provide additional tutoring sessions',
+        'Create supplementary learning resources',
+      ],
+      'pace_issues': [
+        'Adjust module difficulty and pacing',
+        'Break complex topics into smaller chunks',
+        'Provide time management coaching',
+      ],
+      'assessment_difficulty': [
+        'Modify assessment criteria for better alignment',
+        'Provide additional practice assessments',
+        'Offer peer mentoring support',
+      ],
+    };
+
+    const milestoneCheckpoints = sequence.map((moduleId, index) => {
+      const module = this.modules.get(moduleId);
+      return {
+        milestone: `Complete ${module?.title || 'Module ' + (index + 1)}`,
+        assessmentCriteria: [
+          `Achieve at least 70% proficiency in ${module?.title || 'module'}`,
+          'Complete all required assessments',
+          'Demonstrate understanding through practical application',
+        ],
+        interventionTriggers: [
+          'Score below 60% on module assessment',
+          'Extended time beyond estimated completion',
+          'Multiple help requests for same concepts',
+        ],
+      };
+    });
+
+    return {
+      initialSequence: sequence,
+      contingencyPlans,
+      milestoneCheckpoints,
+    };
+  }
+
+  /**
+   * Update learning path with real-time adaptations
+   */
+  async updateLearningPath(
+    pathId: string,
+    performanceData: {
+      moduleId: string;
+      score: number;
+      timeSpent: number;
+      engagementLevel: number;
+      challenges: string[];
+      achievements: string[];
+    }
+  ): Promise<{
+    pathUpdates: {
+      sequenceAdjustments: string[];
+      paceModifications: string;
+      resourceRecommendations: string[];
+    };
+    predictiveUpdates: {
+      revisedCompletion: number;
+      updatedSuccessProbability: number;
+      newRiskIndicators: string[];
+    };
+    immediateActions: string[];
+  }> {
+    const learningPath = this.learningPaths.get(pathId);
+    if (!learningPath) {
+      throw new Error('Learning path not found');
+    }
+
+    // Analyze performance data
+    const performanceAnalysis = await this.analyzePerformanceData(performanceData);
+
+    // Generate path updates
+    const pathUpdates = await this.generatePathUpdates(learningPath, performanceAnalysis);
+
+    // Update predictive insights
+    const predictiveUpdates = await this.updatePredictiveInsights(learningPath, performanceAnalysis);
+
+    // Determine immediate actions
+    const immediateActions = this.determineImmediateActions(performanceAnalysis);
+
+    // Record adaptive adjustment
+    learningPath.adaptiveAdjustments.push({
+      trigger: `Performance update for ${performanceData.moduleId}: score ${performanceData.score}%`,
+      adjustment: pathUpdates.sequenceAdjustments.join('; '),
+      timestamp: Date.now(),
+    });
+
+    return {
+      pathUpdates,
+      predictiveUpdates,
+      immediateActions,
+    };
+  }
+
+  /**
+   * Analyze performance data for insights
+   */
+  private async analyzePerformanceData(performanceData: any): Promise<{
+    performanceLevel: 'excellent' | 'good' | 'needs_improvement' | 'at_risk';
+    learningEfficiency: number;
+    knowledgeGaps: string[];
+    strengths: string[];
+    recommendations: string[];
+  }> {
+    let performanceLevel: 'excellent' | 'good' | 'needs_improvement' | 'at_risk';
+
+    if (performanceData.score >= 85) {
+      performanceLevel = 'excellent';
+    } else if (performanceData.score >= 70) {
+      performanceLevel = 'good';
+    } else if (performanceData.score >= 55) {
+      performanceLevel = 'needs_improvement';
+    } else {
+      performanceLevel = 'at_risk';
+    }
+
+    // Calculate learning efficiency (score per hour)
+    const learningEfficiency = performanceData.score / Math.max(1, performanceData.timeSpent / 60);
+
+    // Identify knowledge gaps and strengths
+    const knowledgeGaps = performanceData.challenges || [];
+    const strengths = performanceData.achievements || [];
+
+    const recommendations: string[] = [];
+    if (performanceLevel === 'at_risk') {
+      recommendations.push('Immediate tutoring intervention required');
+      recommendations.push('Consider module prerequisite review');
+    } else if (performanceLevel === 'needs_improvement') {
+      recommendations.push('Additional practice exercises recommended');
+      recommendations.push('Focus on identified knowledge gaps');
+    }
+
+    return {
+      performanceLevel,
+      learningEfficiency: Math.round(learningEfficiency),
+      knowledgeGaps,
+      strengths,
+      recommendations,
+    };
+  }
+
+  /**
+   * Generate path updates based on performance analysis
+   */
+  private async generatePathUpdates(
+    learningPath: PersonalizedLearningPath,
+    analysis: any
+  ): Promise<{
+    sequenceAdjustments: string[];
+    paceModifications: string;
+    resourceRecommendations: string[];
+  }> {
+    const sequenceAdjustments: string[] = [];
+    let paceModifications = 'Maintain current pace';
+
+    if (analysis.performanceLevel === 'excellent') {
+      sequenceAdjustments.push('Accelerate to advanced modules');
+      sequenceAdjustments.push('Introduce parallel learning tracks');
+      paceModifications = 'Increase pace by 20%';
+    } else if (analysis.performanceLevel === 'good') {
+      sequenceAdjustments.push('Continue with current sequence');
+      paceModifications = 'Maintain current pace';
+    } else if (analysis.performanceLevel === 'needs_improvement') {
+      sequenceAdjustments.push('Insert remedial modules for knowledge gaps');
+      sequenceAdjustments.push('Add practice exercises');
+      paceModifications = 'Reduce pace by 15%';
+    } else { // at_risk
+      sequenceAdjustments.push('Major sequence revision required');
+      sequenceAdjustments.push('Insert foundational prerequisite modules');
+      paceModifications = 'Reduce pace by 30% and extend deadlines';
+    }
+
+    const resourceRecommendations = analysis.knowledgeGaps.map((gap: string) =>
+      `Additional resources for: ${gap}`
+    );
+
+    return {
+      sequenceAdjustments,
+      paceModifications,
+      resourceRecommendations,
+    };
+  }
+
+  /**
+   * Update predictive insights based on new data
+   */
+  private async updatePredictiveInsights(
+    learningPath: PersonalizedLearningPath,
+    analysis: any
+  ): Promise<{
+    revisedCompletion: number;
+    updatedSuccessProbability: number;
+    newRiskIndicators: string[];
+  }> {
+    const currentInsights = learningPath.predictiveInsights;
+
+    // Adjust completion estimate
+    let timeAdjustment = 0;
+    if (analysis.performanceLevel === 'excellent') {
+      timeAdjustment = -0.1; // 10% faster
+    } else if (analysis.performanceLevel === 'at_risk') {
+      timeAdjustment = 0.3; // 30% slower
+    }
+
+    const revisedCompletion = currentInsights.estimatedCompletion * (1 + timeAdjustment);
+
+    // Update success probability
+    let probabilityAdjustment = 0;
+    if (analysis.performanceLevel === 'excellent') {
+      probabilityAdjustment = 5;
+    } else if (analysis.performanceLevel === 'at_risk') {
+      probabilityAdjustment = -10;
+    }
+
+    const updatedSuccessProbability = Math.max(5, Math.min(99,
+      currentInsights.successProbability + probabilityAdjustment
+    ));
+
+    // Add new risk indicators
+    const newRiskIndicators = [];
+    if (analysis.performanceLevel === 'at_risk') {
+      newRiskIndicators.push('Recent performance indicates significant challenges');
+    }
+    if (analysis.learningEfficiency < 10) {
+      newRiskIndicators.push('Low learning efficiency suggests need for different approach');
+    }
+
+    return {
+      revisedCompletion: Math.round(revisedCompletion),
+      updatedSuccessProbability,
+      newRiskIndicators,
+    };
+  }
+
+  /**
+   * Determine immediate actions based on performance analysis
+   */
+  private determineImmediateActions(analysis: any): string[] {
+    const actions: string[] = [];
+
+    if (analysis.performanceLevel === 'at_risk') {
+      actions.push('Schedule immediate tutoring session');
+      actions.push('Provide additional learning resources');
+      actions.push('Contact student for support discussion');
+    } else if (analysis.performanceLevel === 'needs_improvement') {
+      actions.push('Send targeted practice exercises');
+      actions.push('Recommend peer study group');
+    } else if (analysis.performanceLevel === 'excellent') {
+      actions.push('Offer advanced challenge modules');
+      actions.push('Consider acceleration options');
+    }
+
+    actions.push('Update learning path analytics');
+
+    return actions;
   }
 }
