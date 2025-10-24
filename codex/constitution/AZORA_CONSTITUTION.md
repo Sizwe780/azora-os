@@ -9,7 +9,7 @@
 
 ## PREAMBLE
 
-We, the founders and builders of Azora ES, united in purpose to create the first
+We, the founders and builders of Azora OS, united in purpose to create the first
 complete, self-sufficient software infrastructure owned and operated from Africa,
 do hereby establish this Constitution to govern our operations, economics, and
 path to full software architecture to compete with global giants.
