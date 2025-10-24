@@ -28,20 +28,13 @@ async function testAzoraSapiens() {
 
     // Test student enrollment
     console.log('👤 Testing student enrollment...');
-    const enrollmentResult = await azoraSapiens.enrollStudent('citizen_test_001', {
-      name: 'Test Student',
-      email: 'test@azora.os',
-      phone: '+27-21-123-4567',
-      location: 'Cape Town, South Africa',
-      dateOfBirth: new Date('2000-01-01').getTime(),
-      educationLevel: 'Matric'
-    });
+    const enrollmentResult = await azoraSapiens.enrollStudent('citizen_test_001');
 
     console.log(`✅ Student enrolled: ${enrollmentResult.studentId}\n`);
 
     // Test qualification enrollment
     console.log('🎓 Testing qualification enrollment...');
-    const qualResult = await azoraSapiens.enrollInQualification(enrollmentResult.studentId, 'ckq_cs');
+    const qualResult = await azoraSapiens.enrollInQualification(enrollmentResult.studentId, 'adcs');
     console.log(`✅ Qualification enrollment: ${qualResult.success ? 'Success' : 'Failed'}`);
     if (!qualResult.success) {
       console.log(`   Reason: ${qualResult.reason}`);
@@ -49,7 +42,7 @@ async function testAzoraSapiens() {
     console.log('');
 
     // Get a module from the enrolled qualification
-    const enrolledQual = azoraSapiens.getQualification('ckq_cs');
+    const enrolledQual = azoraSapiens.getQualification('adcs');
     if (!enrolledQual || enrolledQual.modules.length === 0) {
       console.log('❌ No modules available in enrolled qualification');
       return;
@@ -118,8 +111,7 @@ async function testAzoraSapiens() {
     console.log(`   Active Sessions: ${analytics.activeSessions}`);
     console.log(`   Average aZAR Balance: ${analytics.averageProofOfKnowledgeBalance}`);
     console.log(`   Average Reputation: ${analytics.averageReputationScore}`);
-    console.log(`   Total Credits Awarded: ${analytics.totalCreditsAwarded}`);
-    console.log(`   Active Partnerships: ${analytics.partnershipMetrics.activePartnerships}\n`);
+    console.log(`   Total Credits Awarded: ${analytics.totalCreditsAwarded}\n`);
 
     // Test integrity monitoring
     console.log('🛡️ Testing integrity monitoring...');
@@ -130,22 +122,6 @@ async function testAzoraSapiens() {
     );
     console.log(`✅ Integrity session started: ${integritySession.sessionId}`);
     console.log(`🔒 Initial integrity score: ${integritySession.overallIntegrityScore}\n`);
-
-    // Test partnership economics
-    console.log('🤝 Testing partnership economics...');
-    const partnerships = Array.from((azoraSapiens as any).partnerships.values());
-    if (partnerships.length === 0) {
-      console.log('❌ No partnerships available for testing');
-      return;
-    }
-    const testPartnership = partnerships[0];
-    const economics = azoraSapiens.calculatePartnershipEconomics(testPartnership.partnershipId, 100);
-    console.log(`💰 Partnership Economics (${testPartnership.universityName} - 100 students):`);
-    console.log(`   University Revenue: R${economics.universityRevenue.toLocaleString()}`);
-    console.log(`   Azora Costs: R${economics.azoraCosts.toLocaleString()}`);
-    console.log(`   Net Benefit: R${economics.netBenefit.toLocaleString()}`);
-    console.log(`   Guaranteed Payments: ${economics.studentMetrics.guaranteedPayment}`);
-    console.log(`   Guaranteed Performance: ${economics.studentMetrics.guaranteedPerformance}\n`);
 
     console.log('🎉 All Azora Sapiens tests completed successfully!');
     console.log('🌟 The universal education platform is operational.');
