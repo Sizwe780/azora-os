@@ -1,8 +1,9 @@
 {
   "version": 2,
+  "rootDirectory": "learn-ui",
   "buildCommand": "npm run build",
-  "outputDirectory": ".next",
-  "framework": "nextjs",
+  "outputDirectory": "dist",
+  "framework": null,
   "env": {
     "NODE_VERSION": "20"
   }

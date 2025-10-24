@@ -3803,7 +3803,7 @@ FOLLOW_UP_QUESTIONS:
     // Calculate estimated completion time
     const totalCredits = qualification.creditRequirements;
     const averageCreditsPerMonth = assessmentData.pacePreference === 'fast' ? 15 :
-                                  assessmentData.pacePreference === 'moderate' ? 10 : 6;
+      assessmentData.pacePreference === 'moderate' ? 10 : 6;
     const estimatedMonths = totalCredits / averageCreditsPerMonth;
     const estimatedCompletion = Date.now() + (estimatedMonths * 30 * 24 * 60 * 60 * 1000);
 
@@ -3812,7 +3812,7 @@ FOLLOW_UP_QUESTIONS:
 
     // Adjust based on current knowledge
     const avgProficiency = Object.values(assessmentData.currentKnowledge).reduce((sum: number, score: number) => sum + score, 0) /
-                          Math.max(1, Object.keys(assessmentData.currentKnowledge).length);
+      Math.max(1, Object.keys(assessmentData.currentKnowledge).length);
     successProbability += (avgProficiency - 50) * 0.3;
 
     // Adjust based on past performance
