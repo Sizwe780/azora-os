@@ -1,0 +1,5 @@
+<<<<<<<< HEAD:.next/static/J43zOBRcE3rVDs70eCu_8/_buildManifest.js
+self.__BUILD_MANIFEST=function(e,r,t){return{__rewrites:{afterFiles:[],beforeFiles:[],fallback:[]},__routerFilterStatic:{numItems:0,errorRate:1e-4,numBits:0,numHashes:null,bitArray:[]},__routerFilterDynamic:{numItems:e,errorRate:1e-4,numBits:e,numHashes:null,bitArray:[]},"/_error":["static/chunks/pages/_error-013f4188946cdd04.js"],sortedPages:["/_app","/_error"]}}(0,1e-4,null),self.__BUILD_MANIFEST_CB&&self.__BUILD_MANIFEST_CB();
+========
+self.__BUILD_MANIFEST=function(e,r,t){return{__rewrites:{afterFiles:[],beforeFiles:[],fallback:[]},__routerFilterStatic:{numItems:0,errorRate:1e-4,numBits:0,numHashes:null,bitArray:[]},__routerFilterDynamic:{numItems:e,errorRate:1e-4,numBits:e,numHashes:null,bitArray:[]},"/_error":["static/chunks/pages/_error-cb2a52f75f2162e2.js"],sortedPages:["/_app","/_error"]}}(0,1e-4,null),self.__BUILD_MANIFEST_CB&&self.__BUILD_MANIFEST_CB();
+>>>>>>>> 1721f1d0d84a8726dee788416f429dc08bc2ba52:.next/static/OjjoOQ6xbhK6k5HA8oqD6/_buildManifest.js
