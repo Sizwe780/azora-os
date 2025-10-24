@@ -93,6 +93,283 @@ class AzoraSapiens {
                 },
                 enrollmentFee: 0,
                 status: 'live'
+            },
+
+            // Business & Advanced Programs
+            'executive-mba': {
+                id: 'executive-mba',
+                title: 'Executive MBA (Advanced)',
+                description: 'Elite business leadership program for senior executives and entrepreneurs',
+                duration: '18 months',
+                modules: [
+                    'Strategic Leadership & Vision',
+                    'Financial Strategy & Capital Markets',
+                    'Digital Transformation & Innovation',
+                    'Global Economics & Geopolitics',
+                    'Organizational Design & Change Management',
+                    'Entrepreneurial Finance & Venture Capital',
+                    'Executive Communication & Negotiation',
+                    'Ethics, Governance & Corporate Social Responsibility',
+                    'Capstone: Strategic Business Transformation'
+                ],
+                assessment: {
+                    type: 'executive_thesis',
+                    duration: 480,
+                    requiresAegis: true
+                },
+                enrollmentFee: 0,
+                status: 'live',
+                tier: 'advanced'
+            },
+            'quantitative-finance': {
+                id: 'quantitative-finance',
+                title: 'Quantitative Finance & Risk Management (Advanced)',
+                description: 'Advanced mathematical finance for financial engineers and risk professionals',
+                duration: '12 months',
+                modules: [
+                    'Stochastic Calculus & Financial Mathematics',
+                    'Derivative Pricing Models',
+                    'Risk Management & VaR Models',
+                    'Algorithmic Trading Strategies',
+                    'Machine Learning in Finance',
+                    'Portfolio Optimization Theory',
+                    'Credit Risk Modeling',
+                    'Regulatory Compliance & Stress Testing',
+                    'Capstone: Quantitative Trading System Development'
+                ],
+                assessment: {
+                    type: 'quantitative_thesis',
+                    duration: 360,
+                    requiresAegis: true
+                },
+                enrollmentFee: 0,
+                status: 'live',
+                tier: 'advanced'
+            },
+            'executive-leadership': {
+                id: 'executive-leadership',
+                title: 'Executive Leadership & Governance (Advanced)',
+                description: 'Advanced leadership development for C-suite executives and board members',
+                duration: '15 months',
+                modules: [
+                    'Strategic Thinking & Decision Making',
+                    'Board Governance & Stakeholder Management',
+                    'Crisis Leadership & Resilience',
+                    'Executive Presence & Communication',
+                    'Talent Strategy & Organizational Culture',
+                    'Mergers & Acquisitions Strategy',
+                    'International Business Leadership',
+                    'Ethical Leadership in Complex Environments',
+                    'Capstone: Executive Leadership Simulation'
+                ],
+                assessment: {
+                    type: 'leadership_case_study',
+                    duration: 420,
+                    requiresAegis: true
+                },
+                enrollmentFee: 0,
+                status: 'live',
+                tier: 'advanced'
+            },
+            'blockchain-economics': {
+                id: 'blockchain-economics',
+                title: 'Blockchain Economics & DeFi (Advanced)',
+                description: 'Advanced study of decentralized finance and blockchain economic systems',
+                duration: '10 months',
+                modules: [
+                    'Cryptoeconomic Theory & Token Design',
+                    'Decentralized Finance Protocols',
+                    'Blockchain Governance Models',
+                    'Stablecoin Economics & Monetary Policy',
+                    'Yield Farming & Liquidity Mining',
+                    'Decentralized Autonomous Organizations',
+                    'Regulatory Frameworks for DeFi',
+                    'Blockchain Scalability & Interoperability',
+                    'Capstone: DeFi Protocol Design & Implementation'
+                ],
+                assessment: {
+                    type: 'defi_protocol_audit',
+                    duration: 300,
+                    requiresAegis: true
+                },
+                enrollmentFee: 0,
+                status: 'live',
+                tier: 'advanced'
+            },
+            'ai-business-strategy': {
+                id: 'ai-business-strategy',
+                title: 'AI Business Strategy & Implementation (Advanced)',
+                description: 'Strategic implementation of AI technologies in business operations',
+                duration: '14 months',
+                modules: [
+                    'AI Strategy & Business Model Innovation',
+                    'Machine Learning for Business Analytics',
+                    'AI Ethics & Responsible Implementation',
+                    'Data Strategy & Governance',
+                    'AI Product Development & Scaling',
+                    'Automation & Process Optimization',
+                    'AI-Driven Customer Experience',
+                    'Change Management for AI Adoption',
+                    'Capstone: AI Transformation Roadmap'
+                ],
+                assessment: {
+                    type: 'ai_strategy_thesis',
+                    duration: 390,
+                    requiresAegis: true
+                },
+                enrollmentFee: 0,
+                status: 'live',
+                tier: 'advanced'
+            },
+            'venture-capital-investing': {
+                id: 'venture-capital-investing',
+                title: 'Venture Capital & Private Equity (Advanced)',
+                description: 'Advanced investment strategies for venture capital and private equity professionals',
+                duration: '16 months',
+                modules: [
+                    'Venture Capital Fundamentals & Deal Flow',
+                    'Due Diligence & Investment Analysis',
+                    'Term Sheet Negotiation & Deal Structure',
+                    'Portfolio Management & Exit Strategies',
+                    'Venture Capital Economics & IRR Analysis',
+                    'Sector-Specific Investment Strategies',
+                    'Impact Investing & ESG Considerations',
+                    'Fundraising & Limited Partner Relations',
+                    'Capstone: Venture Fund Launch & Management'
+                ],
+                assessment: {
+                    type: 'investment_thesis',
+                    duration: 450,
+                    requiresAegis: true
+                },
+                enrollmentFee: 0,
+                status: 'live',
+                tier: 'advanced'
+            },
+            'digital-marketing-leadership': {
+                id: 'digital-marketing-leadership',
+                title: 'Digital Marketing Leadership (Advanced)',
+                description: 'Advanced digital marketing strategy and leadership for CMOs and marketing executives',
+                duration: '12 months',
+                modules: [
+                    'Digital Transformation Strategy',
+                    'Customer Journey Mapping & Analytics',
+                    'Content Strategy & Brand Storytelling',
+                    'Performance Marketing & Attribution',
+                    'Social Media Strategy & Influencer Marketing',
+                    'SEO & Technical Marketing',
+                    'Marketing Technology Stack & MarTech',
+                    'Data-Driven Marketing Decisions',
+                    'Capstone: Integrated Digital Marketing Campaign'
+                ],
+                assessment: {
+                    type: 'marketing_strategy_case',
+                    duration: 330,
+                    requiresAegis: true
+                },
+                enrollmentFee: 0,
+                status: 'live',
+                tier: 'advanced'
+            },
+            'cybersecurity-leadership': {
+                id: 'cybersecurity-leadership',
+                title: 'Cybersecurity Leadership & Strategy (Advanced)',
+                description: 'Executive-level cybersecurity strategy and risk management',
+                duration: '13 months',
+                modules: [
+                    'Cybersecurity Strategy & Risk Management',
+                    'Incident Response & Crisis Management',
+                    'Regulatory Compliance & Standards',
+                    'Zero Trust Architecture & Implementation',
+                    'Cyber Insurance & Risk Transfer',
+                    'Board-Level Cybersecurity Reporting',
+                    'Supply Chain Security & Third-Party Risk',
+                    'Cyber Workforce Development',
+                    'Capstone: Enterprise Cybersecurity Program Design'
+                ],
+                assessment: {
+                    type: 'cybersecurity_audit',
+                    duration: 360,
+                    requiresAegis: true
+                },
+                enrollmentFee: 0,
+                status: 'live',
+                tier: 'advanced'
+            },
+            'sustainable-business-leadership': {
+                id: 'sustainable-business-leadership',
+                title: 'Sustainable Business Leadership (Advanced)',
+                description: 'Leadership in sustainable business practices and ESG implementation',
+                duration: '15 months',
+                modules: [
+                    'ESG Strategy & Stakeholder Capitalism',
+                    'Climate Change Risk & Opportunity',
+                    'Sustainable Finance & Green Investing',
+                    'Circular Economy Business Models',
+                    'Diversity, Equity & Inclusion Leadership',
+                    'Supply Chain Sustainability',
+                    'Sustainable Innovation & Product Design',
+                    'Reporting & Transparency Standards',
+                    'Capstone: Sustainability Transformation Strategy'
+                ],
+                assessment: {
+                    type: 'sustainability_thesis',
+                    duration: 420,
+                    requiresAegis: true
+                },
+                enrollmentFee: 0,
+                status: 'live',
+                tier: 'advanced'
+            },
+            'healthcare-administration': {
+                id: 'healthcare-administration',
+                title: 'Healthcare Administration & Innovation (Advanced)',
+                description: 'Advanced healthcare management and digital health innovation',
+                duration: '16 months',
+                modules: [
+                    'Healthcare Economics & Policy',
+                    'Digital Health Technology Implementation',
+                    'Healthcare Quality & Patient Safety',
+                    'Healthcare Data Analytics & AI',
+                    'Regulatory Compliance & HIPAA',
+                    'Healthcare Finance & Reimbursement',
+                    'Telemedicine & Virtual Care Models',
+                    'Healthcare Innovation & Entrepreneurship',
+                    'Capstone: Healthcare System Transformation'
+                ],
+                assessment: {
+                    type: 'healthcare_strategy_case',
+                    duration: 450,
+                    requiresAegis: true
+                },
+                enrollmentFee: 0,
+                status: 'live',
+                tier: 'advanced'
+            },
+            'international-business-law': {
+                id: 'international-business-law',
+                title: 'International Business Law & Compliance (Advanced)',
+                description: 'Advanced international business law and cross-border compliance',
+                duration: '14 months',
+                modules: [
+                    'International Trade Law & WTO',
+                    'Cross-Border Transactions & M&A',
+                    'International Tax Planning & BEPS',
+                    'Intellectual Property in Global Markets',
+                    'International Arbitration & Dispute Resolution',
+                    'Anti-Corruption & FCPA Compliance',
+                    'Data Privacy & GDPR Implementation',
+                    'International Contract Law',
+                    'Capstone: Global Business Compliance Framework'
+                ],
+                assessment: {
+                    type: 'legal_case_analysis',
+                    duration: 390,
+                    requiresAegis: true
+                },
+                enrollmentFee: 0,
+                status: 'live',
+                tier: 'advanced'
             }
         };
     }
@@ -128,6 +405,28 @@ class AzoraSapiens {
             res.json({
                 programs: Object.values(this.ckqPrograms),
                 total: Object.keys(this.ckqPrograms).length,
+                status: 'live'
+            });
+        });
+
+        this.app.get('/api/programs/advanced', (req, res) => {
+            const advancedPrograms = Object.values(this.ckqPrograms)
+                .filter(program => program.tier === 'advanced');
+            res.json({
+                programs: advancedPrograms,
+                total: advancedPrograms.length,
+                status: 'live'
+            });
+        });
+
+        this.app.get('/api/programs/business', (req, res) => {
+            const businessPrograms = Object.values(this.ckqPrograms)
+                .filter(program => program.tier === 'advanced' && 
+                    (program.id.includes('mba') || program.id.includes('leadership') || 
+                     program.id.includes('finance') || program.id.includes('business')));
+            res.json({
+                programs: businessPrograms,
+                total: businessPrograms.length,
                 status: 'live'
             });
         });
@@ -364,11 +663,17 @@ class AzoraSapiens {
 
         // Health check
         this.app.get('/health', (req, res) => {
+            const allPrograms = Object.values(this.ckqPrograms);
+            const advancedPrograms = allPrograms.filter(p => p.tier === 'advanced');
+            const vocationalPrograms = allPrograms.filter(p => !p.tier || p.tier !== 'advanced');
+
             res.json({
                 service: 'Azora Sapiens',
                 status: 'operational',
                 features: {
-                    ckqPrograms: Object.keys(this.ckqPrograms).length,
+                    totalPrograms: allPrograms.length,
+                    advancedPrograms: advancedPrograms.length,
+                    vocationalPrograms: vocationalPrograms.length,
                     activeExams: this.activeExams.size,
                     enrolledStudents: this.enrollments.size,
                     aegisClients: this.clients.size
@@ -382,6 +687,17 @@ class AzoraSapiens {
                     knowledgeIngestion: 'active',
                     firstPrinciplesDeconstruction: 'active',
                     curriculumSynthesis: 'active'
+                },
+                programCategories: {
+                    businessLeadership: advancedPrograms.filter(p => 
+                        p.id.includes('mba') || p.id.includes('leadership')).length,
+                    financeEconomics: advancedPrograms.filter(p => 
+                        p.id.includes('finance') || p.id.includes('economics')).length,
+                    technologyInnovation: advancedPrograms.filter(p => 
+                        p.id.includes('ai') || p.id.includes('blockchain') || p.id.includes('cyber')).length,
+                    specializedProfessional: advancedPrograms.filter(p => 
+                        p.id.includes('venture') || p.id.includes('marketing') || 
+                        p.id.includes('healthcare') || p.id.includes('law')).length
                 }
             });
         });
