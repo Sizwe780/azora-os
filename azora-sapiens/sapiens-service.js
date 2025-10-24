@@ -421,9 +421,9 @@ class AzoraSapiens {
 
         this.app.get('/api/programs/business', (req, res) => {
             const businessPrograms = Object.values(this.ckqPrograms)
-                .filter(program => program.tier === 'advanced' && 
-                    (program.id.includes('mba') || program.id.includes('leadership') || 
-                     program.id.includes('finance') || program.id.includes('business')));
+                .filter(program => program.tier === 'advanced' &&
+                    (program.id.includes('mba') || program.id.includes('leadership') ||
+                        program.id.includes('finance') || program.id.includes('business')));
             res.json({
                 programs: businessPrograms,
                 total: businessPrograms.length,
@@ -689,14 +689,14 @@ class AzoraSapiens {
                     curriculumSynthesis: 'active'
                 },
                 programCategories: {
-                    businessLeadership: advancedPrograms.filter(p => 
+                    businessLeadership: advancedPrograms.filter(p =>
                         p.id.includes('mba') || p.id.includes('leadership')).length,
-                    financeEconomics: advancedPrograms.filter(p => 
+                    financeEconomics: advancedPrograms.filter(p =>
                         p.id.includes('finance') || p.id.includes('economics')).length,
-                    technologyInnovation: advancedPrograms.filter(p => 
+                    technologyInnovation: advancedPrograms.filter(p =>
                         p.id.includes('ai') || p.id.includes('blockchain') || p.id.includes('cyber')).length,
-                    specializedProfessional: advancedPrograms.filter(p => 
-                        p.id.includes('venture') || p.id.includes('marketing') || 
+                    specializedProfessional: advancedPrograms.filter(p =>
+                        p.id.includes('venture') || p.id.includes('marketing') ||
                         p.id.includes('healthcare') || p.id.includes('law')).length
                 }
             });
