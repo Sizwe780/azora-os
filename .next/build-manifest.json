@@ -7,6 +7,7 @@
   "lowPriorityFiles": [
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     "static/J43zOBRcE3rVDs70eCu_8/_buildManifest.js",
     "static/J43zOBRcE3rVDs70eCu_8/_ssgManifest.js"
 =======
@@ -17,6 +18,10 @@
     "static/4Xu8fy9gsmdGsHF7PJKB2/_buildManifest.js",
     "static/4Xu8fy9gsmdGsHF7PJKB2/_ssgManifest.js"
 >>>>>>> 3434fc0ebcaa27725d0504bcb5f2f4fe9876afe7
+=======
+    "static/gauhi1q_5A2pE-_JXXFAk/_buildManifest.js",
+    "static/gauhi1q_5A2pE-_JXXFAk/_ssgManifest.js"
+>>>>>>> 11e986227416fbf2bb39b62827440d8f31098acf
   ],
   "rootMainFiles": [
     "static/chunks/webpack-1684ecded718f246.js",

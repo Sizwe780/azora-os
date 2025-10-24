@@ -50,6 +50,54 @@
 - **v1.1.0**: Feature enhancements
 - **v2.0.0**: Major architecture updates
 
+## Recommended GitHub Issues
+
+### High Priority Issues
+1. **Merge Dependabot PRs** (`priority: critical`, `type: security`)
+   - Merge all 15 open Dependabot PRs for dependency updates
+   - Test each update to ensure compatibility
+   - Update security documentation
+
+2. **Add Repository Description** (`priority: high`, `type: documentation`)
+   - Add compelling GitHub repository description
+   - Suggested: "Azora OS: Constitutional AI for planetary-scale economic coordination and human flourishing"
+
+3. **Verify Service Implementations** (`priority: high`, `type: testing`)
+   - Verify Aegis Citadel API endpoints work correctly
+   - Test Azora Sapiens education platform functionality
+   - Validate Azora Mint economic engine operations
+   - Confirm Azora Oracle intelligence services
+
+### Medium Priority Issues
+4. **Code Quality Improvements** (`priority: medium`, `type: enhancement`)
+   - Enable and fix ESLint warnings/errors
+   - Enable and fix Prettier formatting issues
+   - Add TypeScript strict mode checks
+
+5. **Deployment Testing** (`priority: medium`, `type: testing`)
+   - Test Docker container builds for all services
+   - Verify docker-compose orchestration
+   - Add health check endpoints to all services
+   - Test Kubernetes deployment manifests
+
+6. **Documentation Updates** (`priority: medium`, `type: documentation`)
+   - Update README claims to reflect actual implementation status
+   - Add API documentation for implemented endpoints
+   - Create deployment guides for different environments
+
+### Low Priority Issues
+7. **Repository Optimization** (`priority: low`, `type: enhancement`)
+   - Audit repository size (currently ~138MB)
+   - Consider adding .gitignore rules for large files
+   - Optimize Docker image sizes
+
+8. **Community Building** (`priority: low`, `type: enhancement`)
+   - Set up Discord server for real-time collaboration (discord.gg/azora-os)
+   - Launch forum.azora.world for technical discussions
+   - Create detailed issue templates for contributions
+   - Add good-first-issue labels to beginner-friendly tasks
+   - Clarify contributor account structure
+
 ## Automation Rules
 1. New issues automatically get priority: medium and status: ready
 2. PRs automatically get type labels based on title

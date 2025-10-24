@@ -1,0 +1,105 @@
+name: Deploy UI Apps to Vercel
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'learn-ui/**'
+      - 'cloud-ui/**'
+      - 'compliance-ui/**'
+      - 'dev-ui/**'
+      - 'marketplace-ui/**'
+      - 'pay-ui/**'
+      - 'enterprise-ui/**'
+
+jobs:
+  deploy-learn-ui:
+    runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.modified, 'learn-ui/')
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - run: cd learn-ui && npm install
+      - run: cd learn-ui && npm run build
+      - run: npm install -g vercel
+      - run: cd learn-ui && vercel --token ${{ secrets.VERCEL_TOKEN }} --confirm --prod
+
+  deploy-cloud-ui:
+    runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.modified, 'cloud-ui/')
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - run: cd cloud-ui && npm install
+      - run: cd cloud-ui && npm run build
+      - run: npm install -g vercel
+      - run: cd cloud-ui && vercel --token ${{ secrets.VERCEL_TOKEN }} --confirm --prod
+
+  deploy-compliance-ui:
+    runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.modified, 'compliance-ui/')
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - run: cd compliance-ui && npm install
+      - run: cd compliance-ui && npm run build
+      - run: npm install -g vercel
+      - run: cd compliance-ui && vercel --token ${{ secrets.VERCEL_TOKEN }} --confirm --prod
+
+  deploy-dev-ui:
+    runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.modified, 'dev-ui/')
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - run: cd dev-ui && npm install
+      - run: cd dev-ui && npm run build
+      - run: npm install -g vercel
+      - run: cd dev-ui && vercel --token ${{ secrets.VERCEL_TOKEN }} --confirm --prod
+
+  deploy-marketplace-ui:
+    runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.modified, 'marketplace-ui/')
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - run: cd marketplace-ui && npm install
+      - run: cd marketplace-ui && npm run build
+      - run: npm install -g vercel
+      - run: cd marketplace-ui && vercel --token ${{ secrets.VERCEL_TOKEN }} --confirm --prod
+
+  deploy-pay-ui:
+    runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.modified, 'pay-ui/')
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - run: cd pay-ui && npm install
+      - run: cd pay-ui && npm run build
+      - run: npm install -g vercel
+      - run: cd pay-ui && vercel --token ${{ secrets.VERCEL_TOKEN }} --confirm --prod
+
+  deploy-enterprise-ui:
+    runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.modified, 'enterprise-ui/')
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - run: cd enterprise-ui && npm install
+      - run: cd enterprise-ui && npm run build
+      - run: npm install -g vercel
+      - run: cd enterprise-ui && vercel --token ${{ secrets.VERCEL_TOKEN }} --confirm --prod

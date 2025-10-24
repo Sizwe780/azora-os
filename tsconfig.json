@@ -44,16 +44,7 @@
     ]
   },
   "include": [
-    "cloud-ui/**/*",
-    "compliance-ui/**/*",
-    "dev-ui/**/*",
-    "learn-ui/**/*",
-    "marketplace-ui/**/*",
     "organs/**/*",
-    "pay-ui/**/*",
-    "shared/**/*",
-    "synapse/**/*",
-    "vite-project/**/*",
     ".next/types/**/*.ts"
   ],
   "exclude": [

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { ArrowLeft, Play, CheckCircle } from 'lucide-react'
+import { ArrowLeft, CheckCircle } from 'lucide-react'
 
 interface LessonPanelProps {
   courseId: string
@@ -145,11 +145,10 @@ export function LessonPanel({ courseId, userId, onBack }: LessonPanelProps) {
               <button
                 key={module.id}
                 onClick={() => setSelectedModule(module)}
-                className={`w-full text-left p-3 rounded-lg border ${
-                  selectedModule?.id === module.id
+                className={`w-full text-left p-3 rounded-lg border ${selectedModule?.id === module.id
                     ? 'bg-blue-50 border-blue-200'
                     : 'bg-white border-gray-200 hover:bg-gray-50'
-                }`}
+                  }`}
               >
                 {module.title}
               </button>
@@ -159,6 +158,27 @@ export function LessonPanel({ courseId, userId, onBack }: LessonPanelProps) {
 
         {/* Content Area */}
         <div className="lg:col-span-2">
+          {/* Lessons List */}
+          {selectedModule && lessons.length > 0 && (
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold mb-4">Lessons</h3>
+              <div className="space-y-2">
+                {lessons.map((lesson) => (
+                  <button
+                    key={lesson.id}
+                    onClick={() => setSelectedLesson(lesson)}
+                    className={`w-full text-left p-3 rounded-lg border ${selectedLesson?.id === lesson.id
+                        ? 'bg-blue-50 border-blue-200'
+                        : 'bg-white border-gray-200 hover:bg-gray-50'
+                      }`}
+                  >
+                    {lesson.title}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           {selectedLesson && (
             <div className="space-y-6">
               <div>
