@@ -1,31 +1,47 @@
-# Azora OS: Full Glassmorphic Driver PWA App
+## Description
+Brief description of the changes made in this PR.
 
-## 🚗 What’s included
-- Modern, accessible, glassmorphic UI (light/dark)
-- SPA routing with react-router
-- ThemeProvider and global CSS variables
-- Sidebar navigation (Dashboard, Jobs, Settings)
-- Reusable UI primitives: Card, Skeleton, ThemeToggle, AlertBanner, LoadingScreen
-- Working Jobs Board (with API call to `/api/jobs`)
-- Dashboard & Settings stubs (ready for extension)
-- All static assets (logo, favicon, background)
-- PWA manifest and best-practice layout
-- Error/loading states, responsive/mobile-ready
+## Type of Change
+- [ ] 🐛 Bug fix (non-breaking change which fixes an issue)
+- [ ] ✨ New feature (non-breaking change which adds functionality)
+- [ ] 💥 Breaking change (fix or feature that would cause existing functionality to not work as expected)
+- [ ] 📚 Documentation update
+- [ ] 🎨 Style/UI update
+- [ ] 🔧 Refactoring (no functional changes)
+- [ ] 🧪 Tests (adding or updating tests)
+- [ ] 🔒 Security update
+- [ ] 🚀 Performance improvement
+- [ ] 🏗️ Infrastructure/Build update
 
-## ✅ Maintainer Checklist
+## Changes Made
+### What was changed?
+- Detailed list of changes
 
-- [ ] All routes (`/dashboard`, `/jobs`, `/settings`) work and are styled
-- [ ] Theme toggle (light/dark) works globally
-- [ ] Jobs board fetches from `/api/jobs` and displays results or loading/skeletons
-- [ ] All navigation is client-side (no full reloads)
-- [ ] Cards and glassmorphism visible everywhere
-- [ ] Brand assets (logo, favicon, bg_pattern) load correctly
-- [ ] PWA manifest and favicon present
-- [ ] Global styles/theme apply everywhere
-- [ ] Ready to connect to azora.world APIs and backend
-- [ ] No errors in console in dev or production build
-- [ ] Can build, deploy, and launch as a PWA
+### Why was this changed?
+- Rationale for the changes
 
----
+### How was this tested?
+- [ ] Unit tests pass
+- [ ] Integration tests pass
+- [ ] Manual testing completed
+- [ ] E2E tests pass (if applicable)
 
-_Merge and 🚀 Go Live!_
+## Screenshots/Media (if applicable)
+<!-- Add screenshots, videos, or other media to demonstrate the changes -->
+
+## Checklist
+- [ ] My code follows the project's style guidelines
+- [ ] I have performed a self-review of my own code
+- [ ] I have commented my code, particularly in hard-to-understand areas
+- [ ] I have made corresponding changes to the documentation
+- [ ] My changes generate no new warnings or errors
+- [ ] I have added tests that prove my fix is effective or that my feature works
+- [ ] New and existing unit tests pass locally with my changes
+- [ ] Any dependent changes have been merged and published in downstream modules
+
+## Additional Notes
+<!-- Any additional information or context about this PR -->
+
+## Related Issues
+<!-- Link to any related issues or PRs -->
+Closes #<!-- issue number -->
