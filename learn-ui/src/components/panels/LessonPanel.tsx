@@ -145,11 +145,10 @@ export function LessonPanel({ courseId, userId, onBack }: LessonPanelProps) {
               <button
                 key={module.id}
                 onClick={() => setSelectedModule(module)}
-                className={`w-full text-left p-3 rounded-lg border ${
-                  selectedModule?.id === module.id
+                className={`w-full text-left p-3 rounded-lg border ${selectedModule?.id === module.id
                     ? 'bg-blue-50 border-blue-200'
                     : 'bg-white border-gray-200 hover:bg-gray-50'
-                }`}
+                  }`}
               >
                 {module.title}
               </button>
@@ -168,11 +167,10 @@ export function LessonPanel({ courseId, userId, onBack }: LessonPanelProps) {
                   <button
                     key={lesson.id}
                     onClick={() => setSelectedLesson(lesson)}
-                    className={`w-full text-left p-3 rounded-lg border ${
-                      selectedLesson?.id === lesson.id
+                    className={`w-full text-left p-3 rounded-lg border ${selectedLesson?.id === lesson.id
                         ? 'bg-blue-50 border-blue-200'
                         : 'bg-white border-gray-200 hover:bg-gray-50'
-                    }`}
+                      }`}
                   >
                     {lesson.title}
                   </button>
