@@ -11,9 +11,13 @@ See LICENSE file for details.
  * Scans entire codebase to ensure ZERO mocks, stubs, or placeholders
  */
 
-const fs = require('fs');
-const path = require('path');
-const glob = require('glob');
+import fs from 'fs';
+import path from 'path';
+import { glob } from 'glob';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const MOCK_PATTERNS = [
   /\bmock\(/gi,
@@ -44,7 +48,7 @@ class NoMockValidator {
   async validate() {
     console.log('🔍 Running No Mock Protocol Validator...\n');
 
-    const files = glob.sync('**/*.{js,ts,jsx,tsx}', {
+    const files = await glob('**/*.{js,ts,jsx,tsx}', {
       ignore: [
         'node_modules/**',
         'dist/**',
@@ -54,6 +58,10 @@ class NoMockValidator {
     });
 
     for (const file of files) {
+      // Skip directories
+      const stat = await fs.promises.stat(file);
+      if (stat.isDirectory()) continue;
+      
       this.scanFile(file);
     }
 
@@ -67,9 +75,9 @@ class NoMockValidator {
     }
   }
 
-  scanFile(filePath) {
+  async scanFile(filePath) {
     this.scannedFiles++;
-    const content = fs.readFileSync(filePath, 'utf8');
+    const content = await fs.promises.readFile(filePath, 'utf8');
     const lines = content.split('\n');
 
     lines.forEach((line, index) => {
@@ -115,9 +123,9 @@ class NoMockValidator {
 }
 
 // Run if called directly
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   const validator = new NoMockValidator();
   validator.validate().catch(console.error);
 }
 
-module.exports = NoMockValidator;
+export default NoMockValidator;
