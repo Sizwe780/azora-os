@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  azora-mint:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: azora-mint
+    ports:
+      - "3006:3006"
+    environment:
+      - NODE_ENV=production
+      - PORT=3006
+      - MONGODB_URI=mongodb://mongodb:27017/azora-mint
+      - JWT_SECRET=${JWT_SECRET:-default-jwt-secret-change-in-production}
+      - AI_SERVICE_URL=http://azora-ai:3007
+      - BLOCKCHAIN_SERVICE_URL=http://azora-blockchain:3002
+    depends_on:
+      - mongodb
+    networks:
+      - azora-network
+    restart: unless-stopped
+    volumes:
+      - ./logs:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3006/api/health/ready"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  mongodb:
+    image: mongo:7-jammy
+    container_name: azora-mint-mongodb
+    ports:
+      - "27019:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=azora-mint
+    volumes:
+      - mongodb_data:/data/db
+      - ./docker/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    networks:
+      - azora-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  mongodb_data:
+
+networks:
+  azora-network:
+    driver: bridge

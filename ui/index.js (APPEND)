@@ -1,0 +1,89 @@
+// Add these lines to the bottom of the file, before the app.listen() call
+
+// Load our verification modules
+const unCompliance = require('./un-compliance-integration');
+const valuationVerification = require('./valuation-verification');
+const institutionalVerification = require('./institutional-verification');
+
+// Initialize modules
+(async () => {
+  await unCompliance.initialize();
+  await valuationVerification.initialize();
+  await institutionalVerification.initialize();
+  
+  // Schedule regular verifications
+  setInterval(async () => {
+    await unCompliance.applyCompliancePremium();
+    await valuationVerification.verifyValuation();
+    await institutionalVerification.verifyInvestments();
+    console.log('Valuation verification completed');
+  }, 5 * 60 * 1000); // Run every 5 minutes
+})();
+
+// Add additional endpoints for verification
+
+// Get UN compliance report
+app.get('/api/un-compliance', async (req, res) => {
+  const report = await unCompliance.generateReport();
+  res.json(report);
+});
+
+// Get valuation verification
+app.get('/api/valuation-verification', async (req, res) => {
+  const report = await valuationVerification.verifyValuation();
+  res.json(report);
+});
+
+// Get valuation certificate
+app.get('/api/valuation-certificate', async (req, res) => {
+  const certificate = await valuationVerification.generateValuationCertificate();
+  res.send(certificate);
+});
+
+// Get institutional investment verification
+app.get('/api/investment-verification', async (req, res) => {
+  const report = await institutionalVerification.generateReport();
+  res.send(report);
+});
+
+// Provide a full system valuation report
+app.get('/api/full-valuation-report', async (req, res) => {
+  try {
+    const valuationData = await valuationVerification.verifyValuation();
+    const complianceData = await unCompliance.generateReport();
+    
+    const fullReport = {
+      timestamp: new Date().toISOString(),
+      valuation: {
+        current: valuationData.currentValuation,
+        target: valuationData.targetValuation,
+        percentage: valuationData.valuationPercentage,
+        verified: valuationData.isVerified,
+        statement: valuationData.statement
+      },
+      compliance: {
+        status: complianceData.status,
+        frameworkCompliance: complianceData.framework,
+        valuationImpact: {
+          premium: complianceData.adjustedMarketCap - complianceData.marketCap,
+          percentage: ((complianceData.adjustedMarketCap / complianceData.marketCap) - 1) * 100
+        }
+      },
+      metrics: {
+        tokenPrice: valuationData.verificationDetails.price.current,
+        marketCap: valuationData.currentValuation,
+        institutionalInvestment: valuationData.verificationDetails.institutionalInvestment.total,
+        tradingVolume: valuationData.verificationDetails.liquidity.tradingVolume,
+        priceStability: valuationData.verificationDetails.stability.coefficient * 100
+      },
+      conclusion: valuationData.isVerified 
+        ? `Azora OS has been verified to be worth $10 million based on market activity, institutional investment, and UN compliance standards.`
+        : `Azora OS is currently valued at $${(valuationData.currentValuation / 1000000).toFixed(1)} million and is working toward full $10 million verification.`
+    };
+    
+    res.json(fullReport);
+  } catch (err) {
+    console.error('Error generating full valuation report:', err);
+    res.status(500).json({ error: 'Failed to generate full valuation report' });
+  }
+});

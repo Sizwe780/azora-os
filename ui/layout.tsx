@@ -1,22 +1,17 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Inter, Fira_Code } from "next/font/google"
+import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
+import { Sidebar } from "@/components/sidebar"
+import { Header } from "@/components/header"
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-})
-
-const firaCode = Fira_Code({
-  subsets: ["latin"],
-  variable: "--font-fira-code",
-})
+const _geist = Geist({ subsets: ["latin"] })
+const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Azora ES - Living Design System",
-  description: "The world's first Living Design System - A Digital Biome",
+  title: "Azora Sapiens University",
+  description: "Global Reasoning Network & Knowledge Exchange",
   generator: "v0.app",
 }
 
@@ -26,9 +21,15 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="dark">
-      <body className={`${inter.className} font-sans antialiased`}>
-        {children}
+    <html lang="en">
+      <body className={`font-sans antialiased`}>
+        <div className="flex h-screen bg-slate-950 overflow-hidden">
+          <Sidebar />
+          <div className="flex-1 flex flex-col overflow-hidden">
+            <Header />
+            <main className="flex-1 overflow-y-auto">{children}</main>
+          </div>
+        </div>
         <Analytics />
       </body>
     </html>

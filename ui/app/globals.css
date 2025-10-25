@@ -1,178 +1,254 @@
-@import 'tailwindcss';
-@import 'tw-animate-css';
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  /* Azora OS color system - neural network inspired with deep blues and electric accents */
+  --background: oklch(0.08 0.02 265);
+  --foreground: oklch(0.98 0.01 265);
+  --card: oklch(0.12 0.03 265);
+  --card-foreground: oklch(0.98 0.01 265);
+  --popover: oklch(0.1 0.02 265);
+  --popover-foreground: oklch(0.98 0.01 265);
+
+  /* Primary: Electric blue - synapse energy */
+  --primary: oklch(0.65 0.25 265);
+  --primary-foreground: oklch(0.08 0.02 265);
+
+  /* Secondary: Deep neural blue */
+  --secondary: oklch(0.2 0.04 265);
+  --secondary-foreground: oklch(0.98 0.01 265);
+
+  /* Muted: Subtle background layers */
+  --muted: oklch(0.15 0.03 265);
+  --muted-foreground: oklch(0.65 0.02 265);
+
+  /* Accent: Cyan glow - active connections */
+  --accent: oklch(0.7 0.2 210);
+  --accent-foreground: oklch(0.08 0.02 265);
+
+  /* Destructive: Warning red */
+  --destructive: oklch(0.55 0.22 25);
+  --destructive-foreground: oklch(0.98 0.01 265);
+
+  /* Borders and inputs */
+  --border: oklch(0.25 0.04 265);
+  --input: oklch(0.2 0.04 265);
+  --ring: oklch(0.65 0.25 265);
+
+  /* Chart colors - neural network palette */
+  --chart-1: oklch(0.65 0.25 265);
+  --chart-2: oklch(0.7 0.2 210);
+  --chart-3: oklch(0.6 0.18 290);
+  --chart-4: oklch(0.68 0.22 180);
+  --chart-5: oklch(0.72 0.2 240);
+
+  /* Radius for modern, slightly rounded corners */
+  --radius: 0.5rem;
+
+  /* Sidebar tokens */
+  --sidebar: oklch(0.1 0.02 265);
+  --sidebar-foreground: oklch(0.98 0.01 265);
+  --sidebar-primary: oklch(0.65 0.25 265);
+  --sidebar-primary-foreground: oklch(0.08 0.02 265);
+  --sidebar-accent: oklch(0.15 0.03 265);
+  --sidebar-accent-foreground: oklch(0.98 0.01 265);
+  --sidebar-border: oklch(0.2 0.04 265);
+  --sidebar-ring: oklch(0.65 0.25 265);
+
+  /* Custom Azora OS tokens for neural effects */
+  --glow-primary: oklch(0.65 0.25 265 / 0.4);
+  --glow-accent: oklch(0.7 0.2 210 / 0.3);
+  --surface-elevated: oklch(0.14 0.03 265);
+  --surface-sunken: oklch(0.06 0.02 265);
+
+  /* Added glassmorphism tokens */
+  --glass-bg: oklch(0.12 0.03 265 / 0.4);
+  --glass-border: oklch(0.3 0.05 265 / 0.3);
+  --glass-highlight: oklch(0.98 0.01 265 / 0.1);
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.145 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.145 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.269 0 0);
-  --input: oklch(0.269 0 0);
-  --ring: oklch(0.439 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(0.269 0 0);
-  --sidebar-ring: oklch(0.439 0 0);
+  /* Dark mode uses same values - Azora OS is dark by default */
+  --background: oklch(0.08 0.02 265);
+  --foreground: oklch(0.98 0.01 265);
+  --card: oklch(0.12 0.03 265);
+  --card-foreground: oklch(0.98 0.01 265);
+  --popover: oklch(0.1 0.02 265);
+  --popover-foreground: oklch(0.98 0.01 265);
+  --primary: oklch(0.65 0.25 265);
+  --primary-foreground: oklch(0.08 0.02 265);
+  --secondary: oklch(0.2 0.04 265);
+  --secondary-foreground: oklch(0.98 0.01 265);
+  --muted: oklch(0.15 0.03 265);
+  --muted-foreground: oklch(0.65 0.02 265);
+  --accent: oklch(0.7 0.2 210);
+  --accent-foreground: oklch(0.08 0.02 265);
+  --destructive: oklch(0.55 0.22 25);
+  --destructive-foreground: oklch(0.98 0.01 265);
+  --border: oklch(0.25 0.04 265);
+  --input: oklch(0.2 0.04 265);
+  --ring: oklch(0.65 0.25 265);
+  --chart-1: oklch(0.65 0.25 265);
+  --chart-2: oklch(0.7 0.2 210);
+  --chart-3: oklch(0.6 0.18 290);
+  --chart-4: oklch(0.68 0.22 180);
+  --chart-5: oklch(0.72 0.2 240);
+  --sidebar: oklch(0.1 0.02 265);
+  --sidebar-foreground: oklch(0.98 0.01 265);
+  --sidebar-primary: oklch(0.65 0.25 265);
+  --sidebar-primary-foreground: oklch(0.08 0.02 265);
+  --sidebar-accent: oklch(0.15 0.03 265);
+  --sidebar-accent-foreground: oklch(0.98 0.01 265);
+  --sidebar-border: oklch(0.2 0.04 265);
+  --sidebar-ring: oklch(0.65 0.25 265);
+  --glow-primary: oklch(0.65 0.25 265 / 0.4);
+  --glow-accent: oklch(0.7 0.2 210 / 0.3);
+  --surface-elevated: oklch(0.14 0.03 265);
+  --surface-sunken: oklch(0.06 0.02 265);
+  --glass-bg: oklch(0.12 0.03 265 / 0.4);
+  --glass-border: oklch(0.3 0.05 265 / 0.3);
+  --glass-highlight: oklch(0.98 0.01 265 / 0.1);
+}
+
+@theme inline {
+  /* Typography: Inter for headings, Roboto for body, Fira Code for code */
+  --font-sans: "Inter", "Roboto", system-ui, -apple-system, sans-serif;
+  --font-mono: "Fira Code", "Geist Mono", "Geist Mono Fallback", monospace;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
 }
 
 @layer base {
   * {
-    border-color: hsl(var(--border));
-    outline-color: hsl(var(--ring) / 0.5);
+    @apply border-border outline-ring/50;
   }
   body {
-    background-color: hsl(var(--background));
-    color: hsl(var(--foreground));
-    font-family: 'Geist', 'Geist Fallback', sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    background-image:
-      radial-gradient(circle at 25% 25%, rgba(147, 51, 234, 0.05) 0%, transparent 50%),
-      radial-gradient(circle at 75% 75%, rgba(59, 130, 246, 0.05) 0%, transparent 50%);
+    @apply bg-background text-foreground;
   }
-  html {
-    scroll-behavior: smooth;
-  }
-}
 
-@layer utilities {
+  /* Enhanced glassmorphism utilities */
   .glass {
-    backdrop-filter: blur(24px);
-    background-color: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    position: relative;
   }
 
-  .glass-dark {
-    backdrop-filter: blur(24px);
-    background-color: rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+  .glass::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--glass-highlight);
   }
 
-  .gradient-primary {
-    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary)) 50%, hsl(var(--accent)) 100%);
+  .glass-strong {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--glass-border);
   }
 
-  .gradient-secondary {
-    background: linear-gradient(135deg, hsl(var(--secondary)) 0%, hsl(var(--muted)) 100%);
+  /* Custom utility classes for Azora OS neural effects */
+  .glow-primary {
+    box-shadow: 0 0 20px var(--glow-primary), 0 0 40px var(--glow-primary);
   }
 
-  .text-gradient {
-    background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--primary) / 0.8), hsl(var(--accent)));
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+  .glow-accent {
+    box-shadow: 0 0 20px var(--glow-accent), 0 0 40px var(--glow-accent);
   }
 
+  .surface-elevated {
+    background-color: var(--surface-elevated);
+  }
+
+  .surface-sunken {
+    background-color: var(--surface-sunken);
+  }
+
+  /* Smooth animations for biological feel */
+  .animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  /* Added new animations for live UI */
   .animate-float {
-    animation: float 6s ease-in-out infinite;
-  }
-
-  .animate-pulse-glow {
-    animation: pulse-glow 3s ease-in-out infinite;
-  }
-
-  .animate-living-pulse {
-    animation: living-pulse 2s ease-in-out infinite;
+    animation: float 3s ease-in-out infinite;
   }
 
   .animate-shimmer {
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-    background-size: 200% 100%;
-    animation: shimmer 2s infinite;
+    animation: shimmer 2s linear infinite;
   }
-}
 
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
+  @keyframes glow {
+    from {
+      box-shadow: 0 0 10px var(--glow-primary), 0 0 20px var(--glow-primary);
+    }
+    to {
+      box-shadow: 0 0 20px var(--glow-primary), 0 0 40px var(--glow-primary);
+    }
   }
-  50% {
-    transform: translateY(-10px);
-  }
-}
 
-@keyframes pulse-glow {
-  0%, 100% {
-    box-shadow: 0 0 20px rgba(147, 51, 234, 0.3);
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
   }
-  50% {
-    box-shadow: 0 0 40px rgba(147, 51, 234, 0.6);
-  }
-}
 
-@keyframes living-pulse {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.8;
-    transform: scale(1.05);
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
+  @keyframes shimmer {
+    0% {
+      background-position: -1000px 0;
+    }
+    100% {
+      background-position: 1000px 0;
+    }
   }
 }
