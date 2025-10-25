@@ -726,7 +726,7 @@ Azora shall maintain a subdomain-based frontend architecture to serve different 
 
 **Core Subdomains:**
 - **azora.world** - Main platform landing and general access
-- **learn.azora.world** - Student learning and earning platform
+- **sapiens.azora.world** - Student learning and earning platform
 - **enterprise.azora.world** - Business solutions and SaaS products
 - **marketplace.azora.world** - Service marketplace and P2P transactions
 - **pay.azora.world** - Payment processing and financial services
