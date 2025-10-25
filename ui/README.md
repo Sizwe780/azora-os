@@ -5,5 +5,5 @@ constitutional requirements. Any avoidance of any of the laws in the constituion
 These are your guides.
 Please take the oath of making this great product the best.
 
-Yours in development and vision,
+Yours in development, vision and excellence
 Sizwe Ngwenya
