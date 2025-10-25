@@ -118,8 +118,8 @@ const EVLeaderPanel = () => {
                                         <td className="py-3 text-foreground">{vehicle.id}</td>
                                         <td className="py-3">
                                             <span className={`px-2 py-1 rounded-full text-xs font-medium ${vehicle.status === 'Active' ? 'bg-green-500/10 text-green-500' :
-                                                    vehicle.status === 'Charging' ? 'bg-blue-500/10 text-blue-500' :
-                                                        'bg-yellow-500/10 text-yellow-500'
+                                                vehicle.status === 'Charging' ? 'bg-blue-500/10 text-blue-500' :
+                                                    'bg-yellow-500/10 text-yellow-500'
                                                 }`}>
                                                 {vehicle.status}
                                             </span>

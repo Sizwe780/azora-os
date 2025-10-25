@@ -98,11 +98,10 @@ const RetailPartnerPanel = () => {
                     <p className="text-foreground font-medium">{activity.action}</p>
                     <p className="text-sm text-muted-foreground">{activity.time}</p>
                   </div>
-                  <div className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    activity.type === 'success' ? 'bg-green-500/10 text-green-500' :
-                    activity.type === 'achievement' ? 'bg-blue-500/10 text-blue-500' :
-                    'bg-yellow-500/10 text-yellow-500'
-                  }`}>
+                  <div className={`px-2 py-1 rounded-full text-xs font-medium ${activity.type === 'success' ? 'bg-green-500/10 text-green-500' :
+                      activity.type === 'achievement' ? 'bg-blue-500/10 text-blue-500' :
+                        'bg-yellow-500/10 text-yellow-500'
+                    }`}>
                     {activity.type}
                   </div>
                 </div>

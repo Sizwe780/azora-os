@@ -8,25 +8,29 @@ const CompliancePanel = () => (
 
   <ServicePanelimport ServicePanel from '../../components/ServicePanel'import ServicePanel from '../../components/ServicePanel'
 
-    title="Compliance & Global Genesis"
+title = "Compliance & Global Genesis"
 
-    description="Regulatory compliance and planetary economic instantiation"
+description = "Regulatory compliance and planetary economic instantiation"
 
-    stats={[
+stats = {
+  [
 
-      { label: 'Total Allocation', value: '195M AZR', change: 'Funded' },const CompliancePanel = () => {const CompliancePanel = () => {
+  { label: 'Total Allocation', value: '195M AZR', change: 'Funded' },const CompliancePanel = () => {
+    const CompliancePanel = () => {
 
       { label: 'Available Funds', value: '170M AZR', change: 'Ready' },
 
-      { label: 'Instantiated Economies', value: '25', change: '+2' },  const [genesisStatus, setGenesisStatus] = useState(null)  const [genesisStatus, setGenesisStatus] = useState(null)
+      { label: 'Instantiated Economies', value: '25', change: '+2' }, const [genesisStatus, setGenesisStatus] = useState(null)  const [genesisStatus, setGenesisStatus] = useState(null)
 
       { label: 'Seed Grant Amount', value: '1M AZR', change: 'Per nation' }
 
-    ]}  const [countries, setCountries] = useState([])  const [countries, setCountries] = useState([])
+    ]
+  }  const [countries, setCountries] = useState([])  const [countries, setCountries] = useState([])
 
-    actions={[
+    actions={
+    [
 
-      { label: 'Refresh Status', onClick: () => console.log('Refresh') },  const [selectedCountry, setSelectedCountry] = useState('')  const [selectedCountry, setSelectedCountry] = useState('')
+    { label: 'Refresh Status', onClick: () => console.log('Refresh') },  const [selectedCountry, setSelectedCountry] = useState('')  const [selectedCountry, setSelectedCountry] = useState('')
 
       { label: 'View Fund Details', onClick: () => console.log('View fund details') }
 
@@ -34,231 +38,254 @@ const CompliancePanel = () => (
 
   >
 
-    <div className="p-4">  const [loading, setLoading] = useState(true)  const [loading, setLoading] = useState(true)
+  <div className="p-4">  const [loading, setLoading] = useState(true)  const [loading, setLoading] = useState(true)
 
-      <p className="text-muted-foreground">Compliance panel content will be implemented here.</p>
+    <p className="text-muted-foreground">Compliance panel content will be implemented here.</p>
 
-    </div>  const [checkingTrigger, setCheckingTrigger] = useState(false)  const [checkingTrigger, setCheckingTrigger] = useState(false)
+  </div>  const [checkingTrigger, setCheckingTrigger] = useState(false)  const [checkingTrigger, setCheckingTrigger] = useState(false)
 
-  </ServicePanel>
+  </ServicePanel >
 
-)  const [instantiating, setInstantiating] = useState(false)  const [instantiating, setInstantiating] = useState(false)
+) const [instantiating, setInstantiating] = useState(false)  const [instantiating, setInstantiating] = useState(false)
 
 
 
 export default CompliancePanel  const [error, setError] = useState(null)  const [error, setError] = useState(null)
 
-  const [triggerData, setTriggerData] = useState({  const [triggerData, setTriggerData] = useState({
+const [triggerData, setTriggerData] = useState({
+  const [triggerData, setTriggerData] = useState({
 
-    userCount: '',    userCount: '',
+    userCount: '', userCount: '',
 
-    university: '',    university: '',
+    university: '', university: '',
 
     teamSize: ''    teamSize: ''
 
-  })  })
+  })
+})
 
 
 
-  useEffect(() => {  useEffect(() => {
+useEffect(() => {
+  useEffect(() => {
 
     fetchGenesisStatus()    fetchGenesisStatus()
 
-  }, [])  }, [])
+  }, [])
+}, [])
 
 
 
-  const fetchGenesisStatus = async () => {  const fetchGenesisStatus = async () => {
+const fetchGenesisStatus = async () => {
+  const fetchGenesisStatus = async () => {
 
-    try {    try {
+    try {
+      try {
 
-      setLoading(true)      setLoading(true)
+        setLoading(true)      setLoading(true)
 
-      setError(null)      setError(null)
-
-
-
-      const response = await axios.get('http://localhost:4099/api/citadel/genesis/status')      const response = await axios.get('http://localhost:4099/api/citadel/genesis/status')
-
-      setGenesisStatus(response.data)      setGenesisStatus(response.data)
+        setError(null)      setError(null)
 
 
 
-      const countriesResponse = await axios.get('http://localhost:4099/api/citadel/economies')      const countriesResponse = await axios.get('http://localhost:4099/api/citadel/economies')
+        const response = await axios.get('http://localhost:4099/api/citadel/genesis/status')      const response = await axios.get('http://localhost:4099/api/citadel/genesis/status')
 
-      setCountries(countriesResponse.data.economies || [])      setCountries(countriesResponse.data.economies || [])
-
-    } catch (err) {    } catch (err) {
-
-      console.error('Error fetching genesis status:', err)      console.error('Error fetching genesis status:', err)
-
-      setError('Failed to load compliance data. Using mock data.')      setError('Failed to load compliance data. Using mock data.')
+        setGenesisStatus(response.data)      setGenesisStatus(response.data)
 
 
 
-      setGenesisStatus({      setGenesisStatus({
+        const countriesResponse = await axios.get('http://localhost:4099/api/citadel/economies')      const countriesResponse = await axios.get('http://localhost:4099/api/citadel/economies')
 
-        globalGenesisFund: {        globalGenesisFund: {
+        setCountries(countriesResponse.data.economies || [])      setCountries(countriesResponse.data.economies || [])
 
-          totalAllocation: 195000000,          totalAllocation: 195000000,
+      } catch (err) { } catch (err) {
 
-          allocated: 25000000,          allocated: 25000000,
+        console.error('Error fetching genesis status:', err)      console.error('Error fetching genesis status:', err)
 
-          available: 170000000,          available: 170000000,
-
-          nationsCovered: 195,          nationsCovered: 195,
-
-          instantiatedEconomies: 25          instantiatedEconomies: 25
-
-        },        },
-
-        seedGrantConfig: {        seedGrantConfig: {
-
-          amountPerNation: 1000000,          amountPerNation: 1000000,
-
-          totalNations: 195,          totalNations: 195,
-
-          escrowStatus: 'active'          escrowStatus: 'active'
-
-        }        }
-
-      })      })
+        setError('Failed to load compliance data. Using mock data.')      setError('Failed to load compliance data. Using mock data.')
 
 
 
-      setCountries([      setCountries([
+        setGenesisStatus({
+          setGenesisStatus({
 
-        { country: 'South Africa', region: 'Africa', localToken: 'aZAR', instantiationDate: '2024-01-15' },        { country: 'South Africa', region: 'Africa', localToken: 'aZAR', instantiationDate: '2024-01-15' },
+            globalGenesisFund: { globalGenesisFund: {
 
-        { country: 'United States', region: 'Americas', localToken: 'aUSD', instantiationDate: '2024-01-20' },        { country: 'United States', region: 'Americas', localToken: 'aUSD', instantiationDate: '2024-01-20' },
+              totalAllocation: 195000000, totalAllocation: 195000000,
 
-        { country: 'United Kingdom', region: 'Europe', localToken: 'aGBP', instantiationDate: '2024-01-25' },        { country: 'United Kingdom', region: 'Europe', localToken: 'aGBP', instantiationDate: '2024-01-25' },
+              allocated: 25000000, allocated: 25000000,
 
-      ])      ])
+              available: 170000000, available: 170000000,
 
-    } finally {    } finally {
+              nationsCovered: 195, nationsCovered: 195,
 
-      setLoading(false)      setLoading(false)
+              instantiatedEconomies: 25          instantiatedEconomies: 25
 
-    }    }
+        }, },
 
-  }  }
+            seedGrantConfig: { seedGrantConfig: {
+
+              amountPerNation: 1000000, amountPerNation: 1000000,
+
+              totalNations: 195, totalNations: 195,
+
+              escrowStatus: 'active'          escrowStatus: 'active'
+
+        } }
+
+          })
+        })
 
 
 
-  const fetchCountryData = async (country) => {  const fetchCountryData = async (country) => {
+        setCountries([setCountries([
+
+          { country: 'South Africa', region: 'Africa', localToken: 'aZAR', instantiationDate: '2024-01-15' }, { country: 'South Africa', region: 'Africa', localToken: 'aZAR', instantiationDate: '2024-01-15' },
+
+          { country: 'United States', region: 'Americas', localToken: 'aUSD', instantiationDate: '2024-01-20' }, { country: 'United States', region: 'Americas', localToken: 'aUSD', instantiationDate: '2024-01-20' },
+
+          { country: 'United Kingdom', region: 'Europe', localToken: 'aGBP', instantiationDate: '2024-01-25' }, { country: 'United Kingdom', region: 'Europe', localToken: 'aGBP', instantiationDate: '2024-01-25' },
+
+        ])])
+
+      } finally { } finally {
+
+        setLoading(false)      setLoading(false)
+
+      }
+    }
+
+  }
+}
+
+
+
+const fetchCountryData = async (country) => {
+  const fetchCountryData = async (country) => {
 
     if (!country) return    if (!country) return
 
 
 
-    try {    try {
+    try {
+      try {
 
-      const response = await axios.get(`http://localhost:4099/api/citadel/grants/${encodeURIComponent(country)}`)      const response = await axios.get(`http://localhost:4099/api/citadel/grants/${encodeURIComponent(country)}`)
+        const response = await axios.get(`http://localhost:4099/api/citadel/grants/${encodeURIComponent(country)}`)      const response = await axios.get(`http://localhost:4099/api/citadel/grants/${encodeURIComponent(country)}`)
 
-      setCountryData(response.data)      setCountryData(response.data)
+        setCountryData(response.data)      setCountryData(response.data)
 
-    } catch (err) {    } catch (err) {
+      } catch (err) { } catch (err) {
 
-      console.error('Error fetching country data:', err)      console.error('Error fetching country data:', err)
+        console.error('Error fetching country data:', err)      console.error('Error fetching country data:', err)
 
-      setError('Failed to load country data.')      setError('Failed to load country data.')
-
-
-
-      setCountryData({      setCountryData({
-
-        country,        country,
-
-        region: 'Africa',        region: 'Africa',
-
-        sovereignSeedGrant: {        sovereignSeedGrant: {
-
-          amount: 1000000,          amount: 1000000,
-
-          status: 'escrowed',          status: 'escrowed',
-
-          escrowId: 'escrow-123'          escrowId: 'escrow-123'
-
-        },        },
-
-        activationStatus: {        activationStatus: {
-
-          userThreshold: { current: 5000, required: 10000, achieved: false },          userThreshold: { current: 5000, required: 10000, achieved: false },
-
-          universityTreaty: { status: 'pending' },          universityTreaty: { status: 'pending' },
-
-          foundingTeam: { status: 'pending' }          foundingTeam: { status: 'pending' }
-
-        },        },
-
-        economyStatus: {        economyStatus: {
-
-          instantiated: false,          instantiated: false,
-
-          localToken: null          localToken: null
-
-        }        }
-
-      })      })
-
-    }    }
-
-  }  }
+        setError('Failed to load country data.')      setError('Failed to load country data.')
 
 
 
-  const checkActivationTrigger = async (triggerType) => {  const checkActivationTrigger = async (triggerType) => {
+        setCountryData({
+          setCountryData({
+
+            country, country,
+
+            region: 'Africa', region: 'Africa',
+
+            sovereignSeedGrant: { sovereignSeedGrant: {
+
+              amount: 1000000, amount: 1000000,
+
+              status: 'escrowed', status: 'escrowed',
+
+              escrowId: 'escrow-123'          escrowId: 'escrow-123'
+
+        }, },
+
+            activationStatus: { activationStatus: {
+
+              userThreshold: { current: 5000, required: 10000, achieved: false }, userThreshold: { current: 5000, required: 10000, achieved: false },
+
+              universityTreaty: { status: 'pending' }, universityTreaty: { status: 'pending' },
+
+              foundingTeam: { status: 'pending' }          foundingTeam: { status: 'pending' }
+
+            }, },
+
+            economyStatus: { economyStatus: {
+
+              instantiated: false, instantiated: false,
+
+              localToken: null          localToken: null
+
+        } }
+
+          })
+        })
+
+      }
+    }
+
+  }
+}
+
+
+
+const checkActivationTrigger = async (triggerType) => {
+  const checkActivationTrigger = async (triggerType) => {
 
     if (!selectedCountry) return    if (!selectedCountry) return
 
 
 
-    try {    try {
+    try {
+      try {
 
-      setCheckingTrigger(true)      setCheckingTrigger(true)
+        setCheckingTrigger(true)      setCheckingTrigger(true)
 
-      setError(null)      setError(null)
-
-
-
-      let triggerPayload = { country: selectedCountry, triggerType }      let triggerPayload = { country: selectedCountry, triggerType }
+        setError(null)      setError(null)
 
 
 
-      switch (triggerType) {      switch (triggerType) {
+        let triggerPayload = { country: selectedCountry, triggerType }      let triggerPayload = { country: selectedCountry, triggerType }
 
-        case 'userThreshold':        case 'userThreshold':
 
-          triggerPayload.triggerData = { userCount: parseInt(triggerData.userCount) || 0 }          triggerPayload.triggerData = { userCount: parseInt(triggerData.userCount) || 0 }
 
-          break          break
+        switch (triggerType) {      switch (triggerType) {
 
-        case 'universityTreaty':        case 'universityTreaty':
+          case 'userThreshold': case 'userThreshold':
 
-          triggerPayload.triggerData = {          triggerPayload.triggerData = {
+            triggerPayload.triggerData = { userCount: parseInt(triggerData.userCount) || 0 }          triggerPayload.triggerData = { userCount: parseInt(triggerData.userCount) || 0 }
 
-            status: 'signed',            status: 'signed',
+            break          break
 
-            university: triggerData.university            university: triggerData.university
+          case 'universityTreaty': case 'universityTreaty':
 
-          }          }
+            triggerPayload.triggerData = {
+              triggerPayload.triggerData = {
 
-          break          break
+                status: 'signed', status: 'signed',
 
-        case 'foundingTeam':        case 'foundingTeam':
+                university: triggerData.university            university: triggerData.university
 
-          triggerPayload.triggerData = {          triggerPayload.triggerData = {
+              }
+            }
 
-            petitionId: `petition-${Date.now()}`,            petitionId: `petition-${Date.now()}`,
+            break          break
 
-            teamSize: parseInt(triggerData.teamSize) || 0            teamSize: parseInt(triggerData.teamSize) || 0
+          case 'foundingTeam': case 'foundingTeam':
 
-          }          }
+            triggerPayload.triggerData = {
+              triggerPayload.triggerData = {
 
-          break          break
+                petitionId: `petition-${Date.now()}`, petitionId: `petition-${Date.now()}`,
 
-      }      }
+                teamSize: parseInt(triggerData.teamSize) || 0            teamSize: parseInt(triggerData.teamSize) || 0
+
+              }
+            }
+
+            break          break
+
+        }
+      }
 
 
 
@@ -266,107 +293,121 @@ export default CompliancePanel  const [error, setError] = useState(null)  const 
 
 
 
-      if (response.data.success) {      if (response.data.success) {
+      if (response.data.success) {
+        if (response.data.success) {
 
-        await fetchCountryData(selectedCountry)        await fetchCountryData(selectedCountry)
+          await fetchCountryData(selectedCountry)        await fetchCountryData(selectedCountry)
 
-        await fetchGenesisStatus()        await fetchGenesisStatus()
+          await fetchGenesisStatus()        await fetchGenesisStatus()
 
-      }      }
+        }
+      }
 
-    } catch (err) {    } catch (err) {
+    } catch (err) { } catch (err) {
 
       console.error('Error checking trigger:', err)      console.error('Error checking trigger:', err)
 
       setError('Failed to check activation trigger.')      setError('Failed to check activation trigger.')
 
-    } finally {    } finally {
+    } finally { } finally {
 
       setCheckingTrigger(false)      setCheckingTrigger(false)
 
-    }    }
+    }
+  }
 
-  }  }
+}  }
 
 
 
-  const executeInstantiation = async () => {  const executeInstantiation = async () => {
+const executeInstantiation = async () => {
+  const executeInstantiation = async () => {
 
     if (!selectedCountry) return    if (!selectedCountry) return
 
 
 
-    try {    try {
+    try {
+      try {
 
-      setInstantiating(true)      setInstantiating(true)
+        setInstantiating(true)      setInstantiating(true)
 
-      setError(null)      setError(null)
-
-
-
-      const response = await axios.post(`http://localhost:4099/api/citadel/instantiate/${encodeURIComponent(selectedCountry)}`, {      const response = await axios.post(`http://localhost:4099/api/citadel/instantiate/${encodeURIComponent(selectedCountry)}`, {
-
-        oracleConfirmation: {        oracleConfirmation: {
-
-          confirmed: true,          confirmed: true,
-
-          confirmationId: `oracle-${Date.now()}`          confirmationId: `oracle-${Date.now()}`
-
-        }        }
-
-      })      })
+        setError(null)      setError(null)
 
 
 
-      if (response.data.success) {      if (response.data.success) {
+        const response = await axios.post(`http://localhost:4099/api/citadel/instantiate/${encodeURIComponent(selectedCountry)}`, {
+          const response = await axios.post(`http://localhost:4099/api/citadel/instantiate/${encodeURIComponent(selectedCountry)}`, {
 
-        await fetchCountryData(selectedCountry)        await fetchCountryData(selectedCountry)
+            oracleConfirmation: {
+              oracleConfirmation: {
 
-        await fetchGenesisStatus()        await fetchGenesisStatus()
+                confirmed: true, confirmed: true,
 
-      }      }
+                confirmationId: `oracle-${Date.now()}`          confirmationId: `oracle-${Date.now()}`
 
-    } catch (err) {    } catch (err) {
+              }
+            }
 
-      console.error('Error executing instantiation:', err)      console.error('Error executing instantiation:', err)
-
-      setError('Failed to execute instantiation protocol.')      setError('Failed to execute instantiation protocol.')
-
-    } finally {    } finally {
-
-      setInstantiating(false)      setInstantiating(false)
-
-    }    }
-
-  }  }
+          })
+        })
 
 
 
-  const stats = genesisStatus ? [  const stats = genesisStatus ? [
+        if (response.data.success) {
+          if (response.data.success) {
 
-    { label: 'Total Allocation', value: `${(genesisStatus.globalGenesisFund.totalAllocation / 1000000).toFixed(0)}M AZR`, change: 'Funded' },    { label: 'Total Allocation', value: `${(genesisStatus.globalGenesisFund.totalAllocation / 1000000).toFixed(0)}M AZR`, change: 'Funded' },
+            await fetchCountryData(selectedCountry)        await fetchCountryData(selectedCountry)
 
-    { label: 'Available Funds', value: `${(genesisStatus.globalGenesisFund.available / 1000000).toFixed(0)}M AZR`, change: 'Ready' },    { label: 'Available Funds', value: `${(genesisStatus.globalGenesisFund.available / 1000000).toFixed(0)}M AZR`, change: 'Ready' },
+            await fetchGenesisStatus()        await fetchGenesisStatus()
 
-    { label: 'Instantiated Economies', value: genesisStatus.globalGenesisFund.instantiatedEconomies.toString(), change: '+2' },    { label: 'Instantiated Economies', value: genesisStatus.globalGenesisFund.instantiatedEconomies.toString(), change: '+2' },
+          }
+        }
 
-    { label: 'Seed Grant Amount', value: `${(genesisStatus.seedGrantConfig.amountPerNation / 1000).toFixed(0)}K AZR`, change: 'Per nation' }    { label: 'Seed Grant Amount', value: `${(genesisStatus.seedGrantConfig.amountPerNation / 1000).toFixed(0)}K AZR`, change: 'Per nation' }
+      } catch (err) { } catch (err) {
 
-  ] : []  ] : []
+        console.error('Error executing instantiation:', err)      console.error('Error executing instantiation:', err)
+
+        setError('Failed to execute instantiation protocol.')      setError('Failed to execute instantiation protocol.')
+
+      } finally { } finally {
+
+        setInstantiating(false)      setInstantiating(false)
+
+      }
+    }
+
+  }
+}
 
 
 
-  const actions = [  const actions = [
+const stats = genesisStatus ? [  const stats = genesisStatus ? [
 
-    { label: 'Refresh Status', onClick: fetchGenesisStatus },    { label: 'Refresh Status', onClick: fetchGenesisStatus },
+  { label: 'Total Allocation', value: `${(genesisStatus.globalGenesisFund.totalAllocation / 1000000).toFixed(0)}M AZR`, change: 'Funded' }, { label: 'Total Allocation', value: `${(genesisStatus.globalGenesisFund.totalAllocation / 1000000).toFixed(0)}M AZR`, change: 'Funded' },
 
-    { label: 'View Fund Details', onClick: () => console.log('View fund details') }    { label: 'View Fund Details', onClick: () => console.log('View fund details') }
+  { label: 'Available Funds', value: `${(genesisStatus.globalGenesisFund.available / 1000000).toFixed(0)}M AZR`, change: 'Ready' }, { label: 'Available Funds', value: `${(genesisStatus.globalGenesisFund.available / 1000000).toFixed(0)}M AZR`, change: 'Ready' },
 
-  ]  ]
+  { label: 'Instantiated Economies', value: genesisStatus.globalGenesisFund.instantiatedEconomies.toString(), change: '+2' }, { label: 'Instantiated Economies', value: genesisStatus.globalGenesisFund.instantiatedEconomies.toString(), change: '+2' },
+
+  { label: 'Seed Grant Amount', value: `${(genesisStatus.seedGrantConfig.amountPerNation / 1000).toFixed(0)}K AZR`, change: 'Per nation' }    { label: 'Seed Grant Amount', value: `${(genesisStatus.seedGrantConfig.amountPerNation / 1000).toFixed(0)}K AZR`, change: 'Per nation' }
+
+] : []  ] : []
 
 
 
-  if (loading) {  if (loading) {
+const actions = [  const actions = [
+
+  { label: 'Refresh Status', onClick: fetchGenesisStatus }, { label: 'Refresh Status', onClick: fetchGenesisStatus },
+
+  { label: 'View Fund Details', onClick: () => console.log('View fund details') }    { label: 'View Fund Details', onClick: () => console.log('View fund details') }
+
+]  ]
+
+
+
+if (loading) {
+  if (loading) {
 
     return (    return (
 
@@ -392,15 +433,16 @@ export default CompliancePanel  const [error, setError] = useState(null)  const 
 
         </div>        </div>
 
-      </ServicePanel>      </ServicePanel>
+      </ServicePanel>      </ServicePanel >
 
     )    )
 
-  }  }
+  }
+}
 
 
 
-  return (  return (
+return (  return (
 
     <ServicePanel    <ServicePanel
 
@@ -684,71 +726,75 @@ export default CompliancePanel  const [error, setError] = useState(null)  const 
 
                 </button>                </button>
 
-              </div>              </div>
+              </div >              </div >
 
-            </div>            </div>
+            </div >            </div >
 
           )}          )}
 
-        </div>        </div>
+        </div >        </div >
 
 
 
-        {/* Instantiated Economies List */}        {/* Instantiated Economies List */}
+  {/* Instantiated Economies List */ }        {/* Instantiated Economies List */ }
 
-        <div>        <div>
+<div>        <div>
 
-          <h3 className="text-lg font-semibold mb-3">Instantiated Economies</h3>          <h3 className="text-lg font-semibold mb-3">Instantiated Economies</h3>
+  <h3 className="text-lg font-semibold mb-3">Instantiated Economies</h3>          <h3 className="text-lg font-semibold mb-3">Instantiated Economies</h3>
 
-          <div className="space-y-3">          <div className="space-y-3">
+  <div className="space-y-3">          <div className="space-y-3">
 
-            {countries.map(country => (            {countries.map(country => (
+    {countries.map(country => ({
+      countries.map(country => (
 
-              <div key={country.country} className="flex items-center justify-between p-4 border rounded-lg">              <div key={country.country} className="flex items-center justify-between p-4 border rounded-lg">
+        <div key={country.country} className="flex items-center justify-between p-4 border rounded-lg">              <div key={country.country} className="flex items-center justify-between p-4 border rounded-lg">
 
-                <div className="flex items-center gap-3">                <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3">                <div className="flex items-center gap-3">
 
-                  <div>                  <div>
+            <div>                  <div>
 
-                    <p className="font-medium">{country.country}</p>                    <p className="font-medium">{country.country}</p>
+              <p className="font-medium">{country.country}</p>                    <p className="font-medium">{country.country}</p>
 
-                    <p className="text-sm text-muted-foreground">{country.region}</p>                    <p className="text-sm text-muted-foreground">{country.region}</p>
+              <p className="text-sm text-muted-foreground">{country.region}</p>                    <p className="text-sm text-muted-foreground">{country.region}</p>
 
-                  </div>                  </div>
+            </div>                  </div>
 
-                </div>                </div>
+          </div>                </div>
 
-                <div className="flex items-center gap-3">                <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3">                <div className="flex items-center gap-3">
 
-                  {country.localToken && (                  {country.localToken && (
+            {country.localToken && ({
+              country.localToken && (
 
-                    <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">                    <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">
+                <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">                    <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">
 
-                      {country.localToken}                      {country.localToken}
+                  {country.localToken}                      {country.localToken}
 
-                    </span>                    </span>
+                </span>                    </span>
 
-                  )}                  )}
+              )
+            })}
 
-                  <span className="px-2 py-1 bg-green-100 text-green-800 rounded text-xs">                  <span className="px-2 py-1 bg-green-100 text-green-800 rounded text-xs">
+            <span className="px-2 py-1 bg-green-100 text-green-800 rounded text-xs">                  <span className="px-2 py-1 bg-green-100 text-green-800 rounded text-xs">
 
-                    Instantiated                    Instantiated
+              Instantiated                    Instantiated
 
-                  </span>                  </span>
+            </span>                  </span>
 
-                </div>                </div>
+          </div>                </div>
 
-              </div>              </div>
+        </div>              </div>
 
-            ))}            ))}
+      ))
+    }))}
 
-          </div>          </div>
+  </div>          </div>
 
-        </div>        </div>
+</div>        </div>
 
-      </div>      </div>
+      </div >      </div >
 
-    </ServicePanel>    </ServicePanel>
+    </ServicePanel >    </ServicePanel >
 
   )  )
 
@@ -758,13 +804,14 @@ export default CompliancePanel  const [error, setError] = useState(null)  const 
 
 export default CompliancePanelexport default CompliancePanel
 
-  const [error, setError] = useState(null)const CompliancePanel = () => {
+const [error, setError] = useState(null)const CompliancePanel = () => {
 
-  const [triggerData, setTriggerData] = useState({  const [genesisStatus, setGenesisStatus] = useState(null)
+  const [triggerData, setTriggerData] = useState({
+    const [genesisStatus, setGenesisStatus] = useState(null)
 
-    userCount: '',  const [countries, setCountries] = useState([])
+    userCount: '', const [countries, setCountries] = useState([])
 
-    university: '',  const [selectedCountry, setSelectedCountry] = useState('')
+    university: '', const [selectedCountry, setSelectedCountry] = useState('')
 
     teamSize: ''  const [countryData, setCountryData] = useState(null)
 
@@ -772,7 +819,8 @@ export default CompliancePanelexport default CompliancePanel
 
   const [checkingTrigger, setCheckingTrigger] = useState(false)
 
-  useEffect(() => {  const [instantiating, setInstantiating] = useState(false)
+  useEffect(() => {
+    const [instantiating, setInstantiating] = useState(false)
 
     fetchGenesisStatus()  const [error, setError] = useState(null)
 
@@ -780,27 +828,32 @@ export default CompliancePanelexport default CompliancePanel
 
     userCount: '',
 
-  const fetchGenesisStatus = async () => {    university: '',
+    const fetchGenesisStatus = async () => {
+      university: '',
 
-    try {    teamSize: ''
+    try {
+        teamSize: ''
 
-      setLoading(true)  })
+        setLoading(true)
+      })
 
-      setError(null)
+  setError(null)
 
   useEffect(() => {
 
-      const response = await axios.get('http://localhost:4099/api/citadel/genesis/status')    fetchGenesisStatus()
+    const response = await axios.get('http://localhost:4099/api/citadel/genesis/status')    fetchGenesisStatus()
 
-      setGenesisStatus(response.data)  }, [])
+    setGenesisStatus(response.data)
+  }, [])
 
 
 
-      const countriesResponse = await axios.get('http://localhost:4099/api/citadel/economies')  const fetchGenesisStatus = async () => {
+  const countriesResponse = await axios.get('http://localhost:4099/api/citadel/economies')  const fetchGenesisStatus = async () => {
 
-      setCountries(countriesResponse.data.economies || [])    try {
+    setCountries(countriesResponse.data.economies || [])    try {
 
-    } catch (err) {      setLoading(true)
+    } catch (err) {
+      setLoading(true)
 
       console.error('Error fetching genesis status:', err)      setError(null)
 
@@ -808,321 +861,350 @@ export default CompliancePanelexport default CompliancePanel
 
       const response = await axios.get('http://localhost:4099/api/citadel/genesis/status')
 
-      setGenesisStatus({      setGenesisStatus(response.data)
+      setGenesisStatus({ setGenesisStatus(response.data)
 
-        globalGenesisFund: {
+      globalGenesisFund: {
 
-          totalAllocation: 195000000,      // Get all countries from the registry
+        totalAllocation: 195000000,      // Get all countries from the registry
 
           allocated: 25000000,      const countriesResponse = await axios.get('http://localhost:4099/api/citadel/economies')
 
-          available: 170000000,      setCountries(countriesResponse.data.economies || [])
+        available: 170000000, setCountries(countriesResponse.data.economies || [])
 
-          nationsCovered: 195,    } catch (err) {
+        nationsCovered: 195,    } catch (err) {
 
           instantiatedEconomies: 25      console.error('Error fetching genesis status:', err)
 
-        },      setError('Failed to load compliance data. Using mock data.')
+        }, setError('Failed to load compliance data. Using mock data.')
 
-        seedGrantConfig: {
+      seedGrantConfig: {
 
-          amountPerNation: 1000000,      // Mock data fallback
+        amountPerNation: 1000000,      // Mock data fallback
 
-          totalNations: 195,      setGenesisStatus({
+          totalNations: 195, setGenesisStatus({
 
-          escrowStatus: 'active'        globalGenesisFund: {
+            escrowStatus: 'active'        globalGenesisFund: {
 
-        }          totalAllocation: 195000000,
+            }          totalAllocation: 195000000,
 
-      })          allocated: 25000000,
+          })          allocated: 25000000,
 
-          available: 170000000,
+            available: 170000000,
 
-      setCountries([          nationsCovered: 195,
+              setCountries([nationsCovered: 195,
 
-        { country: 'South Africa', region: 'Africa', localToken: 'aZAR', instantiationDate: '2024-01-15' },          instantiatedEconomies: 25
+                { country: 'South Africa', region: 'Africa', localToken: 'aZAR', instantiationDate: '2024-01-15' }, instantiatedEconomies: 25
 
         { country: 'United States', region: 'Americas', localToken: 'aUSD', instantiationDate: '2024-01-20' },        },
 
-        { country: 'United Kingdom', region: 'Europe', localToken: 'aGBP', instantiationDate: '2024-01-25' },        seedGrantConfig: {
+      { country: 'United Kingdom', region: 'Europe', localToken: 'aGBP', instantiationDate: '2024-01-25' }, seedGrantConfig: {
 
-      ])          amountPerNation: 1000000,
+      ]) amountPerNation: 1000000,
 
-    } finally {          totalNations: 195,
+    } finally {
+  totalNations: 195,
 
-      setLoading(false)          escrowStatus: 'active'
+    setLoading(false)          escrowStatus: 'active'
 
-    }        }
+}        }
 
   }      })
 
 
 
-  const fetchCountryData = async (country) => {      setCountries([
+const fetchCountryData = async (country) => {
+  setCountries([
 
-    if (!country) return        { country: 'South Africa', region: 'Africa', localToken: 'aZAR', instantiationDate: '2024-01-15' },
+    if (!country) return { country: 'South Africa', region: 'Africa', localToken: 'aZAR', instantiationDate: '2024-01-15' },
 
-        { country: 'United States', region: 'Americas', localToken: 'aUSD', instantiationDate: '2024-01-20' },
+    { country: 'United States', region: 'Americas', localToken: 'aUSD', instantiationDate: '2024-01-20' },
 
-    try {        { country: 'United Kingdom', region: 'Europe', localToken: 'aGBP', instantiationDate: '2024-01-25' },
+    try {
+    { country: 'United Kingdom', region: 'Europe', localToken: 'aGBP', instantiationDate: '2024-01-25' },
 
-      const response = await axios.get(`http://localhost:4099/api/citadel/grants/${encodeURIComponent(country)}`)      ])
+    const response = await axios.get(`http://localhost:4099/api/citadel/grants/${encodeURIComponent(country)}`)      ])
 
-      setCountryData(response.data)    } finally {
+      setCountryData(response.data)
+  } finally {
 
-    } catch (err) {      setLoading(false)
+  } catch (err) {
+    setLoading(false)
 
-      console.error('Error fetching country data:', err)    }
+    console.error('Error fetching country data:', err)
+  }
 
-      setError('Failed to load country data.')  }
+  setError('Failed to load country data.')
+}
 
 
 
-      setCountryData({  const fetchCountryData = async (country) => {
+setCountryData({
+  const fetchCountryData = async (country) => {
 
-        country,    if (!country) return
+    country,    if (!country) return
 
-        region: 'Africa',
+    region: 'Africa',
 
-        sovereignSeedGrant: {    try {
+      sovereignSeedGrant: {
+        try {
 
           amount: 1000000,      const response = await axios.get(`http://localhost:4099/api/citadel/grants/${encodeURIComponent(country)}`)
 
-          status: 'escrowed',      setCountryData(response.data)
+          status: 'escrowed', setCountryData(response.data)
 
-          escrowId: 'escrow-123'    } catch (err) {
+          escrowId: 'escrow-123'
+        } catch (err) {
 
-        },      console.error('Error fetching country data:', err)
+        }, console.error('Error fetching country data:', err)
 
-        activationStatus: {      setError('Failed to load country data.')
+      activationStatus: {
+        setError('Failed to load country data.')
 
-          userThreshold: { current: 5000, required: 10000, achieved: false },
+        userThreshold: { current: 5000, required: 10000, achieved: false },
 
-          universityTreaty: { status: 'pending' },      // Mock data fallback
+        universityTreaty: { status: 'pending' },      // Mock data fallback
 
-          foundingTeam: { status: 'pending' }      setCountryData({
+        foundingTeam: { status: 'pending' } setCountryData({
 
-        },        country,
+        }, country,
 
-        economyStatus: {        region: 'Africa',
+          economyStatus: {
+            region: 'Africa',
 
-          instantiated: false,        sovereignSeedGrant: {
+          instantiated: false, sovereignSeedGrant: {
 
-          localToken: null          amount: 1000000,
+            localToken: null          amount: 1000000,
 
-        }          status: 'escrowed',
+          }          status: 'escrowed',
 
-      })          escrowId: 'escrow-123'
+        })          escrowId: 'escrow-123'
 
-    }        },
+      }
+    },
 
   }        activationStatus: {
 
-          userThreshold: { current: 5000, required: 10000, achieved: false },
+    userThreshold: { current: 5000, required: 10000, achieved: false },
 
-  const checkActivationTrigger = async (triggerType) => {          universityTreaty: { status: 'pending' },
+    const checkActivationTrigger = async (triggerType) => {
+      universityTreaty: { status: 'pending' },
 
-    if (!selectedCountry) return          foundingTeam: { status: 'pending' }
+      if (!selectedCountry) return foundingTeam: { status: 'pending' }
 
-        },
+    },
 
-    try {        economyStatus: {
+    try {
+      economyStatus: {
 
-      setCheckingTrigger(true)          instantiated: false,
+        setCheckingTrigger(true)          instantiated: false,
 
-      setError(null)          localToken: null
+        setError(null)          localToken: null
 
-        }
+      }
 
-      let triggerPayload = { country: selectedCountry, triggerType }      })
+      let triggerPayload = { country: selectedCountry, triggerType }
+    })
 
     }
 
-      switch (triggerType) {  }
+switch (triggerType) { }
 
         case 'userThreshold':
 
-          triggerPayload.triggerData = { userCount: parseInt(triggerData.userCount) || 0 }  const checkActivationTrigger = async (triggerType) => {
+triggerPayload.triggerData = { userCount: parseInt(triggerData.userCount) || 0 }  const checkActivationTrigger = async (triggerType) => {
 
-          break    if (!selectedCountry) return
+  break    if (!selectedCountry) return
 
         case 'universityTreaty':
 
-          triggerPayload.triggerData = {    try {
+triggerPayload.triggerData = {
+  try {
 
-            status: 'signed',      setCheckingTrigger(true)
+    status: 'signed', setCheckingTrigger(true)
 
             university: triggerData.university      setError(null)
 
-          }
+  }
 
           break      let triggerPayload = { country: selectedCountry, triggerType }
 
         case 'foundingTeam':
 
-          triggerPayload.triggerData = {      switch (triggerType) {
+  triggerPayload.triggerData = {
+    switch(triggerType) {
 
-            petitionId: `petition-${Date.now()}`,        case 'userThreshold':
+      petitionId: `petition-${Date.now()}`,        case 'userThreshold':
 
-            teamSize: parseInt(triggerData.teamSize) || 0          triggerPayload.triggerData = { userCount: parseInt(triggerData.userCount) || 0 }
+    teamSize: parseInt(triggerData.teamSize) || 0          triggerPayload.triggerData = { userCount: parseInt(triggerData.userCount) || 0 }
 
-          }          break
+  }          break
 
           break        case 'universityTreaty':
 
-      }          triggerPayload.triggerData = {
+}          triggerPayload.triggerData = {
 
-            status: 'signed',
+  status: 'signed',
 
-      const response = await axios.post('http://localhost:4099/api/citadel/triggers/check', triggerPayload)            university: triggerData.university
+  const response = await axios.post('http://localhost:4099/api/citadel/triggers/check', triggerPayload)            university: triggerData.university
 
-          }
+}
 
-      if (response.data.success) {          break
+if (response.data.success) {
+  break
 
-        await fetchCountryData(selectedCountry)        case 'foundingTeam':
+  await fetchCountryData(selectedCountry)        case 'foundingTeam':
 
-        await fetchGenesisStatus()          triggerPayload.triggerData = {
+  await fetchGenesisStatus()          triggerPayload.triggerData = {
 
-      }            petitionId: `petition-${Date.now()}`,
+  }            petitionId: `petition-${Date.now()}`,
 
-    } catch (err) {            teamSize: parseInt(triggerData.teamSize) || 0
+    } catch (err) {
+  teamSize: parseInt(triggerData.teamSize) || 0
 
-      console.error('Error checking trigger:', err)          }
+  console.error('Error checking trigger:', err)
+}
 
-      setError('Failed to check activation trigger.')          break
+setError('Failed to check activation trigger.')          break
 
-    } finally {      }
+    } finally { }
 
-      setCheckingTrigger(false)
+setCheckingTrigger(false)
 
     }      const response = await axios.post('http://localhost:4099/api/citadel/triggers/check', triggerPayload)
 
   }
 
-      if (response.data.success) {
+if (response.data.success) {
 
   const executeInstantiation = async () => {        // Refresh country data
 
-    if (!selectedCountry) return        await fetchCountryData(selectedCountry)
+    if (!selectedCountry) return await fetchCountryData(selectedCountry)
 
-        await fetchGenesisStatus()
+    await fetchGenesisStatus()
 
-    try {      }
+    try { }
 
-      setInstantiating(true)    } catch (err) {
+      setInstantiating(true)
+  } catch (err) {
 
-      setError(null)      console.error('Error checking trigger:', err)
+    setError(null)      console.error('Error checking trigger:', err)
 
-      setError('Failed to check activation trigger.')
+    setError('Failed to check activation trigger.')
 
-      const response = await axios.post(`http://localhost:4099/api/citadel/instantiate/${encodeURIComponent(selectedCountry)}`, {    } finally {
+    const response = await axios.post(`http://localhost:4099/api/citadel/instantiate/${encodeURIComponent(selectedCountry)}`, {} finally {
 
-        oracleConfirmation: {      setCheckingTrigger(false)
+      oracleConfirmation: {
+        setCheckingTrigger(false)
 
-          confirmed: true,    }
+        confirmed: true,    }
 
-          confirmationId: `oracle-${Date.now()}`  }
-
-        }
-
-      })  const executeInstantiation = async () => {
-
-    if (!selectedCountry) return
-
-      if (response.data.success) {
-
-        await fetchCountryData(selectedCountry)    try {
-
-        await fetchGenesisStatus()      setInstantiating(true)
-
-      }      setError(null)
-
-    } catch (err) {
-
-      console.error('Error executing instantiation:', err)      const response = await axios.post(`http://localhost:4099/api/citadel/instantiate/${encodeURIComponent(selectedCountry)}`, {
-
-      setError('Failed to execute instantiation protocol.')        oracleConfirmation: {
-
-    } finally {          confirmed: true,
-
-      setInstantiating(false)          confirmationId: `oracle-${Date.now()}`
-
-    }        }
-
-  }      })
-
-
-
-  const stats = genesisStatus ? [      if (response.data.success) {
-
-    { label: 'Total Allocation', value: `${(genesisStatus.globalGenesisFund.totalAllocation / 1000000).toFixed(0)}M AZR`, change: 'Funded' },        // Refresh data
-
-    { label: 'Available Funds', value: `${(genesisStatus.globalGenesisFund.available / 1000000).toFixed(0)}M AZR`, change: 'Ready' },        await fetchCountryData(selectedCountry)
-
-    { label: 'Instantiated Economies', value: genesisStatus.globalGenesisFund.instantiatedEconomies.toString(), change: '+2' },        await fetchGenesisStatus()
-
-    { label: 'Seed Grant Amount', value: `${(genesisStatus.seedGrantConfig.amountPerNation / 1000).toFixed(0)}K AZR`, change: 'Per nation' }      }
-
-  ] : []    } catch (err) {
-
-      console.error('Error executing instantiation:', err)
-
-  const actions = [      setError('Failed to execute instantiation protocol.')
-
-    { label: 'Refresh Status', onClick: fetchGenesisStatus },    } finally {
-
-    { label: 'View Fund Details', onClick: () => console.log('View fund details') }      setInstantiating(false)
-
-  ]    }
+      confirmationId: `oracle-${Date.now()}`
+    }
 
   }
 
-  if (loading) {
+}) const executeInstantiation = async () => {
 
-    return (  const getStatusBadge = (status) => {
+  if (!selectedCountry) return
 
-      <ServicePanel    const variants = {
+  if (response.data.success) {
 
-        title="Compliance & Global Genesis"      escrowed: 'secondary',
+    await fetchCountryData(selectedCountry)    try {
 
-        description="Regulatory compliance and planetary economic instantiation"      released: 'default',
+      await fetchGenesisStatus()      setInstantiating(true)
 
-        stats={stats}      instantiated: 'default',
+    }      setError(null)
 
-        actions={actions}      pending: 'outline',
+  } catch (err) {
 
-      >      signed: 'default',
+    console.error('Error executing instantiation:', err)      const response = await axios.post(`http://localhost:4099/api/citadel/instantiate/${encodeURIComponent(selectedCountry)}`, {
 
-        <div className="animate-pulse space-y-4">      petitioned: 'default'
+      setError('Failed to execute instantiation protocol.')        oracleConfirmation: {
 
-          <div className="h-4 bg-gray-200 rounded w-3/4"></div>    }
+      } finally {
+        confirmed: true,
 
-          <div className="h-4 bg-gray-200 rounded w-1/2"></div>    return <Badge variant={variants[status] || 'outline'}>{status}</Badge>
+        setInstantiating(false)          confirmationId: `oracle-${Date.now()}`
 
-          <div className="h-4 bg-gray-200 rounded w-2/3"></div>  }
+      }
+    }
 
-        </div>
+  }
+})
 
-      </ServicePanel>  const getProgressColor = (current, required) => {
+
+
+const stats = genesisStatus ? [      if (response.data.success) {
+
+  { label: 'Total Allocation', value: `${(genesisStatus.globalGenesisFund.totalAllocation / 1000000).toFixed(0)}M AZR`, change: 'Funded' },        // Refresh data
+
+  { label: 'Available Funds', value: `${(genesisStatus.globalGenesisFund.available / 1000000).toFixed(0)}M AZR`, change: 'Ready' }, await fetchCountryData(selectedCountry)
+
+  { label: 'Instantiated Economies', value: genesisStatus.globalGenesisFund.instantiatedEconomies.toString(), change: '+2' }, await fetchGenesisStatus()
+
+  { label: 'Seed Grant Amount', value: `${(genesisStatus.seedGrantConfig.amountPerNation / 1000).toFixed(0)}K AZR`, change: 'Per nation' }
+}
+
+  ] : []    } catch (err) {
+
+  console.error('Error executing instantiation:', err)
+
+  const actions = [setError('Failed to execute instantiation protocol.')
+
+    { label: 'Refresh Status', onClick: fetchGenesisStatus },    } finally {
+
+  { label: 'View Fund Details', onClick: () => console.log('View fund details') } setInstantiating(false)
+
+  ]
+}
+
+  }
+
+if (loading) {
+
+  return (  const getStatusBadge = (status) => {
+
+    <ServicePanel const variants={
+
+      title = "Compliance & Global Genesis"      escrowed: 'secondary',
+
+        description = "Regulatory compliance and planetary economic instantiation"      released: 'default',
+
+          stats = { stats }      instantiated: 'default',
+
+            actions = { actions }      pending: 'outline',
+
+      > signed: 'default',
+
+      <div className="animate-pulse space-y-4">      petitioned: 'default'
+
+        <div className="h-4 bg-gray-200 rounded w-3/4"></div>    }
+
+        <div className="h-4 bg-gray-200 rounded w-1/2"></div>    return <Badge variant={variants[status] || 'outline'}>{status}</Badge>
+
+        <div className="h-4 bg-gray-200 rounded w-2/3"></div>  }
+
+      </div>
+
+      </ServicePanel >  const getProgressColor = (current, required) => {
 
     )    const percentage = (current / required) * 100
 
-  }    if (percentage >= 100) return '#10b981'
+} if (percentage >= 100) return '#10b981'
 
-    if (percentage >= 75) return '#f59e0b'
+if (percentage >= 75) return '#f59e0b'
 
-  return (    return '#ef4444'
+return (    return '#ef4444'
 
-    <ServicePanel  }
+  < ServicePanel  }
 
-      title="Compliance & Global Genesis"
+title = "Compliance & Global Genesis"
 
-      description="Regulatory compliance and planetary economic instantiation"  if (loading) {
+description = "Regulatory compliance and planetary economic instantiation"  if (loading) {
 
-      stats={stats}    return (
+  stats = { stats }    return (
 
-      actions={actions}      <div className="p-6">
+    actions = { actions } < div className = "p-6" >
 
     >        <div className="animate-pulse space-y-4">
 
@@ -1182,77 +1264,77 @@ export default CompliancePanelexport default CompliancePanel
 
   return (
 
-          {countryData && (    <div className="p-6 space-y-6">
+    { countryData && (<div className="p-6 space-y-6">
 
-            <div className="space-y-4">      <div className="flex justify-between items-center">
+      <div className="space-y-4">      <div className="flex justify-between items-center">
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">        <div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">        <div>
 
-                <div className="p-4 border rounded-lg">          <h1 className="text-3xl font-bold">Compliance & Global Genesis</h1>
+          <div className="p-4 border rounded-lg">          <h1 className="text-3xl font-bold">Compliance & Global Genesis</h1>
 
-                  <h4 className="font-semibold mb-2">Sovereign Seed Grant</h4>          <p className="text-gray-600">Regulatory compliance and planetary economic instantiation</p>
+            <h4 className="font-semibold mb-2">Sovereign Seed Grant</h4>          <p className="text-gray-600">Regulatory compliance and planetary economic instantiation</p>
 
-                  <p className="text-2xl font-bold">{(countryData.sovereignSeedGrant.amount / 1000).toFixed(0)}K AZR</p>        </div>
+            <p className="text-2xl font-bold">{(countryData.sovereignSeedGrant.amount / 1000).toFixed(0)}K AZR</p>        </div>
 
-                  <span className={`px-2 py-1 rounded text-xs ${        <Button onClick={fetchGenesisStatus}>
+          <span className={`px-2 py-1 rounded text-xs ${<Button onClick={fetchGenesisStatus}>
 
-                    countryData.sovereignSeedGrant.status === 'escrowed' ? 'bg-yellow-100 text-yellow-800' :          <Shield className="h-4 w-4 mr-2" />
+            countryData.sovereignSeedGrant.status === 'escrowed' ? 'bg-yellow-100 text-yellow-800' :          <Shield className="h-4 w-4 mr-2" />
 
-                    countryData.sovereignSeedGrant.status === 'released' ? 'bg-green-100 text-green-800' :          Refresh Status
+            countryData.sovereignSeedGrant.status === 'released' ? 'bg-green-100 text-green-800' :          Refresh Status
 
-                    'bg-blue-100 text-blue-800'        </Button>
+            'bg-blue-100 text-blue-800'        </Button>
 
-                  }`}>      </div>
+            }`}>      </div>
 
-                    {countryData.sovereignSeedGrant.status}
+          {countryData.sovereignSeedGrant.status}
 
-                  </span>      {error && (
+        </span>      {error && (
 
                 </div>        <Alert>
 
           <AlertTriangle className="h-4 w-4" />
 
-                <div className="p-4 border rounded-lg">          <AlertDescription>{error}</AlertDescription>
+          <div className="p-4 border rounded-lg">          <AlertDescription>{error}</AlertDescription>
 
-                  <h4 className="font-semibold mb-2">User Threshold</h4>        </Alert>
+            <h4 className="font-semibold mb-2">User Threshold</h4>        </Alert>
 
-                  <p className="text-lg">{countryData.activationStatus.userThreshold.current.toLocaleString()} / {countryData.activationStatus.userThreshold.required.toLocaleString()}</p>      )}
+        <p className="text-lg">{countryData.activationStatus.userThreshold.current.toLocaleString()} / {countryData.activationStatus.userThreshold.required.toLocaleString()}</p>      )}
 
-                  <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+        <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
 
-                    <div      {/* Global Genesis Fund Stats */}
+          <div      {/* Global Genesis Fund Stats */}
 
-                      className="bg-blue-600 h-2 rounded-full"      {genesisStatus && (
+            className="bg-blue-600 h-2 rounded-full"      {genesisStatus && (
 
-                      style={{ width: `${Math.min((countryData.activationStatus.userThreshold.current / countryData.activationStatus.userThreshold.required) * 100, 100)}%` }}        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              style = {{ width: `${Math.min((countryData.activationStatus.userThreshold.current / countryData.activationStatus.userThreshold.required) * 100, 100)}%` }}        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 
                     ></div>          <Card>
 
-                  </div>            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        </div>            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
 
-                </div>              <CardTitle className="text-sm font-medium">Total Allocation</CardTitle>
+      </div>              <CardTitle className="text-sm font-medium">Total Allocation</CardTitle>
 
-              <DollarSign className="h-4 w-4 text-muted-foreground" />
+      <DollarSign className="h-4 w-4 text-muted-foreground" />
 
-                <div className="p-4 border rounded-lg">            </CardHeader>
+      <div className="p-4 border rounded-lg">            </CardHeader>
 
-                  <h4 className="font-semibold mb-2">Economy Status</h4>            <CardContent>
+      <h4 className="font-semibold mb-2">Economy Status</h4>            <CardContent>
 
-                  <p className="text-lg">{countryData.economyStatus.instantiated ? 'Instantiated' : 'Pending'}</p>              <div className="text-2xl font-bold">
+        <p className="text-lg">{countryData.economyStatus.instantiated ? 'Instantiated' : 'Pending'}</p>              <div className="text-2xl font-bold">
 
-                  {countryData.economyStatus.localToken && (                {(genesisStatus.globalGenesisFund.totalAllocation / 1000000).toFixed(0)}M AZR
+          {countryData.economyStatus.localToken && ({(genesisStatus.globalGenesisFund.totalAllocation / 1000000).toFixed(0)}M AZR
 
-                    <p className="text-sm text-muted-foreground">Token: {countryData.economyStatus.localToken}</p>              </div>
+          <p className="text-sm text-muted-foreground">Token: {countryData.economyStatus.localToken}</p>              </div>
 
                   )}              <p className="text-xs text-muted-foreground">
 
-                </div>                Global Genesis Fund
+        </div>                Global Genesis Fund
 
-              </div>              </p>
+    </div>              </p >
 
-            </CardContent>
+            </CardContent >
 
-              {/* Activation Triggers */}          </Card>
+    {/* Activation Triggers */ }          </Card >
 
               <div className="space-y-4">
 
@@ -1340,266 +1422,272 @@ export default CompliancePanelexport default CompliancePanel
 
                       type="number"          </Card>
 
-                      placeholder="Team size"        </div>
+  placeholder = "Team size"        </div >
 
-                      value={triggerData.teamSize}      )}
+    value={ triggerData.teamSize }      )
+}
 
-                      onChange={(e) => setTriggerData({...triggerData, teamSize: e.target.value})}
+onChange = {(e) => setTriggerData({ ...triggerData, teamSize: e.target.value })}
 
-                      className="w-full p-2 border border-border rounded"      {/* Charts */}
+className = "w-full p-2 border border-border rounded"      {/* Charts */ }
 
                     />      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-                    <button        <Card>
+  < button < Card >
 
-                      onClick={() => checkActivationTrigger('foundingTeam')}          <CardHeader>
+  onClick={ () => checkActivationTrigger('foundingTeam') } <CardHeader>
 
-                      disabled={checkingTrigger}            <CardTitle>Genesis Fund Distribution</CardTitle>
+    disabled={checkingTrigger}            <CardTitle>Genesis Fund Distribution</CardTitle>
 
-                      className="w-full px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 disabled:opacity-50"          </CardHeader>
+    className="w-full px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 disabled:opacity-50"          </CardHeader>
 
-                    >          <CardContent>
+    > <CardContent>
 
-                      {checkingTrigger ? 'Checking...' : 'Submit Petition'}            <ResponsiveContainer width="100%" height={300}>
+      {checkingTrigger ? 'Checking...' : 'Submit Petition'}            <ResponsiveContainer width="100%" height={300}>
 
-                    </button>              <PieChart>
+      </button>              <PieChart>
 
-                  </div>                <Pie
+      </div>                <Pie
 
-                </div>                  data={fundData}
+                </div>                  data = { fundData }
 
-                  cx="50%"
+cx = "50%"
 
-                {countryData.oracleConfirmation && (                  cy="50%"
+{
+  countryData.oracleConfirmation && (cy = "50%"
 
-                  <div className="p-3 bg-green-50 border border-green-200 rounded-md">                  labelLine={false}
+    < div className = "p-3 bg-green-50 border border-green-200 rounded-md" > labelLine={ false }
 
-                    <p className="text-green-600 text-sm">Oracle confirmation received! Ready for instantiation.</p>                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+  <p className="text-green-600 text-sm">Oracle confirmation received! Ready for instantiation.</p>                  label = {({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`
+}
 
-                  </div>                  outerRadius={80}
+                  </div > outerRadius={ 80 }
 
-                )}                  fill="#8884d8"
+                )}                  fill = "#8884d8"
 
-                  dataKey="value"
+dataKey = "value"
 
-                <button                >
+  < button >
 
-                  onClick={executeInstantiation}                  {fundData.map((entry, index) => (
+  onClick={ executeInstantiation } {
+    fundData.map((entry, index) => (
 
-                  disabled={instantiating || !countryData.oracleConfirmation}                    <Cell key={`cell-${index}`} fill={entry.color} />
+      disabled = { instantiating || !countryData.oracleConfirmation} <Cell key={`cell-${index}`} fill={entry.color} />
 
-                  className="w-full px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 disabled:opacity-50"                  ))}
+className = "w-full px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 disabled:opacity-50"                  ))}
 
-                >                </Pie>
+                >                </Pie >
 
-                  {instantiating ? 'Executing Instantiation Protocol...' : 'Execute Instantiation Protocol'}                <Tooltip formatter={(value) => [`${(value / 1000000).toFixed(1)}M AZR`, 'Amount']} />
+  { instantiating? 'Executing Instantiation Protocol...': 'Execute Instantiation Protocol' } < Tooltip formatter = {(value) => [`${(value / 1000000).toFixed(1)}M AZR`, 'Amount']} />
 
-                </button>              </PieChart>
+                </button >              </PieChart >
 
-              </div>            </ResponsiveContainer>
+              </div >            </ResponsiveContainer >
 
-            </div>          </CardContent>
+            </div >          </CardContent >
 
-          )}        </Card>
+          )}        </Card >
 
-        </div>
+        </div >
 
-        <Card>
+  <Card>
 
-        {/* Instantiated Economies List */}          <CardHeader>
+    {/* Instantiated Economies List */}          <CardHeader>
 
-        <div>            <CardTitle>Instantiated Economies by Region</CardTitle>
+      <div>            <CardTitle>Instantiated Economies by Region</CardTitle>
 
-          <h3 className="text-lg font-semibold mb-3">Instantiated Economies</h3>          </CardHeader>
+        <h3 className="text-lg font-semibold mb-3">Instantiated Economies</h3>          </CardHeader>
 
-          <div className="space-y-3">          <CardContent>
+    <div className="space-y-3">          <CardContent>
 
-            {countries.map(country => (            <ResponsiveContainer width="100%" height={300}>
+      {countries.map(country => (<ResponsiveContainer width="100%" height={300}>
 
-              <div key={country.country} className="flex items-center justify-between p-4 border rounded-lg">              <BarChart data={regionChartData}>
+        <div key={country.country} className="flex items-center justify-between p-4 border rounded-lg">              <BarChart data={regionChartData}>
 
-                <div className="flex items-center gap-3">                <CartesianGrid strokeDasharray="3 3" />
+          <div className="flex items-center gap-3">                <CartesianGrid strokeDasharray="3 3" />
 
-                  <div>                <XAxis dataKey="name" />
+            <div>                <XAxis dataKey="name" />
 
-                    <p className="font-medium">{country.country}</p>                <YAxis />
+              <p className="font-medium">{country.country}</p>                <YAxis />
 
-                    <p className="text-sm text-muted-foreground">{country.region}</p>                <Tooltip />
+              <p className="text-sm text-muted-foreground">{country.region}</p>                <Tooltip />
 
-                  </div>                <Bar dataKey="value" fill="#3b82f6" />
+            </div>                <Bar dataKey="value" fill="#3b82f6" />
 
-                </div>              </BarChart>
+          </div>              </BarChart>
 
-                <div className="flex items-center gap-3">            </ResponsiveContainer>
+          <div className="flex items-center gap-3">            </ResponsiveContainer>
 
-                  {country.localToken && (          </CardContent>
+          {country.localToken && (          </CardContent>
 
-                    <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">        </Card>
+        <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">        </Card>
 
-                      {country.localToken}      </div>
+        {country.localToken}      </div>
 
                     </span>
 
                   )}      {/* Country Management */}
 
-                  <span className="px-2 py-1 bg-green-100 text-green-800 rounded text-xs">      <Card>
+      <span className="px-2 py-1 bg-green-100 text-green-800 rounded text-xs">      <Card>
 
-                    Instantiated        <CardHeader>
+        Instantiated        <CardHeader>
 
-                  </span>          <CardTitle>Country Activation Management</CardTitle>
+        </span>          <CardTitle>Country Activation Management</CardTitle>
 
-                </div>        </CardHeader>
+      </div>        </CardHeader>
 
-              </div>        <CardContent className="space-y-4">
+    </div>        <CardContent className="space-y-4">
 
             ))}          <div className="flex gap-4">
 
-          </div>            <Select value={selectedCountry} onValueChange={(value) => {
+      </div>            <Select value={selectedCountry} onValueChange={(value) => {
 
         </div>              setSelectedCountry(value)
 
-      </div>              fetchCountryData(value)
+  </div>              fetchCountryData(value)
 
-    </ServicePanel>            }}>
+    </ServicePanel >            }}>
 
-  )              <SelectTrigger className="w-64">
+  ) <SelectTrigger className="w-64">
 
 }                <SelectValue placeholder="Select a country" />
 
-              </SelectTrigger>
+</SelectTrigger>
 
-export default CompliancePanel              <SelectContent>
-                {Array.from(new Set(countries.map(c => c.country).concat([
-                  'South Africa', 'United States', 'United Kingdom', 'Germany', 'France', 'Japan', 'China', 'India', 'Brazil', 'Canada'
-                ]))).map(country => (
-                  <SelectItem key={country} value={country}>
-                    {country}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+export default CompliancePanel < SelectContent >
+{
+  Array.from(new Set(countries.map(c => c.country).concat([
+    'South Africa', 'United States', 'United Kingdom', 'Germany', 'France', 'Japan', 'China', 'India', 'Brazil', 'Canada'
+  ]))).map(country => (
+    <SelectItem key={country} value={country}>
+      {country}
+    </SelectItem>
+  ))
+}
+              </SelectContent >
+            </Select >
+          </div >
+
+  { countryData && (
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="p-4 border rounded-lg">
+          <h3 className="font-semibold mb-2">Sovereign Seed Grant</h3>
+          <p className="text-2xl font-bold">{(countryData.sovereignSeedGrant.amount / 1000).toFixed(0)}K AZR</p>
+          {getStatusBadge(countryData.sovereignSeedGrant.status)}
+        </div>
+
+        <div className="p-4 border rounded-lg">
+          <h3 className="font-semibold mb-2">User Threshold</h3>
+          <p className="text-lg">{countryData.activationStatus.userThreshold.current.toLocaleString()} / {countryData.activationStatus.userThreshold.required.toLocaleString()}</p>
+          <Progress
+            value={(countryData.activationStatus.userThreshold.current / countryData.activationStatus.userThreshold.required) * 100}
+            className="mt-2"
+          />
+        </div>
+
+        <div className="p-4 border rounded-lg">
+          <h3 className="font-semibold mb-2">Economy Status</h3>
+          <p className="text-lg">{countryData.economyStatus.instantiated ? 'Instantiated' : 'Pending'}</p>
+          {countryData.economyStatus.localToken && (
+            <p className="text-sm text-gray-600">Token: {countryData.economyStatus.localToken}</p>
+          )}
+        </div>
+      </div>
+
+      {/* Activation Triggers */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold">Activation Triggers</h3>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="p-4 border rounded-lg space-y-2">
+            <h4 className="font-medium">User Threshold</h4>
+            <Input
+              type="number"
+              placeholder="User count"
+              value={triggerData.userCount}
+              onChange={(e) => setTriggerData({ ...triggerData, userCount: e.target.value })}
+            />
+            <Button
+              onClick={() => checkActivationTrigger('userThreshold')}
+              disabled={checkingTrigger}
+              size="sm"
+              className="w-full"
+            >
+              {checkingTrigger ? 'Checking...' : 'Check Threshold'}
+            </Button>
           </div>
 
-          {countryData && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="p-4 border rounded-lg">
-                  <h3 className="font-semibold mb-2">Sovereign Seed Grant</h3>
-                  <p className="text-2xl font-bold">{(countryData.sovereignSeedGrant.amount / 1000).toFixed(0)}K AZR</p>
-                  {getStatusBadge(countryData.sovereignSeedGrant.status)}
-                </div>
+          <div className="p-4 border rounded-lg space-y-2">
+            <h4 className="font-medium">University Treaty</h4>
+            <Input
+              placeholder="University name"
+              value={triggerData.university}
+              onChange={(e) => setTriggerData({ ...triggerData, university: e.target.value })}
+            />
+            <Button
+              onClick={() => checkActivationTrigger('universityTreaty')}
+              disabled={checkingTrigger}
+              size="sm"
+              className="w-full"
+            >
+              {checkingTrigger ? 'Checking...' : 'Sign Treaty'}
+            </Button>
+          </div>
 
-                <div className="p-4 border rounded-lg">
-                  <h3 className="font-semibold mb-2">User Threshold</h3>
-                  <p className="text-lg">{countryData.activationStatus.userThreshold.current.toLocaleString()} / {countryData.activationStatus.userThreshold.required.toLocaleString()}</p>
-                  <Progress
-                    value={(countryData.activationStatus.userThreshold.current / countryData.activationStatus.userThreshold.required) * 100}
-                    className="mt-2"
-                  />
-                </div>
+          <div className="p-4 border rounded-lg space-y-2">
+            <h4 className="font-medium">Founding Team</h4>
+            <Input
+              type="number"
+              placeholder="Team size"
+              value={triggerData.teamSize}
+              onChange={(e) => setTriggerData({ ...triggerData, teamSize: e.target.value })}
+            />
+            <Button
+              onClick={() => checkActivationTrigger('foundingTeam')}
+              disabled={checkingTrigger}
+              size="sm"
+              className="w-full"
+            >
+              {checkingTrigger ? 'Checking...' : 'Submit Petition'}
+            </Button>
+          </div>
+        </div>
 
-                <div className="p-4 border rounded-lg">
-                  <h3 className="font-semibold mb-2">Economy Status</h3>
-                  <p className="text-lg">{countryData.economyStatus.instantiated ? 'Instantiated' : 'Pending'}</p>
-                  {countryData.economyStatus.localToken && (
-                    <p className="text-sm text-gray-600">Token: {countryData.economyStatus.localToken}</p>
-                  )}
-                </div>
-              </div>
+        {countryData.oracleConfirmation && (
+          <Alert>
+            <CheckCircle className="h-4 w-4" />
+            <AlertDescription>
+              Oracle confirmation received! Ready for instantiation.
+            </AlertDescription>
+          </Alert>
+        )}
 
-              {/* Activation Triggers */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Activation Triggers</h3>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="p-4 border rounded-lg space-y-2">
-                    <h4 className="font-medium">User Threshold</h4>
-                    <Input
-                      type="number"
-                      placeholder="User count"
-                      value={triggerData.userCount}
-                      onChange={(e) => setTriggerData({...triggerData, userCount: e.target.value})}
-                    />
-                    <Button
-                      onClick={() => checkActivationTrigger('userThreshold')}
-                      disabled={checkingTrigger}
-                      size="sm"
-                      className="w-full"
-                    >
-                      {checkingTrigger ? 'Checking...' : 'Check Threshold'}
-                    </Button>
-                  </div>
-
-                  <div className="p-4 border rounded-lg space-y-2">
-                    <h4 className="font-medium">University Treaty</h4>
-                    <Input
-                      placeholder="University name"
-                      value={triggerData.university}
-                      onChange={(e) => setTriggerData({...triggerData, university: e.target.value})}
-                    />
-                    <Button
-                      onClick={() => checkActivationTrigger('universityTreaty')}
-                      disabled={checkingTrigger}
-                      size="sm"
-                      className="w-full"
-                    >
-                      {checkingTrigger ? 'Checking...' : 'Sign Treaty'}
-                    </Button>
-                  </div>
-
-                  <div className="p-4 border rounded-lg space-y-2">
-                    <h4 className="font-medium">Founding Team</h4>
-                    <Input
-                      type="number"
-                      placeholder="Team size"
-                      value={triggerData.teamSize}
-                      onChange={(e) => setTriggerData({...triggerData, teamSize: e.target.value})}
-                    />
-                    <Button
-                      onClick={() => checkActivationTrigger('foundingTeam')}
-                      disabled={checkingTrigger}
-                      size="sm"
-                      className="w-full"
-                    >
-                      {checkingTrigger ? 'Checking...' : 'Submit Petition'}
-                    </Button>
-                  </div>
-                </div>
-
-                {countryData.oracleConfirmation && (
-                  <Alert>
-                    <CheckCircle className="h-4 w-4" />
-                    <AlertDescription>
-                      Oracle confirmation received! Ready for instantiation.
-                    </AlertDescription>
-                  </Alert>
-                )}
-
-                <Button
-                  onClick={executeInstantiation}
-                  disabled={instantiating || !countryData.oracleConfirmation}
-                  className="w-full"
-                >
-                  {instantiating ? (
-                    <>
-                      <Clock className="h-4 w-4 mr-2" />
-                      Executing Instantiation Protocol...
-                    </>
-                  ) : (
-                    <>
-                      <Globe className="h-4 w-4 mr-2" />
-                      Execute Instantiation Protocol
-                    </>
-                  )}
-                </Button>
-              </div>
-            </div>
+        <Button
+          onClick={executeInstantiation}
+          disabled={instantiating || !countryData.oracleConfirmation}
+          className="w-full"
+        >
+          {instantiating ? (
+            <>
+              <Clock className="h-4 w-4 mr-2" />
+              Executing Instantiation Protocol...
+            </>
+          ) : (
+            <>
+              <Globe className="h-4 w-4 mr-2" />
+              Execute Instantiation Protocol
+            </>
           )}
-        </CardContent>
-      </Card>
+        </Button>
+      </div>
+    </div>
+  )}
+        </CardContent >
+      </Card >
 
-      {/* Instantiated Economies List */}
-      <Card>
+  {/* Instantiated Economies List */ }
+  < Card >
         <CardHeader>
           <CardTitle>Instantiated Economies</CardTitle>
         </CardHeader>
@@ -1624,8 +1712,8 @@ export default CompliancePanel              <SelectContent>
             ))}
           </div>
         </CardContent>
-      </Card>
-    </div>
+      </Card >
+    </div >
   )
 }
 

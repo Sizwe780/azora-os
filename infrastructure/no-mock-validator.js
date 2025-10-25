@@ -61,12 +61,12 @@ class NoMockValidator {
       // Skip directories
       const stat = await fs.promises.stat(file);
       if (stat.isDirectory()) continue;
-      
+
       this.scanFile(file);
     }
 
     this.printReport();
-    
+
     if (this.violations.length > 0) {
       console.error('\n❌ No Mock Protocol VIOLATED');
       process.exit(1);
@@ -84,7 +84,7 @@ class NoMockValidator {
       for (const pattern of MOCK_PATTERNS) {
         if (pattern.test(line)) {
           // Check if it's an allowed exception
-          const isAllowed = ALLOWED_MOCK_PATTERNS.some(allowed => 
+          const isAllowed = ALLOWED_MOCK_PATTERNS.some(allowed =>
             allowed.test(line)
           );
 

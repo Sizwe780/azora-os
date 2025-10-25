@@ -95,44 +95,44 @@ function App() {
 
           {/* Protected Routes */}
           <Route path="/*" element={
-            !user ? <Navigate to="/auth/login" replace /> : 
-            user && !user.onboardingComplete ? <Navigate to="/onboarding" replace /> : (
-              <MainLayout>
-                <Routes>
-                  <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/subscription" element={<Subscription />} />
-                  
-                  {/* Service Routes */}
-                  <Route path="/services/retail-partner" element={<RetailPartnerPanel />} />
-                  <Route path="/services/ev-leader" element={<EVLeaderPanel />} />
-                  <Route path="/services/neural-context" element={<NeuralContextPanel />} />
-                  <Route path="/services/safety-orchestrator" element={<SafetyOrchestratorPanel />} />
-                  <Route path="/services/cold-chain" element={<ColdChainPanel />} />
-                  <Route path="/services/tracking-engine" element={<TrackingEnginePanel />} />
-                  <Route path="/services/deep-mind" element={<DeepMindPanel />} />
-                  <Route path="/services/analytics" element={<AnalyticsPanel />} />
-                  <Route path="/services/compliance" element={<CompliancePanel />} />
-                  <Route path="/services/document-vault" element={<DocumentVaultPanel />} />
-                  <Route path="/services/maintenance" element={<MaintenancePanel />} />
-                  <Route path="/services/employee-onboarding" element={<OnboardingPanel />} />
-                  <Route path="/services/traffic-routing" element={<TrafficRoutingPanel />} />
-                  <Route path="/services/crypto-ledger" element={<CryptoLedgerPanel />} />
-                  <Route path="/services/trip-planning" element={<TripPlanningPanel />} />
-                  <Route path="/services/tms" element={<TMSPanel />} />
-                  <Route path="/services/klipp" element={<KlippPanel />} />
-                  <Route path="/services/admin" element={<AdminPanel />} />
-                  <Route path="/services/driver-behavior" element={<DriverBehaviorPanel />} />
-                  <Route path="/services/document-verification" element={<DocumentVerificationPanel />} />
-                  <Route path="/services/ai-evolution" element={<AIEvolutionPanel />} />
-                  <Route path="/services/accessibility" element={<AccessibilityPanel />} />
-                  <Route path="/services/hr-deputy" element={<HRDeputyPanel />} />
-                  <Route path="/services/ai-assistant" element={<AIAssistantPanel />} />
-                  
-                  <Route path="*" element={<Navigate to="/dashboard" replace />} />
-                </Routes>
-              </MainLayout>
-            )
+            !user ? <Navigate to="/auth/login" replace /> :
+              user && !user.onboardingComplete ? <Navigate to="/onboarding" replace /> : (
+                <MainLayout>
+                  <Routes>
+                    <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/subscription" element={<Subscription />} />
+
+                    {/* Service Routes */}
+                    <Route path="/services/retail-partner" element={<RetailPartnerPanel />} />
+                    <Route path="/services/ev-leader" element={<EVLeaderPanel />} />
+                    <Route path="/services/neural-context" element={<NeuralContextPanel />} />
+                    <Route path="/services/safety-orchestrator" element={<SafetyOrchestratorPanel />} />
+                    <Route path="/services/cold-chain" element={<ColdChainPanel />} />
+                    <Route path="/services/tracking-engine" element={<TrackingEnginePanel />} />
+                    <Route path="/services/deep-mind" element={<DeepMindPanel />} />
+                    <Route path="/services/analytics" element={<AnalyticsPanel />} />
+                    <Route path="/services/compliance" element={<CompliancePanel />} />
+                    <Route path="/services/document-vault" element={<DocumentVaultPanel />} />
+                    <Route path="/services/maintenance" element={<MaintenancePanel />} />
+                    <Route path="/services/employee-onboarding" element={<OnboardingPanel />} />
+                    <Route path="/services/traffic-routing" element={<TrafficRoutingPanel />} />
+                    <Route path="/services/crypto-ledger" element={<CryptoLedgerPanel />} />
+                    <Route path="/services/trip-planning" element={<TripPlanningPanel />} />
+                    <Route path="/services/tms" element={<TMSPanel />} />
+                    <Route path="/services/klipp" element={<KlippPanel />} />
+                    <Route path="/services/admin" element={<AdminPanel />} />
+                    <Route path="/services/driver-behavior" element={<DriverBehaviorPanel />} />
+                    <Route path="/services/document-verification" element={<DocumentVerificationPanel />} />
+                    <Route path="/services/ai-evolution" element={<AIEvolutionPanel />} />
+                    <Route path="/services/accessibility" element={<AccessibilityPanel />} />
+                    <Route path="/services/hr-deputy" element={<HRDeputyPanel />} />
+                    <Route path="/services/ai-assistant" element={<AIAssistantPanel />} />
+
+                    <Route path="*" element={<Navigate to="/dashboard" replace />} />
+                  </Routes>
+                </MainLayout>
+              )
           } />
         </Routes>
       </AnimatePresence>

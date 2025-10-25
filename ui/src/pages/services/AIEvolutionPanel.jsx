@@ -214,11 +214,10 @@ const AIEvolutionPanel = () => {
               <div key={task.id} className="p-4 border rounded-lg">
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-medium">{task.description}</h4>
-                  <span className={`px-2 py-1 rounded text-xs ${
-                    task.priority === 'critical' ? 'bg-red-100 text-red-800' :
-                    task.priority === 'high' ? 'bg-orange-100 text-orange-800' :
-                    'bg-blue-100 text-blue-800'
-                  }`}>
+                  <span className={`px-2 py-1 rounded text-xs ${task.priority === 'critical' ? 'bg-red-100 text-red-800' :
+                      task.priority === 'high' ? 'bg-orange-100 text-orange-800' :
+                        'bg-blue-100 text-blue-800'
+                    }`}>
                     {task.priority}
                   </span>
                 </div>

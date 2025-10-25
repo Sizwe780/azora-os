@@ -161,11 +161,10 @@ const TMSPanel = () => {
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-medium">{route.origin} → {route.destination}</h4>
                   <div className="flex items-center gap-2">
-                    <span className={`px-2 py-1 rounded text-xs ${
-                      route.status === 'completed' ? 'bg-green-100 text-green-800' :
-                      route.status === 'in-transit' ? 'bg-blue-100 text-blue-800' :
-                      'bg-yellow-100 text-yellow-800'
-                    }`}>
+                    <span className={`px-2 py-1 rounded text-xs ${route.status === 'completed' ? 'bg-green-100 text-green-800' :
+                        route.status === 'in-transit' ? 'bg-blue-100 text-blue-800' :
+                          'bg-yellow-100 text-yellow-800'
+                      }`}>
                       {route.status}
                     </span>
                     <span className="text-sm text-muted-foreground">ETA: {route.eta}</span>
@@ -191,12 +190,11 @@ const TMSPanel = () => {
               <div key={vehicle.id} className="p-4 border rounded-lg">
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-medium">{vehicle.type}</h4>
-                  <span className={`px-2 py-1 rounded text-xs ${
-                    vehicle.status === 'active' ? 'bg-green-100 text-green-800' :
-                    vehicle.status === 'available' ? 'bg-blue-100 text-blue-800' :
-                    vehicle.status === 'maintenance' ? 'bg-orange-100 text-orange-800' :
-                    'bg-gray-100 text-gray-800'
-                  }`}>
+                  <span className={`px-2 py-1 rounded text-xs ${vehicle.status === 'active' ? 'bg-green-100 text-green-800' :
+                      vehicle.status === 'available' ? 'bg-blue-100 text-blue-800' :
+                        vehicle.status === 'maintenance' ? 'bg-orange-100 text-orange-800' :
+                          'bg-gray-100 text-gray-800'
+                    }`}>
                     {vehicle.status}
                   </span>
                 </div>
@@ -228,11 +226,10 @@ const TMSPanel = () => {
                     <p className="font-medium">Shipment {shipment.id.split('-')[1]}</p>
                     <p className="text-sm text-muted-foreground">{shipment.weight}kg → {shipment.destination}</p>
                   </div>
-                  <span className={`px-2 py-1 rounded text-xs ${
-                    shipment.priority === 'high' ? 'bg-red-100 text-red-800' :
-                    shipment.priority === 'medium' ? 'bg-orange-100 text-orange-800' :
-                    'bg-blue-100 text-blue-800'
-                  }`}>
+                  <span className={`px-2 py-1 rounded text-xs ${shipment.priority === 'high' ? 'bg-red-100 text-red-800' :
+                      shipment.priority === 'medium' ? 'bg-orange-100 text-orange-800' :
+                        'bg-blue-100 text-blue-800'
+                    }`}>
                     {shipment.priority}
                   </span>
                 </div>

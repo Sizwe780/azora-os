@@ -206,22 +206,20 @@ const TrackingEnginePanel = () => {
               <div className="space-y-2">
                 {trackingResult.route.map((stop, index) => (
                   <div key={index} className="flex items-center gap-3">
-                    <div className={`w-3 h-3 rounded-full ${
-                      stop.status === 'current' ? 'bg-blue-500' :
-                      stop.status === 'passed' ? 'bg-green-500' :
-                      'bg-gray-300'
-                    }`}></div>
+                    <div className={`w-3 h-3 rounded-full ${stop.status === 'current' ? 'bg-blue-500' :
+                        stop.status === 'passed' ? 'bg-green-500' :
+                          'bg-gray-300'
+                      }`}></div>
                     <div className="flex-1">
                       <p className="text-sm font-medium">{stop.location}</p>
                       <p className="text-xs text-muted-foreground">
                         {new Date(stop.timestamp).toLocaleString()}
                       </p>
                     </div>
-                    <span className={`px-2 py-1 rounded text-xs ${
-                      stop.status === 'current' ? 'bg-blue-100 text-blue-800' :
-                      stop.status === 'passed' ? 'bg-green-100 text-green-800' :
-                      'bg-gray-100 text-gray-800'
-                    }`}>
+                    <span className={`px-2 py-1 rounded text-xs ${stop.status === 'current' ? 'bg-blue-100 text-blue-800' :
+                        stop.status === 'passed' ? 'bg-green-100 text-green-800' :
+                          'bg-gray-100 text-gray-800'
+                      }`}>
                       {stop.status}
                     </span>
                   </div>
@@ -239,11 +237,10 @@ const TrackingEnginePanel = () => {
               <div key={shipment.id} className="p-4 border rounded-lg">
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-medium">Shipment {shipment.id}</h4>
-                  <span className={`px-2 py-1 rounded text-xs ${
-                    shipment.status === 'delivered' ? 'bg-green-100 text-green-800' :
-                    shipment.status === 'in-transit' ? 'bg-blue-100 text-blue-800' :
-                    'bg-yellow-100 text-yellow-800'
-                  }`}>
+                  <span className={`px-2 py-1 rounded text-xs ${shipment.status === 'delivered' ? 'bg-green-100 text-green-800' :
+                      shipment.status === 'in-transit' ? 'bg-blue-100 text-blue-800' :
+                        'bg-yellow-100 text-yellow-800'
+                    }`}>
                     {shipment.status}
                   </span>
                 </div>
@@ -278,11 +275,10 @@ const TrackingEnginePanel = () => {
               <div key={asset.id} className="p-4 border rounded-lg">
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-medium">{asset.type}</h4>
-                  <span className={`px-2 py-1 rounded text-xs ${
-                    asset.status === 'moving' ? 'bg-green-100 text-green-800' :
-                    asset.status === 'stationary' ? 'bg-blue-100 text-blue-800' :
-                    'bg-yellow-100 text-yellow-800'
-                  }`}>
+                  <span className={`px-2 py-1 rounded text-xs ${asset.status === 'moving' ? 'bg-green-100 text-green-800' :
+                      asset.status === 'stationary' ? 'bg-blue-100 text-blue-800' :
+                        'bg-yellow-100 text-yellow-800'
+                    }`}>
                     {asset.status}
                   </span>
                 </div>
@@ -308,11 +304,10 @@ const TrackingEnginePanel = () => {
                     <p className="font-medium">{route.origin} → {route.destination}</p>
                     <p className="text-sm text-muted-foreground">{route.distance}km • {route.duration}</p>
                   </div>
-                  <span className={`px-2 py-1 rounded text-xs ${
-                    route.status === 'completed' ? 'bg-green-100 text-green-800' :
-                    route.status === 'active' ? 'bg-blue-100 text-blue-800' :
-                    'bg-gray-100 text-gray-800'
-                  }`}>
+                  <span className={`px-2 py-1 rounded text-xs ${route.status === 'completed' ? 'bg-green-100 text-green-800' :
+                      route.status === 'active' ? 'bg-blue-100 text-blue-800' :
+                        'bg-gray-100 text-gray-800'
+                    }`}>
                     {route.status}
                   </span>
                 </div>

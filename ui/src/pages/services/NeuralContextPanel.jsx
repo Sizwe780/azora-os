@@ -228,11 +228,10 @@ const NeuralContextPanel = () => {
                     <p className="text-sm text-muted-foreground">Est. {item.estimatedTime}s</p>
                   </div>
                 </div>
-                <span className={`px-2 py-1 rounded text-xs ${
-                  item.priority === 'high' ? 'bg-red-100 text-red-800' :
-                  item.priority === 'medium' ? 'bg-orange-100 text-orange-800' :
-                  'bg-blue-100 text-blue-800'
-                }`}>
+                <span className={`px-2 py-1 rounded text-xs ${item.priority === 'high' ? 'bg-red-100 text-red-800' :
+                    item.priority === 'medium' ? 'bg-orange-100 text-orange-800' :
+                      'bg-blue-100 text-blue-800'
+                  }`}>
                   {item.priority}
                 </span>
               </div>
@@ -248,11 +247,10 @@ const NeuralContextPanel = () => {
               <div key={network.id} className="p-4 border rounded-lg">
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-medium">{network.type}</h4>
-                  <span className={`px-2 py-1 rounded text-xs ${
-                    network.status === 'active' ? 'bg-green-100 text-green-800' :
-                    network.status === 'training' ? 'bg-blue-100 text-blue-800' :
-                    'bg-gray-100 text-gray-800'
-                  }`}>
+                  <span className={`px-2 py-1 rounded text-xs ${network.status === 'active' ? 'bg-green-100 text-green-800' :
+                      network.status === 'training' ? 'bg-blue-100 text-blue-800' :
+                        'bg-gray-100 text-gray-800'
+                    }`}>
                     {network.status}
                   </span>
                 </div>

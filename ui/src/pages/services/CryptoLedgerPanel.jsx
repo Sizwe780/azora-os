@@ -121,8 +121,8 @@ const CryptoLedgerPanel = () => {
                                                     <p className="text-sm text-muted-foreground">{tx.type} • {tx.amount} AZR</p>
                                                 </div>
                                                 <span className={`px-2 py-1 rounded-full text-xs font-medium ${tx.type === 'TRANSFER' ? 'bg-blue-500/10 text-blue-500' :
-                                                        tx.type === 'STAKE' ? 'bg-green-500/10 text-green-500' :
-                                                            'bg-purple-500/10 text-purple-500'
+                                                    tx.type === 'STAKE' ? 'bg-green-500/10 text-green-500' :
+                                                        'bg-purple-500/10 text-purple-500'
                                                     }`}>
                                                     {tx.type}
                                                 </span>

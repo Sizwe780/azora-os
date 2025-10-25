@@ -159,11 +159,10 @@ const SafetyOrchestratorPanel = () => {
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-medium">{alert.type.replace('-', ' ').toUpperCase()}</h4>
                   <div className="flex items-center gap-2">
-                    <span className={`px-2 py-1 rounded text-xs ${
-                      alert.severity === 'high' ? 'bg-red-100 text-red-800' :
-                      alert.severity === 'medium' ? 'bg-orange-100 text-orange-800' :
-                      'bg-yellow-100 text-yellow-800'
-                    }`}>
+                    <span className={`px-2 py-1 rounded text-xs ${alert.severity === 'high' ? 'bg-red-100 text-red-800' :
+                        alert.severity === 'medium' ? 'bg-orange-100 text-orange-800' :
+                          'bg-yellow-100 text-yellow-800'
+                      }`}>
                       {alert.severity}
                     </span>
                     <button
@@ -193,11 +192,10 @@ const SafetyOrchestratorPanel = () => {
               <div key={compliance.category} className="p-4 border rounded-lg">
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-medium">{compliance.category}</h4>
-                  <span className={`px-2 py-1 rounded text-xs ${
-                    compliance.status === 'compliant' ? 'bg-green-100 text-green-800' :
-                    compliance.status === 'warning' ? 'bg-yellow-100 text-yellow-800' :
-                    'bg-red-100 text-red-800'
-                  }`}>
+                  <span className={`px-2 py-1 rounded text-xs ${compliance.status === 'compliant' ? 'bg-green-100 text-green-800' :
+                      compliance.status === 'warning' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-red-100 text-red-800'
+                    }`}>
                     {compliance.status}
                   </span>
                 </div>
@@ -227,18 +225,16 @@ const SafetyOrchestratorPanel = () => {
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-medium">{risk.category}</h4>
                   <div className="flex items-center gap-2">
-                    <span className={`px-2 py-1 rounded text-xs ${
-                      risk.level === 'high' ? 'bg-red-100 text-red-800' :
-                      risk.level === 'medium' ? 'bg-orange-100 text-orange-800' :
-                      'bg-green-100 text-green-800'
-                    }`}>
+                    <span className={`px-2 py-1 rounded text-xs ${risk.level === 'high' ? 'bg-red-100 text-red-800' :
+                        risk.level === 'medium' ? 'bg-orange-100 text-orange-800' :
+                          'bg-green-100 text-green-800'
+                      }`}>
                       {risk.level} risk
                     </span>
-                    <span className={`px-2 py-1 rounded text-xs ${
-                      risk.mitigation === 'implemented' ? 'bg-green-100 text-green-800' :
-                      risk.mitigation === 'active' ? 'bg-blue-100 text-blue-800' :
-                      'bg-yellow-100 text-yellow-800'
-                    }`}>
+                    <span className={`px-2 py-1 rounded text-xs ${risk.mitigation === 'implemented' ? 'bg-green-100 text-green-800' :
+                        risk.mitigation === 'active' ? 'bg-blue-100 text-blue-800' :
+                          'bg-yellow-100 text-yellow-800'
+                      }`}>
                       {risk.mitigation}
                     </span>
                   </div>

@@ -163,7 +163,7 @@ const KlippPanel = () => {
               <input
                 type="text"
                 value={newPayment.recipient}
-                onChange={(e) => setNewPayment({...newPayment, recipient: e.target.value})}
+                onChange={(e) => setNewPayment({ ...newPayment, recipient: e.target.value })}
                 placeholder="Recipient address or ID"
                 className="w-full p-2 border border-border rounded"
               />
@@ -174,7 +174,7 @@ const KlippPanel = () => {
               <input
                 type="number"
                 value={newPayment.amount}
-                onChange={(e) => setNewPayment({...newPayment, amount: e.target.value})}
+                onChange={(e) => setNewPayment({ ...newPayment, amount: e.target.value })}
                 placeholder="0.00"
                 className="w-full p-2 border border-border rounded"
               />
@@ -184,7 +184,7 @@ const KlippPanel = () => {
               <label className="block text-sm font-medium mb-1">Currency</label>
               <select
                 value={newPayment.currency}
-                onChange={(e) => setNewPayment({...newPayment, currency: e.target.value})}
+                onChange={(e) => setNewPayment({ ...newPayment, currency: e.target.value })}
                 className="w-full p-2 border border-border rounded"
               >
                 <option value="AZR">AZR</option>
@@ -199,7 +199,7 @@ const KlippPanel = () => {
               <input
                 type="text"
                 value={newPayment.description}
-                onChange={(e) => setNewPayment({...newPayment, description: e.target.value})}
+                onChange={(e) => setNewPayment({ ...newPayment, description: e.target.value })}
                 placeholder="Payment description"
                 className="w-full p-2 border border-border rounded"
               />
@@ -259,11 +259,10 @@ const KlippPanel = () => {
                       {transaction.amount.toLocaleString()} {transaction.currency}
                     </p>
                   </div>
-                  <span className={`px-2 py-1 rounded text-xs ${
-                    transaction.status === 'confirmed' ? 'bg-green-100 text-green-800' :
-                    transaction.status === 'processing' ? 'bg-blue-100 text-blue-800' :
-                    'bg-yellow-100 text-yellow-800'
-                  }`}>
+                  <span className={`px-2 py-1 rounded text-xs ${transaction.status === 'confirmed' ? 'bg-green-100 text-green-800' :
+                      transaction.status === 'processing' ? 'bg-blue-100 text-blue-800' :
+                        'bg-yellow-100 text-yellow-800'
+                    }`}>
                     {transaction.status}
                   </span>
                 </div>

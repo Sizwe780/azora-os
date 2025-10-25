@@ -98,11 +98,10 @@ const DeepMindPanel = () => {
                                                 <p className="text-sm text-muted-foreground">Accuracy: {(model.accuracy * 100).toFixed(1)}%</p>
                                             </div>
                                             <div className="text-right">
-                                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                                    model.status === 'active' ? 'bg-green-500/10 text-green-500' :
-                                                    model.status === 'training' ? 'bg-yellow-500/10 text-yellow-500' :
-                                                    'bg-gray-500/10 text-gray-500'
-                                                }`}>
+                                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${model.status === 'active' ? 'bg-green-500/10 text-green-500' :
+                                                        model.status === 'training' ? 'bg-yellow-500/10 text-yellow-500' :
+                                                            'bg-gray-500/10 text-gray-500'
+                                                    }`}>
                                                     {model.status}
                                                 </span>
                                                 <p className="text-xs text-muted-foreground mt-1">
@@ -128,11 +127,10 @@ const DeepMindPanel = () => {
                                                     <p className="font-medium text-foreground font-mono text-sm">{job.id}</p>
                                                     <p className="text-sm text-muted-foreground">{job.model}</p>
                                                 </div>
-                                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                                    job.status === 'running' ? 'bg-blue-500/10 text-blue-500' :
-                                                    job.status === 'completed' ? 'bg-green-500/10 text-green-500' :
-                                                    'bg-gray-500/10 text-gray-500'
-                                                }`}>
+                                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${job.status === 'running' ? 'bg-blue-500/10 text-blue-500' :
+                                                        job.status === 'completed' ? 'bg-green-500/10 text-green-500' :
+                                                            'bg-gray-500/10 text-gray-500'
+                                                    }`}>
                                                     {job.status}
                                                 </span>
                                             </div>

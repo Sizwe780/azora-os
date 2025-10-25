@@ -68,11 +68,10 @@ const Sidebar = () => {
                       <Link
                         key={child.name}
                         to={child.href}
-                        className={`flex items-center px-3 py-2 text-sm rounded-md transition-colors ${
-                          location.pathname === child.href
+                        className={`flex items-center px-3 py-2 text-sm rounded-md transition-colors ${location.pathname === child.href
                             ? 'bg-primary text-primary-foreground'
                             : 'text-foreground hover:bg-accent'
-                        }`}
+                          }`}
                       >
                         {child.name}
                       </Link>
@@ -82,11 +81,10 @@ const Sidebar = () => {
               ) : (
                 <Link
                   to={item.href}
-                  className={`flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
-                    location.pathname === item.href
+                  className={`flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${location.pathname === item.href
                       ? 'bg-primary text-primary-foreground'
                       : 'text-foreground hover:bg-accent'
-                  }`}
+                    }`}
                 >
                   <span className="mr-3">{item.icon}</span>
                   {item.name}
