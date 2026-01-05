@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
+import * as Y from "yjs";
+import { WebsocketProvider } from "y-websocket";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Video, Palette, MessageSquare, CheckSquare, Share2, Users, Settings, Bell } from "lucide-react";
+import { Video, Palette, MessageSquare, CheckSquare, Share2, Users, Settings, Bell, Wifi, WifiOff } from "lucide-react";
 import VideoConference from "./VideoConference";
 import Whiteboard from "./Whiteboard";
 import Chat from "./Chat";
@@ -14,6 +16,25 @@ import TaskBoard from "./TaskBoard";
 export default function CollaborationPod() {
     const [activeTab, setActiveTab] = useState("video");
     const [notifications, setNotifications] = useState(5);
+    const [isConnected, setIsConnected] = useState(false);
+
+    // Initialize Yjs for real-time collaboration
+    const { ydoc, provider } = useMemo(() => {
+        const doc = new Y.Doc();
+        const wsProvider = typeof window !== 'undefined' 
+            ? new WebsocketProvider('wss://demos.yjs.dev', 'azora-buildspaces-pod', doc)
+            : null;
+        return { ydoc: doc, provider: wsProvider };
+    }, []);
+
+    useEffect(() => {
+        if (provider) {
+            provider.on('status', (event: any) => {
+                setIsConnected(event.status === 'connected');
+            });
+        }
+        return () => provider?.destroy();
+    }, [provider]);
 
     const tabs = [
         { id: "video", label: "Video Call", icon: Video, component: VideoConference },
@@ -22,6 +43,8 @@ export default function CollaborationPod() {
         { id: "tasks", label: "Task Board", icon: CheckSquare, component: TaskBoard },
     ];
 
+    const ActiveComponent = tabs.find(t => t.id === activeTab)?.component || VideoConference;
+
     return (
         <div className="h-full flex flex-col bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
             {/* Header */}
@@ -29,14 +52,16 @@ export default function CollaborationPod() {
                 <div>
                     <h1 className="text-2xl font-bold text-white flex items-center gap-3">
                         Collaboration Pod
-                        <Badge variant="secondary" className="bg-green-600">4 Active</Badge>
+                        <Badge variant="secondary" className={isConnected ? "bg-green-600" : "bg-red-600"}>
+                            {isConnected ? "Connected" : "Offline"}
+                        </Badge>
                     </h1>
-                    <p className="text-slate-400">Real-time team collaboration and project management</p>
+                    <p className="text-slate-400">Real-time team collaboration powered by Yjs</p>
                 </div>
                 <div className="flex items-center gap-4">
                     <div className="flex items-center gap-2 text-sm text-slate-400">
-                        <Users className="w-4 h-4" />
-                        <span>Alice, Bob, Carol, David</span>
+                        {isConnected ? <Wifi className="w-4 h-4 text-emerald-400" /> : <WifiOff className="w-4 h-4 text-red-400" />}
+                        <span>{isConnected ? "Sync Active" : "Sync Paused"}</span>
                     </div>
                     <div className="flex items-center gap-2">
                         <Button variant="outline" size="sm" className="relative">
@@ -75,41 +100,13 @@ export default function CollaborationPod() {
                     </TabsList>
 
                     <div className="flex-1 mx-6 mb-6 mt-4">
-                        {tabs.map((tab) => (
-                            <TabsContent key={tab.id} value={tab.id} className="h-full m-0">
-                                <Card className="h-full bg-slate-800/50 border-white/10 overflow-hidden">
-                                    <CardContent className="p-0 h-full">
-                                        <tab.component />
-                                    </CardContent>
-                                </Card>
-                            </TabsContent>
-                        ))}
+                        <ActiveComponent ydoc={ydoc} provider={provider} />
                     </div>
                 </Tabs>
             </div>
-
-            {/* Quick Actions Footer */}
-            <div className="mx-6 mb-6">
-                <Card className="bg-slate-900/50 border-white/10">
-                    <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-4">
-                                <div className="text-center">
-                                    <div className="text-lg font-semibold text-white">12</div>
-                                    <div className="text-xs text-slate-400">Tasks Done</div>
-                                </div>
-                                <div className="text-center">
-                                    <div className="text-lg font-semibold text-white">4</div>
-                                    <div className="text-xs text-slate-400">Active Sessions</div>
-                                </div>
-                                <div className="text-center">
-                                    <div className="text-lg font-semibold text-white">98%</div>
-                                    <div className="text-xs text-slate-400">Team Productivity</div>
-                                </div>
-                            </div>
-                            <div className="flex gap-2">
-                                <Button variant="outline" size="sm">
-                                    Schedule Meeting
+        </div>
+    );
+}
                                 </Button>
                                 <Button variant="outline" size="sm">
                                     Export Session

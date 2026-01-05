@@ -8,9 +8,10 @@ import "xterm/css/xterm.css"
 
 interface XTerminalProps {
     onData?: (data: string) => void
+    socket?: WebSocket | null
 }
 
-export function XTerminal({ onData }: XTerminalProps) {
+export function XTerminal({ onData, socket }: XTerminalProps) {
     const terminalRef = useRef<HTMLDivElement>(null)
     const xtermRef = useRef<Terminal | null>(null)
     const fitAddonRef = useRef<FitAddon | null>(null)
@@ -59,23 +60,8 @@ export function XTerminal({ onData }: XTerminalProps) {
         term.open(terminalRef.current)
         fitAddon.fit()
 
-        // Welcome Message
-        term.writeln('\x1b[1;36mAzora CLI\x1b[0m v1.0.0')
-        term.writeln('Type \x1b[33mhelp\x1b[0m to see available commands.')
-        term.writeln('')
-        term.write('\x1b[1;32m➜\x1b[0m \x1b[36m~\x1b[0m ')
-
         // Handle Input
         term.onData((data) => {
-            // Local echo for now (will be handled by pty later)
-            if (data === '\r') {
-                term.write('\r\n\x1b[1;32m➜\x1b[0m \x1b[36m~\x1b[0m ')
-            } else if (data === '\u007F') { // Backspace
-                term.write('\b \b')
-            } else {
-                term.write(data)
-            }
-
             if (onData) {
                 onData(data)
             }
@@ -94,6 +80,21 @@ export function XTerminal({ onData }: XTerminalProps) {
             term.dispose()
         }
     }, [onData])
+
+    // Handle incoming data from WebSocket
+    useEffect(() => {
+        if (!socket || !xtermRef.current) return
+
+        const handleMessage = (event: MessageEvent) => {
+            xtermRef.current?.write(event.data)
+        }
+
+        socket.addEventListener("message", handleMessage)
+
+        return () => {
+            socket.removeEventListener("message", handleMessage)
+        }
+    }, [socket])
 
     return (
         <div

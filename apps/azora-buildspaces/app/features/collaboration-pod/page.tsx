@@ -1,12 +1,27 @@
-"use client"
+'use client'
 
 import { useState, useEffect, useRef } from 'react'
 import { Navbar } from '@/components/features/navbar'
 import { Footer } from '@/components/features/footer'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import {
+  Users,
+  MessageSquare,
+  Video,
+  Share2,
+  Zap,
+  Globe,
+  ArrowRight,
+  Play,
+  CheckCircle
+} from 'lucide-react'
 import Link from 'next/link'
-import { Users, MessageSquare, Video } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 export default function CollaborationPodPage() {
+  const router = useRouter()
   const [openWhiteboard, setOpenWhiteboard] = useState(false)
   const [chatOpen, setChatOpen] = useState(false)
   const [whiteboardText, setWhiteboardText] = useState('')
@@ -106,75 +121,146 @@ export default function CollaborationPodPage() {
     }
   }, [openWhiteboard])
 
+  const features = [
+    {
+      icon: Users,
+      title: "Real-time Collaboration",
+      description: "Work together on code, designs, and documents with live synchronization"
+    },
+    {
+      icon: MessageSquare,
+      title: "Team Chat",
+      description: "Communicate with your team through integrated chat and voice channels"
+    },
+    {
+      icon: Share2,
+      title: "Shared Whiteboard",
+      description: "Collaborative whiteboard for brainstorming and visual planning"
+    },
+    {
+      icon: Video,
+      title: "Video Calls",
+      description: "High-quality video conferencing integrated into your workspace"
+    },
+    {
+      icon: Globe,
+      title: "Cross-Platform",
+      description: "Access your collaboration sessions from any device or browser"
+    },
+    {
+      icon: Zap,
+      title: "Instant Sessions",
+      description: "Start collaborative sessions instantly without complex setup"
+    }
+  ]
+
+  const capabilities = [
+    "Real-time code collaboration",
+    "Shared document editing",
+    "Whiteboard and diagramming",
+    "Video and voice calls",
+    "Screen sharing",
+    "File sharing and comments",
+    "Session recording",
+    "Team management",
+    "Guest access",
+    "Integration with external tools"
+  ]
+
   return (
-    <div className="min-h-screen bg-[#0d1117] text-white flex flex-col">
+    <div className="min-h-screen bg-background">
       <Navbar />
-      <main className="flex-1 px-4 sm:px-6 lg:px-8 py-6">
+
+      <main className="py-24 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-3xl font-bold">Collaboration Pod</h1>
-              <p className="text-gray-400">Real-time teamwork: chat, whiteboard, and lightweight video rooms.</p>
+          {/* Hero Section */}
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary mb-6">
+              <Users className="w-4 h-4" />
+              <span>Collaboration Pod</span>
             </div>
-            <Link href="/features" className="text-emerald-400 hover:text-emerald-300">← Back to features</Link>
+            <h1 className="text-4xl font-bold mb-6">
+              Real-Time Team Collaboration
+            </h1>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+              Work together seamlessly with your team. Share code, collaborate on designs,
+              chat in real-time, and conduct video calls - all integrated into your workspace.
+            </p>
+            <div className="flex items-center justify-center gap-4">
+              <Button size="lg" onClick={() => router.push('/workspace')} className="gap-2">
+                <Play className="w-4 h-4" />
+                Open Collaboration Pod
+              </Button>
+              <Button size="lg" variant="outline" onClick={() => setOpenWhiteboard(true)}>
+                Try Live Demo
+              </Button>
+            </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-4 mb-6">
-            <div className="bg-white/5 border border-white/10 rounded-lg p-6">
-              <div className="flex items-center gap-3 mb-3">
-                <Users className="w-5 h-5 text-cyan-400" />
-                <h3 className="font-semibold">Participants</h3>
-              </div>
-              <p className="text-sm text-gray-400">Invite teammates to collaborate in a shared workspace.</p>
-              <div className="mt-4 flex items-center gap-2">
-                <div className="flex -space-x-2">
-                  {peersList.slice(0, 5).map((p) => (
-                    <div key={p.id} className="w-8 h-8 rounded-full flex items-center justify-center ring-1 ring-white/10" title={p.name} style={{ background: p.color || '#555' }}>
-                      <span className="text-xs font-semibold text-white">{p.name.split(' ').map(s => s[0]).join('').slice(0,2)}</span>
+          {/* Features Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+            {features.map((feature, i) => (
+              <Card key={i} className="border-border/50">
+                <CardHeader>
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-3">
+                    <feature.icon className="w-5 h-5 text-primary" />
+                  </div>
+                  <CardTitle className="text-lg">{feature.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription>{feature.description}</CardDescription>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Live Demo Section */}
+          {openWhiteboard && (
+            <Card className="mb-16">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Share2 className="w-5 h-5" />
+                  Live Collaboration Demo
+                </CardTitle>
+                <CardDescription>
+                  Try the shared whiteboard below. Open this page in another browser tab to see real-time collaboration in action.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Participants */}
+                  <div>
+                    <h4 className="font-semibold mb-3 flex items-center gap-2">
+                      <Users className="w-4 h-4" />
+                      Participants ({docInfo.peers})
+                    </h4>
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="flex -space-x-2">
+                        {peersList.slice(0, 5).map((p) => (
+                          <div key={p.id} className="w-8 h-8 rounded-full flex items-center justify-center ring-1 ring-border text-xs font-semibold text-white" title={p.name} style={{ background: p.color || '#555' }}>
+                            {p.name.split(' ').map(s => s[0]).join('').slice(0,2)}
+                          </div>
+                        ))}
+                      </div>
+                      <Badge variant={docInfo.connected ? "default" : "secondary"}>
+                        {docInfo.connected ? "Connected" : "Disconnected"}
+                      </Badge>
                     </div>
-                  ))}
-                </div>
-                <div className="text-sm text-gray-300">{docInfo.peers} online</div>
-              </div>
-            </div>
+                    <div className="space-y-2">
+                      <Button size="sm" variant="outline" onClick={() => setChatOpen(!chatOpen)} className="w-full justify-start gap-2">
+                        <MessageSquare className="w-4 h-4" />
+                        {chatOpen ? 'Close Chat' : 'Open Chat'}
+                      </Button>
+                      <Button size="sm" variant="outline" className="w-full justify-start gap-2">
+                        <Video className="w-4 h-4" />
+                        Start Call
+                      </Button>
+                    </div>
+                  </div>
 
-            <div className="bg-white/5 border border-white/10 rounded-lg p-6">
-              <div className="flex items-center gap-3 mb-3">
-                <MessageSquare className="w-5 h-5 text-blue-400" />
-                <h3 className="font-semibold">Live Chat</h3>
-              </div>
-              <p className="text-sm text-gray-400">Chat with others and attach whiteboard frames.</p>
-              <div className="mt-4">
-                <button onClick={() => setChatOpen((s) => !s)} className="px-3 py-2 bg-blue-600/20 hover:bg-blue-600/30 rounded">
-                  {chatOpen ? 'Close Chat' : 'Open Chat'}
-                </button>
-              </div>
-            </div>
-
-            <div className="bg-white/5 border border-white/10 rounded-lg p-6">
-              <div className="flex items-center gap-3 mb-3">
-                <Video className="w-5 h-5 text-pink-400" />
-                <h3 className="font-semibold">Quick Call</h3>
-              </div>
-              <p className="text-sm text-gray-400">Start a lightweight peer-to-peer call (browser-based).</p>
-              <div className="mt-4">
-                <button className="px-3 py-2 bg-pink-600/20 hover:bg-pink-600/30 rounded">Start Call</button>
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-white/5 border border-white/10 rounded-lg p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold">Whiteboard</h3>
-                <button onClick={() => setOpenWhiteboard((s) => !s)} className="text-xs text-emerald-300">
-                  {openWhiteboard ? 'Close' : 'Open'}
-                </button>
-              </div>
-              <div className="h-72 bg-black/20 rounded p-3">
-                {openWhiteboard ? (
-                  <div className="h-full flex flex-col">
-                    <div className="text-xs text-gray-400 mb-2">{docInfo.connected ? 'Connected' : 'Disconnected'} • Peers: {docInfo.peers}</div>
+                  {/* Whiteboard */}
+                  <div>
+                    <h4 className="font-semibold mb-3">Shared Whiteboard</h4>
                     <textarea
                       value={whiteboardText}
                       onChange={(e) => {
@@ -206,29 +292,50 @@ export default function CollaborationPodPage() {
                           }
                         }
                       }}
-                      className="w-full h-full resize-none bg-black/10 rounded p-2 text-sm text-white"
+                      placeholder="Start typing to collaborate in real-time..."
+                      className="w-full h-48 resize-none rounded-md border border-border bg-background p-3 text-sm"
                     />
                   </div>
-                ) : (
-                  <div className="h-full flex items-center justify-center text-gray-400">Whiteboard is closed</div>
-                )}
-              </div>
-            </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
-            <div className="bg-white/5 border border-white/10 rounded-lg p-6">
-              <h3 className="font-semibold mb-2">Session Links</h3>
-              <ul className="space-y-2 text-sm text-gray-300">
-                <li>
-                  <Link href="#" className="text-emerald-300 hover:underline">Copy invite link</Link>
-                </li>
-                <li>
-                  <Link href="#" className="text-emerald-300 hover:underline">Open shared notes</Link>
-                </li>
-              </ul>
+          {/* Capabilities */}
+          <div className="mb-16">
+            <h2 className="text-2xl font-bold mb-6 text-center">Collaboration Features</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {capabilities.map((capability, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                  <span>{capability}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Call to Action */}
+          <div className="text-center">
+            <div className="bg-muted/30 rounded-lg p-8 mb-8">
+              <h2 className="text-2xl font-bold mb-4">Ready to Collaborate?</h2>
+              <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+                Access the full Collaboration Pod in our integrated workspace.
+                Invite your team and start working together seamlessly.
+              </p>
+              <div className="flex items-center justify-center gap-4">
+                <Button size="lg" onClick={() => router.push('/workspace')} className="gap-2">
+                  <ArrowRight className="w-4 h-4" />
+                  Enter Collaboration Pod
+                </Button>
+                <Link href="/features" className="text-muted-foreground hover:text-foreground">
+                  View All Features →
+                </Link>
+              </div>
             </div>
           </div>
         </div>
       </main>
+
       <Footer />
     </div>
   )

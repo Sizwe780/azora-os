@@ -103,7 +103,7 @@ export type AuditEvent = z.infer<typeof AuditEventSchema>
  */
 export class ConstitutionalAI {
   private complianceHistory: Map<string, ComplianceScore> = new Map()
-  private auditLog: AuditEvent[] = []
+  private auditEvents: AuditEvent[] = []
   private constitutionalRules: Map<ConstitutionalArticle, ConstitutionalRule[]> = new Map()
 
   constructor() {
@@ -192,7 +192,7 @@ export class ConstitutionalAI {
       }
       
       // Log audit event
-      await this.auditLog.push({
+      this.auditEvents.push({
         id: auditId,
         timestamp: new Date(),
         userId: validatedAction.userId,
@@ -215,7 +215,7 @@ export class ConstitutionalAI {
    * Get current compliance score for a user or system
    */
   async checkCompliance(userId?: string): Promise<ComplianceScore> {
-    const recentAudits = this.auditLog
+    const recentAudits = this.auditEvents
       .filter(audit => !userId || audit.userId === userId)
       .slice(-100) // Last 100 actions
     
@@ -243,13 +243,13 @@ export class ConstitutionalAI {
   /**
    * Log audit event for constitutional compliance tracking
    */
-  async auditLog(event: AuditEvent): Promise<void> {
+  async logAudit(event: AuditEvent): Promise<void> {
     const validatedEvent = AuditEventSchema.parse(event)
-    this.auditLog.push(validatedEvent)
+    this.auditEvents.push(validatedEvent)
     
     // Keep only last 10,000 audit events to prevent memory issues
-    if (this.auditLog.length > 10000) {
-      this.auditLog = this.auditLog.slice(-10000)
+    if (this.auditEvents.length > 10000) {
+      this.auditEvents = this.auditEvents.slice(-10000)
     }
   }
 

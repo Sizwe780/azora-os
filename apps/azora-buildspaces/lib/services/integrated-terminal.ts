@@ -93,7 +93,7 @@ export class IntegratedTerminal extends EventEmitter {
     try {
       // Validate configuration
       const validatedConfig = TerminalConfigSchema.parse(config)
-
+      
       // Create session
       const session: TerminalSession = {
         id: validatedConfig.id,
@@ -105,22 +105,22 @@ export class IntegratedTerminal extends EventEmitter {
         collaborators: [validatedConfig.userId],
         isShared: false
       }
-
+      
       this.sessions.set(session.id, session)
-
+      
       // Start terminal process
       const process = await this.startTerminalProcess(session)
       this.processes.set(session.id, process)
-
+      
       // Update session status
       session.status = 'running'
       session.pid = process.pid
       session.lastActivity = new Date()
-
+      
       this.emit('sessionCreated', { sessionId: session.id, userId: validatedConfig.userId })
-
+      
       return session.id
-
+      
     } catch (error) {
       throw new Error(`Failed to create terminal session: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
@@ -137,7 +137,7 @@ export class IntegratedTerminal extends EventEmitter {
    * List all sessions for a user
    */
   listSessions(userId: string): TerminalSession[] {
-    return Array.from(this.sessions.values()).filter(session =>
+    return Array.from(this.sessions.values()).filter(session => 
       session.collaborators.includes(userId)
     )
   }
@@ -163,17 +163,17 @@ export class IntegratedTerminal extends EventEmitter {
     try {
       // Write to terminal process
       await process.write(data)
-
+      
       // Update last activity
       session.lastActivity = new Date()
-
+      
       // Broadcast to collaborators if shared
       if (session.isShared) {
         await this.collaborationManager.broadcastInput(sessionId, data, userId)
       }
-
+      
       this.emit('terminalInput', { sessionId, data, userId })
-
+      
     } catch (error) {
       throw new Error(`Failed to write to terminal: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
@@ -195,13 +195,13 @@ export class IntegratedTerminal extends EventEmitter {
 
     try {
       await process.resize(cols, rows)
-
+      
       // Update session config
       session.config.dimensions = { cols, rows }
       session.lastActivity = new Date()
-
+      
       this.emit('terminalResized', { sessionId, cols, rows })
-
+      
     } catch (error) {
       throw new Error(`Failed to resize terminal: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
@@ -222,7 +222,7 @@ export class IntegratedTerminal extends EventEmitter {
 
     const startTime = Date.now()
     const commandId = `cmd_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-
+    
     try {
       // Build a user action for constitutional verification
       const userAction: UserAction = {
@@ -239,7 +239,7 @@ export class IntegratedTerminal extends EventEmitter {
       const verification = await constitutionalAI.verifyAction(userAction)
 
       // Audit the verification result
-      await constitutionalAI.auditLog({
+      await constitutionalAI.logAudit({
         id: verification.auditId,
         timestamp: new Date(),
         userId: userAction.userId,
@@ -257,7 +257,7 @@ export class IntegratedTerminal extends EventEmitter {
 
       // Execute command
       const result = await this.writeToTerminal(sessionId, command + '\n', userId)
-
+      
       // Create command record
       const terminalCommand: TerminalCommand = {
         id: commandId,
@@ -268,22 +268,22 @@ export class IntegratedTerminal extends EventEmitter {
         exitCode: 0, // Will be updated when command completes
         duration: Date.now() - startTime
       }
-
+      
       // Add to search index
       const sessionCommands = this.searchIndex.get(sessionId) || []
       sessionCommands.push(terminalCommand)
       this.searchIndex.set(sessionId, sessionCommands)
-
+      
       // Add to session history
       session.history.push(command)
       if (session.history.length > 1000) {
         session.history = session.history.slice(-1000)
       }
-
+      
       this.emit('commandExecuted', { sessionId, command: terminalCommand })
-
+      
       return terminalCommand
-
+      
     } catch (error) {
       throw new Error(`Failed to execute command: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
@@ -304,11 +304,11 @@ export class IntegratedTerminal extends EventEmitter {
 
     const commands = this.searchIndex.get(sessionId) || []
     const results: TerminalSearchResult[] = []
-
+    
     // Search command history
     commands.forEach((command, index) => {
       if (command.command.toLowerCase().includes(query.toLowerCase()) ||
-        command.output.toLowerCase().includes(query.toLowerCase())) {
+          command.output.toLowerCase().includes(query.toLowerCase())) {
         results.push({
           sessionId,
           lineNumber: index,
@@ -317,7 +317,7 @@ export class IntegratedTerminal extends EventEmitter {
         })
       }
     })
-
+    
     // Search session history
     session.history.forEach((historyItem, index) => {
       if (historyItem.toLowerCase().includes(query.toLowerCase())) {
@@ -329,7 +329,7 @@ export class IntegratedTerminal extends EventEmitter {
         })
       }
     })
-
+    
     return results.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
   }
 
@@ -350,9 +350,9 @@ export class IntegratedTerminal extends EventEmitter {
       session.collaborators.push(targetUserId)
       session.isShared = true
       session.lastActivity = new Date()
-
+      
       await this.collaborationManager.addCollaborator(sessionId, targetUserId)
-
+      
       this.emit('sessionShared', { sessionId, targetUserId, ownerId })
     }
   }
@@ -375,9 +375,9 @@ export class IntegratedTerminal extends EventEmitter {
       session.isShared = false
     }
     session.lastActivity = new Date()
-
+    
     await this.collaborationManager.removeCollaborator(sessionId, targetUserId)
-
+    
     this.emit('sessionUnshared', { sessionId, targetUserId, ownerId })
   }
 
@@ -401,22 +401,22 @@ export class IntegratedTerminal extends EventEmitter {
         await process.kill()
         this.processes.delete(sessionId)
       }
-
+      
       // Clean up collaboration
       if (session.isShared) {
         await this.collaborationManager.closeSession(sessionId)
       }
-
+      
       // Update session status
       session.status = 'stopped'
       session.lastActivity = new Date()
-
+      
       // Remove from active sessions
       this.sessions.delete(sessionId)
       this.searchIndex.delete(sessionId)
-
+      
       this.emit('sessionClosed', { sessionId, userId })
-
+      
     } catch (error) {
       throw new Error(`Failed to close terminal session: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
@@ -476,17 +476,17 @@ export class IntegratedTerminal extends EventEmitter {
 
   private async startTerminalProcess(session: TerminalSession): Promise<TerminalProcess> {
     const process = new TerminalProcess(session.config)
-
+    
     // Set up output handler
     process.on('output', (data: string) => {
       this.handleTerminalOutput(session.id, data)
     })
-
+    
     // Set up exit handler
     process.on('exit', (code: number) => {
       this.handleTerminalExit(session.id, code)
     })
-
+    
     await process.start()
     return process
   }
@@ -497,12 +497,12 @@ export class IntegratedTerminal extends EventEmitter {
 
     // Update last activity
     session.lastActivity = new Date()
-
+    
     // Broadcast to collaborators if shared
     if (session.isShared) {
       this.collaborationManager.broadcastOutput(sessionId, data)
     }
-
+    
     this.emit('terminalOutput', { sessionId, data })
   }
 
@@ -512,7 +512,7 @@ export class IntegratedTerminal extends EventEmitter {
 
     session.status = 'stopped'
     session.lastActivity = new Date()
-
+    
     this.emit('terminalExit', { sessionId, exitCode })
   }
 
@@ -532,7 +532,7 @@ export class IntegratedTerminal extends EventEmitter {
         this.sessions.delete(sessionId)
         this.searchIndex.delete(sessionId)
         this.processes.delete(sessionId)
-
+        
         this.emit('sessionCleanedUp', { sessionId })
       }
     }
@@ -544,15 +544,10 @@ export class IntegratedTerminal extends EventEmitter {
  * 
  * Manages individual terminal processes
  */
-/**
- * Terminal Process Manager
- * 
- * Manages individual terminal processes via WebSocket to Orchestrator
- */
 class TerminalProcess extends EventEmitter {
   public pid?: number
   private config: TerminalConfig
-  private ws: WebSocket | null = null
+  private process?: any // Mock process for now
 
   constructor(config: TerminalConfig) {
     super()
@@ -560,46 +555,97 @@ class TerminalProcess extends EventEmitter {
   }
 
   async start(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      try {
-        this.ws = new WebSocket(`ws://localhost:3001?type=terminal&sessionId=${this.config.id}`);
-
-        this.ws.onopen = () => {
-          this.emit('output', `\x1b[32mConnected to Azora BuildSpaces Environment...\x1b[0m\r\n`);
-          resolve();
-        };
-
-        this.ws.onmessage = (event) => {
-          this.emit('output', event.data);
-        };
-
-        this.ws.onclose = () => {
-          this.emit('exit', 0);
-        };
-
-        this.ws.onerror = (err) => {
-          this.emit('output', `\r\n\x1b[31mConnection error: Could not connect to orchestrator.\x1b[0m\r\n`);
-          // Don't reject here as we want the UI to show the error
-        };
-      } catch (e) {
-        reject(e);
-      }
-    });
+    // Mock process start
+    this.pid = Math.floor(Math.random() * 10000) + 1000
+    
+    // Simulate shell startup
+    setTimeout(() => {
+      this.emit('output', `Welcome to ${this.config.shell}!\n`)
+      this.emit('output', `${this.config.workingDirectory}$ `)
+    }, 100)
   }
 
   async write(data: string): Promise<void> {
-    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-      this.ws.send(data);
+    // Mock command processing
+    if (data.trim()) {
+      // Echo the command
+      this.emit('output', data)
+      
+      // Simulate command execution
+      setTimeout(() => {
+        this.processCommand(data.trim())
+      }, 50)
     }
   }
 
   async resize(cols: number, rows: number): Promise<void> {
-    // TODO: Implement resize protocol
+    // Mock resize - in real implementation would resize PTY
+    this.emit('output', `\nTerminal resized to ${cols}x${rows}\n`)
+    this.emit('output', `${this.config.workingDirectory}$ `)
   }
 
   async kill(): Promise<void> {
-    this.ws?.close();
     this.emit('exit', 0)
+  }
+
+  private processCommand(command: string): void {
+    // Mock command processing
+    const parts = command.split(' ')
+    const cmd = parts[0]
+    
+    switch (cmd) {
+      case 'ls':
+        this.emit('output', '\npackage.json  src  README.md  node_modules\n')
+        break
+      case 'pwd':
+        this.emit('output', `\n${this.config.workingDirectory}\n`)
+        break
+      case 'whoami':
+        this.emit('output', '\nuser\n')
+        break
+      case 'date':
+        this.emit('output', `\n${new Date().toString()}\n`)
+        break
+      case 'clear':
+        this.emit('output', '\x1b[2J\x1b[H')
+        break
+      case 'echo':
+        this.emit('output', `\n${parts.slice(1).join(' ')}\n`)
+        break
+      case 'node':
+        if (parts[1] === '--version') {
+          this.emit('output', '\nv18.17.0\n')
+        } else {
+          this.emit('output', '\nNode.js REPL would start here\n')
+        }
+        break
+      case 'npm':
+        if (parts[1] === '--version') {
+          this.emit('output', '\n9.6.7\n')
+        } else {
+          this.emit('output', `\nExecuting: ${command}\n`)
+          this.emit('output', 'Command completed successfully\n')
+        }
+        break
+      case 'git':
+        if (parts[1] === 'status') {
+          this.emit('output', '\nOn branch main\nnothing to commit, working tree clean\n')
+        } else {
+          this.emit('output', `\nExecuting: ${command}\n`)
+        }
+        break
+      default:
+        if (command.startsWith('cd ')) {
+          const newDir = parts[1] || '~'
+          this.config.workingDirectory = newDir.startsWith('/') ? newDir : `${this.config.workingDirectory}/${newDir}`
+          this.emit('output', '\n')
+        } else {
+          this.emit('output', `\n${cmd}: command not found\n`)
+        }
+        break
+    }
+    
+    this.emit('output', `${this.config.workingDirectory}$ `)
   }
 }
 

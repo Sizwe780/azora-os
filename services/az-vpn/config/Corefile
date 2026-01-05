@@ -1,0 +1,13 @@
+world {
+    hosts {
+        10.0.0.1 portal.world
+        10.0.0.2 citadel.world
+        fallthrough
+    }
+}
+
+. {
+    forward . 1.1.1.1
+    log
+    errors
+}

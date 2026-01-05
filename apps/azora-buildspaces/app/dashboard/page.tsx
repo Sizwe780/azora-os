@@ -63,7 +63,7 @@ export default function DashboardPage() {
       description: 'Advanced code editor with Constitutional AI assistance',
       icon: Code2,
       color: 'emerald',
-      href: '/workspace/code-chamber',
+      href: '/workspace?room=code-chamber',
       available: true
     },
     {
@@ -72,7 +72,7 @@ export default function DashboardPage() {
       description: 'Collaborate with Elara, Sankofa, and Themba',
       icon: Brain,
       color: 'blue',
-      href: '/workspace/ai-studio',
+      href: '/workspace?room=ai-studio',
       available: true
     },
     {
@@ -81,7 +81,7 @@ export default function DashboardPage() {
       description: 'Visual design tools with AI-powered suggestions',
       icon: Palette,
       color: 'purple',
-      href: '/workspace/design-studio',
+      href: '/workspace?room=design-studio',
       available: true
     },
     {
@@ -90,7 +90,7 @@ export default function DashboardPage() {
       description: 'Database management and analysis tools',
       icon: Database,
       color: 'cyan',
-      href: '/workspace/data-forge',
+      href: '/workspace?room=data-forge',
       available: user?.subscription?.plan !== 'constitutional'
     },
     {
@@ -99,7 +99,7 @@ export default function DashboardPage() {
       description: 'Real-time team collaboration and code review',
       icon: Users,
       color: 'amber',
-      href: '/workspace/collaboration',
+      href: '/workspace?room=collaboration-pod',
       available: user?.subscription?.plan === 'ubuntu_pro' || user?.subscription?.plan === 'citadel_enterprise'
     },
     {
@@ -108,7 +108,7 @@ export default function DashboardPage() {
       description: 'Terminal and deployment management',
       icon: Zap,
       color: 'rose',
-      href: '/workspace/command-desk',
+      href: '/workspace?room=command-desk',
       available: user?.subscription?.plan !== 'constitutional'
     },
     {
@@ -117,7 +117,7 @@ export default function DashboardPage() {
       description: 'Project planning and specification tools',
       icon: Shield,
       color: 'indigo',
-      href: '/workspace/spec-chamber',
+      href: '/workspace?room=spec-chamber',
       available: true
     }
   ]

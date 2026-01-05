@@ -16,126 +16,8 @@ interface EditorPanelProps {
   onCloseFile: (file: string) => void
 }
 
-const fileContents: Record<string, string> = {
-  "page.tsx": `"use client"
-
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Sparkles, ArrowRight } from 'lucide-react'
-
-export default function HomePage() {
-  return (
-    <main className="min-h-screen bg-background">
-      <div className="max-w-7xl mx-auto px-4 py-16">
-        {/* Hero Section */}
-        <div className="text-center space-y-6">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary">
-            <Sparkles className="w-4 h-4" />
-            <span>AI-Powered Development</span>
-          </div>
-          
-          <h1 className="text-5xl font-bold tracking-tight">
-            Welcome to <span className="text-primary">BuildSpaces</span>
-          </h1>
-          
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Build production-ready applications with AI agents
-            that understand your vision and execute flawlessly.
-          </p>
-          
-          <div className="flex items-center justify-center gap-4">
-            <Button size="lg" className="gap-2">
-              Get Started
-              <ArrowRight className="w-4 h-4" />
-            </Button>
-            <Button size="lg" variant="outline">
-              Watch Demo
-            </Button>
-          </div>
-        </div>
-        
-        {/* Features Grid */}
-        <div className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-6">
-          {features.map((feature, i) => (
-            <Card key={i} className="p-6">
-              <feature.icon className="w-10 h-10 text-primary mb-4" />
-              <h3 className="text-lg font-semibold">{feature.title}</h3>
-              <p className="text-muted-foreground mt-2">
-                {feature.description}
-              </p>
-            </Card>
-          ))}
-        </div>
-      </div>
-    </main>
-  )
-}
-
-const features = [
-  {
-    icon: Sparkles,
-    title: "AI Agents",
-    description: "Multiple specialized agents working together"
-  },
-  // ... more features
-]`,
-  "layout.tsx": `import type { Metadata } from "next"
-import { Inter, JetBrains_Mono } from 'next/font/google'
-import "./globals.css"
-
-const inter = Inter({ 
-  subsets: ["latin"],
-  variable: "--font-inter"
-})
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-jetbrains-mono"
-})
-
-export const metadata: Metadata = {
-  title: "Azora BuildSpaces",
-  description: "AI-Powered Development Platform",
-}
-
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
-  return (
-    <html lang="en" className="dark">
-      <body className={\`\${inter.variable} \${jetbrainsMono.variable} font-sans antialiased\`}>
-        {children}
-      </body>
-    </html>
-  )
-}`,
-  "globals.css": `@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@layer base {
-  :root {
-    --background: 220 16% 4%;
-    --foreground: 210 20% 98%;
-    --primary: 165 80% 50%;
-    --accent: 270 70% 60%;
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}`,
-}
-
 export function EditorPanel({ activeFile, openFiles, onFileSelect, onCloseFile }: EditorPanelProps) {
-  const [code, setCode] = useState(fileContents[activeFile] || "// Empty file")
+  const [code, setCode] = useState("// Loading...")
   const [isAiTyping, setIsAiTyping] = useState(false)
   const [aiSuggestion, setAiSuggestion] = useState<string | null>(null)
   const [isConnected, setIsConnected] = useState(false)
@@ -144,13 +26,50 @@ export function EditorPanel({ activeFile, openFiles, onFileSelect, onCloseFile }
   const ydocRef = useRef<Y.Doc | null>(null)
   const providerRef = useRef<WebsocketProvider | null>(null)
   const bindingRef = useRef<MonacoBinding | null>(null)
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
+  // Fetch file content
   useEffect(() => {
-    const id = requestAnimationFrame(() => {
-      setCode(fileContents[activeFile] || "// Empty file")
-    })
-    return () => cancelAnimationFrame(id)
+    if (!activeFile) return
+
+    const fetchContent = async () => {
+      try {
+        const response = await fetch(`http://localhost:3001/fs/content?path=${encodeURIComponent(activeFile)}`)
+        const data = await response.json()
+        if (data.content !== undefined) {
+          setCode(data.content)
+        }
+      } catch (error) {
+        console.error("Failed to fetch file content:", error)
+        setCode("// Error loading file")
+      }
+    }
+
+    fetchContent()
   }, [activeFile])
+
+  // Auto-save logic
+  const handleCodeChange = (newCode: string | undefined) => {
+    const value = newCode || ""
+    setCode(value)
+
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current)
+    }
+
+    saveTimeoutRef.current = setTimeout(async () => {
+      try {
+        await fetch("http://localhost:3001/fs/write", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ path: activeFile, content: value })
+        })
+        console.log(`Saved ${activeFile}`)
+      } catch (error) {
+        console.error("Failed to save file:", error)
+      }
+    }, 1000)
+  }
 
   // Simulate AI typing suggestion
   useEffect(() => {
@@ -319,10 +238,10 @@ export function EditorPanel({ activeFile, openFiles, onFileSelect, onCloseFile }
       <div className="flex-1 min-h-0">
         <MonacoEditor
           height="100%"
-          language={activeFile.endsWith(".css") ? "css" : "typescript"}
+          language={activeFile.endsWith(".css") ? "css" : activeFile.endsWith(".json") ? "json" : "typescript"}
           theme="vs-dark"
           value={code}
-          onChange={(value) => setCode(value || "")}
+          onChange={handleCodeChange}
           onMount={(editor, monaco) => {
             // Initialize Yjs binding for real-time collaboration
             if (ydocRef.current && providerRef.current) {

@@ -1,0 +1,9 @@
+{
+    "name": "com.azora.sidepanel",
+    "description": "Azora AI Sidepanel Bridge",
+    "path": "azora-bridge.py",
+    "type": "stdio",
+    "allowed_extensions": [
+        "companion@azora.world"
+    ]
+}

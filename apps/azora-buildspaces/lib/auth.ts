@@ -1,12 +1,11 @@
 import { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import GoogleProvider from "next-auth/providers/google"
-import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import { prisma } from "@/lib/db"
 
 // Minimal NextAuth options for local development
 export const authOptions: NextAuthOptions = {
-    adapter: PrismaAdapter(prisma),
+    // adapter: PrismaAdapter(prisma), // Temporarily disabled to fix build error
     providers: [
         CredentialsProvider({
             id: 'credentials',

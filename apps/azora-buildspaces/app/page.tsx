@@ -6,7 +6,7 @@ import { AetherBackground } from "@/components/ui/aether-background"
 import { AfricanAgentAvatar, agentStyles } from "@/components/ui/african-agent-avatar"
 import { CitadelLogo } from "@/components/ui/citadel-logo"
 import { Button } from "@/components/ui/button"
-import { CodeChamber } from "@/components/workbench/code-chamber"
+import { CodeChamber } from "@/components/demo/code-chamber-demo"
 import Link from "next/link"
 import {
   ArrowRight,
@@ -99,7 +99,7 @@ export default function HomePage() {
 
               <div className="flex flex-wrap justify-center gap-4 mb-12">
                 <Button asChild className="bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-4 text-lg">
-                  <Link href="/workspace">
+                  <Link href="/auth/signup">
                     Start Building <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>

@@ -1,236 +1,186 @@
 'use client'
 
-import { useState, useCallback, useEffect } from 'react'
 import { Navbar } from '@/components/features/navbar'
 import { Footer } from '@/components/features/footer'
-import { CodeEditor } from '@/components/features/code-chamber/editor'
-import { TerminalPanel } from '@/components/features/code-chamber/terminal'
-import { GitIntegration } from '@/components/features/code-chamber/git-integration'
-import { Code2, Terminal, GitBranch, Users, Wand2 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import {
+  Code2,
+  Terminal,
+  GitBranch,
+  Users,
+  Wand2,
+  Zap,
+  Cloud,
+  Shield,
+  ArrowRight,
+  Play,
+  CheckCircle
+} from 'lucide-react'
 import Link from 'next/link'
-
-type EditorMode = 'single' | 'collaborative'
-type TabType = 'editor' | 'terminal' | 'git' | 'ai-assistant'
+import { useRouter } from 'next/navigation'
 
 export default function CodeChamberPage() {
-  const [editorMode, setEditorMode] = useState<EditorMode>('single')
-  const [activeTab, setActiveTab] = useState<TabType>('editor')
-  const [code, setCode] = useState('// Welcome to BuildSpaces Code Chamber\n// Start coding with AI-powered assistance\n\nfunction helloWorld() {\n  console.log("🚀 BuildSpaces Ready!");\n}\n\nhelloWorld();')
-  const [userId, setUserId] = useState<string>('')
-  useEffect(() => {
-    const id = requestAnimationFrame(() => {
-      setUserId('user-' + Math.random().toString(36).substr(2, 9))
-    })
-    return () => cancelAnimationFrame(id)
-  }, [])
-  const [projectId] = useState('demo-project-001')
+  const router = useRouter()
 
-  const handleAIAssist = useCallback(() => {
-    setActiveTab('ai-assistant')
-    alert('🤖 AI Assistant would generate code suggestions based on context')
-  }, [])
+  const features = [
+    {
+      icon: Code2,
+      title: "Monaco Editor",
+      description: "Professional code editing with syntax highlighting, IntelliSense, and advanced features"
+    },
+    {
+      icon: Terminal,
+      title: "Integrated Terminal",
+      description: "Full shell access with PTY support, connected to your cloud workspace"
+    },
+    {
+      icon: GitBranch,
+      title: "Git Integration",
+      description: "Version control, branching, and collaboration workflows built-in"
+    },
+    {
+      icon: Users,
+      title: "Real-time Collaboration",
+      description: "Yjs-powered collaborative editing with awareness and conflict resolution"
+    },
+    {
+      icon: Wand2,
+      title: "AI Assistance",
+      description: "Elara AI agent provides code suggestions, refactoring, and intelligent help"
+    },
+    {
+      icon: Cloud,
+      title: "Cloud Workspace",
+      description: "Persistent file system with auto-save and cross-device synchronization"
+    }
+  ]
+
+  const capabilities = [
+    "TypeScript/JavaScript development",
+    "React/Next.js applications",
+    "Node.js backend services",
+    "Database integrations",
+    "API development and testing",
+    "Real-time collaboration",
+    "AI-powered code generation",
+    "Terminal operations",
+    "Git version control",
+    "Package management"
+  ]
 
   return (
-    <div className="min-h-screen bg-[#0d1117] text-white flex flex-col">
+    <div className="min-h-screen bg-background">
       <Navbar />
 
-      <main className="flex-1 px-4 sm:px-6 lg:px-8 py-6">
-        <div className="mx-auto max-w-7xl h-full">
-          {/* Header */}
-          <div className="mb-6 space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-bold mb-2">Code Chamber</h1>
-                <p className="text-gray-400">
-                  Cloud IDE with Monaco editor, real-time collaboration, terminal, Git integration, and AI assistance
-                </p>
-              </div>
-              <Link href="/features" className="text-emerald-400 hover:text-emerald-300">
-                ← Back to features
-              </Link>
+      <main className="py-24 px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl">
+          {/* Hero Section */}
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary mb-6">
+              <Code2 className="w-4 h-4" />
+              <span>Code Chamber</span>
             </div>
-
-            {/* Mode selector */}
-            <div className="flex items-center gap-4 p-4 bg-white/5 border border-white/10 rounded-lg">
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-gray-300">Editor Mode:</span>
-                <select
-                  value={editorMode}
-                  onChange={(e) => setEditorMode(e.target.value as EditorMode)}
-                  className="px-3 py-1 bg-[#1e1e1e] border border-white/20 rounded text-sm text-white focus:outline-none focus:border-white/40"
-                >
-                  <option value="single">Single Player</option>
-                  <option value="collaborative">Collaborative (Real-time)</option>
-                </select>
-              </div>
-
-              {editorMode === 'collaborative' && (
-                <div className="flex items-center gap-2 text-xs text-emerald-400">
-                  <Users className="w-4 h-4" />
-                  Real-time sync enabled
-                </div>
-              )}
+            <h1 className="text-4xl font-bold mb-6">
+              Professional Cloud IDE
+            </h1>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+              Experience GitHub Codespaces-level development with AI assistance, real-time collaboration,
+              and seamless terminal integration. Build full-stack applications in the cloud.
+            </p>
+            <div className="flex items-center justify-center gap-4">
+              <Button size="lg" onClick={() => router.push('/workspace')} className="gap-2">
+                <Play className="w-4 h-4" />
+                Open Workbench
+              </Button>
+              <Button size="lg" variant="outline" onClick={() => router.push('/demo-code-chamber')}>
+                Try Demo
+              </Button>
             </div>
           </div>
 
-          {/* Main IDE Layout */}
-          <div className="grid grid-cols-4 gap-4 h-[calc(100vh-350px)]">
-            {/* Editor Panel (3 columns) */}
-            <div className="col-span-3 flex flex-col gap-4">
-              {/* Tabs */}
-              <div className="flex gap-2 border-b border-white/10">
-                <button
-                  onClick={() => setActiveTab('editor')}
-                  className={`flex items-center gap-2 px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-                    activeTab === 'editor'
-                      ? 'border-emerald-500 text-emerald-400'
-                      : 'border-transparent text-gray-400 hover:text-white'
-                  }`}
-                >
-                  <Code2 className="w-4 h-4" />
-                  Editor
-                </button>
-                <button
-                  onClick={() => setActiveTab('terminal')}
-                  className={`flex items-center gap-2 px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-                    activeTab === 'terminal'
-                      ? 'border-emerald-500 text-emerald-400'
-                      : 'border-transparent text-gray-400 hover:text-white'
-                  }`}
-                >
-                  <Terminal className="w-4 h-4" />
-                  Terminal
-                </button>
-                <button
-                  onClick={() => setActiveTab('git')}
-                  className={`flex items-center gap-2 px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-                    activeTab === 'git'
-                      ? 'border-emerald-500 text-emerald-400'
-                      : 'border-transparent text-gray-400 hover:text-white'
-                  }`}
-                >
-                  <GitBranch className="w-4 h-4" />
-                  Git
-                </button>
-                <button
-                  onClick={handleAIAssist}
-                  className={`flex items-center gap-2 px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-                    activeTab === 'ai-assistant'
-                      ? 'border-emerald-500 text-emerald-400'
-                      : 'border-transparent text-gray-400 hover:text-white'
-                  }`}
-                >
-                  <Wand2 className="w-4 h-4" />
-                  AI Assistant
-                </button>
-              </div>
-
-              {/* Content Area */}
-              <div className="flex-1 overflow-hidden">
-                {activeTab === 'editor' && (
-                  <div className="h-full">
-                    {editorMode === 'single' ? (
-                      <CodeEditor
-                        language="javascript"
-                        defaultValue={code}
-                        onChange={setCode}
-                        theme="vs-dark"
-                      />
-                    ) : (
-                      <div className="h-full bg-[#1e1e1e] rounded-lg border border-white/10 p-6 flex items-center justify-center">
-                        <div className="text-center space-y-4">
-                          <p className="text-gray-400">
-                            Collaborative editing coming soon!<br />
-                            <span className="text-sm">Powered by Yjs + WebSocket</span>
-                          </p>
-                        </div>
-                      </div>
-                    )}
+          {/* Features Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+            {features.map((feature, i) => (
+              <Card key={i} className="border-border/50">
+                <CardHeader>
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-3">
+                    <feature.icon className="w-5 h-5 text-primary" />
                   </div>
-                )}
+                  <CardTitle className="text-lg">{feature.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription>{feature.description}</CardDescription>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
 
-                {activeTab === 'terminal' && (
-                  <TerminalPanel />
-                )}
-
-                {activeTab === 'git' && (
-                  <div className="h-full overflow-auto">
-                    <GitIntegration projectId={projectId} />
-                  </div>
-                )}
-
-                {activeTab === 'ai-assistant' && (
-                  <div className="h-full bg-[#1e1e1e] rounded-lg border border-white/10 p-6 flex items-center justify-center">
-                    <div className="text-center space-y-4">
-                      <Wand2 className="w-12 h-12 text-emerald-400 mx-auto" />
-                      <h3 className="text-lg font-semibold text-white">AI Assistant Ready</h3>
-                      <p className="text-gray-400 max-w-md">
-                        The AI assistant uses your code context to suggest improvements, generate tests, optimize performance,
-                        and provide real-time pair programming support.
-                      </p>
-                      <button className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 rounded font-medium text-white">
-                        Get Code Suggestions
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
+          {/* Capabilities */}
+          <div className="mb-16">
+            <h2 className="text-2xl font-bold mb-6 text-center">What You Can Build</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {capabilities.map((capability, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                  <span>{capability}</span>
+                </div>
+              ))}
             </div>
+          </div>
 
-            {/* Sidebar (1 column) */}
-            <div className="col-span-1 flex flex-col gap-4 overflow-y-auto">
-              {/* File Explorer */}
-              <div className="bg-white/5 rounded-lg border border-white/10 p-4 space-y-2">
-                <h3 className="text-sm font-semibold text-white mb-3">Files</h3>
-                <div className="space-y-1 text-xs">
-                  <div className="p-2 rounded hover:bg-white/10 cursor-pointer text-gray-300">
-                    📄 index.js
-                  </div>
-                  <div className="p-2 rounded hover:bg-white/10 cursor-pointer text-gray-300">
-                    📦 package.json
-                  </div>
-                  <div className="p-2 rounded hover:bg-white/10 cursor-pointer text-gray-300">
-                    ⚙️ tsconfig.json
-                  </div>
-                  <div className="p-2 rounded hover:bg-white/10 cursor-pointer text-gray-300">
-                    📋 README.md
-                  </div>
+          {/* Technical Specs */}
+          <Card className="mb-16">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Zap className="w-5 h-5" />
+                Technical Specifications
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h4 className="font-semibold mb-3">Editor Features</h4>
+                  <ul className="space-y-2 text-sm text-muted-foreground">
+                    <li>• Monaco Editor (VS Code engine)</li>
+                    <li>• TypeScript/JavaScript support</li>
+                    <li>• IntelliSense and auto-completion</li>
+                    <li>• Multi-cursor editing</li>
+                    <li>• Find & replace with regex</li>
+                    <li>• Bracket matching & folding</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-semibold mb-3">Collaboration</h4>
+                  <ul className="space-y-2 text-sm text-muted-foreground">
+                    <li>• Real-time collaborative editing</li>
+                    <li>• Yjs CRDT for conflict resolution</li>
+                    <li>• User presence indicators</li>
+                    <li>• Live cursors and selections</li>
+                    <li>• Operational transformation</li>
+                  </ul>
                 </div>
               </div>
+            </CardContent>
+          </Card>
 
-              {/* Project Info */}
-              <div className="bg-white/5 rounded-lg border border-white/10 p-4 space-y-3 text-xs">
-                <div>
-                  <p className="text-gray-400 mb-1">Project</p>
-                  <p className="text-white font-mono">{projectId}</p>
-                </div>
-                <div>
-                  <p className="text-gray-400 mb-1">Branch</p>
-                  <p className="text-emerald-400 font-mono">main</p>
-                </div>
-                <div>
-                  <p className="text-gray-400 mb-1">Language</p>
-                  <p className="text-white">JavaScript</p>
-                </div>
-              </div>
-
-              {/* AI Agent Status */}
-              <div className="bg-emerald-500/10 rounded-lg border border-emerald-500/30 p-4 space-y-2">
-                <h4 className="text-sm font-semibold text-emerald-300">Agent Status</h4>
-                <div className="space-y-1 text-xs text-emerald-200">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-emerald-400" />
-                    Sankofa (Code Review)
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-emerald-400" />
-                    Themba (Testing)
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-emerald-400" />
-                    Jabari (Security)
-                  </div>
-                </div>
+          {/* Call to Action */}
+          <div className="text-center">
+            <div className="bg-muted/30 rounded-lg p-8 mb-8">
+              <h2 className="text-2xl font-bold mb-4">Ready to Start Coding?</h2>
+              <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+                Access the full Code Chamber experience in our integrated workspace.
+                No setup required - everything runs in the cloud with persistent storage.
+              </p>
+              <div className="flex items-center justify-center gap-4">
+                <Button size="lg" onClick={() => router.push('/workspace')} className="gap-2">
+                  <ArrowRight className="w-4 h-4" />
+                  Enter Code Chamber
+                </Button>
+                <Link href="/features" className="text-muted-foreground hover:text-foreground">
+                  View All Features →
+                </Link>
               </div>
             </div>
           </div>

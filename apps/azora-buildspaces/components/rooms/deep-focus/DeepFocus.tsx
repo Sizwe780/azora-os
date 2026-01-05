@@ -1,93 +1,69 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { Slider } from "@/components/ui/slider";
-import { Switch } from "@/components/ui/switch";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-    Play,
-    Pause,
-    Square,
-    RotateCcw,
-    Volume2,
-    VolumeX,
-    Eye,
-    EyeOff,
+import { Card } from "@/components/ui/card";
+import { 
+    Play, 
+    Pause, 
+    RotateCcw, 
+    Volume2, 
+    VolumeX, 
+    Maximize2, 
+    Minimize2, 
+    Music, 
+    Coffee, 
+    Brain, 
     Zap,
-    Moon,
-    Sun,
-    Coffee,
-    Brain,
-    Timer,
-    Target,
-    TrendingUp,
     Settings,
-    Minimize2,
-    Maximize2
+    Moon,
+    Sun
 } from "lucide-react";
+import Editor from "@monaco-editor/react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const AMBIENT_SOUNDS = [
-    { id: "rain", name: "Rain", icon: "🌧️", volume: 30 },
-    { id: "ocean", name: "Ocean Waves", icon: "🌊", volume: 25 },
-    { id: "forest", name: "Forest", icon: "🌲", volume: 35 },
-    { id: "cafe", name: "Coffee Shop", icon: "☕", volume: 20 },
-    { id: "fire", name: "Fireplace", icon: "🔥", volume: 40 },
-    { id: "white-noise", name: "White Noise", icon: "📻", volume: 15 }
+    { id: 'rain', name: 'Rainfall', icon: '🌧️', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' }, // Placeholder
+    { id: 'forest', name: 'Forest', icon: '🌲', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
+    { id: 'cafe', name: 'Cafe', icon: '☕', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
+    { id: 'waves', name: 'Waves', icon: '🌊', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3' },
 ];
 
-const FOCUS_SESSIONS = [
-    { id: "pomodoro", name: "Pomodoro", duration: 25, break: 5, icon: "🍅" },
-    { id: "deep-work", name: "Deep Work", duration: 90, break: 15, icon: "🧠" },
-    { id: "flow", name: "Flow State", duration: 120, break: 20, icon: "🌊" },
-    { id: "sprint", name: "Sprint", duration: 45, break: 10, icon: "🏃" }
+const FOCUS_MODES = [
+    { id: 'pomodoro', name: 'Pomodoro', duration: 25 * 60 },
+    { id: 'deep', name: 'Deep Work', duration: 50 * 60 },
+    { id: 'short', name: 'Short Break', duration: 5 * 60 },
+    { id: 'long', name: 'Long Break', duration: 15 * 60 },
 ];
 
 export default function DeepFocus() {
+    const [timeLeft, setTimeLeft] = useState(25 * 60);
+    const [isActive, setIsActive] = useState(false);
+    const [mode, setMode] = useState('pomodoro');
+    const [isMuted, setIsMuted] = useState(false);
+    const [volume, setVolume] = useState(50);
     const [isZenMode, setIsZenMode] = useState(false);
-    const [isTimerRunning, setIsTimerRunning] = useState(false);
-    const [currentSession, setCurrentSession] = useState(FOCUS_SESSIONS[0]);
-    const [timeLeft, setTimeLeft] = useState(currentSession.duration * 60);
-    const [isBreak, setIsBreak] = useState(false);
-    const [completedSessions, setCompletedSessions] = useState(0);
-    const [totalFocusTime, setTotalFocusTime] = useState(0);
-    const [currentSound, setCurrentSound] = useState(AMBIENT_SOUNDS[0]);
-    const [soundVolume, setSoundVolume] = useState([30]);
-    const [isSoundOn, setIsSoundOn] = useState(false);
-    const [distractionBlocker, setDistractionBlocker] = useState(true);
-    const [notificationsBlocked, setNotificationsBlocked] = useState(true);
+    const [activeSound, setActiveSound] = useState<string | null>(null);
+    const [code, setCode] = useState("// Focus on your code here...\n\nfunction solveProblem() {\n  // Deep work in progress\n}");
+
+    const timerRef = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
-        let interval: NodeJS.Timeout;
-        if (isTimerRunning && timeLeft > 0) {
-            interval = setInterval(() => {
-                setTimeLeft(time => {
-                    if (time <= 1) {
-                        handleSessionComplete();
-                        return 0;
-                    }
-                    return time - 1;
-                });
+        if (isActive && timeLeft > 0) {
+            timerRef.current = setInterval(() => {
+                setTimeLeft((prev) => prev - 1);
             }, 1000);
-        }
-        return () => clearInterval(interval);
-    }, [isTimerRunning, timeLeft]);
-
-    const handleSessionComplete = () => {
-        setIsTimerRunning(false);
-        if (!isBreak) {
-            setCompletedSessions(prev => prev + 1);
-            setTotalFocusTime(prev => prev + currentSession.duration);
-            setIsBreak(true);
-            setTimeLeft(currentSession.break * 60);
+        } else if (timeLeft === 0) {
+            setIsActive(false);
+            if (timerRef.current) clearInterval(timerRef.current);
+            // Play notification sound
         } else {
-            setIsBreak(false);
-            setTimeLeft(currentSession.duration * 60);
+            if (timerRef.current) clearInterval(timerRef.current);
         }
-    };
+        return () => {
+            if (timerRef.current) clearInterval(timerRef.current);
+        };
+    }, [isActive, timeLeft]);
 
     const formatTime = (seconds: number) => {
         const mins = Math.floor(seconds / 60);
@@ -95,359 +71,229 @@ export default function DeepFocus() {
         return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     };
 
-    const startTimer = () => {
-        setIsTimerRunning(true);
-    };
-
-    const pauseTimer = () => {
-        setIsTimerRunning(false);
-    };
-
+    const toggleTimer = () => setIsActive(!isActive);
+    
     const resetTimer = () => {
-        setIsTimerRunning(false);
-        setTimeLeft(currentSession.duration * 60);
-        setIsBreak(false);
+        setIsActive(false);
+        const currentMode = FOCUS_MODES.find(m => m.id === mode);
+        setTimeLeft(currentMode?.duration || 25 * 60);
     };
 
-    const toggleZenMode = () => {
-        setIsZenMode(!isZenMode);
+    const switchMode = (newMode: string) => {
+        setMode(newMode);
+        setIsActive(false);
+        const m = FOCUS_MODES.find(f => f.id === newMode);
+        setTimeLeft(m?.duration || 25 * 60);
     };
 
     return (
-        <div className={`h-full flex flex-col ${isZenMode ? 'bg-black' : 'bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900'}`}>
-            {/* Header - Hidden in Zen Mode */}
-            {!isZenMode && (
-                <div className="flex items-center justify-between p-6 border-b border-white/10">
-                    <div>
-                        <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-                            Deep Focus
-                            <Badge variant="secondary" className="bg-yellow-600">
-                                <Zap className="w-3 h-3 mr-1" />
-                                Flow State
-                            </Badge>
-                        </h1>
-                        <p className="text-slate-400">Distraction-free environment for deep work and flow state</p>
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-2 text-sm text-slate-400">
-                            <Target className="w-4 h-4" />
-                            <span>{completedSessions} sessions completed</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <Button
-                                variant={isZenMode ? "default" : "outline"}
-                                size="sm"
-                                onClick={toggleZenMode}
-                            >
-                                {isZenMode ? <Eye className="w-4 h-4 mr-2" /> : <EyeOff className="w-4 h-4 mr-2" />}
-                                {isZenMode ? "Exit Zen" : "Zen Mode"}
-                            </Button>
-                            <Button variant="outline" size="sm">
-                                <Settings className="w-4 h-4" />
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-            )}
+        <div className={`h-full flex flex-col transition-colors duration-700 ${isZenMode ? 'bg-slate-950' : 'bg-background'}`}> 
+            {/* Header / Zen Toggle */}
+            <div className="h-14 border-b flex items-center justify-between px-6 bg-muted/10 backdrop-blur-sm z-10"> 
+                <div className="flex items-center gap-4"> 
+                    <div className="flex items-center gap-2 text-primary"> 
+                        <Brain className="w-5 h-5" /> 
+                        <span className="font-bold tracking-tight">Deep Focus</span> 
+                    </div> 
+                    <div className="h-4 w-px bg-border" /> 
+                    <div className="flex gap-1"> 
+                        {FOCUS_MODES.map((m) => ( 
+                            <button 
+                                key={m.id} 
+                                onClick={() => switchMode(m.id)} 
+                                className={`px-3 py-1 text-xs rounded-full transition-all ${
+                                    mode === m.id 
+                                    ? 'bg-primary text-primary-foreground font-medium' 
+                                    : 'hover:bg-muted text-muted-foreground' 
+                                }`} 
+                            > 
+                                {m.name} 
+                            </button> 
+                        ))} 
+                    </div> 
+                </div> 
 
-            {/* Main Content */}
-            <div className="flex-1 flex">
-                {/* Left Panel - Focus Tools */}
-                {!isZenMode && (
-                    <div className="w-80 border-r border-white/10 bg-slate-900/50">
-                        <Tabs defaultValue="timer" className="h-full flex flex-col">
-                            <TabsList className="grid w-full grid-cols-3 m-4 mb-0">
-                                <TabsTrigger value="timer" className="text-xs">Timer</TabsTrigger>
-                                <TabsTrigger value="sounds" className="text-xs">Sounds</TabsTrigger>
-                                <TabsTrigger value="stats" className="text-xs">Stats</TabsTrigger>
-                            </TabsList>
+                <div className="flex items-center gap-4"> 
+                    <div className="flex items-center gap-2 bg-muted/30 px-3 py-1 rounded-full"> 
+                        <Zap className="w-3.5 h-3.5 text-yellow-500" /> 
+                        <span className="text-xs font-medium">Focus Streak: 3h 12m</span> 
+                    </div> 
+                    <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={() => setIsZenMode(!isZenMode)} 
+                        className="gap-2" 
+                    > 
+                        {isZenMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />} 
+                        {isZenMode ? "Exit Zen" : "Zen Mode"} 
+                    </Button> 
+                </div> 
+            </div> 
 
-                            <TabsContent value="timer" className="flex-1 m-0 p-4">
-                                <div className="space-y-6">
-                                    {/* Session Selection */}
-                                    <div>
-                                        <h3 className="font-medium text-white mb-3">Focus Sessions</h3>
-                                        <div className="grid grid-cols-2 gap-2">
-                                            {FOCUS_SESSIONS.map((session) => (
-                                                <button
-                                                    key={session.id}
-                                                    onClick={() => {
-                                                        setCurrentSession(session);
-                                                        setTimeLeft(session.duration * 60);
-                                                        setIsBreak(false);
-                                                        setIsTimerRunning(false);
-                                                    }}
-                                                    className={`p-3 rounded-lg border text-left transition-colors ${
-                                                        currentSession.id === session.id
-                                                            ? 'border-yellow-500 bg-yellow-500/10'
-                                                            : 'border-slate-600 hover:border-slate-500'
-                                                    }`}
-                                                >
-                                                    <div className="text-lg mb-1">{session.icon}</div>
-                                                    <div className="text-sm font-medium text-white">{session.name}</div>
-                                                    <div className="text-xs text-slate-400">{session.duration}m focus</div>
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
+            <div className="flex-1 flex overflow-hidden"> 
+                {/* Left: Timer & Controls */} 
+                <AnimatePresence mode="wait"> 
+                    {!isZenMode && ( 
+                        <motion.div  
+                            initial={{ width: 0, opacity: 0 }} 
+                            animate={{ width: 320, opacity: 1 }} 
+                            exit={{ width: 0, opacity: 0 }} 
+                            className="border-r bg-muted/5 flex flex-col overflow-hidden" 
+                        > 
+                            <div className="p-8 flex flex-col items-center justify-center flex-1 space-y-8"> 
+                                {/* Timer Circle */} 
+                                <div className="relative w-48 h-48 flex items-center justify-center"> 
+                                    <svg className="w-full h-full -rotate-90"> 
+                                        <circle 
+                                            cx="96" 
+                                            cy="96" 
+                                            r="88" 
+                                            fill="none" 
+                                            stroke="currentColor" 
+                                            strokeWidth="4" 
+                                            className="text-muted/20" 
+                                        /> 
+                                        <circle 
+                                            cx="96" 
+                                            cy="96" 
+                                            r="88" 
+                                            fill="none" 
+                                            stroke="currentColor" 
+                                            strokeWidth="4" 
+                                            strokeDasharray={553} 
+                                            strokeDashoffset={553 - (553 * (timeLeft / (FOCUS_MODES.find(m => m.id === mode)?.duration || 1)))} 
+                                            className="text-primary transition-all duration-1000" 
+                                            strokeLinecap="round" 
+                                        /> 
+                                    </svg> 
+                                    <div className="absolute inset-0 flex flex-col items-center justify-center"> 
+                                        <span className="text-4xl font-mono font-bold tracking-tighter"> 
+                                            {formatTime(timeLeft)} 
+                                        </span> 
+                                        <span className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1"> 
+                                            {isActive ? 'Focusing' : 'Paused'} 
+                                        </span> 
+                                    </div> 
+                                </div> 
 
-                                    {/* Timer Display */}
-                                    <div className="text-center">
-                                        <div className="text-6xl font-mono font-bold text-white mb-2">
-                                            {formatTime(timeLeft)}
-                                        </div>
-                                        <div className="text-sm text-slate-400 mb-4">
-                                            {isBreak ? "Break Time" : "Focus Time"}
-                                        </div>
+                                {/* Controls */} 
+                                <div className="flex items-center gap-4"> 
+                                    <Button  
+                                        variant="outline"  
+                                        size="icon"  
+                                        className="rounded-full" 
+                                        onClick={resetTimer} 
+                                    > 
+                                        <RotateCcw className="w-4 h-4" /> 
+                                    </Button> 
+                                    <Button  
+                                        size="lg"  
+                                        className="rounded-full w-16 h-16 shadow-lg shadow-primary/20" 
+                                        onClick={toggleTimer} 
+                                    > 
+                                        {isActive ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6 ml-1" />} 
+                                    </Button> 
+                                    <Button  
+                                        variant="outline"  
+                                        size="icon"  
+                                        className="rounded-full" 
+                                        onClick={() => setIsMuted(!isMuted)} 
+                                    > 
+                                        {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />} 
+                                    </Button> 
+                                </div> 
 
-                                        <div className="flex justify-center gap-2">
-                                            {!isTimerRunning ? (
-                                                <Button onClick={startTimer} size="lg">
-                                                    <Play className="w-4 h-4 mr-2" />
-                                                    Start
-                                                </Button>
-                                            ) : (
-                                                <Button onClick={pauseTimer} variant="outline" size="lg">
-                                                    <Pause className="w-4 h-4 mr-2" />
-                                                    Pause
-                                                </Button>
-                                            )}
-                                            <Button onClick={resetTimer} variant="outline" size="lg">
-                                                <RotateCcw className="w-4 h-4" />
-                                            </Button>
-                                        </div>
-                                    </div>
+                                {/* Ambient Sounds */} 
+                                <div className="w-full space-y-4 pt-4"> 
+                                    <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2"> 
+                                        <Music className="w-3 h-3" /> 
+                                        Ambient Soundscape 
+                                    </h3> 
+                                    <div className="grid grid-cols-2 gap-2"> 
+                                        {AMBIENT_SOUNDS.map((sound) => ( 
+                                            <button 
+                                                key={sound.id} 
+                                                onClick={() => setActiveSound(activeSound === sound.id ? null : sound.id)} 
+                                                className={`p-3 rounded-xl border text-left transition-all ${
+                                                    activeSound === sound.id  
+                                                    ? 'bg-primary/10 border-primary text-primary'  
+                                                    : 'bg-background hover:border-primary/30' 
+                                                }`} 
+                                            > 
+                                                <div className="text-xl mb-1">{sound.icon}</div> 
+                                                <div className="text-[10px] font-medium">{sound.name}</div> 
+                                            </button> 
+                                        ))} 
+                                    </div> 
+                                </div> 
+                            </div> 
+                        </motion.div> 
+                    )} 
+                </AnimatePresence> 
 
-                                    {/* Progress */}
-                                    <div>
-                                        <div className="flex justify-between text-sm text-slate-400 mb-2">
-                                            <span>Session Progress</span>
-                                            <span>{Math.round(((currentSession.duration * 60 - timeLeft) / (currentSession.duration * 60)) * 100)}%</span>
-                                        </div>
-                                        <Progress
-                                            value={((currentSession.duration * 60 - timeLeft) / (currentSession.duration * 60)) * 100}
-                                            className="h-2"
-                                        />
-                                    </div>
-                                </div>
-                            </TabsContent>
+                {/* Right: Minimalist Editor */} 
+                <div className="flex-1 relative flex flex-col"> 
+                    {isZenMode && ( 
+                        <div className="absolute top-8 left-1/2 -translate-x-1/2 z-20 opacity-20 hover:opacity-100 transition-opacity"> 
+                            <div className="text-6xl font-mono font-bold tracking-tighter text-white"> 
+                                {formatTime(timeLeft)} 
+                            </div> 
+                        </div> 
+                    )} 
 
-                            <TabsContent value="sounds" className="flex-1 m-0 p-4">
-                                <div className="space-y-6">
-                                    <div>
-                                        <h3 className="font-medium text-white mb-3">Ambient Sounds</h3>
-                                        <div className="space-y-2">
-                                            {AMBIENT_SOUNDS.map((sound) => (
-                                                <button
-                                                    key={sound.id}
-                                                    onClick={() => setCurrentSound(sound)}
-                                                    className={`w-full flex items-center justify-between p-3 rounded-lg border transition-colors ${
-                                                        currentSound.id === sound.id
-                                                            ? 'border-blue-500 bg-blue-500/10'
-                                                            : 'border-slate-600 hover:border-slate-500'
-                                                    }`}
-                                                >
-                                                    <div className="flex items-center gap-3">
-                                                        <span className="text-lg">{sound.icon}</span>
-                                                        <span className="text-sm text-white">{sound.name}</span>
-                                                    </div>
-                                                    {currentSound.id === sound.id && isSoundOn && (
-                                                        <div className="flex items-center gap-2">
-                                                            <Volume2 className="w-4 h-4 text-blue-400" />
-                                                        </div>
-                                                    )}
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
+                    <div className="flex-1"> 
+                        <Editor 
+                            height="100%" 
+                            defaultLanguage="typescript" 
+                            theme={isZenMode ? "vs-dark" : "light"} 
+                            value={code} 
+                            onChange={(v) => setCode(v || "")} 
+                            options={{ 
+                                minimap: { enabled: false }, 
+                                fontSize: isZenMode ? 18 : 14, 
+                                lineNumbers: isZenMode ? "off" : "on", 
+                                glyphMargin: false, 
+                                folding: false, 
+                                lineDecorationsWidth: 0, 
+                                lineNumbersMinChars: 0, 
+                                padding: { top: isZenMode ? 100 : 20 }, 
+                                scrollBeyondLastLine: false, 
+                                wordWrap: "on", 
+                                cursorBlinking: "smooth", 
+                                cursorSmoothCaretAnimation: "on", 
+                                smoothScrolling: true, 
+                                fontFamily: "'JetBrains Mono', monospace", 
+                            }} 
+                        /> 
+                    </div> 
 
-                                    {/* Volume Control */}
-                                    <div>
-                                        <div className="flex items-center justify-between mb-3">
-                                            <span className="text-sm font-medium text-white">Volume</span>
-                                            <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                onClick={() => setIsSoundOn(!isSoundOn)}
-                                            >
-                                                {isSoundOn ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
-                                            </Button>
-                                        </div>
-                                        <Slider
-                                            value={soundVolume}
-                                            onValueChange={setSoundVolume}
-                                            max={100}
-                                            min={0}
-                                            step={1}
-                                            disabled={!isSoundOn}
-                                            className="w-full"
-                                        />
-                                        <div className="text-xs text-slate-400 mt-1">{soundVolume[0]}%</div>
-                                    </div>
-                                </div>
-                            </TabsContent>
-
-                            <TabsContent value="stats" className="flex-1 m-0 p-4">
-                                <div className="space-y-6">
-                                    <div>
-                                        <h3 className="font-medium text-white mb-3">Today's Focus</h3>
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <Card className="bg-slate-800 border-slate-700">
-                                                <CardContent className="p-4">
-                                                    <div className="text-2xl font-bold text-green-400">{completedSessions}</div>
-                                                    <div className="text-xs text-slate-400">Sessions</div>
-                                                </CardContent>
-                                            </Card>
-                                            <Card className="bg-slate-800 border-slate-700">
-                                                <CardContent className="p-4">
-                                                    <div className="text-2xl font-bold text-blue-400">{Math.floor(totalFocusTime / 60)}h</div>
-                                                    <div className="text-xs text-slate-400">Focus Time</div>
-                                                </CardContent>
-                                            </Card>
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <h3 className="font-medium text-white mb-3">Distraction Control</h3>
-                                        <div className="space-y-3">
-                                            <div className="flex items-center justify-between">
-                                                <span className="text-sm text-slate-300">Block Notifications</span>
-                                                <Switch
-                                                    checked={notificationsBlocked}
-                                                    onCheckedChange={setNotificationsBlocked}
-                                                />
-                                            </div>
-                                            <div className="flex items-center justify-between">
-                                                <span className="text-sm text-slate-300">Distraction Blocker</span>
-                                                <Switch
-                                                    checked={distractionBlocker}
-                                                    onCheckedChange={setDistractionBlocker}
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <h3 className="font-medium text-white mb-3">Weekly Goal</h3>
-                                        <div className="space-y-2">
-                                            <div className="flex justify-between text-sm">
-                                                <span className="text-slate-400">Progress</span>
-                                                <span className="text-slate-400">12/20 hours</span>
-                                            </div>
-                                            <Progress value={60} className="h-2" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </TabsContent>
-                        </Tabs>
-                    </div>
-                )}
-
-                {/* Center - Code Editor (Zen Mode) */}
-                <div className="flex-1 flex flex-col">
-                    {/* Minimal Editor Header */}
-                    <div className={`flex items-center justify-between p-4 border-b ${isZenMode ? 'border-slate-800' : 'border-white/10'}`}>
-                        <div className="flex items-center gap-4">
-                            <span className="text-sm font-medium text-slate-300">focus-session.js</span>
-                            <Badge variant="secondary" className="text-xs">JavaScript</Badge>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            {!isZenMode && (
-                                <Button variant="ghost" size="sm">
-                                    <Minimize2 className="w-4 h-4" />
-                                </Button>
-                            )}
-                            <Button variant="ghost" size="sm">
-                                <Maximize2 className="w-4 h-4" />
-                            </Button>
-                        </div>
-                    </div>
-
-                    {/* Code Editor Area */}
-                    <div className="flex-1 bg-slate-950 flex items-center justify-center">
-                        <div className="text-center text-slate-500">
-                            <div className="w-16 h-16 mx-auto mb-4 bg-slate-800 rounded-full flex items-center justify-center">
-                                <Coffee className="w-8 h-8" />
-                            </div>
-                            <h3 className="text-lg font-medium mb-2">Ready for Deep Focus</h3>
-                            <p className="text-sm">Your distraction-free coding environment is active</p>
-                            {isTimerRunning && (
-                                <div className="mt-4 text-2xl font-mono font-bold text-yellow-400">
-                                    {formatTime(timeLeft)}
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Right Panel - Quick Stats (Hidden in Zen Mode) */}
-                {!isZenMode && (
-                    <div className="w-64 border-l border-white/10 bg-slate-900/50 p-4">
-                        <div className="space-y-6">
-                            {/* Current Session */}
-                            <Card className="bg-slate-800 border-slate-700">
-                                <CardHeader className="pb-3">
-                                    <CardTitle className="text-sm flex items-center gap-2">
-                                        <Timer className="w-4 h-4" />
-                                        Current Session
-                                    </CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="text-center">
-                                        <div className="text-3xl font-mono font-bold text-white mb-1">
-                                            {formatTime(timeLeft)}
-                                        </div>
-                                        <div className="text-xs text-slate-400 mb-2">
-                                            {isBreak ? "Break Time" : `${currentSession.name}`}
-                                        </div>
-                                        <Progress
-                                            value={isBreak
-                                                ? ((currentSession.break * 60 - timeLeft) / (currentSession.break * 60)) * 100
-                                                : ((currentSession.duration * 60 - timeLeft) / (currentSession.duration * 60)) * 100
-                                            }
-                                            className="h-1"
-                                        />
-                                    </div>
-                                </CardContent>
-                            </Card>
-
-                            {/* Quick Actions */}
-                            <div>
-                                <h4 className="text-sm font-medium text-white mb-3">Quick Actions</h4>
-                                <div className="space-y-2">
-                                    <Button variant="outline" size="sm" className="w-full justify-start">
-                                        <Brain className="w-4 h-4 mr-2" />
-                                        Mind Map
-                                    </Button>
-                                    <Button variant="outline" size="sm" className="w-full justify-start">
-                                        <Target className="w-4 h-4 mr-2" />
-                                        Set Goal
-                                    </Button>
-                                    <Button variant="outline" size="sm" className="w-full justify-start">
-                                        <TrendingUp className="w-4 h-4 mr-2" />
-                                        View Stats
-                                    </Button>
-                                </div>
-                            </div>
-
-                            {/* Ambient Indicator */}
-                            {isSoundOn && (
-                                <Card className="bg-slate-800 border-slate-700">
-                                    <CardContent className="p-4">
-                                        <div className="flex items-center gap-3">
-                                            <span className="text-lg">{currentSound.icon}</span>
-                                            <div className="flex-1">
-                                                <div className="text-sm font-medium text-white">{currentSound.name}</div>
-                                                <div className="text-xs text-slate-400">Playing • {soundVolume[0]}%</div>
-                                            </div>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            )}
-                        </div>
-                    </div>
-                )}
-            </div>
-        </div>
-    );
+                    {/* Zen Mode Overlay Controls */} 
+                    {isZenMode && ( 
+                        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-6 bg-slate-900/80 backdrop-blur-md border border-white/10 px-6 py-3 rounded-full shadow-2xl"> 
+                            <button onClick={toggleTimer} className="text-white hover:text-primary transition-colors"> 
+                                {isActive ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6" />} 
+                            </button> 
+                            <div className="w-px h-4 bg-white/10" /> 
+                            <div className="flex gap-4"> 
+                                {AMBIENT_SOUNDS.map(s => ( 
+                                    <button  
+                                        key={s.id} 
+                                        onClick={() => setActiveSound(activeSound === s.id ? null : s.id)} 
+                                        className={`text-xl grayscale hover:grayscale-0 transition-all ${activeSound === s.id ? 'grayscale-0 scale-110' : 'opacity-50'}`} 
+                                    > 
+                                        {s.icon} 
+                                    </button> 
+                                ))} 
+                            </div> 
+                            <div className="w-px h-4 bg-white/10" /> 
+                            <button onClick={() => setIsZenMode(false)} className="text-white/50 hover:text-white transition-colors"> 
+                                <Minimize2 className="w-5 h-5" /> 
+                            </button> 
+                        </div> 
+                    )} 
+                </div> 
+            </div> 
+        </div> 
+    ); 
 }
+

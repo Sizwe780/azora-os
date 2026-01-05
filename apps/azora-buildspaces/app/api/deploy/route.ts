@@ -17,9 +17,9 @@ export async function POST(request: NextRequest) {
       sessionId: `session_deploy_${Date.now()}`
     }
 
-    const verification = await constitutionalAI.verifyAction(action as any)
+    const verification = await constitutionalAI.verifyAction(action)
 
-    await constitutionalAI.auditLog({
+    await constitutionalAI.logAudit({
       id: verification.auditId,
       timestamp: new Date(),
       userId: action.userId,

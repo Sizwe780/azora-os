@@ -2,6 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, AreaChart, Area } from 'recharts';
+import { TrendingUp } from "lucide-react";
 
 const lossData = Array.from({ length: 20 }, (_, i) => ({
     epoch: i + 1,
@@ -14,7 +15,23 @@ const accuracyData = Array.from({ length: 20 }, (_, i) => ({
     accuracy: 1 - Math.exp(-i * 0.15),
 }));
 
-export default function TrainingDashboard() {
+export default function TrainingDashboard({ isTraining }: { isTraining?: boolean }) {
+    if (!isTraining) {
+        return (
+            <div className="h-full flex flex-col items-center justify-center p-8 text-center space-y-4">
+                <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center">
+                    <TrendingUp className="w-8 h-8 text-muted-foreground" />
+                </div>
+                <div>
+                    <h3 className="text-lg font-semibold">No Active Training</h3>
+                    <p className="text-sm text-muted-foreground max-w-xs mx-auto">
+                        Start a training session in the AI Studio to see real-time metrics and loss curves.
+                    </p>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="h-full overflow-y-auto p-4 space-y-4 bg-background">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

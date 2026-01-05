@@ -8,9 +8,42 @@ import { Palette, Play, Share2, Settings, Smartphone, Monitor, Tablet } from "lu
 import InfiniteCanvas from "./design-studio/InfiniteCanvas";
 import ComponentLibrary from "./design-studio/ComponentLibrary";
 import ColorPalette from "./design-studio/ColorPalette";
+import FigmaImportDialog from "./design-studio/FigmaImportDialog";
+import DesignToCode from "./design-studio/DesignToCode";
 
 export default function DesignStudio() {
     const [viewMode, setViewMode] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
+    const [importedNodes, setImportedNodes] = useState<any[]>([]);
+    const [activeGenerationFrame, setActiveGenerationFrame] = useState<any>(null);
+
+    const handleFigmaImport = (data: any) => {
+        const newNode = {
+            id: data.id,
+            type: 'frame',
+            position: { x: 200, y: 200 },
+            data: { 
+                label: data.name, 
+                width: data.width, 
+                height: data.height, 
+                content: (
+                    <div className="space-y-4">
+                        <div className="text-xs font-bold text-pink-500 uppercase tracking-wider">Figma Import</div>
+                        <div className="h-10 bg-slate-100 dark:bg-slate-800 rounded flex items-center justify-center text-[10px] text-slate-400">Button Component</div>
+                        <div className="h-10 bg-slate-100 dark:bg-slate-800 rounded flex items-center justify-center text-[10px] text-slate-400">Input Field</div>
+                        <Button 
+                            size="sm" 
+                            className="w-full bg-pink-500 text-[10px] h-7"
+                            onClick={() => setActiveGenerationFrame(data)}
+                        >
+                            Generate Code
+                        </Button>
+                    </div>
+                ) 
+            },
+            style: { width: 300, height: 400 }
+        };
+        setImportedNodes(prev => [...prev, newNode]);
+    };
 
     return (
         <div className="h-full flex flex-col bg-background">
@@ -25,31 +58,35 @@ export default function DesignStudio() {
                     <span className="text-sm font-medium">Project: Azora Mobile App</span>
                 </div>
 
-                <div className="flex items-center gap-2 bg-muted/50 p-1 rounded-lg border">
-                    <Button
-                        size="icon"
-                        variant={viewMode === 'desktop' ? 'secondary' : 'ghost'}
-                        className="h-7 w-7"
-                        onClick={() => setViewMode('desktop')}
-                    >
-                        <Monitor className="w-4 h-4" />
-                    </Button>
-                    <Button
-                        size="icon"
-                        variant={viewMode === 'tablet' ? 'secondary' : 'ghost'}
-                        className="h-7 w-7"
-                        onClick={() => setViewMode('tablet')}
-                    >
-                        <Tablet className="w-4 h-4" />
-                    </Button>
-                    <Button
-                        size="icon"
-                        variant={viewMode === 'mobile' ? 'secondary' : 'ghost'}
-                        className="h-7 w-7"
-                        onClick={() => setViewMode('mobile')}
-                    >
-                        <Smartphone className="w-4 h-4" />
-                    </Button>
+                <div className="flex items-center gap-4">
+                    <FigmaImportDialog onImport={handleFigmaImport} />
+                    
+                    <div className="flex items-center gap-2 bg-muted/50 p-1 rounded-lg border">
+                        <Button
+                            size="icon"
+                            variant={viewMode === 'desktop' ? 'secondary' : 'ghost'}
+                            className="h-7 w-7"
+                            onClick={() => setViewMode('desktop')}
+                        >
+                            <Monitor className="w-4 h-4" />
+                        </Button>
+                        <Button
+                            size="icon"
+                            variant={viewMode === 'tablet' ? 'secondary' : 'ghost'}
+                            className="h-7 w-7"
+                            onClick={() => setViewMode('tablet')}
+                        >
+                            <Tablet className="w-4 h-4" />
+                        </Button>
+                        <Button
+                            size="icon"
+                            variant={viewMode === 'mobile' ? 'secondary' : 'ghost'}
+                            className="h-7 w-7"
+                            onClick={() => setViewMode('mobile')}
+                        >
+                            <Smartphone className="w-4 h-4" />
+                        </Button>
+                    </div>
                 </div>
 
                 <div className="flex items-center gap-2">
@@ -82,7 +119,7 @@ export default function DesignStudio() {
                     {/* Middle Panel: Canvas */}
                     <ResizablePanel defaultSize={60} minSize={30}>
                         <div className="h-full relative bg-slate-100 dark:bg-slate-900 overflow-hidden">
-                            <InfiniteCanvas />
+                            <InfiniteCanvas extraNodes={importedNodes} />
 
                             {/* Viewport Overlay */}
                             <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-black/80 text-white px-3 py-1 rounded-full text-xs backdrop-blur pointer-events-none">
@@ -102,6 +139,13 @@ export default function DesignStudio() {
 
                 </ResizablePanelGroup>
             </div>
+
+            {activeGenerationFrame && (
+                <DesignToCode 
+                    frameData={activeGenerationFrame} 
+                    onClose={() => setActiveGenerationFrame(null)} 
+                />
+            )}
         </div>
     );
 }

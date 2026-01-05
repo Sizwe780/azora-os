@@ -1,0 +1,30 @@
+{
+    "manifest_version": 3,
+    "name": "Azora Companion",
+    "version": "1.0.0",
+    "description": "The Agentic Interface for Azrome, connecting Elara to the Aethernet.",
+    "permissions": [
+        "tabs",
+        "activeTab",
+        "storage",
+        "nativeMessaging",
+        "scripting",
+        "sidePanel"
+    ],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "action": {
+        "default_title": "Azora Companion",
+        "default_popup": "popup.html"
+    },
+    "side_panel": {
+        "default_path": "sidepanel.html"
+    },
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "companion@azora.world",
+            "strict_min_version": "115.0"
+        }
+    }
+}

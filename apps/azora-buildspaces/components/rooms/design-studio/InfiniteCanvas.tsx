@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import ReactFlow, {
     Controls,
     Background,
@@ -58,9 +58,19 @@ const initialNodes: Node[] = [
     },
 ];
 
-export default function InfiniteCanvas() {
+export default function InfiniteCanvas({ extraNodes = [] }: { extraNodes?: Node[] }) {
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+
+    // Sync extra nodes
+    useEffect(() => {
+        if (extraNodes.length > 0) {
+            setNodes(nds => {
+                const newNodes = extraNodes.filter(en => !nds.find(n => n.id === en.id));
+                return [...nds, ...newNodes];
+            });
+        }
+    }, [extraNodes, setNodes]);
 
     const onConnect = useCallback(
         (params: Connection) => setEdges((eds) => addEdge(params, eds)),

@@ -12,6 +12,9 @@ cd services/azora-api-gateway && npm start &
 sleep 2
 cd ../health-monitor && npm start &
 sleep 2
+echo "🛡️ Starting VPN Service..."
+cd ../az-vpn && docker-compose up -d &
+sleep 2
 
 # Core services
 echo "🔐 Starting Core Services..."

@@ -1,0 +1,55 @@
+services:
+  wireguard:
+    image: lscr.io/linuxserver/wireguard:latest
+    container_name: az-vpn-engine
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Africa/Johannesburg
+      - SERVERURL=your.dynamic.dns.here # Or your public IP
+      - SERVERPORT=51820
+      - PEERS=phone,vivobook # Auto-generates these peers
+      - PEERDNS=10.0.0.1 # Points peers to CoreDNS
+      - INTERNAL_SUBNET=10.0.0.0
+    volumes:
+      - ./config:/config
+      - /lib/modules:/lib/modules
+    ports:
+      - 51820:51820/udp
+    sysctls:
+      - net.ipv4.ip_forward=1
+    restart: unless-stopped
+
+  wireguard-ui:
+    image: ngoduykhanh/wireguard-ui:latest
+    container_name: az-vpn-ui
+    depends_on:
+      - wireguard
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - SENDGRID_API_KEY
+      - EMAIL_FROM_ADDRESS
+      - EMAIL_FROM_NAME
+      - SESSION_SECRET
+      - WGUI_USERNAME=admin
+      - WGUI_PASSWORD=admin
+      - WGUI_MANAGE_START=true
+      - WGUI_MANAGE_RESTART=true
+    volumes:
+      - ./config:/etc/wireguard
+    ports:
+      - "5000:5000"
+    restart: unless-stopped
+
+  coredns:
+    image: coredns/coredns:latest
+    container_name: az-dns-resolver
+    volumes:
+      - ./config/Corefile:/Corefile
+    ports:
+      - "53:53/udp"
+    command: -conf /Corefile

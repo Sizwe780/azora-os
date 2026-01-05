@@ -93,6 +93,51 @@ services:
     networks:
       - azora-net
 
+  # 🛡️ Network & Security
+  az-vpn:
+    image: lscr.io/linuxserver/wireguard:latest
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Africa/Johannesburg
+      - SERVERURL=vpn.azora.world
+      - SERVERPORT=51820
+      - PEERS=phone,vivobook
+      - PEERDNS=10.0.0.1
+      - INTERNAL_SUBNET=10.0.0.0
+    volumes:
+      - ./services/az-vpn/config:/config
+      - /lib/modules:/lib/modules
+    ports:
+      - "51820:51820/udp"
+    sysctls:
+      - net.ipv4.ip_forward=1
+    restart: always
+    networks:
+      - azora-net
+
+  az-vpn-ui:
+    image: ngoduykhanh/wireguard-ui:latest
+    depends_on:
+      - az-vpn
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - WGUI_USERNAME=admin
+      - WGUI_PASSWORD=admin
+      - WGUI_MANAGE_START=true
+      - WGUI_MANAGE_RESTART=true
+    volumes:
+      - ./services/az-vpn/config:/etc/wireguard
+    ports:
+      - "5000:5000"
+    restart: always
+    networks:
+      - azora-net
+
 networks:
   azora-net:
     driver: bridge

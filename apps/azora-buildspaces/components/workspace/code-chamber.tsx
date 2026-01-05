@@ -22,6 +22,7 @@ interface CodeChamberProps {
 
 export function CodeChamber({ id }: CodeChamberProps) {
     const {
+        rootId,
         activeFileId,
         openFiles,
         setActiveFile,

@@ -91,10 +91,10 @@ const platformItems = [
 ]
 
 const exploreItems = [
-  { title: "Why BuildSpaces", href: "/why", icon: Building2 },
+  { title: "Why BuildSpaces", href: "/features", icon: Building2 },
   { title: "Documentation", href: "/docs", icon: BookOpen },
-  { title: "BuildSpaces Skills", href: "/skills", icon: Sparkles, isNew: true },
-  { title: "Blog", href: "/blog", icon: FileText },
+  { title: "BuildSpaces Skills", href: "/features", icon: Sparkles, isNew: true },
+  { title: "Blog", href: "/features", icon: FileText },
 ]
 
 const pricingItems = [
@@ -245,11 +245,13 @@ export function Navbar() {
               ⌘K
             </kbd>
           </button>
-          <Button variant="ghost" className="hidden text-gray-300 hover:text-white lg:inline-flex">
-            Sign in
+          <Button variant="ghost" className="hidden text-gray-300 hover:text-white lg:inline-flex" asChild>
+            <Link href="/auth/login">Sign in</Link>
           </Button>
-          <Button className="bg-emerald-500 text-white hover:bg-emerald-600">
-            Get Started <span className="ml-1">→</span>
+          <Button className="bg-emerald-500 text-white hover:bg-emerald-600" asChild>
+            <Link href="/auth/signup">
+              Get Started <span className="ml-1">→</span>
+            </Link>
           </Button>
 
           {/* Mobile menu button */}

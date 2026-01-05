@@ -1,0 +1,48 @@
+/* Azrome Visual Shell - Layer 1 */
+/* Based on MaterialFox with Azora OS Branding */
+
+:root {
+  /* Azora Color Palette */
+  --azora-gold: #D4AF37;       /* Citadel Gold */
+  --azora-maroon: #800000;     /* Sankofa Maroon */
+  --azora-dark: #1a1a1a;       /* Deep Space */
+  --azora-glass: rgba(26, 26, 26, 0.8);
+
+  /* Chrome Aesthetic Overrides */
+  --toolbar-bgcolor: var(--azora-dark) !important;
+  --tab-selected-bgcolor: var(--azora-glass) !important;
+  --tab-line-color: var(--azora-gold) !important;
+  --urlbar-focused-border-color: var(--azora-gold) !important;
+}
+
+/* Chrome-style Rounded Tabs */
+.tab-background {
+  border-radius: 10px 10px 0 0 !important;
+  margin-bottom: 0 !important;
+  box-shadow: none !important;
+}
+
+/* The "Megabar" - Simplified Address Bar */
+#urlbar-background {
+  background-color: #2b2b2b !important;
+  border-radius: 24px !important;
+  border: 1px solid transparent !important;
+}
+
+#urlbar[focused="true"] > #urlbar-background {
+  border-color: var(--azora-gold) !important;
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.3) !important;
+}
+
+/* Hide unnecessary UI elements for a cleaner look */
+#tabs-newtab-button,
+#new-tab-button,
+#alltabs-button {
+  fill: var(--azora-gold) !important;
+}
+
+/* Sidebar Integration (Agentic Engine Placeholder) */
+#sidebar-box {
+  background-color: var(--azora-dark) !important;
+  border-right: 1px solid var(--azora-maroon) !important;
+}

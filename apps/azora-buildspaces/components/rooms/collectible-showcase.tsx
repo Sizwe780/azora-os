@@ -61,7 +61,7 @@ const SAMPLE_CARDS: CollectibleCard[] = [
         description: "Master of full-stack development with 100+ projects completed",
         achievements: ["100 Projects", "Full-Stack Master", "Code Reviewer"],
         rarity: 0.5,
-        image: "/api/placeholder/200/280",
+        image: "/elara-avatar.png",
         minted: true,
         owner: "You"
     },
@@ -73,7 +73,7 @@ const SAMPLE_CARDS: CollectibleCard[] = [
         description: "Early adopter of Constitutional AI with 50+ AI implementations",
         achievements: ["AI Pioneer", "Constitutional AI", "Agent Trainer"],
         rarity: 2.1,
-        image: "/api/placeholder/200/280",
+        image: "/themba-avatar.png",
         minted: true,
         owner: "You"
     },
@@ -85,7 +85,7 @@ const SAMPLE_CARDS: CollectibleCard[] = [
         description: "Built bridges between developers and contributed to open source",
         achievements: ["Open Source", "Mentor", "Community Leader"],
         rarity: 8.5,
-        image: "/api/placeholder/200/280",
+        image: "/elara-github.png",
         minted: false,
         owner: null
     },
@@ -97,7 +97,7 @@ const SAMPLE_CARDS: CollectibleCard[] = [
         description: "Completed 25+ courses and taught others",
         achievements: ["25 Courses", "Teacher", "Knowledge Seeker"],
         rarity: 15.2,
-        image: "/api/placeholder/200/280",
+        image: "/themba-github.png",
         minted: true,
         owner: "You"
     }
@@ -107,15 +107,32 @@ export default function CollectibleShowcase() {
     const [cards, setCards] = useState<CollectibleCard[]>(SAMPLE_CARDS);
     const [selectedCard, setSelectedCard] = useState<CollectibleCard | null>(null);
     const [activeTab, setActiveTab] = useState("gallery");
-    const [powerScore, setPowerScore] = useState(11100);
-    const [totalMinted, setTotalMinted] = useState(3);
-    const [leaderboardRank, setLeaderboardRank] = useState(42);
+    
+    // Real-time stats (simulated for now but using the formula)
+    const [stats, setStats] = useState({
+        projects: 12,
+        courses: 5,
+        specs: 24,
+        contributions: 3,
+        teachingHours: 10,
+        azrEarned: 5000,
+        streak: 15
+    });
 
     const calculatePowerScore = () => {
-        return cards
-            .filter(card => card.minted)
-            .reduce((total, card) => total + card.power, 0);
+        const { projects, courses, specs, contributions, teachingHours, azrEarned, streak } = stats;
+        return (projects * 100) + 
+               (courses * 50) + 
+               (specs * 25) + 
+               (contributions * 200) + 
+               (teachingHours * 10) + 
+               (azrEarned / 10) + 
+               streak;
     };
+
+    const powerScore = calculatePowerScore();
+    const [totalMinted, setTotalMinted] = useState(3);
+    const [leaderboardRank, setLeaderboardRank] = useState(42);
 
     const mintCard = (cardId: string) => {
         setCards(prev => prev.map(card => 
@@ -198,15 +215,92 @@ export default function CollectibleShowcase() {
                                 <Gem className="w-4 h-4 mr-2" />
                                 Mint
                             </TabsTrigger>
-                            <TabsTrigger value="achievements" className="data-[state=active]:bg-white/20">
-                                <Award className="w-4 h-4 mr-2" />
-                                Achievements
+                            <TabsTrigger value="stats" className="data-[state=active]:bg-white/20">
+                                <Zap className="w-4 h-4 mr-2" />
+                                Power Stats
                             </TabsTrigger>
                         </TabsList>
                     </div>
 
                     <div className="flex-1 overflow-hidden">
-                        <TabsContent value="gallery" className="h-full m-0 p-6">
+                        <TabsContent value="stats" className="h-full m-0 p-6 overflow-y-auto">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <Card className="bg-white/5 border-white/10 text-white">
+                                    <CardHeader>
+                                        <CardTitle className="text-lg flex items-center gap-2">
+                                            <Zap className="w-5 h-5 text-yellow-400" />
+                                            Power Calculation
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="space-y-4">
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-slate-400">Projects Completed ({stats.projects} × 100)</span>
+                                            <span className="font-mono text-green-400">+{stats.projects * 100}</span>
+                                        </div>
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-slate-400">Courses Certified ({stats.courses} × 50)</span>
+                                            <span className="font-mono text-green-400">+{stats.courses * 50}</span>
+                                        </div>
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-slate-400">Specs Written ({stats.specs} × 25)</span>
+                                            <span className="font-mono text-green-400">+{stats.specs * 25}</span>
+                                        </div>
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-slate-400">Community Contributions ({stats.contributions} × 200)</span>
+                                            <span className="font-mono text-green-400">+{stats.contributions * 200}</span>
+                                        </div>
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-slate-400">Teaching Hours ({stats.teachingHours} × 10)</span>
+                                            <span className="font-mono text-green-400">+{stats.teachingHours * 10}</span>
+                                        </div>
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-slate-400">AZR Earned ({stats.azrEarned} / 10)</span>
+                                            <span className="font-mono text-green-400">+{stats.azrEarned / 10}</span>
+                                        </div>
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-slate-400">Daily Streak ({stats.streak} × 1)</span>
+                                            <span className="font-mono text-green-400">+{stats.streak}</span>
+                                        </div>
+                                        <div className="pt-4 border-t border-white/10 flex justify-between items-center font-bold text-xl">
+                                            <span>Total Power Score</span>
+                                            <span className="text-yellow-400">{powerScore.toLocaleString()}</span>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+
+                                <Card className="bg-white/5 border-white/10 text-white">
+                                    <CardHeader>
+                                        <CardTitle className="text-lg flex items-center gap-2">
+                                            <Target className="w-5 h-5 text-blue-400" />
+                                            Next Milestones
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="space-y-6">
+                                        <div className="space-y-2">
+                                            <div className="flex justify-between text-sm">
+                                                <span>Complete 3 more projects</span>
+                                                <span className="text-slate-400">75%</span>
+                                            </div>
+                                            <Progress value={75} className="h-1.5" />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <div className="flex justify-between text-sm">
+                                                <span>Write 10 more specs</span>
+                                                <span className="text-slate-400">40%</span>
+                                            </div>
+                                            <Progress value={40} className="h-1.5" />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <div className="flex justify-between text-sm">
+                                                <span>Earn 1000 more AZR</span>
+                                                <span className="text-slate-400">90%</span>
+                                            </div>
+                                            <Progress value={90} className="h-1.5" />
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </div>
+                        </TabsContent>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 h-full overflow-y-auto">
                                 {cards.map((card) => {
                                     const tierConfig = RARITY_CONFIG[card.tier];

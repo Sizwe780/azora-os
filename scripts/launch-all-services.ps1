@@ -10,6 +10,9 @@ Start-Process -NoNewWindow -FilePath "npm" -ArgumentList "start" -WorkingDirecto
 Start-Sleep -Seconds 2
 Start-Process -NoNewWindow -FilePath "npm" -ArgumentList "start" -WorkingDirectory "services\health-monitor"
 Start-Sleep -Seconds 2
+Write-Host "🛡️ Starting VPN Service..." -ForegroundColor Cyan
+Start-Process -NoNewWindow -FilePath "docker-compose" -ArgumentList "up -d" -WorkingDirectory "services\az-vpn"
+Start-Sleep -Seconds 2
 
 # Core services
 Write-Host "🔐 Starting Core Services..." -ForegroundColor Cyan

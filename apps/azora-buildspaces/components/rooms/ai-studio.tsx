@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Brain, Play, Share2, Settings, Database, Network } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import NotebookInterface from "./ai-studio/NotebookInterface";
-import TrainingDashboard from "./ai-studio/TrainingDashboard";
-import ModelVisualizer from "./ai-studio/ModelVisualizer";
+import NotebookInterface from "./ai-studio/AgentWorkflowEditor";
+import TrainingDashboard from "./ai-studio/AgentMetrics";
+import ModelVisualizer from "./ai-studio/AgentGraph";
 
 export default function AIStudio() {
     const [isTraining, setIsTraining] = useState(false);
@@ -23,7 +23,7 @@ export default function AIStudio() {
                         <span className="text-sm font-medium">AI Studio</span>
                     </div>
                     <span className="text-muted-foreground text-sm">/</span>
-                    <span className="text-sm font-medium">Experiment: MNIST-ConvNet-v2</span>
+                    <span className="text-sm font-medium">Orchestration: Auth-Flow-v1</span>
                 </div>
 
                 <div className="flex items-center gap-2">
@@ -33,12 +33,12 @@ export default function AIStudio() {
                         onClick={() => setIsTraining(!isTraining)}
                     >
                         <Play className="w-4 h-4" />
-                        {isTraining ? "Stop Training" : "Start Training"}
+                        {isTraining ? "Stop Execution" : "Run Workflow"}
                     </Button>
                     <div className="w-px h-6 bg-border mx-2" />
                     <Button variant="ghost" size="sm" className="gap-2">
                         <Share2 className="w-4 h-4" />
-                        Share
+                        Export
                     </Button>
                     <Button variant="ghost" size="sm">
                         <Settings className="w-4 h-4" />
@@ -50,7 +50,7 @@ export default function AIStudio() {
             <div className="flex-1 overflow-hidden">
                 <ResizablePanelGroup direction="horizontal">
 
-                    {/* Left Panel: Notebook */}
+                    {/* Left Panel: Workflow Editor */}
                     <ResizablePanel defaultSize={60} minSize={30}>
                         <div className="h-full flex flex-col">
                             <NotebookInterface />
@@ -63,27 +63,27 @@ export default function AIStudio() {
                     <ResizablePanel defaultSize={40} minSize={20}>
                         <ResizablePanelGroup direction="vertical">
 
-                            {/* Top Right: Training Metrics */}
+                            {/* Top Right: Agent Metrics */}
                             <ResizablePanel defaultSize={50} minSize={20}>
                                 <div className="h-full flex flex-col">
                                     <div className="h-10 border-b flex items-center px-4 bg-muted/10 gap-2">
                                         <Database className="w-4 h-4 text-muted-foreground" />
-                                        <span className="text-sm font-medium">Training Metrics</span>
+                                        <span className="text-sm font-medium">Agent Metrics</span>
                                     </div>
                                     <div className="flex-1 overflow-hidden">
-                                        <TrainingDashboard />
+                                        <TrainingDashboard isTraining={isTraining} />
                                     </div>
                                 </div>
                             </ResizablePanel>
 
                             <ResizableHandle withHandle />
 
-                            {/* Bottom Right: Model Architecture */}
+                            {/* Bottom Right: Agent Graph */}
                             <ResizablePanel defaultSize={50} minSize={20}>
                                 <div className="h-full flex flex-col border-t">
                                     <div className="h-10 border-b flex items-center px-4 bg-muted/10 gap-2">
                                         <Network className="w-4 h-4 text-muted-foreground" />
-                                        <span className="text-sm font-medium">Model Architecture</span>
+                                        <span className="text-sm font-medium">Agent Interaction Graph</span>
                                     </div>
                                     <div className="flex-1 overflow-hidden relative">
                                         <ModelVisualizer />

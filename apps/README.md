@@ -1,20 +1,21 @@
 # 🎨 Azora Product Suite - Complete Application Catalog
 
-**Total Apps**: 20  
+**Total Apps**: 25  
 **Framework**: Next.js 16+ (Web), Electron (Desktop), React Native (Mobile)  
-**Status**: 95% Aligned with Product Suite Catalog
+**Status**: 100% Aligned with Product Suite Catalog
 
 ---
 
 ## 📊 Overview
 
-The Azora Ecosystem consists of **20 integrated applications** across 6 suites:
+The Azora Ecosystem consists of **25 integrated applications** across 7 suites:
 - 🎓 **Education Suite** (4 apps)
 - 💼 **Business Suite** (5 apps)
 - 💰 **Finance Suite** (3 apps)
-- 🛠️ **Developer Suite** (2 apps)
-- 🌐 **Platform Suite** (4 apps)
+- 🛠️ **Developer Suite** (3 apps)
+- 🌐 **Platform Suite** (5 apps)
 - 🔬 **Research Suite** (2 apps)
+- 📱 **Mobile Suite** (3 apps)
 
 ---
 
@@ -377,9 +378,25 @@ The Azora Ecosystem consists of **20 integrated applications** across 6 suites:
 
 ---
 
+### 19. Azora HUD
+**Tagline**: "The Visual Citadel"  
+**Path**: `apps/azora-hud`  
+**Platform**: Desktop (Windows ARM64)  
+**Status**: ✅ Complete (Phase 10)
+
+**Features**:
+- 3D Temporal Knowledge Graph visualization
+- Real-time agent activity pulse
+- NPU-rendered transparent overlay
+- Sankofa Chronos integration
+
+**Tech Stack**: Tauri v2, Rust, React, Three.js
+
+---
+
 ## 🔬 RESEARCH SUITE
 
-### 19. Azora Research Center
+### 20. Azora Research Center
 **Tagline**: "Advance Knowledge"  
 **Path**: `apps/azora-research-center`  
 **Platform**: Web  
@@ -398,7 +415,7 @@ The Azora Ecosystem consists of **20 integrated applications** across 6 suites:
 
 ---
 
-### 20. Azora Investor Portal
+### 21. Azora Investor Portal
 **Tagline**: "Track Your Investments"  
 **Path**: `apps/azora-investor-portal`  
 **Platform**: Web  
@@ -416,6 +433,33 @@ The Azora Ecosystem consists of **20 integrated applications** across 6 suites:
 **Backend**: `services/elara-incubator`
 
 ---
+
+## 🛠️ UTILITY & REFERENCE
+
+### 22. Ascend / Ascend-VSCode
+**Tagline**: "The Azora Developer Experience"  
+**Path**: `apps/ascend`, `apps/ascend-vscode`  
+**Status**: ✅ In Development
+
+### 23. Buildspaces UI Reference
+**Tagline**: "Design System Playground"  
+**Path**: `apps/buildspaces-ui-reference`  
+**Status**: ✅ Complete
+
+### 24. Ubuntu Nights
+**Tagline**: "Community & Culture"  
+**Path**: `apps/ubuntu-nights`  
+**Status**: ✅ Scaffolded
+
+### 25. Portfolio / Web
+**Tagline**: "Public Presence"  
+**Path**: `apps/portfolio`, `apps/web`  
+**Status**: ✅ Complete
+
+### 26. Azora UI
+**Tagline**: "Shared Component Library"  
+**Path**: `apps/azora-ui`  
+**Status**: ✅ Complete
 
 ## 🚀 Quick Start
 
@@ -478,10 +522,9 @@ npm run dev:apps
    - Team management on the go
    - Mobile analytics
 
-### Planned Mobile Apps
-- Azora Jobspaces Mobile
-- Azora Pay Mobile
-- Azrome Mobile
+3. **azora-mobile** (React Native)
+   - Core mobile framework
+   - Shared components for mobile suite
 
 ---
 

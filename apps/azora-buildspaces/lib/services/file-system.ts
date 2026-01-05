@@ -554,7 +554,7 @@ class GitRepository {
 
     const verification = await constitutionalAI.verifyAction(action)
 
-    await constitutionalAI.auditLog({
+    await constitutionalAI.logAudit({
       id: verification.auditId,
       timestamp: new Date(),
       userId: action.userId,

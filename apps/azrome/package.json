@@ -1,43 +1,12 @@
 {
-    "name": "azrome",
-    "version": "0.1.0",
-    "description": "Azrome - The Azora-Native Browser",
-    "main": "dist/main/index.js",
-    "scripts": {
-        "start": "electron .",
-        "dev": "npm run build:main && electron .",
-        "build": "npm run build:main && npm run build:renderer",
-        "build:main": "tsc -p tsconfig.main.json",
-        "build:renderer": "vite build",
-        "pack": "electron-builder --dir",
-        "dist": "electron-builder",
-        "dist:win": "electron-builder --win",
-        "dist:mac": "electron-builder --mac",
-        "dist:linux": "electron-builder --linux"
-    },
-    "keywords": [
-        "azora",
-        "browser",
-        "electron"
-    ],
-    "author": "Azora Sapiens",
-    "license": "MIT",
-    "devDependencies": {
-        "@types/react": "^18.2.0",
-        "@types/react-dom": "^18.2.0",
-        "@vitejs/plugin-react": "^4.0.0",
-        "electron": "^28.0.0",
-        "electron-builder": "^24.0.0",
-        "typescript": "^5.0.0",
-        "vite": "^5.0.0"
-    },
-    "dependencies": {
-        "react": "^18.2.0",
-        "react-dom": "^18.2.0",
-        "electron-updater": "^6.1.0"
-    }
+  "name": "azrome",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
-
-
-
-

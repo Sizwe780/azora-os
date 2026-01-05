@@ -68,19 +68,25 @@ export function FooterSection() {
             {/* Social Icons */}
             <div className="flex items-center gap-3">
               <a
-                href="#"
+                href="https://github.com/Azora-OS"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-8 h-8 rounded-lg bg-muted hover:bg-muted/80 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
               >
                 <Github className="w-4 h-4" />
               </a>
               <a
-                href="#"
+                href="https://x.com/AzoraOS"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-8 h-8 rounded-lg bg-muted hover:bg-muted/80 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
               >
                 <Twitter className="w-4 h-4" />
               </a>
               <a
-                href="#"
+                href="https://linkedin.com/company/azora-os"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-8 h-8 rounded-lg bg-muted hover:bg-muted/80 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
               >
                 <Linkedin className="w-4 h-4" />

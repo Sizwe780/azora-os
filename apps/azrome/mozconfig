@@ -1,0 +1,22 @@
+# Azrome Build Configuration
+# Targets: x86_64 (Server) & aarch64 (Vivobook)
+
+# Core Options
+ac_add_options --enable-application=browser
+ac_add_options --enable-optimize
+ac_add_options --disable-debug
+ac_add_options --disable-tests
+
+# Privacy & Hardening (The Tor Aspect)
+ac_add_options --enable-privacy-hardening
+ac_add_options --disable-crashreporter
+ac_add_options --disable-telemetry
+ac_add_options --disable-updater
+
+# Branding
+ac_add_options --with-app-name=azrome
+ac_add_options --with-app-basename=Azrome
+ac_add_options --with-branding=apps/azrome/branding
+
+# Architecture Support
+# Note: Cross-compilation flags would be set here based on the build environment
