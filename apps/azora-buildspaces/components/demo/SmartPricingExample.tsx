@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import SmartPricing from '../../../../packages/components/SmartPricing';
+import SmartPricing from '@azora/components/SmartPricing';
 import { Button } from '@/components/ui/button';
 
 export const SmartPricingExample: React.FC = () => {
@@ -24,7 +24,7 @@ export const SmartPricingExample: React.FC = () => {
       {/* Profile Settings */}
       <div className="bg-white/5 border border-white/10 rounded-lg p-6">
         <h3 className="text-lg font-semibold mb-4">Your Profile (for discount calculation)</h3>
-        
+
         <div className="grid md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium mb-2">Student Status</label>
@@ -120,7 +120,7 @@ export const SmartPricingExample: React.FC = () => {
       </div>
 
       {/* Smart Pricing Component */}
-      <SmartPricing 
+      <SmartPricing
         userProfile={userProfile}
         onPlanSelect={handlePlanSelect}
       />
