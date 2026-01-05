@@ -19,7 +19,7 @@
     "lerna": "6.6.2",
     "nodemailer": "7.0.10",
     "react-native": "0.73.11",
-    "vite": "7.2.2"
+    "vite": "7.3.0"
   },
   "devDependencies": {
     "@types/jest": "^29.0.0",

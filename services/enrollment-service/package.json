@@ -39,7 +39,7 @@
     "nodemailer": "7.0.10",
     "react-native": "0.73.11",
     "uuid": "^9.0.0",
-    "vite": "7.2.2",
+    "vite": "7.3.0",
     "winston": "^3.10.0",
     "express-rate-limit": "^6.7.0",
     "jsonwebtoken": "^9.0.2",
