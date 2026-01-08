@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Bot, Code2, Database, Sparkles, X, Check, Loader2 } from "lucide-react"
+import { Bot, Code2, Database, Sparkles, X, Check, Loader2, Shield, Palette } from "lucide-react"
 
 interface Activity {
   id: string
@@ -13,54 +13,47 @@ interface Activity {
   color: string
 }
 
-const mockActivities: Activity[] = [
-  {
-    id: "1",
-    agent: "Elara",
-    action: "Coordinating build task",
-    status: "complete",
-    icon: Sparkles,
-    color: "from-primary to-emerald-400",
-  },
-  {
-    id: "2",
-    agent: "Sankofa",
-    action: "Generating component code",
-    status: "active",
-    icon: Code2,
-    color: "from-accent to-purple-400",
-  },
-  {
-    id: "3",
-    agent: "Themba",
-    action: "Setting up API routes",
-    status: "pending",
-    icon: Database,
-    color: "from-amber-500 to-orange-400",
-  },
-]
+// Map agent names to their UI configuration
+const agentConfig: Record<string, { icon: any; color: string }> = {
+  Elara: { icon: Sparkles, color: "from-primary to-emerald-400" },
+  Sankofa: { icon: Code2, color: "from-accent to-purple-400" },
+  Themba: { icon: Database, color: "from-amber-500 to-orange-400" },
+  Jabari: { icon: Shield, color: "from-blue-500 to-cyan-400" },
+  Naledi: { icon: Palette, color: "from-pink-500 to-rose-400" },
+}
 
 export function AgentActivityFeed() {
-  const [activities, setActivities] = useState<Activity[]>(mockActivities)
+  const [activities, setActivities] = useState<Activity[]>([])
   const [isMinimized, setIsMinimized] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
-  // Simulate activity updates
+  // Fetch real agent execution data from API
   useEffect(() => {
-    const interval = setInterval(() => {
-      setActivities((prev) => {
-        const updated = [...prev]
-        const activeIndex = updated.findIndex((a) => a.status === "active")
-        if (activeIndex !== -1) {
-          updated[activeIndex].status = "complete"
-          const pendingIndex = updated.findIndex((a) => a.status === "pending")
-          if (pendingIndex !== -1) {
-            updated[pendingIndex].status = "active"
-          }
+    const fetchActivities = async () => {
+      try {
+        const response = await fetch("/api/agents/executions?limit=10&status=active,pending,complete")
+        if (response.ok) {
+          const data = await response.json()
+          const formattedActivities = data.executions?.map((exec: any) => ({
+            id: exec.id,
+            agent: exec.agent?.name || "Unknown Agent",
+            action: exec.task?.description || exec.task?.title || "Processing task",
+            status: exec.status === "running" ? "active" : exec.status === "completed" ? "complete" : "pending",
+            icon: agentConfig[exec.agent?.name]?.icon || Bot,
+            color: agentConfig[exec.agent?.name]?.color || "from-gray-500 to-gray-400",
+          })) || []
+          setActivities(formattedActivities)
         }
-        return updated
-      })
-    }, 3000)
+      } catch (error) {
+        console.error("Failed to fetch agent activities:", error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
 
+    fetchActivities()
+    // Poll for updates every 5 seconds
+    const interval = setInterval(fetchActivities, 5000)
     return () => clearInterval(interval)
   }, [])
 
@@ -96,8 +89,18 @@ export function AgentActivityFeed() {
 
       {/* Activities */}
       <div className="p-3 space-y-2 max-h-64 overflow-auto">
-        <AnimatePresence mode="popLayout">
-          {activities.map((activity) => (
+        {isLoading ? (
+          <div className="flex items-center justify-center p-4">
+            <Loader2 className="w-5 h-5 text-primary animate-spin" />
+          </div>
+        ) : activities.length === 0 ? (
+          <div className="flex flex-col items-center justify-center p-4 text-center">
+            <Bot className="w-8 h-8 text-muted-foreground/50 mb-2" />
+            <p className="text-xs text-muted-foreground">No active agent tasks</p>
+          </div>
+        ) : (
+          <AnimatePresence mode="popLayout">
+            {activities.map((activity) => (
             <motion.div
               key={activity.id}
               layout
@@ -123,8 +126,9 @@ export function AgentActivityFeed() {
                 )}
               </div>
             </motion.div>
-          ))}
-        </AnimatePresence>
+            ))}
+          </AnimatePresence>
+        )}
       </div>
     </motion.div>
   )
