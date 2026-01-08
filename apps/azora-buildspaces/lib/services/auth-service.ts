@@ -24,7 +24,7 @@ export interface User {
 export class AuthService {
   private static instance: AuthService
 
-  private constructor() {}
+  private constructor() { }
 
   public static getInstance(): AuthService {
     if (!AuthService.instance) {
@@ -35,22 +35,24 @@ export class AuthService {
 
   async getCurrentUser(): Promise<User | null> {
     const session = await getSession()
-    
+
     if (!session || !session.user) {
       return null
     }
 
-    // Return a mock user based on the session for now
-    // In a real app, this would fetch from a database
+    // In a client-side service, we should rely on the session data
+    // or fetch additional details from an API route if needed.
+    // We cannot import Prisma here as this code runs in the browser.
+
     return {
-      id: (session.user as any).id || 'mock-id',
+      id: (session.user as any).id || 'unknown',
       name: session.user.name || 'User',
       email: session.user.email || '',
-      createdAt: new Date(),
+      createdAt: new Date(), // Session doesn't have this, would need API fetch
       subscription: {
         plan: 'constitutional',
         status: 'trial',
-        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
+        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         geographicPricing: {
           country: 'Global',
           discount: 0
@@ -60,6 +62,29 @@ export class AuthService {
         email: true,
         identity: false
       }
+    }
+  }
+
+  async signup(data: any): Promise<{ success: boolean; error?: string }> {
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+
+      const json = await res.json()
+
+      if (!res.ok) {
+        return { success: false, error: json.error || 'Signup failed' }
+      }
+
+      return { success: true }
+    } catch (error) {
+      console.error('Signup error:', error)
+      return { success: false, error: 'An unexpected error occurred' }
     }
   }
 

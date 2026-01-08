@@ -15,24 +15,9 @@ interface Slide {
     notes: string;
 }
 
-const INITIAL_SLIDES: Slide[] = [
-    {
-        id: '1',
-        title: 'Project Overview',
-        content: '# Welcome to Project Azora\n\nBuilding the future of AI-assisted development.',
-        notes: 'Start with a strong hook about the problem space.'
-    },
-    {
-        id: '2',
-        title: 'Architecture',
-        content: '## System Design\n\n- Microservices architecture\n- Event-driven communication\n- AI-first core',
-        notes: 'Explain the decision to use Next.js and Python services.'
-    }
-];
-
 export default function SlideEditor() {
-    const [slides, setSlides] = useState<Slide[]>(INITIAL_SLIDES);
-    const [activeSlideId, setActiveSlideId] = useState<string>(INITIAL_SLIDES[0].id);
+    const [slides, setSlides] = useState<Slide[]>([]);
+    const [activeSlideId, setActiveSlideId] = useState<string>("");
 
     const activeSlide = slides.find(s => s.id === activeSlideId) || slides[0];
 

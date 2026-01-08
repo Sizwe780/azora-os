@@ -1,74 +1,89 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingBag, Search, Filter, Star, Download, ExternalLink, Sparkles, Code2, Palette, Database } from "lucide-react";
+import { ShoppingBag, Search, Filter, Star, Download, ExternalLink, Sparkles, Code2, Palette, Database, RefreshCw } from "lucide-react";
 
-const TEMPLATES = [
-    {
-        id: '1',
-        name: 'SaaS Starter Kit',
-        description: 'Next.js 14 + Prisma + NextAuth + Stripe integration.',
-        category: 'Full-Stack',
-        author: 'Azora Team',
-        rating: 4.9,
-        downloads: '1.2k',
-        price: 'Free',
-        tags: ['Next.js', 'Prisma', 'Stripe'],
-        icon: Code2,
-        color: 'text-blue-500'
-    },
-    {
-        id: '2',
-        name: 'AI Agent Workflow',
-        description: 'Pre-configured Elara workflow for automated code reviews.',
-        category: 'AI',
-        author: 'Sankofa',
-        rating: 5.0,
-        downloads: '850',
-        price: '50 AZR',
-        tags: ['AI', 'Elara', 'Automation'],
-        icon: Sparkles,
-        color: 'text-purple-500'
-    },
-    {
-        id: '3',
-        name: 'Modern Dashboard UI',
-        description: 'Beautiful Tailwind CSS dashboard with 50+ components.',
-        category: 'Design',
-        author: 'Naledi',
-        rating: 4.8,
-        downloads: '2.5k',
-        price: 'Free',
-        tags: ['Tailwind', 'React', 'UI'],
-        icon: Palette,
-        color: 'text-pink-500'
-    },
-    {
-        id: '4',
-        name: 'E-commerce Schema',
-        description: 'Optimized PostgreSQL schema for high-scale retail.',
-        category: 'Database',
-        author: 'Themba',
-        rating: 4.7,
-        downloads: '600',
-        price: '20 AZR',
-        tags: ['Postgres', 'SQL', 'Schema'],
-        icon: Database,
-        color: 'text-orange-500'
-    }
-];
+interface Template {
+    id: string;
+    name: string;
+    description: string;
+    category: string;
+    author: string;
+    rating: number;
+    downloads: number;
+    price: string;
+    tags: string[];
+    icon: string;
+    color: string;
+}
 
 export default function Marketplace() {
+    const [templates, setTemplates] = useState<Template[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-    const filteredTemplates = TEMPLATES.filter(t => 
-        t.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        t.category.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const loadTemplates = async () => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            const params = new URLSearchParams();
+            if (searchQuery) params.set('search', searchQuery);
+
+            const response = await fetch(`/api/marketplace/templates?${params}`);
+            if (response.ok) {
+                const data = await response.json();
+                setTemplates(data.templates || []);
+            } else {
+                throw new Error('Failed to load templates');
+            }
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Unknown error');
+            // Fallback to empty array
+            setTemplates([]);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        loadTemplates();
+    }, [searchQuery]);
+
+    const getIcon = (iconName: string) => {
+        switch (iconName) {
+            case 'Code2': return Code2;
+            case 'Sparkles': return Sparkles;
+            case 'Palette': return Palette;
+            case 'Database': return Database;
+            default: return Code2;
+        }
+    };
+
+    if (isLoading) {
+        return (
+            <div className="h-full flex flex-col bg-background items-center justify-center">
+                <RefreshCw className="w-8 h-8 animate-spin text-muted-foreground mb-4" />
+                <p className="text-muted-foreground">Loading marketplace...</p>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="h-full flex flex-col bg-background items-center justify-center">
+                <p className="text-red-500 mb-4">Failed to load marketplace: {error}</p>
+                <Button onClick={loadTemplates}>
+                    <RefreshCw className="w-4 h-4 mr-2" />
+                    Retry
+                </Button>
+            </div>
+        );
+    }
 
     return (
         <div className="h-full flex flex-col bg-background">
@@ -91,65 +106,100 @@ export default function Marketplace() {
                 <div className="flex items-center gap-4">
                     <div className="relative flex-1">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                        <Input 
-                            placeholder="Search templates, agents, components..." 
+                        <Input
+                            placeholder="Search templates, agents, components..."
                             className="pl-10"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
                     </div>
-                    <Button variant="outline" className="gap-2">
+                    <Button variant="outline" size="icon">
                         <Filter className="w-4 h-4" />
-                        Filters
                     </Button>
                 </div>
             </div>
 
-            {/* Content */}
+            {/* Templates Grid */}
             <div className="flex-1 overflow-y-auto p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {filteredTemplates.map((template) => (
-                        <Card key={template.id} className="group hover:border-primary/50 transition-colors overflow-hidden flex flex-col">
-                            <CardHeader className="pb-2">
-                                <div className="flex items-center justify-between mb-2">
-                                    <Badge variant="secondary" className="text-[10px] uppercase tracking-wider">
-                                        {template.category}
-                                    </Badge>
-                                    <div className="flex items-center gap-1 text-xs text-yellow-500">
-                                        <Star className="w-3 h-3 fill-current" />
-                                        {template.rating}
-                                    </div>
-                                </div>
-                                <CardTitle className="text-lg flex items-center gap-2">
-                                    <template.icon className={`w-5 h-5 ${template.color}`} />
-                                    {template.name}
-                                </CardTitle>
-                                <p className="text-sm text-muted-foreground line-clamp-2">
-                                    {template.description}
-                                </p>
-                            </CardHeader>
-                            <CardContent className="flex-1">
-                                <div className="flex flex-wrap gap-1 mt-2">
-                                    {template.tags.map(tag => (
-                                        <Badge key={tag} variant="outline" className="text-[10px]">
-                                            {tag}
-                                        </Badge>
-                                    ))}
-                                </div>
-                            </CardContent>
-                            <CardFooter className="border-t bg-muted/5 p-4 flex items-center justify-between">
-                                <div className="flex flex-col">
-                                    <span className="text-xs text-muted-foreground">by {template.author}</span>
-                                    <span className="text-sm font-bold">{template.price}</span>
-                                </div>
-                                <Button size="sm" variant="secondary" className="gap-2">
-                                    <Download className="w-3.5 h-3.5" />
-                                    Get
-                                </Button>
-                            </CardFooter>
-                        </Card>
-                    ))}
-                </div>
+                {templates.length === 0 ? (
+                    <div className="text-center py-12">
+                        <ShoppingBag className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
+                        <h3 className="text-lg font-medium mb-2">No templates found</h3>
+                        <p className="text-muted-foreground mb-4">
+                            {searchQuery ? 'Try adjusting your search terms.' : 'Be the first to publish a template!'}
+                        </p>
+                        <Button>
+                            <ExternalLink className="w-4 h-4 mr-2" />
+                            Publish Template
+                        </Button>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {templates.map((template) => {
+                            const Icon = getIcon(template.icon);
+                            return (
+                                <Card key={template.id} className="hover:shadow-lg transition-shadow">
+                                    <CardHeader className="pb-3">
+                                        <div className="flex items-start justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <div className={`p-2 rounded-lg bg-muted ${template.color}`}>
+                                                    <Icon className="w-5 h-5" />
+                                                </div>
+                                                <div>
+                                                    <CardTitle className="text-lg">{template.name}</CardTitle>
+                                                    <p className="text-sm text-muted-foreground">by {template.author}</p>
+                                                </div>
+                                            </div>
+                                            <Badge variant="secondary">{template.category}</Badge>
+                                        </div>
+                                    </CardHeader>
+
+                                    <CardContent className="pb-3">
+                                        <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                                            {template.description}
+                                        </p>
+
+                                        <div className="flex flex-wrap gap-1 mb-4">
+                                            {template.tags.slice(0, 3).map((tag) => (
+                                                <Badge key={tag} variant="outline" className="text-xs">
+                                                    {tag}
+                                                </Badge>
+                                            ))}
+                                            {template.tags.length > 3 && (
+                                                <Badge variant="outline" className="text-xs">
+                                                    +{template.tags.length - 3}
+                                                </Badge>
+                                            )}
+                                        </div>
+
+                                        <div className="flex items-center justify-between text-sm text-muted-foreground">
+                                            <div className="flex items-center gap-4">
+                                                <div className="flex items-center gap-1">
+                                                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                                                    <span>{template.rating}</span>
+                                                </div>
+                                                <div className="flex items-center gap-1">
+                                                    <Download className="w-4 h-4" />
+                                                    <span>{template.downloads}</span>
+                                                </div>
+                                            </div>
+                                            <div className="font-medium text-foreground">
+                                                {template.price}
+                                            </div>
+                                        </div>
+                                    </CardContent>
+
+                                    <CardFooter className="pt-0">
+                                        <Button className="w-full" variant="outline">
+                                            <Download className="w-4 h-4 mr-2" />
+                                            Download
+                                        </Button>
+                                    </CardFooter>
+                                </Card>
+                            );
+                        })}
+                    </div>
+                )}
             </div>
         </div>
     );

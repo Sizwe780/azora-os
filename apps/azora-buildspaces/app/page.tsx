@@ -4,6 +4,8 @@ import { Navbar } from "@/components/features/navbar"
 import { Footer } from "@/components/features/footer"
 import { AetherBackground } from "@/components/ui/aether-background"
 import { AfricanAgentAvatar, agentStyles } from "@/components/ui/african-agent-avatar"
+import { CopilotAgentAvatar, CopilotAgentShowcase } from "@/components/ui/copilot-agent-avatar"
+import { LiveRoomGrid } from "@/components/ui/live-room-card"
 import { CitadelLogo } from "@/components/ui/citadel-logo"
 import { Button } from "@/components/ui/button"
 import { CodeChamber } from "@/components/demo/code-chamber-demo"
@@ -221,66 +223,32 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* The 7 Rooms */}
+
+        {/* The 8 Rooms - Live Status */}
         <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-transparent via-emerald-500/5 to-transparent">
           <div className="mx-auto max-w-7xl">
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold mb-4">The 7 Rooms</h2>
+              <h2 className="text-4xl font-bold mb-4">The 8 Rooms</h2>
               <p className="text-gray-400 max-w-2xl mx-auto">
-                Seven interconnected environments, each designed for a specific phase of development.
+                Eight interconnected environments with live agent activity. Watch your AI team work in real-time.
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {features.map((feature, i) => (
-                <Link
-                  key={feature.title}
-                  href={feature.href}
-                  className={`group relative rounded-xl bg-white/5 border border-white/10 p-6 hover:border-${feature.color}-500/50 transition-all hover:transform hover:scale-[1.02] ${i === 0 ? "lg:col-span-2 lg:row-span-2" : ""}`}
-                >
-                  <feature.icon className={`h-8 w-8 text-${feature.color}-400 mb-4`} />
-                  <h3 className="text-lg font-semibold mb-2 group-hover:text-emerald-400 transition-colors">
-                    {feature.title}
-                  </h3>
-                  <p className="text-gray-400 text-sm">{feature.desc}</p>
-                  {i === 0 && (
-                    <div className="mt-4 pt-4 border-t border-white/10">
-                      <p className="text-sm text-gray-500">
-                        Full VSCode-like editing with Monaco, integrated terminal, Git, and AI pair programming.
-                      </p>
-                    </div>
-                  )}
-                </Link>
-              ))}
-            </div>
+            <LiveRoomGrid />
           </div>
         </section>
 
-        {/* Meet the Agents */}
+        {/* Meet the Agents - Copilot Style */}
         <section className="py-24 px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-7xl">
             <div className="text-center mb-16">
               <h2 className="text-4xl font-bold mb-4">Meet Your AI Team</h2>
               <p className="text-gray-400 max-w-2xl mx-auto">
-                African Android humanoids, each with specialized skills. Powered by Constitutional AI for safe, reliable
-                assistance.
+                African Android humanoids with 3D presence that follows your cursor. Powered by Constitutional AI for safe, reliable assistance.
               </p>
             </div>
 
-            <div className="flex flex-wrap justify-center gap-8">
-              {(["elara", "sankofa", "themba", "jabari", "nia", "imani"] as const).map((agent) => {
-                const style = agentStyles[agent]
-                return (
-                  <div key={agent} className="flex flex-col items-center text-center">
-                    <AfricanAgentAvatar agent={agent} size="xl" />
-                    <h3 className="mt-4 font-semibold">{style.name}</h3>
-                    <p className={`text-sm bg-gradient-to-r ${style.gradient} bg-clip-text text-transparent`}>
-                      {style.description}
-                    </p>
-                  </div>
-                )
-              })}
-            </div>
+            <CopilotAgentShowcase />
 
             <div className="mt-12 text-center">
               <Button asChild variant="outline" className="border-white/20 hover:bg-white/5 bg-transparent">

@@ -49,24 +49,7 @@ const WorkspaceContext = createContext<WorkspaceContextType | undefined>(undefin
 
 export function WorkspaceProvider({ children, initialRoom }: { children: React.ReactNode, initialRoom?: RoomType }) {
   const [activeRoom, setActiveRoomState] = useState<RoomType>(initialRoom || "code-chamber")
-  const [tasks, setTasks] = useState<Task[]>([
-    {
-      id: "1",
-      title: "Set up project structure",
-      description: "Create the basic folder structure and configuration files",
-      status: "done",
-      priority: "high",
-      assignee: "Elara"
-    },
-    {
-      id: "2",
-      title: "Implement Code Chamber",
-      description: "Build the main coding interface with Monaco editor",
-      status: "in-progress",
-      priority: "high",
-      assignee: "Sankofa"
-    }
-  ])
+  const [tasks, setTasks] = useState<Task[]>([])
 
   useEffect(() => {
     const savedRoom = localStorage.getItem('lastActiveRoom') as RoomType | null

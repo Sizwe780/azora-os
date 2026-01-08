@@ -52,22 +52,9 @@ const RARITY_CONFIG = {
     mythical: { color: 'bg-pink-500', textColor: 'text-pink-500', icon: Infinity, range: [10000, Infinity] }
 };
 
-const SAMPLE_CARDS: CollectibleCard[] = [
-    {
-        id: "1",
-        name: "Code Architect",
-        tier: "legendary",
-        power: 7500,
-        description: "Master of full-stack development with 100+ projects completed",
-        achievements: ["100 Projects", "Full-Stack Master", "Code Reviewer"],
-        rarity: 0.5,
-        image: "/elara-avatar.png",
-        minted: true,
-        owner: "You"
-    },
-    {
-        id: "2", 
-        name: "AI Pioneer",
+export default function CollectibleShowcase() {
+    const [cards, setCards] = useState<CollectibleCard[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
         tier: "epic",
         power: 2500,
         description: "Early adopter of Constitutional AI with 50+ AI implementations",
@@ -107,7 +94,7 @@ export default function CollectibleShowcase() {
     const [cards, setCards] = useState<CollectibleCard[]>(SAMPLE_CARDS);
     const [selectedCard, setSelectedCard] = useState<CollectibleCard | null>(null);
     const [activeTab, setActiveTab] = useState("gallery");
-    
+
     // Real-time stats (simulated for now but using the formula)
     const [stats, setStats] = useState({
         projects: 12,
@@ -121,24 +108,39 @@ export default function CollectibleShowcase() {
 
     const calculatePowerScore = () => {
         const { projects, courses, specs, contributions, teachingHours, azrEarned, streak } = stats;
-        return (projects * 100) + 
-               (courses * 50) + 
-               (specs * 25) + 
-               (contributions * 200) + 
-               (teachingHours * 10) + 
-               (azrEarned / 10) + 
-               streak;
+        return (projects * 100) +
+            (courses * 50) +
+            (specs * 25) +
+            (contributions * 200) +
+            (teachingHours * 10) +
+            (azrEarned / 10) +
+            streak;
     };
 
     const powerScore = calculatePowerScore();
     const [totalMinted, setTotalMinted] = useState(3);
     const [leaderboardRank, setLeaderboardRank] = useState(42);
 
-    const mintCard = (cardId: string) => {
-        setCards(prev => prev.map(card => 
-            card.id === cardId ? { ...card, minted: true, owner: "You" } : card
-        ));
-        setTotalMinted(prev => prev + 1);
+    const mintCard = async (cardId: string) => {
+        try {
+            const response = await fetch('/api/web3/mint', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ cardId, userId: "did:key:z6MkpTHR8V369" })
+            });
+
+            if (!response.ok) throw new Error(await response.text());
+            const result = await response.json();
+
+            setCards(prev => prev.map(card =>
+                card.id === cardId ? { ...card, minted: true, owner: "You" } : card
+            ));
+            setTotalMinted(prev => prev + 1);
+
+            console.log("Minted successfully:", result.transactionHash);
+        } catch (error) {
+            console.error("Minting failed:", error);
+        }
     };
 
     const getTierFromPower = (power: number): keyof typeof RARITY_CONFIG => {
@@ -301,11 +303,13 @@ export default function CollectibleShowcase() {
                                 </Card>
                             </div>
                         </TabsContent>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 h-full overflow-y-auto">
+
+                        <TabsContent value="gallery" className="h-full m-0 p-6 overflow-y-auto">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                                 {cards.map((card) => {
                                     const tierConfig = RARITY_CONFIG[card.tier];
                                     const TierIcon = tierConfig.icon;
-                                    
+
                                     return (
                                         <motion.div
                                             key={card.id}
@@ -347,7 +351,7 @@ export default function CollectibleShowcase() {
                             </div>
                         </TabsContent>
 
-                        <TabsContent value="leaderboard" className="h-full m-0 p-6">
+                        <TabsContent value="leaderboard" className="h-full m-0 p-6 overflow-y-auto">
                             <div className="space-y-4">
                                 <h2 className="text-xl font-bold text-white mb-4">Global Leaderboard</h2>
                                 {[1, 2, 3, 4, 5].map((rank) => (
@@ -355,34 +359,33 @@ export default function CollectibleShowcase() {
                                         <CardContent className="p-4">
                                             <div className="flex items-center justify-between">
                                                 <div className="flex items-center gap-4">
-                                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold ${
-                                                        rank === 1 ? 'bg-yellow-500 text-black' :
-                                                        rank === 2 ? 'bg-gray-400 text-black' :
-                                                        rank === 3 ? 'bg-orange-600 text-white' :
-                                                        'bg-white/20 text-white'
-                                                    }`}>
+                                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold ${rank === 1 ? 'bg-yellow-500 text-black' :
+                                                            rank === 2 ? 'bg-gray-400 text-black' :
+                                                                rank === 3 ? 'bg-orange-600 text-white' :
+                                                                    'bg-white/20 text-white'
+                                                        }`}>
                                                         {rank}
                                                     </div>
                                                     <div>
                                                         <div className="font-bold text-white">
-                                                            {rank === 1 ? 'CodeMaster' : 
-                                                             rank === 2 ? 'AIWizard' :
-                                                             rank === 3 ? 'DesignGuru' :
-                                                             `Developer${rank}`}
+                                                            {rank === 1 ? 'CodeMaster' :
+                                                                rank === 2 ? 'AIWizard' :
+                                                                    rank === 3 ? 'DesignGuru' :
+                                                                        `Developer${rank}`}
                                                         </div>
                                                         <div className="text-sm text-slate-400">
-                                                            {rank === 1 ? '45,230' : 
-                                                             rank === 2 ? '38,120' :
-                                                             rank === 3 ? '32,890' :
-                                                             `${30000 - rank * 1000}`} power
+                                                            {rank === 1 ? '45,230' :
+                                                                rank === 2 ? '38,120' :
+                                                                    rank === 3 ? '32,890' :
+                                                                        `${30000 - rank * 1000}`} power
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <Badge variant="outline" className="text-slate-400">
                                                     {rank === 1 ? 'Champion' :
-                                                     rank === 2 ? 'Master' :
-                                                     rank === 3 ? 'Expert' :
-                                                     'Contributor'}
+                                                        rank === 2 ? 'Master' :
+                                                            rank === 3 ? 'Expert' :
+                                                                'Contributor'}
                                                 </Badge>
                                             </div>
                                         </CardContent>
@@ -391,7 +394,7 @@ export default function CollectibleShowcase() {
                             </div>
                         </TabsContent>
 
-                        <TabsContent value="mint" className="h-full m-0 p-6">
+                        <TabsContent value="mint" className="h-full m-0 p-6 overflow-y-auto">
                             <div className="space-y-6">
                                 <h2 className="text-xl font-bold text-white mb-4">Mint New Card</h2>
                                 <Card className="bg-white/10 border-white/20">
@@ -409,45 +412,6 @@ export default function CollectibleShowcase() {
                                         </div>
                                     </CardContent>
                                 </Card>
-                            </div>
-                        </TabsContent>
-
-                        <TabsContent value="achievements" className="h-full m-0 p-6">
-                            <div className="space-y-4">
-                                <h2 className="text-xl font-bold text-white mb-4">Your Achievements</h2>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    {[
-                                        { name: "First Project", icon: Target, progress: 100, total: 1 },
-                                        { name: "Code Reviews", icon: Users, progress: 75, total: 100 },
-                                        { name: "AI Implementations", icon: Sparkles, progress: 50, total: 50 },
-                                        { name: "Courses Completed", icon: Award, progress: 25, total: 25 },
-                                        { name: "Community Contributions", icon: Heart, progress: 15, total: 20 },
-                                        { name: "Days Streak", icon: Flame, progress: 7, total: 30 }
-                                    ].map((achievement) => {
-                                        const Icon = achievement.icon;
-                                        return (
-                                            <Card key={achievement.name} className="bg-white/10 border-white/20">
-                                                <CardContent className="p-4">
-                                                    <div className="flex items-center gap-3 mb-2">
-                                                        <Icon className="w-5 h-5 text-blue-400" />
-                                                        <span className="font-medium text-white">{achievement.name}</span>
-                                                    </div>
-                                                    <div className="space-y-2">
-                                                        <div className="flex justify-between text-sm">
-                                                            <span className="text-slate-400">
-                                                                {achievement.progress} / {achievement.total}
-                                                            </span>
-                                                            <span className="text-slate-400">
-                                                                {Math.round((achievement.progress / achievement.total) * 100)}%
-                                                            </span>
-                                                        </div>
-                                                        <Progress value={(achievement.progress / achievement.total) * 100} />
-                                                    </div>
-                                                </CardContent>
-                                            </Card>
-                                        );
-                                    })}
-                                </div>
                             </div>
                         </TabsContent>
                     </div>
@@ -471,7 +435,7 @@ export default function CollectibleShowcase() {
                             className="bg-white rounded-lg p-6 max-w-md w-full"
                             onClick={(e) => e.stopPropagation()}
                         >
-                            <div className="text-center space-y-4">
+                            <div className="text-center space-y-4 text-slate-900">
                                 <div className="aspect-[5/7] bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-lg flex items-center justify-center">
                                     <Trophy className="w-24 h-24 text-purple-400" />
                                 </div>
@@ -493,9 +457,9 @@ export default function CollectibleShowcase() {
                                     </span>
                                 </div>
                                 {!selectedCard.minted && (
-                                    <Button 
+                                    <Button
                                         onClick={() => mintCard(selectedCard.id)}
-                                        className="w-full bg-purple-600 hover:bg-purple-700"
+                                        className="w-full bg-purple-600 hover:bg-purple-700 text-white"
                                     >
                                         <Gem className="w-4 h-4 mr-2" />
                                         Mint Card

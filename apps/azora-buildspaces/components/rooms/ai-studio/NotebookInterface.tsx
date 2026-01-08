@@ -18,34 +18,14 @@ interface Cell {
 const INITIAL_CELLS: Cell[] = [
     {
         id: '1',
-        type: 'code',
-        content: `import torch
-import torch.nn as nn
-import torch.optim as optim
-
-# Define a simple neural network
-class SimpleNet(nn.Module):
-    def __init__(self):
-        super(SimpleNet, self).__init__()
-        self.fc1 = nn.Linear(10, 5)
-        self.fc2 = nn.Linear(5, 1)
-
-    def forward(self, x):
-        x = torch.relu(self.fc1(x))
-        x = self.fc2(x)
-        return x
-
-model = SimpleNet()
-print(model)`,
-        output: `SimpleNet(
-  (fc1): Linear(in_features=10, out_features=5, bias=True)
-  (fc2): Linear(in_features=5, out_features=1, bias=True)
-)`
+        type: 'markdown',
+        content: '# New Notebook\nSelect a kernel to start coding.\n\n*Note: Python execution is currently disabled pending backend kernel integration.*'
     }
 ];
 
 export default function NotebookInterface() {
     const [cells, setCells] = useState<Cell[]>(INITIAL_CELLS);
+    const notebookEnabled = process.env.NEXT_PUBLIC_NOTEBOOK_ENABLED === 'true'
 
     const addCell = () => {
         setCells([...cells, {
@@ -60,26 +40,34 @@ export default function NotebookInterface() {
     };
 
     const executeCell = (id: string) => {
-        setCells(cells.map(c => {
-            if (c.id === id) {
-                return { ...c, isExecuting: true };
-            }
-            return c;
-        }));
+        // Execution requires a backend kernel; call the execution API which proxies to a kernel when configured
+        const notebookEnabled = process.env.NEXT_PUBLIC_NOTEBOOK_ENABLED === 'true'
 
-        // Simulate execution
-        setTimeout(() => {
-            setCells(cells.map(c => {
-                if (c.id === id) {
-                    return {
-                        ...c,
-                        isExecuting: false,
-                        output: `[Execution Complete] Result for cell ${id}\n> Tensor([0.123, 0.456])`
-                    };
-                }
-                return c;
-            }));
-        }, 1000);
+        if (!notebookEnabled) {
+            setCells(cells.map(c => (c.id === id ? { ...c, isExecuting: false, output: `Execution disabled: backend kernel not configured. Enable via NEXT_PUBLIC_NOTEBOOK_ENABLED=true to allow live execution.` } : c)))
+            return
+        }
+
+        const cell = cells.find(c => c.id === id)
+        if (!cell) return
+
+        setCells(cells.map(c => (c.id === id ? { ...c, isExecuting: true } : c)))
+
+        fetch('/api/notebook/execute', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ code: cell.content })
+        })
+        .then(async (r) => {
+            const data = await r.json()
+            if (!r.ok) {
+                throw new Error(data.error || 'Execution failed')
+            }
+            setCells(prev => prev.map(c => c.id === id ? { ...c, isExecuting: false, output: data.result || JSON.stringify(data.raw || {}) } : c))
+        })
+        .catch((err) => {
+            setCells(prev => prev.map(c => c.id === id ? { ...c, isExecuting: false, output: `[Execution error] ${err instanceof Error ? err.message : String(err)}` } : c))
+        })
     };
 
     const updateCellContent = (id: string, content: string) => {
@@ -92,6 +80,9 @@ export default function NotebookInterface() {
                 <div className="flex items-center gap-2">
                     <span className="font-semibold px-2">Untitled Notebook.ipynb</span>
                     <span className="text-xs text-muted-foreground">Python 3.9 (PyTorch 2.0)</span>
+                    {!notebookEnabled && (
+                        <span className="ml-2 text-xs text-amber-400">Execution Disabled (server kernel not configured)</span>
+                    )}
                 </div>
                 <div className="flex items-center gap-2">
                     <Button size="sm" variant="outline" onClick={addCell} className="gap-2">

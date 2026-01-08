@@ -26,8 +26,8 @@ export class SupervisorAgent {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    did: "did:key:z6MkpTHR8V369", // In production, this comes from the user's Passport
-                    signature: "mock_signature",
+                    did: request.payload?.did || "did:key:z6MkpTHR8V369", // Fallback to default if not provided
+                    signature: request.payload?.signature || "UNSIGNED", // Require real signature in production
                     payload: {
                         type: "AGENT_TASK",
                         room: request.room,

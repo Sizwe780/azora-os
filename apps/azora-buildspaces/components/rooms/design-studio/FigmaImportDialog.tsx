@@ -14,38 +14,77 @@ export default function FigmaImportDialog({ onImport }: FigmaImportDialogProps) 
     const [url, setUrl] = useState("");
     const [isImporting, setIsImporting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
+    const figmaEnabled = process.env.NEXT_PUBLIC_FIGMA_ENABLED === 'true'
 
     const handleImport = async () => {
         if (!url) return;
         setIsImporting(true);
 
-        // Simulate Figma API call (real logic would use FIGMA_TOKEN)
-        try {
-            // In a real app, we would fetch from /api/design/figma-import
-            // For now, we'll simulate a successful response with a mock frame
-            await new Promise(resolve => setTimeout(resolve, 1500));
-            
-            const mockFrame = {
-                id: `figma-${Date.now()}`,
-                name: "Imported Frame",
-                width: 375,
-                height: 812,
-                components: [
-                    { type: 'button', label: 'Click Me' },
-                    { type: 'input', placeholder: 'Enter email' }
-                ]
-            };
+        // Real implementation requires valid FIGMA_TOKEN and server-side integration
+        if (!figmaEnabled) {
+            setIsImporting(false)
+            return
+        }
 
-            onImport(mockFrame);
-            setIsSuccess(true);
-            setTimeout(() => {
-                setIsSuccess(false);
-                setUrl("");
-            }, 2000);
+        try {
+            const resp = await fetch('/api/design/figma-import', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url })
+            })
+
+            const data = await resp.json()
+
+            if (!resp.ok) {
+                throw new Error(data.error || 'Import failed')
+            }
+
+            if (data.frame) {
+                onImport({
+                    id: data.frame.id,
+                    name: data.frame.name,
+                    width: data.frame.width || 375,
+                    height: data.frame.height || 812,
+                    components: data.frame.components || []
+                })
+
+                setIsSuccess(true)
+                // Try to persist the imported frame to the database
+                try {
+                    const saveResp = await fetch('/api/design/frames', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            id: data.frame.id,
+                            name: data.frame.name,
+                            width: data.frame.width,
+                            height: data.frame.height,
+                            components: data.frame.components,
+                            raw: data.frame.raw || data.frame
+                        })
+                    })
+
+                    if (saveResp.ok) {
+                        const saved = await saveResp.json()
+                        console.log('Figma frame persisted', saved)
+                    } else {
+                        const err = await saveResp.json()
+                        console.warn('Could not persist figma frame', err)
+                    }
+                } catch (err) {
+                    console.warn('Persist request failed', err)
+                }
+
+                setTimeout(() => {
+                    setIsSuccess(false)
+                    setUrl("")
+                }, 2000)
+            }
         } catch (error) {
-            console.error("Figma import failed", error);
+            console.error('Figma import failed', error)
+            alert(`Import failed: ${error instanceof Error ? error.message : String(error)}`)
         } finally {
-            setIsImporting(false);
+            setIsImporting(false)
         }
     };
 
@@ -72,13 +111,16 @@ export default function FigmaImportDialog({ onImport }: FigmaImportDialogProps) 
                         <p className="text-xs text-muted-foreground">
                             Paste the link to your Figma file or specific frame.
                         </p>
+                        {!figmaEnabled && (
+                            <p className="text-xs text-amber-400 mt-2">Figma import is disabled. Configure <code>NEXT_PUBLIC_FIGMA_ENABLED=true</code> and provide a <code>FIGMA_TOKEN</code> to enable.</p>
+                        )}
                     </div>
                 </div>
                 <DialogFooter>
                     <Button 
                         className="w-full gap-2" 
                         onClick={handleImport}
-                        disabled={isImporting || !url}
+                        disabled={isImporting || !url || !figmaEnabled}
                     >
                         {isImporting ? (
                             <>

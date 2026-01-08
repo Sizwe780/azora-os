@@ -2,6 +2,7 @@ import { Navbar } from "@/components/features/navbar"
 import { Footer } from "@/components/features/footer"
 import { Shield, Globe, Cpu, Users, Zap, Heart } from "lucide-react"
 import Link from "next/link"
+import { Button } from "@/components/ui/button"
 
 export default function AboutPage() {
   return (

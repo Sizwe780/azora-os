@@ -4,18 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, AreaChart, Area } from 'recharts';
 import { TrendingUp } from "lucide-react";
 
-const lossData = Array.from({ length: 20 }, (_, i) => ({
-    epoch: i + 1,
-    trainLoss: Math.exp(-i * 0.2) + Math.random() * 0.1,
-    valLoss: Math.exp(-i * 0.18) + Math.random() * 0.15 + 0.1,
-}));
-
-const accuracyData = Array.from({ length: 20 }, (_, i) => ({
-    epoch: i + 1,
-    accuracy: 1 - Math.exp(-i * 0.15),
-}));
-
 export default function TrainingDashboard({ isTraining }: { isTraining?: boolean }) {
+    const [lossData, setLossData] = useState<any[]>([]);
+    const [accuracyData, setAccuracyData] = useState<any[]>([]);
     if (!isTraining) {
         return (
             <div className="h-full flex flex-col items-center justify-center p-8 text-center space-y-4">

@@ -35,6 +35,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Prisma generate (buildspaces)
+        run: npx prisma generate --schema=prisma/schema.prisma
+
+      - name: Run unit tests (azora-buildspaces)
+        run: pnpm -w -F azora-buildspaces test --if-present
+
       - name: Build azora-buildspaces
         run: pnpm -w -F azora-buildspaces build
 
@@ -47,3 +53,7 @@ jobs:
           sleep 5
           curl -sSf http://localhost:3000/ || exit 1
           pkill -f "next start" || true
+
+      - name: Run migrations (if DATABASE_URL)
+        if: ${{ secrets.DATABASE_URL != '' }}
+        run: npx prisma migrate deploy --schema=prisma/schema.prisma

@@ -71,12 +71,13 @@
     "y-websocket": "3.0.0",
     "y-indexeddb": "^9.0.12",
     "yjs": "13.6.27",
-    "@transmute/did-key-ed25519": "^0.3.0",
+    "@transmute/did-key-ed25519": "0.3.0-unstable.10",
     "ssh2": "^1.15.0",
     "zod": "3.25.76",
     "zustand": "5.0.9",
     "next-auth": "^4.24.0",
-    "@next-auth/prisma-adapter": "^1.0.5"
+    "@next-auth/prisma-adapter": "^1.0.5",
+    "@azora/components": "workspace:*"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.9",

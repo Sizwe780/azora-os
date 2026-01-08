@@ -58,6 +58,7 @@ function createPrismaClient() {
         });
     }
 
+    // For Prisma 5, use direct connection
     return new PrismaClient({
         log: process.env.NODE_ENV === 'development' ? ['query', 'warn', 'error'] : ['error'],
     });

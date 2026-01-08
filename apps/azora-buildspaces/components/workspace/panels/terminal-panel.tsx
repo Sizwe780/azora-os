@@ -14,11 +14,30 @@ export function TerminalPanel({ onClose }: TerminalPanelProps) {
   const [isConnected, setIsConnected] = useState(false)
 
   useEffect(() => {
-    const socket = new WebSocket("ws://localhost:3001?type=terminal&sessionId=default")
+    // Terminal WebSocket configuration
+    // Use environment variable or fallback to configured port
+    const wsProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws'
+    const wsHost = process.env.NEXT_PUBLIC_TERMINAL_HOST || 'localhost:3001'
+    const socketUrl = `${wsProtocol}://${wsHost}?type=terminal&sessionId=default`
+    
+    // Only connect if terminal service is explicitly enabled via env
+    const terminalEnabled = process.env.NEXT_PUBLIC_TERMINAL_ENABLED === 'true'
+    
+    if (!terminalEnabled) {
+      console.warn('Terminal service not configured. Set NEXT_PUBLIC_TERMINAL_ENABLED=true to enable.')
+      return
+    }
+
+    const socket = new WebSocket(socketUrl)
     
     socket.onopen = () => {
       setIsConnected(true)
       console.log("Terminal WebSocket connected")
+    }
+
+    socket.onerror = (error) => {
+      console.error("Terminal WebSocket error:", error)
+      setIsConnected(false)
     }
 
     socket.onclose = () => {
@@ -29,7 +48,9 @@ export function TerminalPanel({ onClose }: TerminalPanelProps) {
     setWs(socket)
 
     return () => {
-      socket.close()
+      if (socket.readyState === WebSocket.OPEN) {
+        socket.close()
+      }
     }
   }, [])
 

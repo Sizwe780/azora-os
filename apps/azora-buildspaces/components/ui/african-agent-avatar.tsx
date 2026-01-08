@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import Image from "next/image"
 
 interface AgentAvatarProps {
-  agent: "elara" | "sankofa" | "themba" | "jabari" | "nia" | "imani" | "zuri"
+  agent: "elara" | "sankofa" | "themba" | "jabari" | "nia" | "imani" | "zuri" | "kwame" | "zola" | string
   size?: "sm" | "md" | "lg" | "xl" | "2xl" | "hero"
   showGlow?: boolean
   showAura?: boolean
@@ -12,7 +12,20 @@ interface AgentAvatarProps {
   className?: string
 }
 
-export const agentStyles = {
+// Default fallback style for unknown agents
+const defaultAgentStyle = {
+  name: "Agent",
+  role: "assistant",
+  gradient: "from-gray-400 via-gray-500 to-gray-600",
+  glowColor: "rgba(156, 163, 175, 0.6)",
+  auraColors: ["#9CA3AF", "#6B7280", "#4B5563"],
+  description: "AI Assistant",
+  title: "Agent",
+  theme: "neutral",
+  imageUrl: "/images/agent-themba.png",
+}
+
+export const agentStyles: Record<string, typeof defaultAgentStyle> = {
   // Elara - The Mother/XO Architect - Golden with cyan eyes and crown
   elara: {
     name: "Elara",
@@ -83,7 +96,7 @@ export const agentStyles = {
     description: "Creative Director",
     title: "The Artist",
     theme: "rose-creative",
-    imageUrl: "/images/agent-imani.svg", // Unique Imani avatar (rose gradient)
+    imageUrl: "/images/agent-imani.svg",
   },
   // Zuri - Youngest - Titanium/silver
   zuri: {
@@ -97,7 +110,32 @@ export const agentStyles = {
     theme: "emerald-flow",
     imageUrl: "/images/agent-themba.png",
   },
+  // Kwame - Backend Architect - Deep purple/indigo
+  kwame: {
+    name: "Kwame",
+    role: "son",
+    gradient: "from-indigo-400 via-purple-500 to-violet-600",
+    glowColor: "rgba(99, 102, 241, 0.6)",
+    auraColors: ["#818CF8", "#8B5CF6", "#7C3AED"],
+    description: "Backend Architect",
+    title: "The Architect",
+    theme: "indigo-deep",
+    imageUrl: "/images/agent-themba.png",
+  },
+  // Zola - Communication Lead - Warm coral/orange
+  zola: {
+    name: "Zola",
+    role: "daughter",
+    gradient: "from-rose-400 via-orange-400 to-amber-400",
+    glowColor: "rgba(251, 113, 133, 0.6)",
+    auraColors: ["#FB7185", "#FB923C", "#FBBF24"],
+    description: "Communication Lead",
+    title: "The Connector",
+    theme: "coral-warm",
+    imageUrl: "/images/agent-nia.png",
+  },
 }
+
 
 const sizes = {
   sm: { container: 40, image: 36 },
@@ -116,8 +154,9 @@ export function AfricanAgentAvatar({
   trackMouse = false,
   className = "",
 }: AgentAvatarProps) {
-  const style = agentStyles[agent]
+  const style = agentStyles[agent] || defaultAgentStyle
   const s = sizes[size]
+
   const containerRef = useRef<HTMLDivElement>(null)
   const [eyeOffset, setEyeOffset] = useState({ x: 0, y: 0 })
 

@@ -99,63 +99,11 @@ const agents = [
 ]
 
 const initialMessages: Message[] = [
-  {
-    id: "1",
-    role: "assistant",
-    content:
-      "Welcome to the Command Desk. I'm Elara, your XO Architect. I coordinate our specialized AI agents to bring your vision to life.\n\nDescribe what you want to build, and I'll create a specification for the team. You can also switch to the Agent Tasks tab to monitor progress or use Direct mode to instruct specific agents.",
-    agent: "Elara",
-    timestamp: new Date(),
-  },
+  // Start with empty state - messages will be loaded from database or agent interactions
 ]
 
 const initialTasks: Task[] = [
-  {
-    id: "1",
-    title: "Generate authentication components",
-    priority: "high",
-    agentId: "sankofa",
-    agentName: "Sankofa",
-    agentColor: "from-accent to-purple-400",
-    icon: Code2,
-    task: "Generate authentication components",
-    description: "Creating login form, signup form, and auth context with proper TypeScript types",
-    status: "complete",
-    progress: 100,
-    files: ["components/auth/login-form.tsx", "components/auth/signup-form.tsx", "context/auth-context.tsx"],
-    estimatedTime: "Completed",
-  },
-  {
-    id: "2",
-    title: "Set up API routes",
-    priority: "high",
-    agentId: "themba",
-    agentName: "Themba",
-    agentColor: "from-amber-500 to-orange-400",
-    icon: Database,
-    task: "Set up API routes",
-    description: "Creating authentication endpoints with JWT token generation and middleware",
-    status: "active",
-    progress: 65,
-    files: ["app/api/auth/login/route.ts", "app/api/auth/register/route.ts"],
-    canModify: true,
-    estimatedTime: "~2 min remaining",
-  },
-  {
-    id: "3",
-    title: "Security audit",
-    priority: "medium",
-    agentId: "jabari",
-    agentName: "Jabari",
-    agentColor: "from-blue-500 to-cyan-400",
-    icon: Shield,
-    task: "Security audit",
-    description: "Reviewing auth implementation for vulnerabilities and OWASP compliance",
-    status: "pending",
-    progress: 0,
-    canModify: true,
-    estimatedTime: "Queued",
-  },
+  // Start with empty state - tasks will be loaded from database or created dynamically
 ]
 
 interface CommandDeskProps {
@@ -180,70 +128,93 @@ export function CommandDesk({ onSwitchToKnowledge }: CommandDeskProps) {
     scrollToBottom()
   }, [messages])
 
-  // Slash command definitions
+  // Agent API URL (read from public env or default)
+  const AGENT_API_URL = process.env.NEXT_PUBLIC_AGENT_API_URL || '/api/agents/invoke'
+
+  // Slash command definitions - forward to real agent API instead of returning mocked results
   const slashCommands = {
     '/generate': {
       description: 'Generate code/components',
       handler: async (args: string) => {
         const [type, ...rest] = args.split(' ')
         const target = rest.join(' ')
-
-        const specs: AgentSpec[] = [
-          { agentId: "sankofa", agentName: "Sankofa", task: `Generate ${type}: ${target}`, status: "active" }
-        ]
-
-        return {
-          content: `**Generating ${type}:** ${target}\n\nI'll create the ${type} with proper structure and styling.`,
-          specs
+        try {
+          const resp = await fetch(AGENT_API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'generate-code', context: `Generate ${type}: ${target}` })
+          })
+          if (!resp.ok) throw new Error('Agent API error')
+          const data = await resp.json()
+          return { content: data.result || `No result from agent`, specs: data.specs || [] }
+        } catch (error) {
+          return { content: `Failed to invoke agent for /generate: ${error instanceof Error ? error.message : String(error)}`, specs: [] }
         }
       }
     },
     '/test': {
       description: 'Run tests on files',
       handler: async (args: string) => {
-        const specs: AgentSpec[] = [
-          { agentId: "sankofa", agentName: "Sankofa", task: `Test: ${args}`, status: "active" }
-        ]
-
-        return {
-          content: `**Running tests for:** ${args}\n\nExecuting test suite and checking for issues.`,
-          specs
+        try {
+          const resp = await fetch(AGENT_API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'run-tests', context: args })
+          })
+          if (!resp.ok) throw new Error('Agent API error')
+          const data = await resp.json()
+          return { content: data.result || `Tests queued`, specs: data.specs || [] }
+        } catch (error) {
+          return { content: `Failed to invoke agent for /test: ${error instanceof Error ? error.message : String(error)}`, specs: [] }
         }
       }
     },
     '/deploy': {
       description: 'Deploy application',
       handler: async (args: string) => {
-        const specs: AgentSpec[] = [
-          { agentId: "themba", agentName: "Themba", task: `Deploy: ${args}`, status: "active" },
-          { agentId: "naledi", agentName: "Naledi", task: "Environment setup", status: "pending" }
-        ]
-
-        return {
-          content: `**Deploying application:** ${args}\n\nPreparing deployment pipeline and environment configuration.`,
-          specs
+        try {
+          const resp = await fetch(AGENT_API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'deploy', context: args })
+          })
+          if (!resp.ok) throw new Error('Agent API error')
+          const data = await resp.json()
+          return { content: data.result || `Deploy started`, specs: data.specs || [] }
+        } catch (error) {
+          return { content: `Failed to invoke agent for /deploy: ${error instanceof Error ? error.message : String(error)}`, specs: [] }
         }
       }
     },
     '/explain': {
       description: 'Explain code/concepts',
       handler: async (args: string) => {
-        return {
-          content: `**Explanation:** ${args}\n\nLet me break this down for you in detail...`,
-          specs: []
+        try {
+          const resp = await fetch(AGENT_API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'explain', context: args })
+          })
+          const data = await resp.json()
+          return { content: data.result || `No explanation available`, specs: [] }
+        } catch (error) {
+          return { content: `Failed to invoke agent for /explain: ${error instanceof Error ? error.message : String(error)}`, specs: [] }
         }
       }
     },
     '/security': {
       description: 'Security audit',
       handler: async (args: string) => {
-        const specs: AgentSpec[] = [
-          { agentId: "sankofa", agentName: "Sankofa", task: "Security audit", status: "active" }
-        ]
-
-        return {
-          content: `**Running security audit...**\n\nScanning for vulnerabilities and compliance issues.`,
-          specs
+        try {
+          const resp = await fetch(AGENT_API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'security-audit', context: args })
+          })
+          const data = await resp.json()
+          return { content: data.result || `Security audit queued`, specs: data.specs || [] }
+        } catch (error) {
+          return { content: `Failed to invoke agent for /security: ${error instanceof Error ? error.message : String(error)}`, specs: [] }
         }
       }
     },

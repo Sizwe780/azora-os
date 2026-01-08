@@ -7,7 +7,13 @@ module.exports = {
     '^@tests/(.*)$': '<rootDir>/tests/$1',
   },
   transform: {
-    '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
+    '^.+\\.(js|jsx)$': 'babel-jest',
+    '^.+\\.(ts|tsx)$': 'ts-jest',
+  },
+  globals: {
+    'ts-jest': {
+      tsconfig: 'tsconfig.json'
+    }
   },
   collectCoverageFrom: [
     'services/**/*.{js,ts}',

@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -83,8 +83,12 @@ model User {
   accounts      Account[]
   sessions      Session[]
   
+  password      String?
+  createdAt     DateTime  @default(now())
+  
   // Azora Specific
   organizations OrganizationMember[]
+  figmaFrames    FigmaFrame[]
 }
 
 model VerificationToken {
@@ -120,4 +124,22 @@ model OrganizationMember {
   user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([organizationId, userId])
+}
+
+// --- Figma Import Models ---
+
+model FigmaFrame {
+  id         String   @id @default(cuid())
+  figmaId    String?  @unique
+  name       String
+  width      Int?
+  height     Int?
+  components Json?
+  raw        Json
+  importedBy String?
+  importedAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user User? @relation(fields: [importedBy], references: [id])
 }

@@ -4,7 +4,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -56,6 +55,7 @@ model User {
   scholarships Scholarship[]
   proofsOfValue ProofOfValue[]
   buildspacesProjects BuildSpaceProject[]
+  figmaFrames         FigmaFrame[]
 
   @@index([role])
   @@index([createdAt])
@@ -276,6 +276,25 @@ model Token {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("tokens")
+}
+
+// Figma frames imported via BuildSpaces Design Studio
+model FigmaFrame {
+  id         String   @id @default(cuid())
+  figmaId    String?
+  name       String
+  width      Int?
+  height     Int?
+  components Json?
+  raw        Json
+  importedBy String?
+  importedAt DateTime @default(now())
+
+  user User? @relation(fields: [importedBy], references: [id], onDelete: SetNull)
+
+  @@index([figmaId])
+  @@index([importedBy])
+  @@map("figma_frames")
 }
 
 model SafetyIncident {
