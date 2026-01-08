@@ -3,10 +3,14 @@
 import { Navbar } from '@/components/features/navbar'
 import { Footer } from '@/components/features/footer'
 import { SpecEditor } from '@/components/features/spec-chamber/spec-editor'
-import { CheckCircle2, BookOpen, Zap, BarChart3 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { CheckCircle2, BookOpen, Zap, BarChart3, Play } from 'lucide-react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 export default function SpecChamberPage() {
+  const router = useRouter()
+
   return (
     <div className="min-h-screen bg-[#0d1117] text-white flex flex-col">
       <Navbar />
@@ -22,9 +26,15 @@ export default function SpecChamberPage() {
                   SPEC-driven development: Write specs, generate tests, validate requirements automatically
                 </p>
               </div>
-              <Link href="/features" className="text-emerald-400 hover:text-emerald-300">
-                ← Back to features
-              </Link>
+              <div className="flex items-center gap-4">
+                <Button variant="outline" onClick={() => router.push('/demo-spec-chamber')} className="border-white/20 text-white hover:bg-white/10">
+                  <Play className="w-4 h-4 mr-2" />
+                  Try Demo
+                </Button>
+                <Link href="/features" className="text-emerald-400 hover:text-emerald-300">
+                  ← Back to features
+                </Link>
+              </div>
             </div>
 
             {/* Stats */}

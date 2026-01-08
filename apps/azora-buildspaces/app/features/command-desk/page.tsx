@@ -26,14 +26,19 @@ export default function CommandDeskPage() {
                 The Command Desk
               </h1>
               <p className="text-xl text-gray-400 mb-8 leading-relaxed">
-                A powerful, CLI-first interface for managing your entire infrastructure. 
-                Execute complex workflows, manage agents, and monitor deployments 
+                A powerful, CLI-first interface for managing your entire infrastructure.
+                Execute complex workflows, manage agents, and monitor deployments
                 with a single keystroke.
               </p>
               <div className="flex flex-wrap gap-4">
                 <button className="px-8 py-4 bg-emerald-500 hover:bg-emerald-600 text-black font-bold rounded-xl transition-all">
                   Open Terminal
                 </button>
+                <Link href="/demo-command-desk">
+                  <button className="px-8 py-4 bg-white/5 hover:bg-white/10 border border-emerald-500/30 text-emerald-400 rounded-xl transition-all">
+                    Try Demo
+                  </button>
+                </Link>
                 <button className="px-8 py-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-all">
                   View Documentation
                 </button>
@@ -75,7 +80,7 @@ export default function CommandDeskPage() {
               <Command className="h-10 w-10 text-emerald-400 mb-6" />
               <h3 className="text-xl font-bold mb-4">Unified Interface</h3>
               <p className="text-gray-400 text-sm leading-relaxed">
-                One command line to rule them all. Manage Git, AWS, Slack, and your 
+                One command line to rule them all. Manage Git, AWS, Slack, and your
                 custom AI agents from a single, unified interface.
               </p>
             </div>
@@ -83,7 +88,7 @@ export default function CommandDeskPage() {
               <Zap className="h-10 w-10 text-emerald-400 mb-6" />
               <h3 className="text-xl font-bold mb-4">Macro Engine</h3>
               <p className="text-gray-400 text-sm leading-relaxed">
-                Automate repetitive tasks by recording and replaying complex 
+                Automate repetitive tasks by recording and replaying complex
                 command sequences across multiple environments.
               </p>
             </div>
@@ -91,7 +96,7 @@ export default function CommandDeskPage() {
               <Shield className="h-10 w-10 text-emerald-400 mb-6" />
               <h3 className="text-xl font-bold mb-4">Secure Execution</h3>
               <p className="text-gray-400 text-sm leading-relaxed">
-                Every command is audited by the Constitutional AI to ensure 
+                Every command is audited by the Constitutional AI to ensure
                 compliance with your organization's security policies.
               </p>
             </div>
