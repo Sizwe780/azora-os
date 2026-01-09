@@ -49,37 +49,8 @@ export default function TaskBoard({ ydoc, provider }: TaskBoardProps) {
         sharedTasks.observe(updateTasks);
         updateTasks();
 
-        // Seed initial tasks if empty
-        if (sharedTasks.size === 0) {
-            const initialTasks: Task[] = [
-                {
-                    id: "1",
-                    title: "Design user authentication flow",
-                    description: "Create wireframes and user journey for login/signup",
-                    priority: "high",
-                    assignee: "Alice",
-                    avatar: "A",
-                    dueDate: "Dec 20",
-                    comments: 3,
-                    attachments: 2,
-                    status: "todo"
-                },
-                {
-                    id: "3",
-                    title: "Implement API endpoints",
-                    description: "Build REST API for user management",
-                    priority: "high",
-                    assignee: "Carol",
-                    avatar: "C",
-                    dueDate: "Dec 18",
-                    comments: 5,
-                    attachments: 1,
-                    progress: 75,
-                    status: "in-progress"
-                }
-            ];
-            initialTasks.forEach(t => sharedTasks.set(t.id, t));
-        }
+        // Tasks start empty - no mock data (Constitutional Compliance: No Mock Protocol)
+        // Users can add tasks via the UI as needed
 
         return () => sharedTasks.unobserve(updateTasks);
     }, [ydoc]);
