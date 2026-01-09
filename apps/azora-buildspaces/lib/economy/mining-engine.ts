@@ -251,13 +251,20 @@ async function verifyWorkQuality(
   action: RewardAction,
   workContent: string
 ): Promise<boolean> {
+  // Enforce content length limits for performance
+  const MAX_CONTENT_LENGTH = 100000 // 100KB
+  if (workContent.length > MAX_CONTENT_LENGTH) {
+    console.warn('[MINING] Content too large, rejecting:', workContent.length)
+    return false
+  }
+
   // Basic quality checks
   if (!workContent || workContent.trim().length < 10) {
     return false
   }
 
-  // Check for spam patterns
-  const spamPatterns = ['asdf', 'test test test', '111111']
+  // Check for spam patterns (loaded from config for maintainability)
+  const spamPatterns = getSpamPatterns()
   const lowerContent = workContent.toLowerCase()
   if (spamPatterns.some(pattern => lowerContent.includes(pattern))) {
     return false
@@ -284,6 +291,20 @@ async function verifyWorkQuality(
     default:
       return true
   }
+}
+
+/**
+ * Get spam patterns from configuration
+ * TODO: Move to external config file or database
+ */
+function getSpamPatterns(): string[] {
+  return [
+    'asdf',
+    'test test test',
+    '111111',
+    'qwerty',
+    'Lorem ipsum' // Generic placeholder text
+  ]
 }
 
 /**

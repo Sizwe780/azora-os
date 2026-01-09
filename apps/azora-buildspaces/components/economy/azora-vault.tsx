@@ -7,7 +7,7 @@
  * Implements Constitutional principle of Truth Economics (full transparency)
  */
 
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -203,14 +203,14 @@ export function AzoraVault({ userId, className }: AzoraVaultProps) {
 
 function TransactionItem({ transaction }: { transaction: Transaction }) {
   const isPositive = transaction.amount > 0
-  const statusIcon = transaction.status === 'COMPLETED' ? CheckCircle : AlertCircle
+  const StatusIcon = transaction.status === 'COMPLETED' ? CheckCircle : AlertCircle
   const statusColor = transaction.status === 'COMPLETED' ? 'text-green-500' : 'text-yellow-500'
 
   return (
     <div className="flex items-start justify-between p-3 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors">
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1">
-          {React.createElement(statusIcon, { className: cn('w-3 h-3', statusColor) })}
+          <StatusIcon className={cn('w-3 h-3', statusColor)} />
           <p className="text-sm font-medium truncate">{transaction.description}</p>
         </div>
         <p className="text-xs text-muted-foreground">
@@ -235,6 +235,3 @@ function TransactionItem({ transaction }: { transaction: Transaction }) {
     </div>
   )
 }
-
-// Make React available for createElement
-import React from 'react'
