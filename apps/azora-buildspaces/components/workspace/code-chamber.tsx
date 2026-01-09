@@ -45,7 +45,7 @@ export function CodeChamber({ id }: CodeChamberProps) {
         if (projectId) {
             loadProject(projectId)
         }
-    }, [projectId])
+    }, [projectId, loadProject])
 
     const handleFileSelect = (fileId: string) => {
         setActiveFile(fileId)
