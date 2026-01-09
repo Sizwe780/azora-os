@@ -69,6 +69,9 @@ describe('Password Hashing and Verification', () => {
   });
 
   test('empty password can be hashed and verified', () => {
+    // Note: This test validates the hash function itself works with empty strings.
+    // In production, empty passwords should be prevented at the API validation layer
+    // (already handled in register route which requires password to be non-empty)
     const password = '';
     const hashed = hashPassword(password);
     

@@ -38,7 +38,15 @@ export const authOptions: NextAuthOptions = {
 
         // Verify password using crypto.pbkdf2Sync (matching the registration logic)
         // The stored password is in format "salt:hash"
-        const [salt, storedHash] = user.password.split(':');
+        const passwordParts = user.password.split(':');
+        
+        // Validate password format before proceeding
+        if (passwordParts.length !== 2) {
+          console.error('Invalid password format in database for user:', user.email);
+          return null;
+        }
+        
+        const [salt, storedHash] = passwordParts;
         const hash = crypto.pbkdf2Sync(
           credentials.password,
           salt,
