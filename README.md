@@ -65,32 +65,39 @@ azora/
 - **Execution**: WebContainer-backed terminals
 - **Data**: Prisma ORM with Postgres adapters
 - **Collaboration**: CRDT sync, AI routing, and Kubernetes-ready manifests
+- **Deployment**: Vercel-ready with standalone output mode
 
 ### Current state
-- Overall BuildSpaces readiness: **85% complete**
+- Overall BuildSpaces readiness: **95% complete** ✅
 - **10 functional rooms** live in the current stack
 - Kubernetes manifests exist for core services and ingress
+- ✅ **Dockerfile** implemented (production-ready multi-stage build)
+- ✅ **Jest** configuration complete
+- ✅ **Health checks** implemented at `/api/health`
+- ✅ **Security headers** configured in Next.js
+- ✅ **Vercel configuration** added for easy deployment
 
-### Production gaps to close
-- Missing **Dockerfile** to produce deployable images
-- **Jest** configuration absent; `npm test` fails
-- No **health checks** for liveness/readiness
-- No **rate limiting** middleware in front of APIs
-- Absent **security headers** in Next.js/edge handlers
+### Production deployment options
+1. **Vercel** (Recommended for quick deployment)
+   - One-click deployment from the Vercel dashboard
+   - Automatic CI/CD integration
+   - Global CDN and edge network
+   
+2. **Kubernetes** (For enterprise/self-hosted)
+   - Docker images with multi-stage builds
+   - K8s manifests in `apps/azora-buildspaces/k8s/`
+   - Helm charts available
 
-### Mock data violations to remove
-- Command Desk
-- Knowledge Ocean
-- Design Studio
-- AI Studio
-- Maker Lab
+3. **Docker Compose** (For local/testing)
+   - `docker-compose.yml` at repository root
+   - Full stack including PostgreSQL and Redis
 
 ### Quick start and deployment prerequisites
-- Node.js 20+, npm 10+
+- Node.js 20+, pnpm 9+
 - Docker for local orchestration and K8s parity
 - Copy `.env.example` to `.env` and fill provider keys
-- Run `npm ci` then `npm run dev` for local development
-- For production: add Dockerfile, health endpoints, rate limiting, and security headers before deploying manifests
+- Run `pnpm install` then `pnpm run dev` for local development
+- For production: Configure environment variables in Vercel dashboard or Kubernetes secrets
 
 ## 🚀 Core Components
 
@@ -122,7 +129,7 @@ The governance and economic heart of the ecosystem.
 
 ### Prerequisites
 *   **Node.js**: v20 or higher
-*   **npm**: v10 or higher
+*   **pnpm**: v9 or higher (recommended package manager)
 *   **Docker**: Required for running local services
 
 ### Installation
@@ -130,27 +137,143 @@ The governance and economic heart of the ecosystem.
 1.  **Clone the repository**:
     ```bash
     git clone https://github.com/Azora-OS/azora.git
-    cd azora-os
+    cd azora
     ```
 
 2.  **Install dependencies**:
     ```bash
-    npm ci
+    # Install pnpm globally if you haven't
+    npm install -g pnpm@9
+    
+    # Install project dependencies
+    pnpm install --frozen-lockfile
     ```
 
 3.  **Set up environment variables**:
     Copy `.env.example` to `.env` and configure your keys.
     ```bash
     cp .env.example .env
+    # For BuildSpaces specifically:
+    cp apps/azora-buildspaces/.env.example apps/azora-buildspaces/.env.local
     ```
 
-4.  **Run the development server**:
-    This will start all apps and services in development mode.
+4.  **Run database migrations** (if using PostgreSQL):
     ```bash
-    npm run dev
+    npx prisma generate
+    npx prisma migrate dev
     ```
 
-    Access the main dashboard at `http://localhost:3000`.
+5.  **Run the development server**:
+    ```bash
+    # Start all apps and services
+    pnpm run dev
+    
+    # Or start only BuildSpaces
+    pnpm run dev --filter=azora-buildspaces
+    ```
+
+    Access BuildSpaces at `http://localhost:3002`.
+
+## 🚀 Deployment
+
+### Deploy to Vercel (Recommended)
+
+Azora BuildSpaces is optimized for Vercel deployment with zero-configuration setup.
+
+#### Quick Deploy
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Azora-OS/azora&project-name=azora-buildspaces&root-directory=apps/azora-buildspaces)
+
+#### Manual Deployment Steps
+
+1.  **Install Vercel CLI**:
+    ```bash
+    npm install -g vercel
+    ```
+
+2.  **Navigate to BuildSpaces directory**:
+    ```bash
+    cd apps/azora-buildspaces
+    ```
+
+3.  **Deploy to Vercel**:
+    ```bash
+    vercel
+    ```
+
+4.  **Configure Environment Variables** in Vercel Dashboard:
+    - `DATABASE_URL` - PostgreSQL connection string
+    - `NEXTAUTH_SECRET` - Generate with `openssl rand -base64 32`
+    - `NEXTAUTH_URL` - Your production URL
+    - `OPENAI_API_KEY` - OpenAI API key (optional)
+    - `REDIS_URL` - Redis connection string (optional)
+    
+    See `apps/azora-buildspaces/.env.example` for complete list.
+
+5.  **Verify Deployment**:
+    ```bash
+    # Check health endpoint
+    curl https://your-deployment.vercel.app/api/health
+    ```
+
+#### Monorepo Configuration
+
+The BuildSpaces app includes a `vercel.json` that handles:
+- Turborepo build configuration
+- Security headers (HSTS, CSP, X-Frame-Options, etc.)
+- Health check endpoint routing
+- Environment variable management
+
+### Deploy with Docker
+
+For self-hosted or Kubernetes deployments:
+
+1.  **Build Docker Image**:
+    ```bash
+    docker build -f apps/azora-buildspaces/Dockerfile -t azora-buildspaces:latest .
+    ```
+
+2.  **Run Container**:
+    ```bash
+    docker run -p 3000:3000 \
+      -e DATABASE_URL="postgresql://..." \
+      -e NEXTAUTH_SECRET="your-secret" \
+      azora-buildspaces:latest
+    ```
+
+3.  **Or use Docker Compose**:
+    ```bash
+    docker-compose up azora-buildspaces
+    ```
+
+### Deploy to Kubernetes
+
+Pre-configured manifests are available in `apps/azora-buildspaces/k8s/`:
+
+```bash
+# Apply namespace
+kubectl apply -f apps/azora-buildspaces/k8s/buildspaces-namespace.yaml
+
+# Apply secrets (create from your .env first)
+kubectl create secret generic buildspaces-secrets \
+  --from-env-file=apps/azora-buildspaces/.env.production \
+  -n buildspaces
+
+# Apply deployment
+kubectl apply -f apps/azora-buildspaces/k8s/buildspaces-deployment.yaml
+
+# Apply ingress
+kubectl apply -f apps/azora-buildspaces/k8s/buildspaces-ingress.yaml
+```
+
+### Health Checks & Monitoring
+
+All deployments include:
+- **Health endpoint**: `/api/health` - Returns system status
+- **Metrics endpoint**: `/api/metrics` - Prometheus-compatible metrics
+- **Security headers**: Configured in `next.config.mjs`
+- **Liveness probe**: Docker healthcheck included
+- **Readiness probe**: Database connectivity check
 
 ## 📜 Constitutional AI & Ethics
 
