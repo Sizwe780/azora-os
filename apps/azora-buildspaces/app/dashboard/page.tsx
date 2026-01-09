@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { AuthService, User } from "@/lib/services/auth-service"
+import { AzoraVault } from "@/components/economy/azora-vault"
 import { 
   Code2, 
   Brain, 
@@ -330,6 +331,52 @@ export default function DashboardPage() {
                 </CardContent>
               </Card>
             ))}
+          </div>
+        </div>
+
+        {/* Economy & Wallet Section */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold mb-6">Azora Economy</h2>
+          <div className="grid md:grid-cols-2 gap-6">
+            <AzoraVault userId={user.id} className="bg-white/5 border-white/10" />
+            
+            <Card className="bg-white/5 border-white/10">
+              <CardHeader>
+                <CardTitle>Earn AZR Tokens</CardTitle>
+                <CardDescription>
+                  Proof-of-Knowledge rewards for valuable contributions
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3 text-sm">
+                  <div className="flex items-center justify-between p-2 bg-white/5 rounded">
+                    <span>Complete Tutorial</span>
+                    <Badge variant="outline" className="bg-green-500/10 text-green-400">+5 AZR</Badge>
+                  </div>
+                  <div className="flex items-center justify-between p-2 bg-white/5 rounded">
+                    <span>Quality Code Commit</span>
+                    <Badge variant="outline" className="bg-green-500/10 text-green-400">+1 AZR</Badge>
+                  </div>
+                  <div className="flex items-center justify-between p-2 bg-white/5 rounded">
+                    <span>Spec Ratification</span>
+                    <Badge variant="outline" className="bg-green-500/10 text-green-400">+2 AZR</Badge>
+                  </div>
+                  <div className="flex items-center justify-between p-2 bg-white/5 rounded">
+                    <span>Create Content</span>
+                    <Badge variant="outline" className="bg-green-500/10 text-green-400">+4 AZR</Badge>
+                  </div>
+                  <div className="flex items-center justify-between p-2 bg-white/5 rounded">
+                    <span>Help Peers</span>
+                    <Badge variant="outline" className="bg-green-500/10 text-green-400">+3 AZR</Badge>
+                  </div>
+                </div>
+                <div className="pt-3 border-t border-white/10">
+                  <p className="text-xs text-gray-400 italic">
+                    All work is verified for quality. Embrace Ubuntu: 1% of earnings support the community.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
 
