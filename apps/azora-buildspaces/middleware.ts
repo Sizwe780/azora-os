@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server"
+import { securityHeaders } from "./lib/security-headers"
 
 const RATE_LIMIT = 100
 const WINDOW_MS = 60_000
 
 type Bucket = { count: number; expiresAt: number }
+// For production deployments, swap this in-memory map with a shared store (Redis) to avoid per-instance drift.
 const buckets = new Map<string, Bucket>()
 
 function getIp(req: NextRequest) {
@@ -12,8 +14,18 @@ function getIp(req: NextRequest) {
   return req.ip ?? "unknown"
 }
 
+function cleanupBuckets(now: number) {
+  for (const [key, bucket] of buckets.entries()) {
+    if (bucket.expiresAt < now) {
+      buckets.delete(key)
+    }
+  }
+}
+
 function isRateLimited(ip: string) {
   const now = Date.now()
+  cleanupBuckets(now)
+
   const bucket = buckets.get(ip)
   if (!bucket || bucket.expiresAt < now) {
     buckets.set(ip, { count: 1, expiresAt: now + WINDOW_MS })
@@ -29,22 +41,9 @@ function isRateLimited(ip: string) {
 }
 
 function securityHeaders(response: NextResponse) {
-  response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin")
-  response.headers.set("X-Content-Type-Options", "nosniff")
-  response.headers.set("X-Frame-Options", "DENY")
-  response.headers.set("X-XSS-Protection", "1; mode=block")
-  response.headers.set(
-    "Content-Security-Policy",
-    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; connect-src 'self' wss: https:; font-src 'self' data:; frame-ancestors 'none';"
-  )
-  response.headers.set(
-    "Strict-Transport-Security",
-    "max-age=63072000; includeSubDomains; preload"
-  )
-  response.headers.set(
-    "Permissions-Policy",
-    "geolocation=(), microphone=(), camera=(), autoplay=(), payment=()"
-  )
+  for (const header of securityHeaders) {
+    response.headers.set(header.key, header.value)
+  }
   return response
 }
 
