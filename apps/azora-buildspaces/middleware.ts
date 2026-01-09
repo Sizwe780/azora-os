@@ -5,8 +5,9 @@ const RATE_LIMIT = 100
 const WINDOW_MS = 60_000
 
 type Bucket = { count: number; expiresAt: number }
-// For production deployments, swap this in-memory map with a shared store (Redis) to avoid per-instance drift.
+// WARNING: Memory buckets only protect a single instance; production should wire a shared store (e.g., Redis).
 const buckets = new Map<string, Bucket>()
+let lastCleanup = 0
 
 function getIp(req: NextRequest) {
   const header = req.headers.get("x-forwarded-for")
@@ -15,11 +16,14 @@ function getIp(req: NextRequest) {
 }
 
 function cleanupBuckets(now: number) {
+  // Cleanup at most once per window to avoid per-request overhead.
+  if (now - lastCleanup < WINDOW_MS) return
   for (const [key, bucket] of buckets.entries()) {
     if (bucket.expiresAt < now) {
       buckets.delete(key)
     }
   }
+  lastCleanup = now
 }
 
 function isRateLimited(ip: string) {
