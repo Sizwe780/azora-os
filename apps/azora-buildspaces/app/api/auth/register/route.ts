@@ -35,20 +35,14 @@ export async function POST(req: Request) {
         // Hash password
         const hashedPassword = hashPassword(password);
 
-        // Create user
+        // Create user with hashed password
         const user = await prisma.user.create({
             data: {
                 name,
                 email,
-                // We'll store the hashed password in a new field if we add it to the schema,
-                // but for now, we'll just create the user.
-                // NextAuth PrismaAdapter usually handles accounts, but for CredentialsProvider
-                // we might need a password field on the User model.
+                password: hashedPassword,
             },
         });
-
-        // Note: The current schema doesn't have a 'password' field on User.
-        // I should update the schema to include it.
 
         return NextResponse.json({ success: true, user: { id: user.id, email: user.email } });
     } catch (error: any) {

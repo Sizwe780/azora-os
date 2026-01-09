@@ -1,8 +1,10 @@
+import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
+import crypto from "crypto";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -30,20 +32,24 @@ export const authOptions: NextAuthOptions = {
           where: { email: credentials.email }
         });
 
-        if (!user) {
+        if (!user || !user.password) {
           return null;
         }
 
-        // Verify password (using simple comparison for now as fallback, or crypto if implemented)
-        // In a real production app with bcryptjs working, we'd use bcrypt.compare
-        // Here we'll assume the password might be hashed or plain text for the transition
+        // Verify password using crypto.pbkdf2Sync (matching the registration logic)
+        // The stored password is in format "salt:hash"
+        const [salt, storedHash] = user.password.split(':');
+        const hash = crypto.pbkdf2Sync(
+          credentials.password,
+          salt,
+          1000,
+          64,
+          'sha512'
+        ).toString('hex');
 
-        // TODO: Re-enable bcrypt verification once dependencies are fixed
-        // const isValid = await bcrypt.compare(credentials.password, user.password);
-
-        // For now, we'll allow login if the user exists to unblock the flow
-        // effectively treating it as a "magic link" style security for this dev phase
-        // OR we can implement the crypto check if we stored it that way.
+        if (hash !== storedHash) {
+          return null;
+        }
 
         return {
           id: user.id,

@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 
 /**
  * GET /api/chat/sessions/[sessionId]/messages - Get all messages in a session
@@ -11,24 +13,33 @@ export async function GET(
   try {
     const sessionId = params.sessionId
 
-    // Verify session exists
-    const session = await prisma.chatSession.findUnique({
-      where: { id: sessionId }
-    })
-
-    if (!session) {
-      return NextResponse.json(
-        { error: 'Session not found' },
-        { status: 404 }
-      )
-    }
-
-    const messages = await prisma.chatMessage.findMany({
-      where: { sessionId },
+    // For now, return BuildSpaceExecution records as messages
+    // Since ChatSession model doesn't exist in schema
+    const executions = await prisma.buildSpaceExecution.findMany({
+      where: {
+        specId: sessionId, // Using specId as sessionId for now
+      },
       orderBy: { createdAt: 'asc' },
     })
 
-    return NextResponse.json({ messages, session })
+    // Format executions as chat messages
+    const messages = executions.map(exec => ({
+      id: exec.id,
+      sessionId: exec.specId || sessionId,
+      role: exec.agentName === 'user' ? 'user' : 'assistant',
+      content: exec.output || exec.input,
+      metadata: {
+        agent: exec.agentName,
+        status: exec.status,
+        tokensUsed: exec.tokensUsed,
+      },
+      createdAt: exec.createdAt,
+    }))
+
+    return NextResponse.json({ 
+      messages,
+      session: { id: sessionId }
+    })
   } catch (error: any) {
     console.error('Error fetching messages:', error)
     return NextResponse.json(
@@ -65,33 +76,33 @@ export async function POST(
       )
     }
 
-    // Verify session exists
-    const session = await prisma.chatSession.findUnique({
-      where: { id: sessionId }
-    })
+    // Get current user session
+    const session = await getServerSession(authOptions)
+    const userId = session?.user ? (session.user as any).id : 'anonymous'
 
-    if (!session) {
-      return NextResponse.json(
-        { error: 'Session not found' },
-        { status: 404 }
-      )
-    }
-
-    // Create the message
-    const message = await prisma.chatMessage.create({
+    // Save to BuildSpaceExecution table for persistence
+    const execution = await prisma.buildSpaceExecution.create({
       data: {
-        sessionId,
-        role,
-        content,
-        metadata: metadata || {},
+        specId: sessionId,
+        agentName: role === 'user' ? 'user' : (metadata?.agent || 'Elara'),
+        status: role === 'user' ? 'pending' : 'complete',
+        input: role === 'user' ? content : '',
+        output: role === 'assistant' ? content : null,
+        tokensUsed: metadata?.tokensUsed || 0,
+        startedAt: role === 'assistant' ? new Date() : null,
+        finishedAt: role === 'assistant' ? new Date() : null,
       }
     })
 
-    // Update session timestamp
-    await prisma.chatSession.update({
-      where: { id: sessionId },
-      data: { updatedAt: new Date() }
-    })
+    // Return in chat message format
+    const message = {
+      id: execution.id,
+      sessionId,
+      role,
+      content,
+      metadata: metadata || {},
+      createdAt: execution.createdAt,
+    }
 
     return NextResponse.json({ message }, { status: 201 })
   } catch (error: any) {

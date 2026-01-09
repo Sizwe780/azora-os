@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { initializeKnowledgeEngine } from '@/lib/knowledge/indexer'
+import { prisma } from '@/lib/db'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 
 export async function POST(request: NextRequest) {
   try {
@@ -9,6 +12,33 @@ export async function POST(request: NextRequest) {
     console.log(`[API] Starting indexing from ${rootPath}`)
 
     const stats = await initializeKnowledgeEngine(rootPath)
+
+    // Save scan results to BuildSpaceProject for persistence
+    try {
+      const session = await getServerSession(authOptions)
+      const ownerId = session?.user ? (session.user as any).id : 'anonymous'
+      
+      // Check if a project exists for this root path
+      const slug = `knowledge-scan-${Date.now()}`
+      const projectName = `Knowledge Scan - ${new Date().toISOString()}`
+      
+      await prisma.buildSpaceProject.upsert({
+        where: { slug },
+        create: {
+          name: projectName,
+          slug,
+          ownerId,
+          description: `Indexed ${stats.totalFiles} files with ${stats.totalChunks} code chunks from ${rootPath}`,
+        },
+        update: {
+          description: `Indexed ${stats.totalFiles} files with ${stats.totalChunks} code chunks from ${rootPath}`,
+          updatedAt: new Date(),
+        },
+      })
+    } catch (dbError) {
+      console.error('[API] Failed to save scan results to database:', dbError)
+      // Continue even if database save fails
+    }
 
     return NextResponse.json({
       success: true,

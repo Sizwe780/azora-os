@@ -1,31 +1,52 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 
 /**
  * GET /api/chat/sessions - List all chat sessions for the current user
  * GET /api/chat/sessions?aiPersona=elara - Filter by AI persona
+ * 
+ * Note: Using BuildSpaceExecution as storage since ChatSession model doesn't exist in schema
  */
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const aiPersona = searchParams.get('aiPersona')
-    const userId = searchParams.get('userId') || 'default-user' // TODO: Get from auth session
+    
+    const session = await getServerSession(authOptions)
+    const userId = session?.user ? (session.user as any).id : 'anonymous'
 
-    const whereClause: any = { userId }
-    if (aiPersona) {
-      whereClause.aiPersona = aiPersona
-    }
-
-    const sessions = await prisma.chatSession.findMany({
-      where: whereClause,
-      include: {
-        messages: {
-          orderBy: { createdAt: 'asc' },
-          take: 1, // Just get the first message for preview
-        }
+    // Get distinct session IDs from BuildSpaceExecution (using specId as sessionId)
+    const executions = await prisma.buildSpaceExecution.findMany({
+      where: aiPersona ? { agentName: aiPersona } : {},
+      select: {
+        specId: true,
+        agentName: true,
+        createdAt: true,
+        updatedAt: true,
       },
-      orderBy: { updatedAt: 'desc' },
+      orderBy: { createdAt: 'desc' },
+      take: 20,
     })
+
+    // Group by specId to create session-like structure
+    const sessionMap = new Map()
+    executions.forEach(exec => {
+      const specId = exec.specId || 'default-session'
+      if (!sessionMap.has(specId)) {
+        sessionMap.set(specId, {
+          id: specId,
+          aiPersona: exec.agentName,
+          title: `Chat with ${exec.agentName}`,
+          createdAt: exec.createdAt,
+          updatedAt: exec.createdAt,
+          messages: []
+        })
+      }
+    })
+
+    const sessions = Array.from(sessionMap.values())
 
     return NextResponse.json({ sessions })
   } catch (error: any) {
@@ -39,12 +60,14 @@ export async function GET(request: NextRequest) {
 
 /**
  * POST /api/chat/sessions - Create a new chat session
- * Body: { aiPersona: string, title?: string, userId?: string }
+ * Body: { aiPersona: string, title?: string }
+ * 
+ * Note: Using BuildSpaceExecution as storage since ChatSession model doesn't exist in schema
  */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { aiPersona, title, userId = 'default-user', context } = body
+    const { aiPersona, title } = body
 
     if (!aiPersona) {
       return NextResponse.json(
@@ -53,16 +76,24 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const session = await prisma.chatSession.create({
-      data: {
-        userId,
-        aiPersona,
-        title: title || `Chat with ${aiPersona}`,
-        context: context || {},
-      }
-    })
+    const session = await getServerSession(authOptions)
+    const userId = session?.user ? (session.user as any).id : 'anonymous'
 
-    return NextResponse.json({ session }, { status: 201 })
+    // Generate a unique session ID
+    const sessionId = `session_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`
+
+    // Return a virtual session object
+    const virtualSession = {
+      id: sessionId,
+      userId,
+      aiPersona,
+      title: title || `Chat with ${aiPersona}`,
+      context: {},
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
+
+    return NextResponse.json({ session: virtualSession }, { status: 201 })
   } catch (error: any) {
     console.error('Error creating chat session:', error)
     return NextResponse.json(
