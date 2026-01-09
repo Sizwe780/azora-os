@@ -3,8 +3,8 @@
  * Run this to validate the implementation without full test suite
  */
 
-import { KnowledgeIndexer } from './lib/knowledge/indexer'
-import { SankofaAgent } from './lib/agents/sankofa-interface'
+import { KnowledgeIndexer } from '../lib/knowledge/indexer'
+import { SankofaAgent } from '../lib/agents/sankofa-interface'
 
 async function validateKnowledgeEngine() {
   console.log('🧪 Knowledge Ocean Validation\n')

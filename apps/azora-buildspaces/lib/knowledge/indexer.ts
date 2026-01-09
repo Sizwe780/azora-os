@@ -191,7 +191,7 @@ export class KnowledgeIndexer {
       const funcContent = this.extractBlock(lines, lineStart - 1)
       
       const chunk: CodeChunk = {
-        id: `${filePath}:func:${funcName}:${lineStart}`,
+        id: `${filePath}:function:${funcName}:${match.index}`,
         path: filePath,
         fileName,
         type: 'function',
@@ -214,7 +214,7 @@ export class KnowledgeIndexer {
       const funcContent = this.extractBlock(lines, lineStart - 1)
       
       const chunk: CodeChunk = {
-        id: `${filePath}:arrow:${funcName}:${lineStart}`,
+        id: `${filePath}:arrow-func:${funcName}:${match.index}`,
         path: filePath,
         fileName,
         type: 'function',
@@ -237,7 +237,7 @@ export class KnowledgeIndexer {
       const classContent = this.extractBlock(lines, lineStart - 1)
       
       const chunk: CodeChunk = {
-        id: `${filePath}:class:${className}:${lineStart}`,
+        id: `${filePath}:class:${className}:${match.index}`,
         path: filePath,
         fileName,
         type: 'class',
@@ -260,7 +260,7 @@ export class KnowledgeIndexer {
         const lineStart = content.substring(0, match.index).split('\n').length
         
         const chunk: CodeChunk = {
-          id: `${filePath}:component:${componentName}:${lineStart}`,
+          id: `${filePath}:component:${componentName}:${match.index}`,
           path: filePath,
           fileName,
           type: 'component',
@@ -283,7 +283,7 @@ export class KnowledgeIndexer {
       const interfaceContent = this.extractBlock(lines, lineStart - 1, '{', '}')
       
       const chunk: CodeChunk = {
-        id: `${filePath}:interface:${interfaceName}:${lineStart}`,
+        id: `${filePath}:interface:${interfaceName}:${match.index}`,
         path: filePath,
         fileName,
         type: 'interface',
@@ -306,7 +306,7 @@ export class KnowledgeIndexer {
       const typeLine = lines[lineStart - 1]
       
       const chunk: CodeChunk = {
-        id: `${filePath}:type:${typeName}:${lineStart}`,
+        id: `${filePath}:type:${typeName}:${match.index}`,
         path: filePath,
         fileName,
         type: 'type',
