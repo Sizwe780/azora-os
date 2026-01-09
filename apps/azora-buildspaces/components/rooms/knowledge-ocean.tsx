@@ -27,17 +27,48 @@ export default function KnowledgeOcean({ onSwitchToCommand }: KnowledgeOceanProp
   const [isScanning, setIsScanning] = useState(false)
   const [activeTab, setActiveTab] = useState("files")
 
-  // Dynamic file scanning function
+  // Dynamic file scanning function using new Knowledge Engine
   const scanProjectFiles = async () => {
     setIsScanning(true)
     try {
-      const response = await fetch('/api/knowledge/scan-files')
-      if (response.ok) {
-        const data = await response.json()
-        setKnowledgeItems(data.items || [])
+      // First, trigger indexing
+      const indexResponse = await fetch('/api/knowledge/index', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rootPath: '/' })
+      })
+
+      if (!indexResponse.ok) {
+        console.error('Failed to index project')
+        setKnowledgeItems([])
+        setIsScanning(false)
+        return
+      }
+
+      const indexData = await indexResponse.json()
+      console.log('[KnowledgeOcean] Indexed:', indexData.stats)
+
+      // Then, fetch all items by searching with empty query
+      const searchResponse = await fetch('/api/knowledge/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: '', mode: 'local', maxResults: 1000 })
+      })
+
+      if (searchResponse.ok) {
+        const searchData = await searchResponse.json()
+        // Convert search results to KnowledgeItems
+        const items: KnowledgeItem[] = (searchData.results || []).map((result: any) => ({
+          id: result.id,
+          title: result.name,
+          type: result.type,
+          path: result.path,
+          description: result.content ? result.content.substring(0, 100) : undefined,
+          relevance: result.score || result.relevanceScore
+        }))
+        setKnowledgeItems(items)
       } else {
-        console.error('Failed to scan files')
-        // Fallback to empty state
+        console.error('Failed to fetch indexed items')
         setKnowledgeItems([])
       }
     } catch (error) {
