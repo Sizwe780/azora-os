@@ -27,6 +27,9 @@ export async function GET(
     })
 
     // Format executions as chat messages
+    // Note: User messages are stored with agentName='user' (not the target agent name)
+    // This is a limitation of using BuildSpaceExecution for chat storage
+    // Consider adding proper ChatSession/ChatMessage models in the future [Target: Q1 2026]
     const messages = executions.map(exec => {
       // User messages have input, assistant messages have output
       const isUserMessage = exec.agentName === AGENT_ROLE_USER;

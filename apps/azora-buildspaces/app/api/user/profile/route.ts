@@ -66,10 +66,12 @@ export async function GET() {
     };
 
     // Verification status based on emailVerified field
+    // TODO: Add identity and student verification fields to User model [Target: Q1 2026]
+    // For now, these are hardcoded as false since the schema doesn't support them yet
     const verificationStatus = {
       email: !!user.emailVerified,
-      identity: false,
-      student: false
+      identity: false, // Will be populated from User.identityVerified once schema is updated
+      student: false   // Will be populated from User.studentVerified once schema is updated
     };
 
     return NextResponse.json({

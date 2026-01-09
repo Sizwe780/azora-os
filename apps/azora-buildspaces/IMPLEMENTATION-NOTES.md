@@ -199,11 +199,19 @@ GITHUB_SECRET=...
 
 1. **ChatSession Models**: The ChatSession and ChatMessage models don't exist in the Prisma schema. We're using BuildSpaceExecution as a workaround. Consider adding proper chat models in the future.
 
-2. **Subscription Data**: Currently returns mock subscription data. Need to add proper subscription models to the schema.
+2. **User Message Agent Tracking**: User messages are stored with `agentName='user'` rather than the target agent name. This is a limitation of using BuildSpaceExecution for chat storage and makes it difficult to track which agent a user was talking to.
 
-3. **PBKDF2 Iterations**: Using 1000 iterations for development speed. Consider increasing to 100,000+ for production.
+3. **Session Filtering**: Filtering chat sessions by aiPersona includes both user and agent messages, but doesn't perfectly separate different conversation contexts due to schema limitations.
 
-4. **Agent Orchestrator**: The ELARA_ORCHESTRATOR_URL service is optional. The system works without it, falling back to AI Family Service.
+4. **Subscription Data**: Currently returns mock subscription data. Need to add proper subscription models to the schema. [Target: Q1 2026]
+
+5. **Verification Fields**: Identity and student verification status are hardcoded as false. Need to add these fields to User model. [Target: Q1 2026]
+
+6. **PBKDF2 Iterations**: Using 1000 iterations for development speed. Consider increasing to 100,000+ for production.
+
+7. **Slug Generation**: The pattern `prefix-${timestamp}-${randomBytes}` is duplicated in multiple files. Consider extracting to a utility function for consistency.
+
+8. **Agent Orchestrator**: The ELARA_ORCHESTRATOR_URL service is optional. The system works without it, falling back to AI Family Service.
 
 ## Future Improvements
 

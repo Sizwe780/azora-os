@@ -19,6 +19,8 @@ export async function GET(request: NextRequest) {
     const userId = session?.user ? (session.user as any).id : 'anonymous'
 
     // Get distinct session IDs from BuildSpaceExecution (using specId as sessionId)
+    // Note: Filtering by aiPersona will include both user and agent messages
+    // The current schema doesn't support proper chat sessions - this is a workaround
     const executions = await prisma.buildSpaceExecution.findMany({
       where: aiPersona ? { agentName: aiPersona } : {},
       select: {
