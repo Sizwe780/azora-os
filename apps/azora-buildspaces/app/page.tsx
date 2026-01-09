@@ -63,9 +63,9 @@ const features = [
 ]
 
 const stats = [
-  { value: "99.9%", label: "Uptime", icon: Zap },
-  { value: "10M+", label: "Lines Generated", icon: Code2 },
+  { value: "Real-time", label: "Collaboration", icon: Users },
   { value: "Git", label: "Integrated", icon: GitBranch },
+  { value: "Monaco", label: "Editor", icon: Code2 },
 ]
 
 export default function HomePage() {
