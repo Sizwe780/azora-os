@@ -6,6 +6,20 @@
 
 ---
 
+## 📑 Documentation Standards (for every app)
+- Required sections: **Overview**, **Features**, **Tech stack**, **Quick start**, **Production readiness**, **Testing**, **Deployment**, **Contributing**.
+- Production-ready apps must document **health checks, rate limiting, security headers, Docker/K8s status**, and **test coverage targets**.
+- Development-stage apps must clearly mark gaps and link to the **PRODUCTION-LAUNCH-CHECKLIST**.
+
+### Template
+- **Production-ready**: concise overview, feature list, architecture diagram/link, run commands, env vars, deployment steps (Docker/K8s), testing matrix, SLA/SLO.
+- **In development**: current status, missing features, blockers, and next three actions.
+
+### Action Required
+- App owners should update their local README to use the template above and ensure production readiness notes are accurate.
+
+---
+
 ## 📊 Overview
 
 The Azora Ecosystem consists of **25 integrated applications** across 7 suites:

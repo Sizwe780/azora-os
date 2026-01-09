@@ -57,6 +57,41 @@ azora/
 └── CONSTITUTION.md         # The supreme governing document
 ```
 
+## 🛡️ BuildSpaces Production Readiness Snapshot
+
+### Architectural overview
+- **Framework**: Next.js 16 with React 19
+- **Editor**: Monaco + Yjs for multiplayer collaboration
+- **Execution**: WebContainer-backed terminals
+- **Data**: Prisma ORM with Postgres adapters
+- **Collaboration**: CRDT sync, AI routing, and Kubernetes-ready manifests
+
+### Current state
+- Overall BuildSpaces readiness: **85% complete**
+- **10 functional rooms** live in the current stack
+- Kubernetes manifests exist for core services and ingress
+
+### Production gaps to close
+- Missing **Dockerfile** to produce deployable images
+- **Jest** configuration absent; `npm test` fails
+- No **health checks** for liveness/readiness
+- No **rate limiting** middleware in front of APIs
+- Absent **security headers** in Next.js/edge handlers
+
+### Mock data violations to remove
+- Command Desk
+- Knowledge Ocean
+- Design Studio
+- AI Studio
+- Maker Lab
+
+### Quick start and deployment prerequisites
+- Node.js 20+, npm 10+
+- Docker for local orchestration and K8s parity
+- Copy `.env.example` to `.env` and fill provider keys
+- Run `npm ci` then `npm run dev` for local development
+- For production: add Dockerfile, health endpoints, rate limiting, and security headers before deploying manifests
+
 ## 🚀 Core Components
 
 ### 🛠️ Azora BuildSpaces
