@@ -595,6 +595,81 @@ All apps follow the **Azora Design System**:
 
 ---
 
+## 📚 Application Documentation Standards
+
+### README Requirements for All Apps
+
+Every application in the `apps/` directory **MUST** have a comprehensive `README.md` file that includes:
+
+#### Essential Sections
+1. **Application Overview**
+   - Purpose and tagline
+   - Current status (Complete, Development, Pre-Production)
+   - Version number
+   - Platform targets
+
+2. **Features**
+   - List of implemented features
+   - Features in progress
+   - Planned features
+
+3. **Tech Stack**
+   - Framework and language
+   - Key dependencies
+   - External service requirements
+
+4. **Quick Start**
+   - Development setup instructions
+   - Environment variables needed
+   - How to run locally
+   - How to build for production
+
+5. **Production Readiness**
+   - What's already built and working
+   - What's missing for production launch
+   - Critical gaps (Dockerfile, tests, etc.)
+   - Security considerations
+   - Performance targets
+
+6. **Testing**
+   - Test coverage status
+   - How to run tests
+   - Testing requirements for production
+
+7. **Deployment**
+   - Deployment strategy
+   - Required infrastructure
+   - Environment configuration
+   - Health checks
+
+8. **Contributing**
+   - App-specific guidelines
+   - How to add features
+   - Code standards
+
+#### Example Structure
+See `apps/azora-buildspaces/README.md` as a reference implementation.
+
+#### For Production-Ready Apps
+If your app is marked as "Production Ready" or "Complete", it **MUST** have:
+- ✅ Complete documentation
+- ✅ Deployment instructions
+- ✅ Test coverage documentation
+- ✅ Security audit summary
+- ✅ Performance benchmarks
+
+#### For Apps in Development
+If your app is marked as "Development" or "Scaffolded", it **SHOULD** have:
+- 🟡 Basic overview and purpose
+- 🟡 Setup instructions
+- 🟡 List of what's implemented vs. planned
+- 🟡 How to contribute
+
+#### Action Required
+**All application owners**: Please review your app's README and ensure it meets these standards. For apps without a README, create one using the template structure above.
+
+---
+
 ## 🤝 Contributing
 
 See `/CONTRIBUTING.md` for contribution guidelines.
