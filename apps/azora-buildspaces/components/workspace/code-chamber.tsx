@@ -23,6 +23,7 @@ interface CodeChamberProps {
 
 export function CodeChamber({ id }: CodeChamberProps) {
     const pathname = usePathname()
+    // Local state is handled by file system + workbench stores; this component stays stateless.
     const projectId = useMemo(() => {
         if (id && id.trim().length > 0) return id
         const parts = pathname?.split("/").filter(Boolean) ?? []

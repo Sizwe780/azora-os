@@ -3,6 +3,8 @@ import { securityHeaders as sharedSecurityHeaders } from "./lib/security-headers
 
 const RATE_LIMIT = 100
 const WINDOW_MS = 60_000
+const rateLimitWarning =
+  "Rate limiting uses in-memory buckets and only protects a single instance. Configure a shared store (e.g., Redis) before scaling horizontally."
 
 type Bucket = { count: number; expiresAt: number }
 /**
@@ -10,6 +12,7 @@ type Bucket = { count: number; expiresAt: number }
  */
 const buckets = new Map<string, Bucket>()
 let lastCleanup = 0
+let warned = false
 
 function getIp(req: NextRequest) {
   const header = req.headers.get("x-forwarded-for")
@@ -54,6 +57,11 @@ function securityHeaders(response: NextResponse) {
 }
 
 export function middleware(req: NextRequest) {
+  if (!warned && process.env.RATE_LIMIT_BACKEND !== "redis") {
+    console.warn(rateLimitWarning)
+    warned = true
+  }
+
   const ip = getIp(req)
 
   if (isRateLimited(ip)) {
@@ -66,5 +74,6 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
+  // Exclude health endpoint to keep liveness/readiness probes unthrottled.
   matcher: ["/((?!_next/static|_next/image|favicon.ico|api/health).*)"],
 }
