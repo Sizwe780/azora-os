@@ -54,7 +54,7 @@
     "framer-motion": "^12.23.26",
     "input-otp": "1.4.1",
     "isomorphic-git": "^1.27.1",
-    "lightning-fs": "^4.6.0",
+    "@isomorphic-git/lightning-fs": "^4.6.2",
     "lucide-react": "^0.454.0",
     "minisearch": "^7.1.0",
     "monaco-editor": "0.55.1",
