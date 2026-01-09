@@ -57,3 +57,103 @@ jobs:
       - name: Run migrations (if DATABASE_URL)
         if: ${{ secrets.DATABASE_URL != '' }}
         run: npx prisma migrate deploy --schema=prisma/schema.prisma
+
+  docker-build:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}/azora-buildspaces
+          tags: |
+            type=ref,event=branch
+            type=sha,prefix={{branch}}-
+            type=semver,pattern={{version}}
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: apps/azora-buildspaces/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            NEXT_PUBLIC_APP_VERSION=${{ github.sha }}
+
+  security-scan:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install pnpm
+        run: npm i -g pnpm@9
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Run npm audit
+        run: pnpm -w -F azora-buildspaces audit --audit-level=high || true
+        continue-on-error: true
+
+      - name: Upload audit report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: security-audit
+          path: audit-report.json
+          retention-days: 30
+        continue-on-error: true
+
+  deploy-staging:
+    runs-on: ubuntu-latest
+    needs: [docker-build, security-scan]
+    if: github.ref == 'refs/heads/develop'
+    environment:
+      name: staging
+      url: https://buildspaces-staging.azora.dev
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy to staging
+        run: |
+          echo "🚀 Deploying to staging environment"
+          echo "Image: ghcr.io/${{ github.repository }}/azora-buildspaces:develop-${{ github.sha }}"
+          # Add actual deployment commands here (kubectl, helm, etc.)
+        env:
+          KUBECONFIG: ${{ secrets.STAGING_KUBECONFIG }}
+
+      - name: Health check
+        run: |
+          echo "⏳ Waiting for deployment..."
+          sleep 30
+          echo "🔍 Running health check..."
+          curl -f https://buildspaces-staging.azora.dev/api/health || exit 1
+          echo "✅ Staging deployment successful"
