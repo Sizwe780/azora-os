@@ -26,16 +26,18 @@ import {
     Code,
     Globe,
     Lock,
-    Zap
+    Zap,
+    Sparkles
 } from "lucide-react";
 
 import DatabaseDesigner from "./maker-lab/DatabaseDesigner";
 import APIEndpointGenerator from "./maker-lab/APIEndpointGenerator";
 import AuthTemplateGenerator from "./maker-lab/AuthTemplateGenerator";
 import DeploymentConfig from "./maker-lab/DeploymentConfig";
+import { SparkInterface } from "./maker-lab/spark-interface";
 
 export default function MakerLab() {
-    const [activeView, setActiveView] = useState("database");
+    const [activeView, setActiveView] = useState("spark");
     const [projectName, setProjectName] = useState("My Full-Stack App");
     const [projectDescription, setProjectDescription] = useState("");
 
@@ -93,118 +95,138 @@ export default function MakerLab() {
 
             {/* Main Workbench */}
             <div className="flex-1 overflow-hidden">
-                <ResizablePanelGroup direction="horizontal">
+                {activeView === "spark" ? (
+                    // Spark Engine takes full screen
+                    <SparkInterface />
+                ) : (
+                    <ResizablePanelGroup direction="horizontal">
 
-                    {/* Left Panel: Development Tools */}
-                    <ResizablePanel defaultSize={60} minSize={30}>
-                        <div className="h-full flex flex-col">
-                            <Tabs value={activeView} onValueChange={setActiveView} className="h-full flex flex-col">
-                                <div className="border-b px-4 bg-muted/10">
-                                    <TabsList className="h-10 bg-transparent p-0">
-                                        <TabsTrigger
-                                            value="database"
-                                            className="data-[state=active]:bg-background data-[state=active]:border-b-2 data-[state=active]:border-orange-500 rounded-none h-full px-4 gap-2"
-                                        >
-                                            <Database className="w-4 h-4" />
-                                            Database Designer
-                                        </TabsTrigger>
-                                        <TabsTrigger
-                                            value="api"
-                                            className="data-[state=active]:bg-background data-[state=active]:border-b-2 data-[state=active]:border-orange-500 rounded-none h-full px-4 gap-2"
-                                        >
-                                            <Server className="w-4 h-4" />
-                                            API Endpoints
-                                        </TabsTrigger>
-                                        <TabsTrigger
-                                            value="auth"
-                                            className="data-[state=active]:bg-background data-[state=active]:border-b-2 data-[state=active]:border-orange-500 rounded-none h-full px-4 gap-2"
-                                        >
-                                            <Shield className="w-4 h-4" />
-                                            Authentication
-                                        </TabsTrigger>
-                                        <TabsTrigger
-                                            value="deployment"
-                                            className="data-[state=active]:bg-background data-[state=active]:border-b-2 data-[state=active]:border-orange-500 rounded-none h-full px-4 gap-2"
-                                        >
-                                            <Globe className="w-4 h-4" />
-                                            Deployment
-                                        </TabsTrigger>
-                                    </TabsList>
-                                </div>
+                        {/* Left Panel: Development Tools */}
+                        <ResizablePanel defaultSize={60} minSize={30}>
+                            <div className="h-full flex flex-col">
+                                <Tabs value={activeView} onValueChange={setActiveView} className="h-full flex flex-col">
+                                    <div className="border-b px-4 bg-muted/10">
+                                        <TabsList className="h-10 bg-transparent p-0">
+                                            <TabsTrigger
+                                                value="spark"
+                                                className="data-[state=active]:bg-background data-[state=active]:border-b-2 data-[state=active]:border-purple-500 rounded-none h-full px-4 gap-2"
+                                            >
+                                                <Sparkles className="w-4 h-4" />
+                                                Spark Engine
+                                            </TabsTrigger>
+                                            <TabsTrigger
+                                                value="database"
+                                                className="data-[state=active]:bg-background data-[state=active]:border-b-2 data-[state=active]:border-orange-500 rounded-none h-full px-4 gap-2"
+                                            >
+                                                <Database className="w-4 h-4" />
+                                                Database Designer
+                                            </TabsTrigger>
+                                            <TabsTrigger
+                                                value="api"
+                                                className="data-[state=active]:bg-background data-[state=active]:border-b-2 data-[state=active]:border-orange-500 rounded-none h-full px-4 gap-2"
+                                            >
+                                                <Server className="w-4 h-4" />
+                                                API Endpoints
+                                            </TabsTrigger>
+                                            <TabsTrigger
+                                                value="auth"
+                                                className="data-[state=active]:bg-background data-[state=active]:border-b-2 data-[state=active]:border-orange-500 rounded-none h-full px-4 gap-2"
+                                            >
+                                                <Shield className="w-4 h-4" />
+                                                Authentication
+                                            </TabsTrigger>
+                                            <TabsTrigger
+                                                value="deployment"
+                                                className="data-[state=active]:bg-background data-[state=active]:border-b-2 data-[state=active]:border-orange-500 rounded-none h-full px-4 gap-2"
+                                            >
+                                                <Globe className="w-4 h-4" />
+                                                Deployment
+                                            </TabsTrigger>
+                                        </TabsList>
+                                    </div>
 
-                                <TabsContent value="database" className="flex-1 m-0 p-0 overflow-hidden relative">
-                                    <DatabaseDesigner projectName={projectName} />
-                                </TabsContent>
+                                    <TabsContent value="database" className="flex-1 m-0 p-0 overflow-hidden relative">
+                                        <DatabaseDesigner projectName={projectName} />
+                                    </TabsContent>
 
-                                <TabsContent value="api" className="flex-1 m-0 p-0 overflow-hidden relative">
-                                    <APIEndpointGenerator projectName={projectName} />
-                                </TabsContent>
+                                    <TabsContent value="api" className="flex-1 m-0 p-0 overflow-hidden relative">
+                                        <APIEndpointGenerator projectName={projectName} />
+                                    </TabsContent>
 
-                                <TabsContent value="auth" className="flex-1 m-0 p-0 overflow-hidden relative">
-                                    <AuthTemplateGenerator projectName={projectName} />
-                                </TabsContent>
+                                    <TabsContent value="auth" className="flex-1 m-0 p-0 overflow-hidden relative">
+                                        <AuthTemplateGenerator projectName={projectName} />
+                                    </TabsContent>
 
-                                <TabsContent value="deployment" className="flex-1 m-0 p-0 overflow-hidden relative">
-                                    <DeploymentConfig projectName={projectName} />
-                                </TabsContent>
-                            </Tabs>
-                        </div>
-                    </ResizablePanel>
-
-                    <ResizableHandle withHandle />
-
-                    {/* Right Panel: Generated Code & Config */}
-                    <ResizablePanel defaultSize={40} minSize={20}>
-                        <div className="h-full flex flex-col border-l">
-                            <div className="h-10 border-b flex items-center px-4 bg-muted/10 gap-2">
-                                <Code className="w-4 h-4 text-muted-foreground" />
-                                <span className="text-sm font-medium">Generated Code</span>
-                                <Badge variant="outline" className="ml-auto">Ready</Badge>
+                                    <TabsContent value="deployment" className="flex-1 m-0 p-0 overflow-hidden relative">
+                                        <DeploymentConfig projectName={projectName} />
+                                    </TabsContent>
+                                </Tabs>
                             </div>
-                            <div className="flex-1 overflow-hidden p-4">
-                                <div className="space-y-4">
-                                    <Card>
-                                        <CardHeader className="pb-2">
-                                            <CardTitle className="text-sm flex items-center gap-2">
-                                                <FileText className="w-4 h-4" />
-                                                Project Structure
-                                            </CardTitle>
-                                        </CardHeader>
-                                        <CardContent className="text-xs font-mono">
-                                            <div className="space-y-1">
-                                                <div>📁 {projectName}/</div>
-                                                <div className="ml-4">📁 src/</div>
-                                                <div className="ml-8">📁 components/</div>
-                                                <div className="ml-8">📁 pages/</div>
-                                                <div className="ml-8">📁 api/</div>
-                                                <div className="ml-4">📁 prisma/</div>
-                                                <div className="ml-8">📄 schema.prisma</div>
-                                                <div className="ml-4">📄 package.json</div>
-                                                <div className="ml-4">📄 next.config.js</div>
-                                            </div>
-                                        </CardContent>
-                                    </Card>
+                        </ResizablePanel>
 
-                                    <Card>
-                                        <CardHeader className="pb-2">
-                                            <CardTitle className="text-sm flex items-center gap-2">
-                                                <Zap className="w-4 h-4" />
-                                                Quick Actions
-                                            </CardTitle>
-                                        </CardHeader>
-                                        <CardContent className="space-y-2">
-                                            <Button size="sm" className="w-full justify-start" variant="outline">
-                                                <Download className="w-4 h-4 mr-2" />
-                                                Download Project
-                                            </Button>
-                                            <Button size="sm" className="w-full justify-start" variant="outline">
-                                                <Play className="w-4 h-4 mr-2" />
-                                                Start Development Server
-                                            </Button>
-                                            <Button size="sm" className="w-full justify-start" variant="outline">
-                                                <Globe className="w-4 h-4 mr-2" />
-                                                Deploy to Vercel
-                                            </Button>
+                        <ResizableHandle withHandle />
+
+                        {/* Right Panel: Generated Code & Config */}
+                        <ResizablePanel defaultSize={40} minSize={20}>
+                            <div className="h-full flex flex-col border-l">
+                                <div className="h-10 border-b flex items-center px-4 bg-muted/10 gap-2">
+                                    <Code className="w-4 h-4 text-muted-foreground" />
+                                    <span className="text-sm font-medium">Generated Code</span>
+                                    <Badge variant="outline" className="ml-auto">Ready</Badge>
+                                </div>
+                                <div className="flex-1 overflow-hidden p-4">
+                                    <div className="space-y-4">
+                                        <Card>
+                                            <CardHeader className="pb-2">
+                                                <CardTitle className="text-sm flex items-center gap-2">
+                                                    <FileText className="w-4 h-4" />
+                                                    Project Structure
+                                                </CardTitle>
+                                            </CardHeader>
+                                            <CardContent className="text-xs font-mono">
+                                                <div className="space-y-1">
+                                                    <div>📁 {projectName}/</div>
+                                                    <div className="ml-4">📁 src/</div>
+                                                    <div className="ml-8">📁 components/</div>
+                                                    <div className="ml-8">📁 pages/</div>
+                                                    <div className="ml-8">📁 api/</div>
+                                                    <div className="ml-4">📁 prisma/</div>
+                                                    <div className="ml-8">📄 schema.prisma</div>
+                                                    <div className="ml-4">📄 package.json</div>
+                                                    <div className="ml-4">📄 next.config.js</div>
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+
+                                        <Card>
+                                            <CardHeader className="pb-2">
+                                                <CardTitle className="text-sm flex items-center gap-2">
+                                                    <Zap className="w-4 h-4" />
+                                                    Quick Actions
+                                                </CardTitle>
+                                            </CardHeader>
+                                            <CardContent className="space-y-2">
+                                                <Button size="sm" className="w-full justify-start" variant="outline">
+                                                    <Download className="w-4 h-4 mr-2" />
+                                                    Download Project
+                                                </Button>
+                                                <Button size="sm" className="w-full justify-start" variant="outline">
+                                                    <Play className="w-4 h-4 mr-2" />
+                                                    Start Development Server
+                                                </Button>
+                                                <Button size="sm" className="w-full justify-start" variant="outline">
+                                                    <Globe className="w-4 h-4 mr-2" />
+                                                    Deploy to Vercel
+                                                </Button>
+                                            </CardContent>
+                                        </Card>
+                                    </div>
+                                </div>
+                            </div>
+                        </ResizablePanel>
+
+                    </ResizablePanelGroup>
+                )}
                                         </CardContent>
                                     </Card>
                                 </div>
