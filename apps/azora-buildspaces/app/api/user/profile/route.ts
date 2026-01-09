@@ -9,6 +9,19 @@ import { prisma } from "@/lib/db";
  * Fetches the current user's profile data including subscription and verification status
  * from the database, replacing the hardcoded mock data in AuthService.
  */
+
+// Default subscription configuration
+// TODO: Move to database schema and configuration table
+const DEFAULT_SUBSCRIPTION = {
+  plan: 'constitutional' as const,
+  status: 'trial' as const,
+  trialDurationDays: 30,
+  geographicPricing: {
+    country: 'Global',
+    discount: 0
+  }
+};
+
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
@@ -43,15 +56,12 @@ export async function GET() {
     }
 
     // TODO: Add proper subscription model to database schema
-    // For now, return a default subscription based on user state
+    // For now, return a default subscription based on configuration
     const subscription = {
-      plan: 'constitutional' as const,
-      status: 'trial' as const,
-      expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-      geographicPricing: {
-        country: 'Global',
-        discount: 0
-      }
+      plan: DEFAULT_SUBSCRIPTION.plan,
+      status: DEFAULT_SUBSCRIPTION.status,
+      expiresAt: new Date(Date.now() + DEFAULT_SUBSCRIPTION.trialDurationDays * 24 * 60 * 60 * 1000),
+      geographicPricing: DEFAULT_SUBSCRIPTION.geographicPricing
     };
 
     // Verification status based on emailVerified field

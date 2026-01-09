@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import crypto from 'crypto'
 
 /**
  * GET /api/chat/sessions - List all chat sessions for the current user
@@ -79,8 +80,8 @@ export async function POST(request: NextRequest) {
     const session = await getServerSession(authOptions)
     const userId = session?.user ? (session.user as any).id : 'anonymous'
 
-    // Generate a unique session ID
-    const sessionId = `session_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`
+    // Generate a cryptographically secure session ID
+    const sessionId = `session_${Date.now()}_${crypto.randomBytes(8).toString('hex')}`
 
     // Return a virtual session object
     const virtualSession = {

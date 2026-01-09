@@ -23,18 +23,24 @@ export async function GET(
     })
 
     // Format executions as chat messages
-    const messages = executions.map(exec => ({
-      id: exec.id,
-      sessionId: exec.specId || sessionId,
-      role: exec.agentName === 'user' ? 'user' : 'assistant',
-      content: exec.output || exec.input,
-      metadata: {
-        agent: exec.agentName,
-        status: exec.status,
-        tokensUsed: exec.tokensUsed,
-      },
-      createdAt: exec.createdAt,
-    }))
+    const messages = executions.map(exec => {
+      // User messages have input, assistant messages have output
+      const isUserMessage = exec.agentName === 'user';
+      const content = isUserMessage ? exec.input : (exec.output || '');
+      
+      return {
+        id: exec.id,
+        sessionId: exec.specId || sessionId,
+        role: isUserMessage ? 'user' : 'assistant',
+        content,
+        metadata: {
+          agent: exec.agentName,
+          status: exec.status,
+          tokensUsed: exec.tokensUsed,
+        },
+        createdAt: exec.createdAt,
+      };
+    })
 
     return NextResponse.json({ 
       messages,
