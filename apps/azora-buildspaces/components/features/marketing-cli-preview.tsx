@@ -1,6 +1,14 @@
 import { Button } from "@/components/ui/button"
 
-export function CLISection() {
+/**
+ * MarketingCLIPreview - Static marketing component
+ * 
+ * This is a STATIC MARKETING ASSET showing mock CLI interactions.
+ * For REAL terminal functionality, see:
+ * - /components/workspace/panels/terminal-panel.tsx (real terminal with xterm)
+ * - /components/workspace/x-terminal.tsx (xterm integration)
+ */
+export function MarketingCLIPreview() {
   return (
     <section id="cli" className="border-t border-white/5 bg-gradient-to-b from-[#161b22] to-[#0d1117] px-4 py-24">
       <div className="mx-auto max-w-7xl">

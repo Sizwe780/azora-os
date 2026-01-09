@@ -23,33 +23,38 @@ const globalForPrisma = global as unknown as { prisma: any }
 
 function createPrismaClient() {
     if (!process.env.DATABASE_URL || !PrismaClient) {
-        console.warn('[Prisma] DATABASE_URL not set or @prisma/client not generated. Database features will not work.');
-        console.warn('[Prisma] To configure: Set DATABASE_URL and run prisma generate');
+        console.error('[SYSTEM INTEGRITY ERROR] DATABASE_URL not configured or @prisma/client not generated');
+        console.error('[SYSTEM INTEGRITY ERROR] Database features WILL NOT WORK');
+        console.error('[SYSTEM INTEGRITY ERROR] To configure: Set DATABASE_URL and run: npx prisma generate');
 
-        // Return a proxy that throws helpful errors instead of crashing
+        // Constitutional AI: Truth Economics - NO SILENT FAILURES
+        // Return a proxy that throws explicit errors for data operations
         return new Proxy({} as any, {
             get: (target, prop) => {
                 if (prop === '$connect' || prop === '$disconnect') {
                     return async () => {
-                        console.warn('[Prisma] No database connection configured');
+                        throw new Error('System Integrity Error: Database not configured. Set DATABASE_URL environment variable.');
                     };
                 }
                 if (typeof prop === 'string' && !prop.startsWith('_')) {
                     return {
                         findMany: async () => {
-                            console.warn(`[Prisma] ${String(prop)}.findMany() - No database configured`);
-                            return [];
+                            throw new Error(`System Integrity Error: Cannot read ${String(prop)} - Database not configured`);
                         },
-                        findUnique: async () => null,
-                        findFirst: async () => null,
+                        findUnique: async () => {
+                            throw new Error(`System Integrity Error: Cannot read ${String(prop)} - Database not configured`);
+                        },
+                        findFirst: async () => {
+                            throw new Error(`System Integrity Error: Cannot read ${String(prop)} - Database not configured`);
+                        },
                         create: async () => {
-                            throw new Error('DATABASE_URL not configured');
+                            throw new Error(`System Integrity Error: Cannot create ${String(prop)} - Database not configured`);
                         },
                         update: async () => {
-                            throw new Error('DATABASE_URL not configured');
+                            throw new Error(`System Integrity Error: Cannot update ${String(prop)} - Database not configured`);
                         },
                         delete: async () => {
-                            throw new Error('DATABASE_URL not configured');
+                            throw new Error(`System Integrity Error: Cannot delete ${String(prop)} - Database not configured`);
                         },
                     };
                 }

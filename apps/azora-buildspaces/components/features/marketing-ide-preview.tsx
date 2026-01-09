@@ -1,6 +1,15 @@
 import { Sparkles, Code2 } from "lucide-react"
 
-export function WorkspaceDemo() {
+/**
+ * MarketingIdePreview - Static marketing component
+ * 
+ * This is a STATIC MARKETING ASSET showing a mock IDE interface.
+ * For the REAL functional IDE, see:
+ * - /app/workspace/page.tsx (full workspace)
+ * - /components/rooms/code-chamber.tsx (real editor)
+ * - /components/workspace/editor-panel.tsx (Monaco editor integration)
+ */
+export function MarketingIdePreview() {
   return (
     <section className="border-t border-white/5 bg-[#0d1117] px-4 py-24">
       <div className="mx-auto max-w-7xl">
