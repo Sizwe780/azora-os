@@ -2952,8 +2952,8 @@ importers:
         specifier: ^8.3.1
         version: 8.4.1
       '@prisma/client':
-        specifier: ^5.8.0
-        version: 5.22.0(prisma@5.22.0)
+        specifier: ^7.2.0
+        version: 7.2.0(prisma@5.22.0)(typescript@5.4.5)
       csurf:
         specifier: 1.2.2
         version: 1.2.2
@@ -3041,7 +3041,7 @@ importers:
     dependencies:
       '@prisma/client':
         specifier: '*'
-        version: 5.22.0(prisma@5.22.0)
+        version: 7.2.0(prisma@5.22.0)(typescript@5.9.3)
       body-parser:
         specifier: ^1.20.0
         version: 1.20.4
@@ -3152,8 +3152,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/shared-auth
       '@prisma/client':
-        specifier: ^5.12.1
-        version: 5.22.0(prisma@5.22.0)
+        specifier: ^7.2.0
+        version: 7.2.0(prisma@5.22.0)(typescript@5.9.3)
       cors:
         specifier: ^2.8.5
         version: 2.8.5
@@ -3183,8 +3183,8 @@ importers:
   services/ai-orchestrator:
     dependencies:
       '@prisma/client':
-        specifier: ^5.0.0
-        version: 5.22.0(prisma@5.22.0)
+        specifier: ^7.2.0
+        version: 7.2.0(prisma@5.22.0)(typescript@5.4.5)
       axios:
         specifier: ^1.6.0
         version: 1.13.2
@@ -3274,8 +3274,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/shared-api
       '@prisma/client':
-        specifier: ^7.0.1
-        version: 7.1.0(prisma@5.22.0)(typescript@5.9.3)
+        specifier: ^7.2.0
+        version: 7.2.0(prisma@5.22.0)(typescript@5.9.3)
       ioredis:
         specifier: ^5.3.0
         version: 5.8.2
@@ -3522,8 +3522,8 @@ importers:
   services/azora-assessment:
     dependencies:
       '@prisma/client':
-        specifier: ^5.0.0
-        version: 5.22.0(prisma@5.22.0)
+        specifier: ^7.2.0
+        version: 7.2.0(prisma@5.22.0)(typescript@5.4.5)
       compression:
         specifier: ^1.7.4
         version: 1.8.1
@@ -3619,8 +3619,8 @@ importers:
   services/azora-auth:
     dependencies:
       '@prisma/client':
-        specifier: ^5.0.0
-        version: 5.22.0(prisma@5.22.0)
+        specifier: ^7.2.0
+        version: 7.2.0(prisma@5.22.0)(typescript@5.9.3)
       bcryptjs:
         specifier: ^2.4.3
         version: 2.4.3
@@ -3718,8 +3718,8 @@ importers:
   services/azora-classroom:
     dependencies:
       '@prisma/client':
-        specifier: ^5.0.0
-        version: 5.22.0(prisma@5.22.0)
+        specifier: ^7.2.0
+        version: 7.2.0(prisma@5.22.0)(typescript@5.4.5)
       compression:
         specifier: ^1.7.4
         version: 1.8.1
@@ -3815,8 +3815,8 @@ importers:
   services/azora-cloud/azora-mint:
     dependencies:
       '@prisma/client':
-        specifier: 5.22.0
-        version: 5.22.0(prisma@5.22.0)
+        specifier: 7.2.0
+        version: 7.2.0(prisma@5.22.0)(typescript@5.9.3)
       '@types/jest':
         specifier: ^29.5.12
         version: 29.5.14
@@ -3962,8 +3962,8 @@ importers:
   services/azora-education:
     dependencies:
       '@prisma/client':
-        specifier: ^5.7.0
-        version: 5.22.0(prisma@5.22.0)
+        specifier: ^7.2.0
+        version: 7.2.0(prisma@5.22.0)(typescript@5.9.3)
       cors:
         specifier: ^2.8.5
         version: 2.8.5
@@ -4158,8 +4158,8 @@ importers:
   services/azora-marketplace:
     dependencies:
       '@prisma/client':
-        specifier: ^5.7.0
-        version: 5.22.0(prisma@5.22.0)
+        specifier: ^7.2.0
+        version: 7.2.0(prisma@5.22.0)(typescript@5.9.3)
       cors:
         specifier: ^2.8.5
         version: 2.8.5
@@ -4210,8 +4210,8 @@ importers:
   services/azora-pricing:
     dependencies:
       '@prisma/client':
-        specifier: ^5.0.0
-        version: 5.22.0(prisma@5.22.0)
+        specifier: ^7.2.0
+        version: 7.2.0(prisma@5.22.0)(typescript@5.4.5)
       compression:
         specifier: ^1.7.4
         version: 1.8.1
@@ -4295,8 +4295,8 @@ importers:
   services/azora-research-center:
     dependencies:
       '@prisma/client':
-        specifier: ^5.0.0
-        version: 5.22.0(prisma@5.22.0)
+        specifier: ^7.2.0
+        version: 7.2.0(prisma@5.22.0)(typescript@5.4.5)
       compression:
         specifier: ^1.7.4
         version: 1.8.1
@@ -4486,8 +4486,8 @@ importers:
   services/azora-studyspaces:
     dependencies:
       '@prisma/client':
-        specifier: ^5.0.0
-        version: 5.22.0(prisma@5.22.0)
+        specifier: ^7.2.0
+        version: 7.2.0(prisma@5.22.0)(typescript@5.4.5)
       compression:
         specifier: ^1.7.4
         version: 1.8.1
@@ -4721,8 +4721,8 @@ importers:
   services/citadel-predai-sensor:
     dependencies:
       '@prisma/client':
-        specifier: ^5.7.0
-        version: 5.22.0(prisma@5.22.0)
+        specifier: ^7.2.0
+        version: 7.2.0(prisma@5.22.0)(typescript@5.9.3)
       cors:
         specifier: ^2.8.5
         version: 2.8.5
@@ -4771,8 +4771,8 @@ importers:
   services/community-engine:
     dependencies:
       '@prisma/client':
-        specifier: ^5.0.0
-        version: 5.22.0(prisma@5.22.0)
+        specifier: ^7.2.0
+        version: 7.2.0(prisma@5.22.0)(typescript@5.9.3)
       canvas:
         specifier: ^2.11.0
         version: 2.11.2(encoding@0.1.13)
@@ -4969,8 +4969,8 @@ importers:
   services/elara-content-generator:
     dependencies:
       '@prisma/client':
-        specifier: ^5.0.0
-        version: 5.22.0(prisma@5.22.0)
+        specifier: ^7.2.0
+        version: 7.2.0(prisma@5.22.0)(typescript@5.9.3)
       cors:
         specifier: ^2.8.5
         version: 2.8.5
@@ -5012,8 +5012,8 @@ importers:
   services/elara-incubator:
     dependencies:
       '@prisma/client':
-        specifier: ^5.6.0
-        version: 5.22.0(prisma@5.22.0)
+        specifier: ^7.2.0
+        version: 7.2.0(prisma@5.22.0)(typescript@5.4.5)
       bcryptjs:
         specifier: ^2.4.3
         version: 2.4.3
@@ -5128,8 +5128,8 @@ importers:
   services/elara-orchestrator:
     dependencies:
       '@prisma/client':
-        specifier: ^7.1.0
-        version: 7.1.0(prisma@7.1.0(@types/react@19.2.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: ^7.2.0
+        version: 7.2.0(prisma@7.1.0(@types/react@19.2.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3))(typescript@5.9.3)
       body-parser:
         specifier: ^1.20.2
         version: 1.20.4
@@ -5156,8 +5156,8 @@ importers:
   services/enrollment-service:
     dependencies:
       '@prisma/client':
-        specifier: ^5.0.0
-        version: 5.22.0(prisma@5.22.0)
+        specifier: ^7.2.0
+        version: 7.2.0(prisma@5.22.0)(typescript@5.4.5)
       compression:
         specifier: ^1.7.4
         version: 1.8.1
@@ -5253,8 +5253,8 @@ importers:
   services/enterprise:
     dependencies:
       '@prisma/client':
-        specifier: ^7.0.1
-        version: 7.1.0(prisma@5.22.0)(typescript@5.4.5)
+        specifier: ^7.2.0
+        version: 7.2.0(prisma@5.22.0)(typescript@5.4.5)
       compression:
         specifier: ^1.7.4
         version: 1.8.1
@@ -5722,8 +5722,8 @@ importers:
   services/knowledge-ocean:
     dependencies:
       '@prisma/client':
-        specifier: ^7.0.1
-        version: 7.1.0(prisma@7.1.0(@types/react@19.2.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3))(typescript@5.9.3)
+        specifier: ^7.2.0
+        version: 7.2.0(prisma@7.1.0(@types/react@19.2.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3))(typescript@5.9.3)
       axios:
         specifier: ^1.5.0
         version: 1.13.2
@@ -6005,8 +6005,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/shared-api
       '@prisma/client':
-        specifier: ^7.0.1
-        version: 7.1.0(prisma@5.22.0)(typescript@5.9.3)
+        specifier: ^7.2.0
+        version: 7.2.0(prisma@5.22.0)(typescript@5.9.3)
       express:
         specifier: ^4.18.2
         version: 4.22.1
@@ -6095,8 +6095,8 @@ importers:
   services/sapiens-education-service:
     dependencies:
       '@prisma/client':
-        specifier: ^5.0.0
-        version: 5.22.0(prisma@5.22.0)
+        specifier: ^7.2.0
+        version: 7.2.0(prisma@5.22.0)(typescript@5.0.4)
       axios:
         specifier: ^1.6.0
         version: 1.13.2
@@ -6184,8 +6184,8 @@ importers:
   services/subscription:
     dependencies:
       '@prisma/client':
-        specifier: ^7.0.1
-        version: 7.1.0(prisma@5.22.0)(typescript@5.4.5)
+        specifier: ^7.2.0
+        version: 7.2.0(prisma@5.22.0)(typescript@5.4.5)
       compression:
         specifier: ^1.7.4
         version: 1.8.1
@@ -7884,7 +7884,7 @@ packages:
 
   '@expo/bunyan@4.0.1':
     resolution: {integrity: sha512-+Lla7nYSiHZirgK+U/uYzsLv/X+HaJienbD5AKX1UQZHYfWaP+9uuQluRB4GrEVWF0GZ7vEVp/jzaOT9k/SQlg==}
-    engines: {'0': node >=0.10.0}
+    engines: {node: '>=0.10.0'}
 
   '@expo/cli@0.10.17':
     resolution: {integrity: sha512-HkHDvHPzq4M244hIerwnsw2IdjOo7RSsMYWGhc7ZY7DQWIMUC88b7f5+0RtD4JQfXQrgKS5Tvqm/5E6kAH0rIA==}
@@ -9505,7 +9505,7 @@ packages:
   '@mui/base@5.0.0-beta.40-1':
     resolution: {integrity: sha512-agKXuNNy0bHUmeU7pNmoZwNFr7Hiyhojkb9+2PVyDG5+6RafYuyMgbrav8CndsB7KUc/U51JAw9vKNDLYBzaUA==}
     engines: {node: '>=12.0.0'}
-    deprecated: This package has been replaced by @base-ui-components/react
+    deprecated: This package has been replaced by @base-ui/react
     peerDependencies:
       '@types/react': ^17.0.0 || ^18.0.0 || ^19.0.0
       react: ^17.0.0 || ^18.0.0 || ^19.0.0
@@ -10610,20 +10610,11 @@ packages:
   '@popperjs/core@2.11.8':
     resolution: {integrity: sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==}
 
-  '@prisma/client-runtime-utils@7.1.0':
-    resolution: {integrity: sha512-39xmeBrNTN40FzF34aJMjfX1PowVCqoT3UKUWBBSP3aXV05NRqGBC3x2wCDs96ti6ZgdiVzqnRDHtbzU8X+lPQ==}
+  '@prisma/client-runtime-utils@7.2.0':
+    resolution: {integrity: sha512-dn7oB53v0tqkB0wBdMuTNFNPdEbfICEUe82Tn9FoKAhJCUkDH+fmyEp0ClciGh+9Hp2Tuu2K52kth2MTLstvmA==}
 
-  '@prisma/client@5.22.0':
-    resolution: {integrity: sha512-M0SVXfyHnQREBKxCgyo7sffrKttwE6R8PMq330MIUF0pTwjUhLbW84pFDlf06B27XyCR++VtjugEnIHdr07SVA==}
-    engines: {node: '>=16.13'}
-    peerDependencies:
-      prisma: '*'
-    peerDependenciesMeta:
-      prisma:
-        optional: true
-
-  '@prisma/client@7.1.0':
-    resolution: {integrity: sha512-qf7GPYHmS/xybNiSOpzv9wBo+UwqfL2PeyX+08v+KVHDI0AlSCQIh5bBySkH3alu06NX9wy98JEnckhMHoMFfA==}
+  '@prisma/client@7.2.0':
+    resolution: {integrity: sha512-JdLF8lWZ+LjKGKpBqyAlenxd/kXjd1Abf/xK+6vUA7R7L2Suo6AFTHFRpPSdAKCan9wzdFApsUpSa/F6+t1AtA==}
     engines: {node: ^20.19 || ^22.12 || >=24.0}
     peerDependencies:
       prisma: '*'
@@ -21481,6 +21472,7 @@ packages:
   next@15.5.7:
     resolution: {integrity: sha512-+t2/0jIJ48kUpGKkdlhgkv+zPTEOoXyr60qXe68eB/pl3CMJaLeIGjzp5D6Oqt25hCBiBTt8wEeeAzfJvUKnPQ==}
     engines: {node: ^18.18.0 || ^19.8.0 || >= 20.0.0}
+    deprecated: This version has a security vulnerability. Please upgrade to a patched version. See https://nextjs.org/blog/security-update-2025-12-11 for more details.
     hasBin: true
     peerDependencies:
       '@opentelemetry/api': ^1.1.0
@@ -21524,6 +21516,7 @@ packages:
   next@16.0.7:
     resolution: {integrity: sha512-3mBRJyPxT4LOxAJI6IsXeFtKfiJUbjCLgvXO02fV8Wy/lIhPvP94Fe7dGhUgHXcQy4sSuYwQNcOLhIfOm0rL0A==}
     engines: {node: '>=20.9.0'}
+    deprecated: This version has a security vulnerability. Please upgrade to a patched version. See https://nextjs.org/blog/security-update-2025-12-11 for more details.
     hasBin: true
     peerDependencies:
       '@opentelemetry/api': ^1.1.0
@@ -32661,7 +32654,7 @@ snapshots:
       clsx: 2.1.1
       prop-types: 15.8.1
       react: 18.3.1
-      react-is: 19.2.1
+      react-is: 19.2.3
     optionalDependencies:
       '@types/react': 18.2.79
 
@@ -33640,29 +33633,32 @@ snapshots:
 
   '@popperjs/core@2.11.8': {}
 
-  '@prisma/client-runtime-utils@7.1.0': {}
+  '@prisma/client-runtime-utils@7.2.0': {}
 
-  '@prisma/client@5.22.0(prisma@5.22.0)':
+  '@prisma/client@7.2.0(prisma@5.22.0)(typescript@5.0.4)':
+    dependencies:
+      '@prisma/client-runtime-utils': 7.2.0
     optionalDependencies:
       prisma: 5.22.0
+      typescript: 5.0.4
 
-  '@prisma/client@7.1.0(prisma@5.22.0)(typescript@5.4.5)':
+  '@prisma/client@7.2.0(prisma@5.22.0)(typescript@5.4.5)':
     dependencies:
-      '@prisma/client-runtime-utils': 7.1.0
+      '@prisma/client-runtime-utils': 7.2.0
     optionalDependencies:
       prisma: 5.22.0
       typescript: 5.4.5
 
-  '@prisma/client@7.1.0(prisma@5.22.0)(typescript@5.9.3)':
+  '@prisma/client@7.2.0(prisma@5.22.0)(typescript@5.9.3)':
     dependencies:
-      '@prisma/client-runtime-utils': 7.1.0
+      '@prisma/client-runtime-utils': 7.2.0
     optionalDependencies:
       prisma: 5.22.0
       typescript: 5.9.3
 
-  '@prisma/client@7.1.0(prisma@7.1.0(@types/react@19.2.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3))(typescript@5.9.3)':
+  '@prisma/client@7.2.0(prisma@7.1.0(@types/react@19.2.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3))(typescript@5.9.3)':
     dependencies:
-      '@prisma/client-runtime-utils': 7.1.0
+      '@prisma/client-runtime-utils': 7.2.0
     optionalDependencies:
       prisma: 7.1.0(@types/react@19.2.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3)
       typescript: 5.9.3

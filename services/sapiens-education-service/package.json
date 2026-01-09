@@ -9,7 +9,7 @@
     "migrate": "prisma migrate dev --name sapiens-init"
   },
   "dependencies": {
-    "@prisma/client": "^5.0.0",
+    "@prisma/client": "^7.2.0",
     "axios": "^1.6.0",
     "body-parser": "^1.20.0",
     "cors": "^2.8.5",

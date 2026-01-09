@@ -9,7 +9,7 @@
     "test-course": "ts-node test-course.ts"
   },
   "dependencies": {
-    "@prisma/client": "^5.0.0",
+    "@prisma/client": "^7.2.0",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "elevenlabs": "^1.59.0",

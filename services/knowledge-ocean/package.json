@@ -18,7 +18,7 @@
     "pino": "^8.0.0",
     "axios": "^1.5.0",
     "pg": "^8.11.0",
-    "@prisma/client": "^7.0.1",
+    "@prisma/client": "^7.2.0",
     "prisma": "^7.0.1"
   },
   "devDependencies": {

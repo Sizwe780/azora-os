@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@azora/shared-auth": "workspace:*",
-    "@prisma/client": "^5.12.1",
+    "@prisma/client": "^7.2.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^4.17.1",
