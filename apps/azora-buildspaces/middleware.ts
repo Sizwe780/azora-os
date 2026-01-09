@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { securityHeaders } from "./lib/security-headers"
+import { securityHeaders as sharedSecurityHeaders } from "./lib/security-headers"
 
 const RATE_LIMIT = 100
 const WINDOW_MS = 60_000
@@ -41,7 +41,7 @@ function isRateLimited(ip: string) {
 }
 
 function securityHeaders(response: NextResponse) {
-  for (const header of securityHeaders) {
+  for (const header of sharedSecurityHeaders) {
     response.headers.set(header.key, header.value)
   }
   return response
