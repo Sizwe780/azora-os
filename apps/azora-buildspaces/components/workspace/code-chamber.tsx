@@ -1,6 +1,7 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useEffect, useMemo } from "react"
+import { usePathname } from "next/navigation"
 import { useFileSystem } from "@/lib/stores/file-system"
 import { WorkbenchLayout } from "./layout/workbench-layout"
 import { useWorkbench } from "@/lib/stores/workbench-store"
@@ -17,10 +18,17 @@ import { TerminalPanel } from "./terminal-panel"
 import { ProjectWelcome } from "./project-welcome"
 
 interface CodeChamberProps {
-    id: string
+    id?: string
 }
 
 export function CodeChamber({ id }: CodeChamberProps) {
+    const pathname = usePathname()
+    const projectId = useMemo(() => {
+        if (id && id.trim().length > 0) return id
+        const parts = pathname?.split("/").filter(Boolean) ?? []
+        return parts[parts.length - 1] || "default"
+    }, [id, pathname])
+
     const {
         rootId,
         activeFileId,
@@ -33,12 +41,11 @@ export function CodeChamber({ id }: CodeChamberProps) {
         loadProject
     } = useFileSystem()
 
-    // Initialize project files
     useEffect(() => {
-        if (id) {
-            loadProject(id)
+        if (projectId) {
+            loadProject(projectId)
         }
-    }, [id])
+    }, [projectId])
 
     const handleFileSelect = (fileId: string) => {
         setActiveFile(fileId)
