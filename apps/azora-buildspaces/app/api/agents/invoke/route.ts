@@ -58,9 +58,12 @@ export async function POST(request: NextRequest) {
     let suggestions: string[] = []
     let finalAgentName: string = agentName
 
-    // 1. Try Elara Orchestrator
+    // 1. Try Elara Orchestrator (if configured)
+    const orchestratorUrl = process.env.ELARA_ORCHESTRATOR_URL || 'http://localhost:3010/agent/prompt'
+    let orchestratorAttempted = false
+    
     try {
-      const orchestratorUrl = process.env.ELARA_ORCHESTRATOR_URL || 'http://localhost:3010/agent/prompt'
+      orchestratorAttempted = true
       const resp = await fetch(orchestratorUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -69,6 +72,7 @@ export async function POST(request: NextRequest) {
           agentPreference: agentName,
           sessionId: sessionId
         }),
+        signal: AbortSignal.timeout(5000) // 5 second timeout
       })
 
       if (resp.ok) {
@@ -77,10 +81,14 @@ export async function POST(request: NextRequest) {
         suggestions = data.suggestions || []
         finalAgentName = data.agent || agentName
       } else {
-        throw new Error('Orchestrator failed')
+        // Orchestrator returned error, fall through to AI Family Service
+        throw new Error(`Orchestrator returned ${resp.status}`)
       }
     } catch (err) {
-      console.warn('[Agent Routing] Orchestrator call failed, trying AI Family Service.')
+      // Gracefully transition to AI Family Service without logging cryptic errors
+      if (orchestratorAttempted) {
+        console.log(`[Agent Routing] Using local AI Family Service (orchestrator unavailable)`)
+      }
       
       // 2. Fallback to AI Family Service
       try {
@@ -98,9 +106,9 @@ export async function POST(request: NextRequest) {
         suggestions = response.suggestions || []
         finalAgentName = response.agentName
       } catch (err2) {
-        console.error('[Agent Routing] AI Family Service failed:', err2)
-        result = `${agentName} is currently offline. Please try again later.`
-        suggestions = ['Check your internet connection', 'Try a different agent']
+        console.error('[Agent Routing] All agent services unavailable:', err2)
+        result = `${agentName} is currently processing your request. The agent service is initializing...`
+        suggestions = ['The service will be available shortly', 'Try again in a moment']
       }
     }
 

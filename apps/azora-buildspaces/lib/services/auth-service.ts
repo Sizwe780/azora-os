@@ -40,28 +40,39 @@ export class AuthService {
       return null
     }
 
-    // In a client-side service, we should rely on the session data
-    // or fetch additional details from an API route if needed.
-    // We cannot import Prisma here as this code runs in the browser.
+    // Fetch real user data from the API route instead of using mocks
+    try {
+      const res = await fetch('/api/user/profile', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include'
+      })
 
-    return {
-      id: (session.user as any).id || 'unknown',
-      name: session.user.name || 'User',
-      email: session.user.email || '',
-      createdAt: new Date(), // Session doesn't have this, would need API fetch
-      subscription: {
-        plan: 'constitutional',
-        status: 'trial',
-        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-        geographicPricing: {
-          country: 'Global',
-          discount: 0
-        }
-      },
-      verificationStatus: {
-        email: true,
-        identity: false
+      if (!res.ok) {
+        console.error('Failed to fetch user profile:', res.status)
+        return null
       }
+
+      const userData = await res.json()
+      
+      return {
+        id: userData.id,
+        name: userData.name,
+        email: userData.email,
+        createdAt: new Date(userData.createdAt),
+        subscription: {
+          plan: userData.subscription.plan,
+          status: userData.subscription.status,
+          expiresAt: new Date(userData.subscription.expiresAt),
+          geographicPricing: userData.subscription.geographicPricing
+        },
+        verificationStatus: userData.verificationStatus
+      }
+    } catch (error) {
+      console.error('Error fetching user profile:', error)
+      return null
     }
   }
 
