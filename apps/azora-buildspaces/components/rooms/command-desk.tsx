@@ -2,38 +2,20 @@
 
 import type React from "react"
 import { useState, useRef, useEffect } from "react"
-
-const makeId = () => Math.random().toString(36).slice(2, 9) // deterministic helper for IDs (avoids Date.now in render)
 import {
   Send,
   Sparkles,
   Bot,
   User,
   Loader2,
-  Play,
-  Pause,
-  CheckCircle2,
-  Clock,
   Code2,
   Database,
   Palette,
   Shield,
-  BookOpen,
-  MoreVertical,
-  Pencil,
-  Trash2,
-  ChevronRight,
-  Zap,
-  Target,
-  RotateCcw,
   MessageSquare,
-  Workflow,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { motion, AnimatePresence } from "framer-motion"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Progress } from "@/components/ui/progress"
 import { Textarea } from "@/components/ui/textarea"
 import { useWorkspace, Task } from "@/lib/contexts/workspace-context"
 
@@ -43,800 +25,114 @@ interface Message {
   content: string
   agent?: string
   timestamp: Date
-  specs?: AgentSpec[]
   thinking?: boolean
 }
 
-interface AgentSpec {
-  agentId: string
-  agentName: string
-  task: string
-  status: "pending" | "active" | "complete" | "error"
-  progress?: number
-}
-
-const agents = [
-  {
-    id: "elara",
-    name: "Elara",
-    role: "XO Architect",
-    color: "from-primary to-emerald-400",
-    icon: Sparkles,
-    description: "Orchestrates agents and creates build specs",
-  },
-  {
-    id: "sankofa",
-    name: "Sankofa",
-    role: "Code Specialist",
-    color: "from-accent to-purple-400",
-    icon: Code2,
-    description: "Generates and refactors code",
-  },
-  {
-    id: "themba",
-    name: "Themba",
-    role: "Backend Engineer",
-    color: "from-amber-500 to-orange-400",
-    icon: Database,
-    description: "APIs, databases, and server logic",
-  },
-  {
-    id: "jabari",
-    name: "Jabari",
-    role: "Security Guardian",
-    color: "from-blue-500 to-cyan-400",
-    icon: Shield,
-    description: "Security audits and best practices",
-  },
-  {
-    id: "naledi",
-    name: "Naledi",
-    role: "Design Lead",
-    color: "from-pink-500 to-rose-400",
-    icon: Palette,
-    description: "UI/UX design and styling",
-  },
-]
-
-const initialMessages: Message[] = [
-  // Start with empty state - messages will be loaded from database or agent interactions
-]
-
-const initialTasks: Task[] = [
-  // Start with empty state - tasks will be loaded from database or created dynamically
-]
-
-interface CommandDeskProps {
-  onSwitchToKnowledge: () => void
-}
-
-export function CommandDesk({ onSwitchToKnowledge }: CommandDeskProps) {
-  const { tasks, addTask, updateTask, setTasks } = useWorkspace()
+export function CommandDesk() {
+  const { tasks, setTasks } = useWorkspace()
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
-  const [isTyping, setIsTyping] = useState(false)
-  const [activeTab, setActiveTab] = useState("chat")
-  const [selectedAgent, setSelectedAgent] = useState<string | null>(null)
-  const [directInput, setDirectInput] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
   const [sessionId, setSessionId] = useState<string | null>(null)
-  const [isLoadingMessages, setIsLoadingMessages] = useState(false)
-  const messagesEndRef = useRef<HTMLDivElement>(null)
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }
-
+  // Load real chat history from database on mount
   useEffect(() => {
-    scrollToBottom()
-  }, [messages])
-
-  // Initialize or load chat session on mount
-  useEffect(() => {
-    const initSession = async () => {
-      setIsLoadingMessages(true)
+    async function initSession() {
       try {
-        // Try to get an existing session for Elara (default AI for command desk)
-        const sessionsResp = await fetch('/api/chat/sessions?aiPersona=Elara')
-        if (sessionsResp.ok) {
-          const { sessions } = await sessionsResp.json()
-          if (sessions && sessions.length > 0) {
-            // Use the most recent session
-            const recentSession = sessions[0]
-            setSessionId(recentSession.id)
-            
-            // Load messages from this session
-            const messagesResp = await fetch(`/api/chat/sessions/${recentSession.id}/messages`)
-            if (messagesResp.ok) {
-              const { messages: dbMessages } = await messagesResp.json()
-              const formattedMessages = dbMessages.map((msg: any) => ({
-                id: msg.id,
-                role: msg.role,
-                content: msg.content,
-                agent: msg.metadata?.agent || 'Elara',
-                timestamp: new Date(msg.createdAt),
-                specs: msg.metadata?.specs || [],
-              }))
-              setMessages(formattedMessages)
-            }
-          } else {
-            // Create a new session
-            const createResp = await fetch('/api/chat/sessions', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ aiPersona: 'Elara', title: 'Command Desk Session' })
-            })
-            if (createResp.ok) {
-              const { session } = await createResp.json()
-              setSessionId(session.id)
-            }
-          }
-        }
+        const res = await fetch('/api/chat/sessions', { method: 'POST' })
+        const session = await res.json()
+        setSessionId(session.id)
+        
+        const msgRes = await fetch(`/api/chat/sessions/${session.id}/messages`)
+        const history = await msgRes.json()
+        setMessages(history.map((m: any) => ({
+          ...m,
+          timestamp: new Date(m.timestamp)
+        })))
       } catch (error) {
-        console.error('Failed to initialize chat session:', error)
-      } finally {
-        setIsLoadingMessages(false)
+        console.error("Failed to initialize session:", error)
       }
     }
-
     initSession()
   }, [])
-
-  // Agent API URL (read from public env or default)
-  const AGENT_API_URL = process.env.NEXT_PUBLIC_AGENT_API_URL || '/api/agents/invoke'
-
-  // Slash command definitions - forward to real agent API instead of returning mocked results
-  const slashCommands = {
-    '/generate': {
-      description: 'Generate code/components',
-      handler: async (args: string) => {
-        const [type, ...rest] = args.split(' ')
-        const target = rest.join(' ')
-        try {
-          const resp = await fetch(AGENT_API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'generate-code', context: `Generate ${type}: ${target}` })
-          })
-          if (!resp.ok) throw new Error('Agent API error')
-          const data = await resp.json()
-          return { content: data.result || `No result from agent`, specs: data.specs || [] }
-        } catch (error) {
-          return { content: `Failed to invoke agent for /generate: ${error instanceof Error ? error.message : String(error)}`, specs: [] }
-        }
-      }
-    },
-    '/test': {
-      description: 'Run tests on files',
-      handler: async (args: string) => {
-        try {
-          const resp = await fetch(AGENT_API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'run-tests', context: args })
-          })
-          if (!resp.ok) throw new Error('Agent API error')
-          const data = await resp.json()
-          return { content: data.result || `Tests queued`, specs: data.specs || [] }
-        } catch (error) {
-          return { content: `Failed to invoke agent for /test: ${error instanceof Error ? error.message : String(error)}`, specs: [] }
-        }
-      }
-    },
-    '/deploy': {
-      description: 'Deploy application',
-      handler: async (args: string) => {
-        try {
-          const resp = await fetch(AGENT_API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'deploy', context: args })
-          })
-          if (!resp.ok) throw new Error('Agent API error')
-          const data = await resp.json()
-          return { content: data.result || `Deploy started`, specs: data.specs || [] }
-        } catch (error) {
-          return { content: `Failed to invoke agent for /deploy: ${error instanceof Error ? error.message : String(error)}`, specs: [] }
-        }
-      }
-    },
-    '/explain': {
-      description: 'Explain code/concepts',
-      handler: async (args: string) => {
-        try {
-          const resp = await fetch(AGENT_API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'explain', context: args })
-          })
-          const data = await resp.json()
-          return { content: data.result || `No explanation available`, specs: [] }
-        } catch (error) {
-          return { content: `Failed to invoke agent for /explain: ${error instanceof Error ? error.message : String(error)}`, specs: [] }
-        }
-      }
-    },
-    '/security': {
-      description: 'Security audit',
-      handler: async (args: string) => {
-        try {
-          const resp = await fetch(AGENT_API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'security-audit', context: args })
-          })
-          const data = await resp.json()
-          return { content: data.result || `Security audit queued`, specs: data.specs || [] }
-        } catch (error) {
-          return { content: `Failed to invoke agent for /security: ${error instanceof Error ? error.message : String(error)}`, specs: [] }
-        }
-      }
-    },
-    '/help': {
-      description: 'Show available commands',
-      handler: async (): Promise<{ content: string; specs: AgentSpec[] }> => {
-        const commandsList = Object.entries(slashCommands)
-          .map(([cmd, info]) => `• **${cmd}** - ${info.description}`)
-          .join('\n')
-
-        return {
-          content: `**Available Slash Commands:**\n\n${commandsList}\n\nType any command followed by arguments to execute.`,
-          specs: []
-        }
-      }
-    }
-  }
 
   const handleSend = async () => {
     if (!input.trim() || !sessionId) return
 
-    const currentInput = input
+    const userMsg: Message = {
+      id: Math.random().toString(36).slice(2),
+      role: "user",
+      content: input,
+      timestamp: new Date()
+    }
+
+    setMessages(prev => [...prev, userMsg])
     setInput("")
-    setIsTyping(true)
+    setIsLoading(true)
 
     try {
-      // Save user message to database
-      const userMessageResp = await fetch(`/api/chat/sessions/${sessionId}/messages`, {
+      // Persist user message and get AI response
+      const res = await fetch(`/api/chat/sessions/${sessionId}/messages`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          role: 'user',
-          content: currentInput,
-          metadata: { timestamp: new Date().toISOString() }
-        })
+        body: JSON.stringify({ content: input, role: 'user' })
       })
-
-      if (!userMessageResp.ok) throw new Error('Failed to save user message')
       
-      const { message: userDbMessage } = await userMessageResp.json()
-      const userMessage: Message = {
-        id: userDbMessage.id,
-        role: "user",
-        content: currentInput,
-        timestamp: new Date(userDbMessage.createdAt),
-      }
-
-      setMessages((prev) => [...prev, userMessage])
-
-      // Add thinking message
-      const thinkingMessage: Message = {
-        id: `thinking-${Date.now()}`,
-        role: "assistant",
-        content: "",
-        agent: "Elara",
-        timestamp: new Date(),
-        thinking: true,
-      }
-      setMessages((prev) => [...prev, thinkingMessage])
-
-      let assistantContent = ''
-      let specs: AgentSpec[] = []
-
-      // Check for slash commands
-      if (currentInput.startsWith('/')) {
-        const [cmd, ...args] = currentInput.split(' ')
-        const command = slashCommands[cmd as keyof typeof slashCommands]
-        
-        if (command) {
-          const result = await command.handler(args.join(' '))
-          assistantContent = result.content
-          specs = result.specs
-          
-          // If there are specs, add them as tasks
-          if (result.specs && result.specs.length > 0) {
-            const newTasks: Task[] = result.specs.map(spec => ({
-              id: makeId(),
-              title: spec.task,
-              priority: "medium",
-              agentId: spec.agentId,
-              agentName: spec.agentName,
-              agentColor: agents.find(a => a.id === spec.agentId)?.color || "from-gray-500 to-gray-400",
-              icon: agents.find(a => a.id === spec.agentId)?.icon || Bot,
-              task: spec.task,
-              description: `Executing ${spec.task} as part of ${cmd} command`,
-              status: spec.status,
-              progress: spec.progress || 0,
-              estimatedTime: "~2 min"
-            }))
-            setTasks(prev => [...newTasks, ...prev])
-          }
-        }
-      } else {
-        // Call Internal Agent API
-        const response = await fetch('/api/agents/invoke', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            action: 'generate-code',
-            context: currentInput,
-          })
-        })
-
-        if (!response.ok) throw new Error("Failed to fetch from Agent API")
-
-        const data = await response.json()
-        assistantContent = data.result || 'No response from agent'
-      }
-
-      // Save assistant message to database
-      const assistantMessageResp = await fetch(`/api/chat/sessions/${sessionId}/messages`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          role: 'assistant',
-          content: assistantContent,
-          metadata: {
-            agent: 'Elara',
-            specs: specs,
-            timestamp: new Date().toISOString()
-          }
-        })
-      })
-
-      if (!assistantMessageResp.ok) throw new Error('Failed to save assistant message')
-      
-      const { message: assistantDbMessage } = await assistantMessageResp.json()
-      const aiResponse: Message = {
-        id: assistantDbMessage.id,
-        role: "assistant",
-        content: assistantContent,
-        agent: "Elara",
-        timestamp: new Date(assistantDbMessage.createdAt),
-        specs: specs
-      }
-
-      setMessages((prev) => prev.filter((m) => !m.thinking).concat(aiResponse))
+      const data = await res.json()
+      setMessages(prev => [...prev, {
+        ...data.assistantMessage,
+        timestamp: new Date(data.assistantMessage.timestamp)
+      }])
     } catch (error) {
-      console.error("Agent API Error:", error)
-      const errorResponse: Message = {
-        id: `error-${Date.now()}`,
-        role: "assistant",
-        content: "I'm having trouble connecting to the Elara Orchestrator. Please ensure the service is running.",
-        agent: "System",
-        timestamp: new Date(),
-        specs: []
-      }
-      setMessages((prev) => prev.filter((m) => !m.thinking).concat(errorResponse))
+      console.error("Agent invocation failed:", error)
     } finally {
-      setIsTyping(false)
+      setIsLoading(false)
     }
   }
 
-  const handleDirectAgent = (agentId: string, instruction: string) => {
-    if (!instruction.trim()) return
-
-    const agent = agents.find((a) => a.id === agentId)
-    if (!agent) return
-
-    const newTask: Task = {
-      id: `direct-${makeId()}`,
-      title: instruction,
-      priority: "high",
-      agentId: agent.id,
-      agentName: agent.name,
-      agentColor: agent.color,
-      icon: agent.icon,
-      task: instruction,
-      description: "Direct instruction from user - bypassing Elara coordination",
-      status: "active",
-      progress: 5,
-      canModify: true,
-      estimatedTime: "~3 min remaining",
-    }
-    setTasks((prev) => [newTask, ...prev])
-    setSelectedAgent(null)
-    setDirectInput("")
-  }
-
   return (
-    <div className="flex flex-col h-full">
-      {/* Header with Tabs */}
-      <div className="border-b border-border">
-        <div className="p-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-background" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-foreground text-sm">Command Desk</h3>
-              <p className="text-xs text-primary">
-                Elara coordinating {tasks.filter((t) => t.status === "active").length} active tasks
-              </p>
-            </div>
-          </div>
-          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onSwitchToKnowledge}>
-            <BookOpen className="w-4 h-4" />
-          </Button>
-        </div>
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="w-full justify-start rounded-none border-t border-border bg-transparent h-10 p-0">
-            <TabsTrigger
-              value="chat"
-              className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent text-xs"
+    <div className="flex flex-col h-full bg-background/50 backdrop-blur-md border rounded-xl overflow-hidden">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        <AnimatePresence initial={false}>
+          {messages.map((message) => (
+            <motion.div
+              key={message.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
             >
-              <MessageSquare className="w-3.5 h-3.5 mr-1.5" />
-              Elara Chat
-            </TabsTrigger>
-            <TabsTrigger
-              value="tasks"
-              className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent text-xs"
-            >
-              <Workflow className="w-3.5 h-3.5 mr-1.5" />
-              Tasks
-              {tasks.filter((t) => t.status === "active").length > 0 && (
-                <span className="ml-1.5 px-1.5 py-0.5 rounded-full bg-primary/20 text-primary text-[10px]">
-                  {tasks.filter((t) => t.status === "active").length}
-                </span>
-              )}
-            </TabsTrigger>
-            <TabsTrigger
-              value="direct"
-              className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent text-xs"
-            >
-              <Target className="w-3.5 h-3.5 mr-1.5" />
-              Direct
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
-      </div>
-
-      {/* Tab Content */}
-      <div className="flex-1 overflow-hidden">
-        {activeTab === "chat" && (
-          <div className="flex flex-col h-full">
-            {/* Messages */}
-            <div className="flex-1 overflow-auto p-4 space-y-4">
-              <AnimatePresence mode="popLayout">
-                {messages.map((message) => (
-                  <motion.div
-                    key={message.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className={`flex gap-3 ${message.role === "user" ? "flex-row-reverse" : ""}`}
-                  >
-                    <div
-                      className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${message.role === "user" ? "bg-muted" : "bg-gradient-to-br from-primary to-accent"
-                        }`}
-                    >
-                      {message.role === "user" ? (
-                        <User className="w-4 h-4 text-foreground" />
-                      ) : (
-                        <Bot className="w-4 h-4 text-background" />
-                      )}
-                    </div>
-                    <div className={`flex-1 max-w-[85%] ${message.role === "user" ? "text-right" : ""}`}>
-                      {message.agent && <span className="text-xs text-primary font-medium">{message.agent}</span>}
-
-                      {message.thinking ? (
-                        <div className="mt-1 p-3 rounded-xl bg-muted text-foreground">
-                          <div className="flex items-center gap-2">
-                            <div className="flex gap-1">
-                              <span className="w-2 h-2 rounded-full bg-primary animate-bounce" />
-                              <span
-                                className="w-2 h-2 rounded-full bg-primary animate-bounce"
-                                style={{ animationDelay: "0.1s" }}
-                              />
-                              <span
-                                className="w-2 h-2 rounded-full bg-primary animate-bounce"
-                                style={{ animationDelay: "0.2s" }}
-                              />
-                            </div>
-                            <span className="text-sm text-muted-foreground">Analyzing and planning...</span>
-                          </div>
-                        </div>
-                      ) : (
-                        <div
-                          className={`mt-1 p-3 rounded-xl text-sm ${message.role === "user"
-                              ? "bg-primary text-primary-foreground ml-auto"
-                              : "bg-muted text-foreground"
-                            }`}
-                        >
-                          <p className="whitespace-pre-wrap">{message.content}</p>
-
-                          {/* Agent Specs */}
-                          {message.specs && message.specs.length > 0 && (
-                            <div className="mt-3 pt-3 border-t border-border/50 space-y-2">
-                              <span className="text-xs font-medium text-muted-foreground">Delegated to agents:</span>
-                              {message.specs.map((spec, i) => (
-                                <div key={i} className="flex items-center gap-2 p-2 rounded-lg bg-background/50">
-                                  <div
-                                    className={`w-6 h-6 rounded bg-gradient-to-br ${agents.find((a) => a.id === spec.agentId)?.color
-                                      } flex items-center justify-center`}
-                                  >
-                                    <span className="text-[10px] font-bold text-background">{spec.agentName[0]}</span>
-                                  </div>
-                                  <div className="flex-1 min-w-0">
-                                    <span className="text-xs font-medium">{spec.agentName}</span>
-                                    <span className="text-xs text-muted-foreground ml-2">{spec.task}</span>
-                                  </div>
-                                  {spec.status === "active" && (
-                                    <Loader2 className="w-3 h-3 animate-spin text-primary" />
-                                  )}
-                                  {spec.status === "complete" && <CheckCircle2 className="w-3 h-3 text-primary" />}
-                                  {spec.status === "pending" && <Clock className="w-3 h-3 text-muted-foreground" />}
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-              <div ref={messagesEndRef} />
-            </div>
-
-            {/* Input */}
-            <div className="p-3 border-t border-border bg-background/50">
-              <div className="flex items-end gap-2">
-                <Textarea
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) {
-                      e.preventDefault()
-                      handleSend()
-                    }
-                  }}
-                  placeholder="Type /help for commands or describe your vision to Elara..."
-                  className="min-h-[44px] max-h-32 resize-none bg-muted border-border"
-                  rows={1}
-                />
-                <Button
-                  onClick={handleSend}
-                  size="icon"
-                  className="h-11 w-11 shrink-0 bg-primary text-primary-foreground hover:bg-primary/90"
-                  disabled={!input.trim() || isTyping}
-                >
-                  {isTyping ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-                </Button>
-              </div>
-              <p className="text-[10px] text-muted-foreground mt-2 text-center">
-                Press Enter to send, Shift+Enter for new line
-              </p>
-            </div>
-          </div>
-        )}
-
-        {activeTab === "tasks" && (
-          <div className="h-full overflow-auto p-3 space-y-4">
-            {/* Active Tasks */}
-            {tasks.filter((t) => t.status === "active").length > 0 && (
-              <div className="space-y-2">
-                <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                  Active Tasks
-                </h4>
-                {tasks
-                  .filter((t) => t.status === "active")
-                  .map((task) => (
-                    <TaskCard key={task.id} task={task} onModify={setTasks} />
-                  ))}
-              </div>
-            )}
-
-            {/* Pending Tasks */}
-            {tasks.filter((t) => t.status === "pending").length > 0 && (
-              <div className="space-y-2">
-                <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Queue</h4>
-                {tasks
-                  .filter((t) => t.status === "pending")
-                  .map((task) => (
-                    <TaskCard key={task.id} task={task} onModify={setTasks} />
-                  ))}
-              </div>
-            )}
-
-            {/* Completed Tasks */}
-            {tasks.filter((t) => t.status === "complete").length > 0 && (
-              <div className="space-y-2">
-                <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Completed</h4>
-                {tasks
-                  .filter((t) => t.status === "complete")
-                  .slice(0, 5)
-                  .map((task) => (
-                    <TaskCard key={task.id} task={task} onModify={setTasks} compact />
-                  ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        {activeTab === "direct" && (
-          <div className="h-full overflow-auto p-3">
-            <div className="space-y-4">
-              <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
-                <p className="text-sm text-amber-200">
-                  <strong>Direct Mode:</strong> Bypass Elara and send instructions directly to specialized agents. Use
-                  when you need specific agent expertise without coordination.
-                </p>
-              </div>
-
-              <div className="space-y-2">
-                {agents.map((agent) => (
-                  <motion.div
-                    key={agent.id}
-                    layout
-                    className={`rounded-xl border transition-all ${selectedAgent === agent.id
-                        ? "border-primary bg-primary/5"
-                        : "border-border bg-card/50 hover:border-primary/50"
-                      }`}
-                  >
-                    <button
-                      onClick={() => setSelectedAgent(selectedAgent === agent.id ? null : agent.id)}
-                      className="w-full p-3 flex items-center gap-3 text-left"
-                    >
-                      <div
-                        className={`w-10 h-10 rounded-lg bg-gradient-to-br ${agent.color} flex items-center justify-center shrink-0`}
-                      >
-                        <agent.icon className="w-5 h-5 text-background" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <span className="font-semibold text-sm">{agent.name}</span>
-                          <span className="text-xs text-muted-foreground">{agent.role}</span>
-                        </div>
-                        <p className="text-xs text-muted-foreground truncate">{agent.description}</p>
-                      </div>
-                      <ChevronRight
-                        className={`w-4 h-4 text-muted-foreground transition-transform ${selectedAgent === agent.id ? "rotate-90" : ""}`}
-                      />
-                    </button>
-
-                    <AnimatePresence>
-                      {selectedAgent === agent.id && (
-                        <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: "auto", opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          className="overflow-hidden"
-                        >
-                          <div className="p-3 pt-0 space-y-2">
-                            <Textarea
-                              value={directInput}
-                              onChange={(e) => setDirectInput(e.target.value)}
-                              placeholder={`Give ${agent.name} a direct instruction...`}
-                              className="min-h-[80px] bg-muted border-border text-sm"
-                            />
-                            <Button
-                              size="sm"
-                              className="w-full"
-                              onClick={() => handleDirectAgent(agent.id, directInput)}
-                              disabled={!directInput.trim()}
-                            >
-                              <Zap className="w-3.5 h-3.5 mr-1.5" />
-                              Send to {agent.name}
-                            </Button>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  )
-}
-
-interface TaskCardProps {
-  task: Task
-  onModify: React.Dispatch<React.SetStateAction<Task[]>>
-  compact?: boolean
-}
-
-function TaskCard({ task, onModify, compact }: TaskCardProps) {
-  return (
-    <motion.div
-      layout
-      className={`rounded-xl border border-border bg-card/50 overflow-hidden ${task.status === "active" ? "ring-1 ring-primary/30" : ""
-        }`}
-    >
-      <div className="p-3">
-        <div className="flex items-start gap-3">
-          <div
-            className={`w-8 h-8 rounded-lg bg-gradient-to-br ${task.agentColor} flex items-center justify-center shrink-0`}
-          >
-            <task.icon className="w-4 h-4 text-background" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-medium">{task.agentName}</span>
-                {task.status === "active" && (
-                  <span className="px-1.5 py-0.5 rounded text-[10px] bg-primary/20 text-primary">Active</span>
-                )}
-                {task.status === "complete" && <CheckCircle2 className="w-3.5 h-3.5 text-primary" />}
-                {task.status === "pending" && <Clock className="w-3.5 h-3.5 text-muted-foreground" />}
-              </div>
-              {task.canModify && (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-6 w-6">
-                      <MoreVertical className="w-3 h-3" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem>
-                      <Pencil className="w-3 h-3 mr-2" />
-                      Edit task
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      {task.status === "active" ? (
-                        <>
-                          <Pause className="w-3 h-3 mr-2" />
-                          Pause
-                        </>
-                      ) : (
-                        <>
-                          <Play className="w-3 h-3 mr-2" />
-                          Start
-                        </>
-                      )}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <RotateCcw className="w-3 h-3 mr-2" />
-                      Restart
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="text-destructive">
-                      <Trash2 className="w-3 h-3 mr-2" />
-                      Remove
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              )}
-            </div>
-            <p className="text-sm text-foreground mt-0.5">{task.task}</p>
-            {!compact && <p className="text-xs text-muted-foreground mt-1">{task.description}</p>}
-
-            {/* Progress bar for active tasks */}
-            {task.status === "active" && (
-              <div className="mt-2 space-y-1">
-                <Progress value={task.progress} className="h-1" />
-                <div className="flex items-center justify-between text-[10px] text-muted-foreground">
-                  <span>{Math.round(task.progress || 0)}%</span>
-                  <span>{task.estimatedTime}</span>
+              <div className={`max-w-[80%] p-3 rounded-lg ${
+                message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted border"
+              }`}>
+                <div className="text-sm">{message.content}</div>
+                <div className="text-[10px] opacity-50 mt-1">
+                  {message.timestamp.toLocaleTimeString()}
                 </div>
               </div>
-            )}
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
 
-            {/* Files */}
-            {!compact && task.files && task.files.length > 0 && (
-              <div className="mt-2 flex flex-wrap gap-1">
-                {task.files.map((file, i) => (
-                  <span key={i} className="px-1.5 py-0.5 rounded bg-muted text-[10px] text-muted-foreground font-mono">
-                    {file.split("/").pop()}
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
+      <div className="p-4 border-t bg-background/80">
+        <div className="relative">
+          <Textarea
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && (e.preventDefault(), handleSend())}
+            placeholder="Ask Elara to build something..."
+            className="min-h-[100px] pr-12 resize-none"
+          />
+          <Button 
+            size="icon" 
+            className="absolute bottom-2 right-2"
+            onClick={handleSend}
+            disabled={isLoading}
+          >
+            {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+          </Button>
         </div>
       </div>
-    </motion.div>
+    </div>
   )
 }
