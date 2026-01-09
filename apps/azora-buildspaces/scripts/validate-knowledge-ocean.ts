@@ -8,7 +8,7 @@ import { SankofaAgent } from '../lib/agents/sankofa-interface'
 
 async function validateKnowledgeEngine() {
   console.log('🧪 Knowledge Ocean Validation\n')
-  console.log('=' .repeat(50))
+  console.log('='.repeat(50))
 
   // Test 1: Indexer instantiation
   console.log('\n✓ Test 1: Create Indexer instance')

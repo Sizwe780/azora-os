@@ -183,6 +183,7 @@ export class KnowledgeIndexer {
     const lines = content.split('\n')
 
     // Extract functions
+    // Note: Basic pattern for MVP. Future: Support type annotations like 'function myFunc(): string'
     const functionRegex = /^\s*(?:export\s+)?(?:async\s+)?function\s+(\w+)/gm
     let match
     while ((match = functionRegex.exec(content)) !== null) {
@@ -207,6 +208,7 @@ export class KnowledgeIndexer {
     }
 
     // Extract arrow functions / const functions
+    // Note: Basic pattern for MVP. Future: Support single-param arrows like 'const func = x => x'
     const arrowFunctionRegex = /^\s*(?:export\s+)?const\s+(\w+)\s*=\s*(?:async\s*)?\([^)]*\)\s*=>/gm
     while ((match = arrowFunctionRegex.exec(content)) !== null) {
       const funcName = match[1]

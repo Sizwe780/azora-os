@@ -16,7 +16,16 @@ export async function POST(request: NextRequest) {
 
     let results
 
-    if (mode === 'concept') {
+    // Handle wildcard query to get all items
+    if (query === '*') {
+      const indexer = getKnowledgeIndexer()
+      const allChunks = Array.from((indexer as any).chunks.values())
+      results = allChunks.slice(0, maxResults).map((chunk: any, index: number) => ({
+        ...chunk,
+        score: 1 - (index * 0.001), // Slight descending score
+        match: {}
+      }))
+    } else if (mode === 'concept') {
       // Use Sankofa for concept search
       const sankofa = getSankofa()
       const contextResult = await sankofa.answerQuestion(query)
@@ -65,7 +74,16 @@ export async function GET(request: NextRequest) {
 
     let results
 
-    if (mode === 'concept') {
+    // Handle wildcard query to get all items
+    if (query === '*') {
+      const indexer = getKnowledgeIndexer()
+      const allChunks = Array.from((indexer as any).chunks.values())
+      results = allChunks.slice(0, maxResults).map((chunk: any, index: number) => ({
+        ...chunk,
+        score: 1 - (index * 0.001),
+        match: {}
+      }))
+    } else if (mode === 'concept') {
       const sankofa = getSankofa()
       const contextResult = await sankofa.answerQuestion(query)
       

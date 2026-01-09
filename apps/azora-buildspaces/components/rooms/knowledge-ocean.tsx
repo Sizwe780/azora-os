@@ -48,11 +48,11 @@ export default function KnowledgeOcean({ onSwitchToCommand }: KnowledgeOceanProp
       const indexData = await indexResponse.json()
       console.log('[KnowledgeOcean] Indexed:', indexData.stats)
 
-      // Then, fetch all items by searching with empty query
+      // Then, get a sample of items using a broad search
       const searchResponse = await fetch('/api/knowledge/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: '', mode: 'local', maxResults: 1000 })
+        body: JSON.stringify({ query: '*', mode: 'local', maxResults: 1000 })
       })
 
       if (searchResponse.ok) {
