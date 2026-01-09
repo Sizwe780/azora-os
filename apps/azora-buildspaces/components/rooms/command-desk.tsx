@@ -112,12 +112,14 @@ interface CommandDeskProps {
 
 export function CommandDesk({ onSwitchToKnowledge }: CommandDeskProps) {
   const { tasks, addTask, updateTask, setTasks } = useWorkspace()
-  const [messages, setMessages] = useState<Message[]>(initialMessages)
+  const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
   const [isTyping, setIsTyping] = useState(false)
   const [activeTab, setActiveTab] = useState("chat")
   const [selectedAgent, setSelectedAgent] = useState<string | null>(null)
   const [directInput, setDirectInput] = useState("")
+  const [sessionId, setSessionId] = useState<string | null>(null)
+  const [isLoadingMessages, setIsLoadingMessages] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
@@ -127,6 +129,57 @@ export function CommandDesk({ onSwitchToKnowledge }: CommandDeskProps) {
   useEffect(() => {
     scrollToBottom()
   }, [messages])
+
+  // Initialize or load chat session on mount
+  useEffect(() => {
+    const initSession = async () => {
+      setIsLoadingMessages(true)
+      try {
+        // Try to get an existing session for Elara (default AI for command desk)
+        const sessionsResp = await fetch('/api/chat/sessions?aiPersona=Elara')
+        if (sessionsResp.ok) {
+          const { sessions } = await sessionsResp.json()
+          if (sessions && sessions.length > 0) {
+            // Use the most recent session
+            const recentSession = sessions[0]
+            setSessionId(recentSession.id)
+            
+            // Load messages from this session
+            const messagesResp = await fetch(`/api/chat/sessions/${recentSession.id}/messages`)
+            if (messagesResp.ok) {
+              const { messages: dbMessages } = await messagesResp.json()
+              const formattedMessages = dbMessages.map((msg: any) => ({
+                id: msg.id,
+                role: msg.role,
+                content: msg.content,
+                agent: msg.metadata?.agent || 'Elara',
+                timestamp: new Date(msg.createdAt),
+                specs: msg.metadata?.specs || [],
+              }))
+              setMessages(formattedMessages)
+            }
+          } else {
+            // Create a new session
+            const createResp = await fetch('/api/chat/sessions', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ aiPersona: 'Elara', title: 'Command Desk Session' })
+            })
+            if (createResp.ok) {
+              const { session } = await createResp.json()
+              setSessionId(session.id)
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Failed to initialize chat session:', error)
+      } finally {
+        setIsLoadingMessages(false)
+      }
+    }
+
+    initSession()
+  }, [])
 
   // Agent API URL (read from public env or default)
   const AGENT_API_URL = process.env.NEXT_PUBLIC_AGENT_API_URL || '/api/agents/invoke'
@@ -234,32 +287,50 @@ export function CommandDesk({ onSwitchToKnowledge }: CommandDeskProps) {
   }
 
   const handleSend = async () => {
-    if (!input.trim()) return
+    if (!input.trim() || !sessionId) return
 
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      role: "user",
-      content: input,
-      timestamp: new Date(),
-    }
-
-    setMessages((prev) => [...prev, userMessage])
     const currentInput = input
     setInput("")
     setIsTyping(true)
 
-    // Add thinking message
-    const thinkingMessage: Message = {
-      id: (Date.now() + 0.5).toString(),
-      role: "assistant",
-      content: "",
-      agent: "Elara",
-      timestamp: new Date(),
-      thinking: true,
-    }
-    setMessages((prev) => [...prev, thinkingMessage])
-
     try {
+      // Save user message to database
+      const userMessageResp = await fetch(`/api/chat/sessions/${sessionId}/messages`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          role: 'user',
+          content: currentInput,
+          metadata: { timestamp: new Date().toISOString() }
+        })
+      })
+
+      if (!userMessageResp.ok) throw new Error('Failed to save user message')
+      
+      const { message: userDbMessage } = await userMessageResp.json()
+      const userMessage: Message = {
+        id: userDbMessage.id,
+        role: "user",
+        content: currentInput,
+        timestamp: new Date(userDbMessage.createdAt),
+      }
+
+      setMessages((prev) => [...prev, userMessage])
+
+      // Add thinking message
+      const thinkingMessage: Message = {
+        id: `thinking-${Date.now()}`,
+        role: "assistant",
+        content: "",
+        agent: "Elara",
+        timestamp: new Date(),
+        thinking: true,
+      }
+      setMessages((prev) => [...prev, thinkingMessage])
+
+      let assistantContent = ''
+      let specs: AgentSpec[] = []
+
       // Check for slash commands
       if (currentInput.startsWith('/')) {
         const [cmd, ...args] = currentInput.split(' ')
@@ -267,15 +338,8 @@ export function CommandDesk({ onSwitchToKnowledge }: CommandDeskProps) {
         
         if (command) {
           const result = await command.handler(args.join(' '))
-          const aiResponse: Message = {
-            id: (Date.now() + 1).toString(),
-            role: "assistant",
-            content: result.content,
-            agent: "Elara",
-            timestamp: new Date(),
-            specs: result.specs
-          }
-          setMessages((prev) => prev.filter((m) => !m.thinking).concat(aiResponse))
+          assistantContent = result.content
+          specs = result.specs
           
           // If there are specs, add them as tasks
           if (result.specs && result.specs.length > 0) {
@@ -295,39 +359,56 @@ export function CommandDesk({ onSwitchToKnowledge }: CommandDeskProps) {
             }))
             setTasks(prev => [...newTasks, ...prev])
           }
-          setIsTyping(false)
-          return
         }
+      } else {
+        // Call Internal Agent API
+        const response = await fetch('/api/agents/invoke', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'generate-code',
+            context: currentInput,
+          })
+        })
+
+        if (!response.ok) throw new Error("Failed to fetch from Agent API")
+
+        const data = await response.json()
+        assistantContent = data.result || 'No response from agent'
       }
 
-      // Call Internal Agent API
-      const response = await fetch('/api/agents/invoke', {
+      // Save assistant message to database
+      const assistantMessageResp = await fetch(`/api/chat/sessions/${sessionId}/messages`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          action: 'generate-code', // Default action
-          context: currentInput,
+          role: 'assistant',
+          content: assistantContent,
+          metadata: {
+            agent: 'Elara',
+            specs: specs,
+            timestamp: new Date().toISOString()
+          }
         })
-      });
+      })
 
-      if (!response.ok) throw new Error("Failed to fetch from Agent API");
-
-      const data = await response.json();
-
+      if (!assistantMessageResp.ok) throw new Error('Failed to save assistant message')
+      
+      const { message: assistantDbMessage } = await assistantMessageResp.json()
       const aiResponse: Message = {
-        id: (Date.now() + 1).toString(),
+        id: assistantDbMessage.id,
         role: "assistant",
-        content: data.result,
-        agent: data.agent,
-        timestamp: new Date(),
-        specs: [] 
+        content: assistantContent,
+        agent: "Elara",
+        timestamp: new Date(assistantDbMessage.createdAt),
+        specs: specs
       }
 
       setMessages((prev) => prev.filter((m) => !m.thinking).concat(aiResponse))
     } catch (error) {
-      console.error("Agent API Error:", error);
+      console.error("Agent API Error:", error)
       const errorResponse: Message = {
-        id: (Date.now() + 1).toString(),
+        id: `error-${Date.now()}`,
         role: "assistant",
         content: "I'm having trouble connecting to the Elara Orchestrator. Please ensure the service is running.",
         agent: "System",

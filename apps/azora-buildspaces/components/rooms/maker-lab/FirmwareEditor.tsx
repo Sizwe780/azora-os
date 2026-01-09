@@ -275,18 +275,15 @@ export default function FirmwareEditor() {
         setIsRunning(true);
         addLog("Starting serial monitor...");
 
-        serialIntervalRef.current = setInterval(() => {
-            const mockData = [
-                `Sensor reading: ${(Math.random() * 3.3).toFixed(2)}V`,
-                `Temperature: ${(20 + Math.random() * 20).toFixed(1)}°C`,
-                `WiFi connected - Signal: ${-30 - Math.random() * 40}dBm`,
-                `Free heap: ${Math.floor(200000 + Math.random() * 50000)} bytes`,
-                `Uptime: ${Math.floor(Math.random() * 3600)}s`
-            ];
-
-            const randomData = mockData[Math.floor(Math.random() * mockData.length)];
-            setSerialOutput(prev => [...prev.slice(-19), randomData]); // Keep last 20 lines
-        }, 1000);
+        // In a real implementation, this would connect to a WebSocket or serial port API
+        // For now, we show a message indicating the feature needs backend support
+        addLog("Note: Serial monitor requires hardware connection via WebSocket API");
+        addLog("Configure SERIAL_WS_URL environment variable to enable real-time monitoring");
+        
+        // Placeholder for future implementation
+        // serialIntervalRef.current = setInterval(() => {
+        //     // Fetch real serial data from backend
+        // }, 1000);
     };
 
     const stopSerialMonitor = () => {
