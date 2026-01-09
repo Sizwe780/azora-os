@@ -5,7 +5,9 @@ const RATE_LIMIT = 100
 const WINDOW_MS = 60_000
 
 type Bucket = { count: number; expiresAt: number }
-// WARNING: Memory buckets only protect a single instance; production should wire a shared store (e.g., Redis).
+/**
+ * Memory buckets only protect a single instance; production should wire a shared store (e.g., Redis).
+ */
 const buckets = new Map<string, Bucket>()
 let lastCleanup = 0
 
@@ -64,5 +66,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|api/health).*)"],
 }
