@@ -55,7 +55,8 @@ export async function GET() {
       );
     }
 
-    // TODO: Add proper subscription model to database schema
+    // TODO: Add proper subscription model to database schema [Target: Q1 2026]
+    // Priority: HIGH - This affects billing accuracy and user experience
     // For now, return a default subscription based on configuration
     const subscription = {
       plan: DEFAULT_SUBSCRIPTION.plan,

@@ -3,6 +3,7 @@ import { initializeKnowledgeEngine } from '@/lib/knowledge/indexer'
 import { prisma } from '@/lib/db'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import crypto from 'crypto'
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,8 +19,9 @@ export async function POST(request: NextRequest) {
       const session = await getServerSession(authOptions)
       const ownerId = session?.user ? (session.user as any).id : 'anonymous'
       
-      // Check if a project exists for this root path
-      const slug = `knowledge-scan-${Date.now()}`
+      // Generate a cryptographically secure unique slug
+      const randomId = crypto.randomBytes(8).toString('hex');
+      const slug = `knowledge-scan-${Date.now()}-${randomId}`
       const projectName = `Knowledge Scan - ${new Date().toISOString()}`
       
       await prisma.buildSpaceProject.upsert({

@@ -3,6 +3,8 @@ import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
+// Note: NextAuth's PrismaAdapter requires the real PrismaClient, not the proxy from @/lib/db
+// This is intentional - other routes should use @/lib/db for better error handling
 import { prisma } from "@/lib/prisma";
 import crypto from "crypto";
 

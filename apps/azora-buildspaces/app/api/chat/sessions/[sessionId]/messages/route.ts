@@ -3,6 +3,10 @@ import { prisma } from '@/lib/db'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 
+// Constants for agent roles
+const AGENT_ROLE_USER = 'user';
+const AGENT_ROLE_ASSISTANT = 'assistant';
+
 /**
  * GET /api/chat/sessions/[sessionId]/messages - Get all messages in a session
  */
@@ -25,13 +29,13 @@ export async function GET(
     // Format executions as chat messages
     const messages = executions.map(exec => {
       // User messages have input, assistant messages have output
-      const isUserMessage = exec.agentName === 'user';
+      const isUserMessage = exec.agentName === AGENT_ROLE_USER;
       const content = isUserMessage ? exec.input : (exec.output || '');
       
       return {
         id: exec.id,
         sessionId: exec.specId || sessionId,
-        role: isUserMessage ? 'user' : 'assistant',
+        role: isUserMessage ? AGENT_ROLE_USER : AGENT_ROLE_ASSISTANT,
         content,
         metadata: {
           agent: exec.agentName,
@@ -75,9 +79,9 @@ export async function POST(
       )
     }
 
-    if (role !== 'user' && role !== 'assistant') {
+    if (role !== AGENT_ROLE_USER && role !== AGENT_ROLE_ASSISTANT) {
       return NextResponse.json(
-        { error: 'role must be "user" or "assistant"' },
+        { error: `role must be "${AGENT_ROLE_USER}" or "${AGENT_ROLE_ASSISTANT}"` },
         { status: 400 }
       )
     }
@@ -90,13 +94,13 @@ export async function POST(
     const execution = await prisma.buildSpaceExecution.create({
       data: {
         specId: sessionId,
-        agentName: role === 'user' ? 'user' : (metadata?.agent || 'Elara'),
-        status: role === 'user' ? 'pending' : 'complete',
-        input: role === 'user' ? content : '',
-        output: role === 'assistant' ? content : null,
+        agentName: role === AGENT_ROLE_USER ? AGENT_ROLE_USER : (metadata?.agent || 'Elara'),
+        status: role === AGENT_ROLE_USER ? 'pending' : 'complete',
+        input: role === AGENT_ROLE_USER ? content : '',
+        output: role === AGENT_ROLE_ASSISTANT ? content : null,
         tokensUsed: metadata?.tokensUsed || 0,
-        startedAt: role === 'assistant' ? new Date() : null,
-        finishedAt: role === 'assistant' ? new Date() : null,
+        startedAt: role === AGENT_ROLE_ASSISTANT ? new Date() : null,
+        finishedAt: role === AGENT_ROLE_ASSISTANT ? new Date() : null,
       }
     })
 
