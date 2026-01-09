@@ -1,20 +1,72 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { Button } from "@/components/ui/button";
-import { Palette, Play, Share2, Settings, Smartphone, Monitor, Tablet } from "lucide-react";
+import { Palette, Play, Share2, Settings, Smartphone, Monitor, Tablet, Loader2 } from "lucide-react";
 
 import InfiniteCanvas from "./design-studio/InfiniteCanvas";
 import ComponentLibrary from "./design-studio/ComponentLibrary";
 import ColorPalette from "./design-studio/ColorPalette";
 import FigmaImportDialog from "./design-studio/FigmaImportDialog";
 import DesignToCode from "./design-studio/DesignToCode";
+import { useWorkspace } from "@/lib/contexts/workspace-context";
 
 export default function DesignStudio() {
+    const { activeProject } = useWorkspace();
     const [viewMode, setViewMode] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
     const [importedNodes, setImportedNodes] = useState<any[]>([]);
     const [activeGenerationFrame, setActiveGenerationFrame] = useState<any>(null);
+    const [isLoading, setIsLoading] = useState(false);
+
+    // Load project design frames from API
+    useEffect(() => {
+        const loadFrames = async () => {
+            if (!activeProject?.id) return;
+            setIsLoading(true);
+            try {
+                const resp = await fetch(`/api/design/frames?projectId=${activeProject.id}`);
+                if (resp.ok) {
+                    const data = await resp.json();
+                    if (data.frames) {
+                        const nodes = data.frames.map((frame: any) => ({
+                            id: frame.id,
+                            type: 'frame',
+                            position: frame.position || { x: 200, y: 200 },
+                            data: {
+                                label: frame.name,
+                                width: frame.width,
+                                height: frame.height,
+                                content: (
+                                    <div className="space-y-4">
+                                        <div className="text-xs font-bold text-pink-500 uppercase tracking-wider">Design Frame</div>
+                                        <div className="h-10 bg-slate-100 dark:bg-slate-800 rounded flex items-center justify-center text-[10px] text-slate-400">
+                                            {frame.name} Preview
+                                        </div>
+                                        <Button 
+                                            size="sm" 
+                                            className="w-full bg-pink-500 text-[10px] h-7"
+                                            onClick={() => setActiveGenerationFrame(frame)}
+                                        >
+                                            Generate Code
+                                        </Button>
+                                    </div>
+                                )
+                            },
+                            style: { width: frame.width, height: frame.height }
+                        }));
+                        setImportedNodes(nodes);
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to load frames:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        loadFrames();
+    }, [activeProject?.id]);
 
     const handleFigmaImport = (data: any) => {
         const newNode = {
@@ -55,7 +107,9 @@ export default function DesignStudio() {
                         <span className="text-sm font-medium">Design Studio</span>
                     </div>
                     <span className="text-muted-foreground text-sm">/</span>
-                    <span className="text-sm font-medium">Project: Azora Mobile App</span>
+                    <span className="text-sm font-medium">
+                        {activeProject ? `Project: ${activeProject.name}` : 'No Active Project'}
+                    </span>
                 </div>
 
                 <div className="flex items-center gap-4">
@@ -119,7 +173,13 @@ export default function DesignStudio() {
                     {/* Middle Panel: Canvas */}
                     <ResizablePanel defaultSize={60} minSize={30}>
                         <div className="h-full relative bg-slate-100 dark:bg-slate-900 overflow-hidden">
-                            <InfiniteCanvas extraNodes={importedNodes} />
+                            {isLoading ? (
+                                <div className="absolute inset-0 flex items-center justify-center bg-background/50 backdrop-blur-sm z-10">
+                                    <Loader2 className="w-8 h-8 animate-spin text-pink-500" />
+                                </div>
+                            ) : (
+                                <InfiniteCanvas extraNodes={importedNodes} />
+                            )}
 
                             {/* Viewport Overlay */}
                             <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-black/80 text-white px-3 py-1 rounded-full text-xs backdrop-blur pointer-events-none">
@@ -144,6 +204,7 @@ export default function DesignStudio() {
                 <DesignToCode 
                     frameData={activeGenerationFrame} 
                     onClose={() => setActiveGenerationFrame(null)} 
+                    projectId={activeProject?.id}
                 />
             )}
         </div>
