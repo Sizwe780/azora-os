@@ -13,10 +13,13 @@ Steps to prepare a production environment for Azora BuildSpaces: ensure database
 ## Steps
 1. Ensure secrets exist in GitHub: `DATABASE_URL`, `REDIS_URL`, `SENTRY_DSN` (server), `NEXT_PUBLIC_SENTRY_DSN` (client), `NEXTAUTH_SECRET`.
 2. Run CI build (see `.github/workflows/buildspaces.yml`) which will run `pnpm install`, tests, build, and optionally migrations when `DATABASE_URL` is present.
-3. If running migrations locally or in a staging cluster:
-   - `DATABASE_URL="postgres://..." pnpm exec prisma migrate deploy --schema=prisma/schema.prisma`
-   - `DATABASE_URL="postgres://..." pnpm exec prisma generate --schema=prisma/schema.prisma`
-4. Deploy the image created by CI to the target environment (K8s, Vercel, etc.).
+
+3. For staging deploys, ensure `STAGING_DATABASE_URL` and other staging secrets are set in GitHub Actions and the `deploy-staging` job will run migrations and then trigger the `staging-e2e` job to run Playwright smoke tests against the deployed staging site (`https://buildspaces-staging.azora.dev`).
+
+4. If running migrations locally or in a staging cluster:
+  - `DATABASE_URL="postgres://..." pnpm exec prisma migrate deploy --schema=prisma/schema.prisma`
+  - `DATABASE_URL="postgres://..." pnpm exec prisma generate --schema=prisma/schema.prisma`
+5. Deploy the image created by CI to the target environment (K8s, Vercel, etc.).
 5. Run health checks: `curl -f $APP_URL/api/health`.
 6. Verify Sentry receives a test event (set `SENTRY_DSN` and trigger a test error)
 

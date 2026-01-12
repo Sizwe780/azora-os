@@ -4,6 +4,8 @@ const required = [
   { name: 'REDIS_URL', requiredFor: ['production'] },
   { name: 'SENTRY_DSN', requiredFor: ['production'] },
   { name: 'NEXT_PUBLIC_SENTRY_DSN', requiredFor: ['production'] },
+  { name: 'ANTHROPIC_API_KEY', requiredFor: ['staging','production'] },
+  { name: 'STAGING_DATABASE_URL', requiredFor: ['staging'] },
 ]
 
 const env = process.env.NODE_ENV || 'development'

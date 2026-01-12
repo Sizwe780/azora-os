@@ -259,6 +259,25 @@ pnpm --filter=azora-buildspaces test:coverage
 pnpm --filter=azora-buildspaces test:watch
 ```
 
+### Playwright E2E
+
+Install browsers:
+
+```bash
+pnpm -w -F azora-buildspaces playwright:install
+```
+
+Run tests locally (set base URL if needed):
+
+```bash
+# Local server
+PLAYWRIGHT_BASE_URL=http://localhost:3000 pnpm -w -F azora-buildspaces test:e2e --project=chromium
+
+# Against staging
+PLAYWRIGHT_BASE_URL=https://buildspaces-staging.azora.dev pnpm -w -F azora-buildspaces test:e2e --project=chromium
+```
+
+The `staging-e2e` CI job runs Playwright against staging after `deploy-staging`.
 ---
 
 ## 🚀 Deployment Options
