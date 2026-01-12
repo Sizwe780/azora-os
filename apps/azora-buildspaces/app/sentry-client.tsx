@@ -9,19 +9,19 @@ export default function SentryInit() {
     if (!dsn) return
 
     try {
-      // Avoid re-initializing if Sentry already has a client
-      // @ts-ignore - Sentry types may vary in runtime
-      if ((Sentry.getCurrentHub?.()?.getClient?.()) != null) return
+      // Initialize Sentry. If it was already initialized elsewhere, this is a no-op.
+      Sentry.init({
+        dsn,
+        // Capture 10% of transactions by default; tune in production
+        tracesSampleRate: 0.1,
+        release: process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA || undefined,
+      })
     } catch (e) {
-      // Continue to init if check fails
+      // If Sentry is not compatible in this runtime, warn and continue
+      // (avoid throwing during app bootstrap)
+      // eslint-disable-next-line no-console
+      console.warn('Sentry init failed', e)
     }
-
-    Sentry.init({
-      dsn,
-      // Capture 10% of transactions by default; tune in production
-      tracesSampleRate: 0.1,
-      release: process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA || undefined,
-    })
   }, [])
 
   return null
