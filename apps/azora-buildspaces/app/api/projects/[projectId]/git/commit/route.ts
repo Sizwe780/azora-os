@@ -13,15 +13,20 @@ export async function POST(request: NextRequest, { params }: { params: { project
       )
     }
 
-    // TODO: Implement actual git commit
-    // This would call the backend to commit changes
-    console.log(`[Git] Commit requested for project ${projectId}: "${message}"`)
+    // Implement actual git commit using system git
+    const projectPath = process.cwd()
+    // Ensure git user is configured in this environment
+    await execAsync('git config user.email "buildspaces@example.com"', { cwd: projectPath })
+    await execAsync('git config user.name "BuildSpaces Test"', { cwd: projectPath })
 
-    return NextResponse.json({
-      success: true,
-      commitHash: 'abc123def456',
-      message: 'Changes committed successfully',
-    })
+    try {
+      await execAsync('git add .', { cwd: projectPath })
+      await execAsync(`git commit -m "${message.replace(/"/g, '\\"')}"`, { cwd: projectPath })
+      const { stdout: rev } = await execAsync('git rev-parse HEAD', { cwd: projectPath })
+      return NextResponse.json({ success: true, commitHash: rev.trim(), message: 'Changes committed successfully' })
+    } catch (e: any) {
+      return NextResponse.json({ error: e.message }, { status: 500 })
+    }
   } catch (error) {
     return NextResponse.json(
       { error: 'Failed to commit changes' },

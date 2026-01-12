@@ -41,6 +41,15 @@ jobs:
       - name: Run unit tests (azora-buildspaces)
         run: pnpm -w -F azora-buildspaces test --if-present
 
+      - name: Verify monitoring & infra env
+        run: node apps/azora-buildspaces/scripts/verify-env.js
+        env:
+          NODE_ENV: production
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          REDIS_URL: ${{ secrets.REDIS_URL }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+
+
       - name: Build azora-buildspaces
         run: pnpm -w -F azora-buildspaces build
 
@@ -57,6 +66,64 @@ jobs:
       - name: Run migrations (if DATABASE_URL)
         if: ${{ secrets.DATABASE_URL != '' }}
         run: npx prisma migrate deploy --schema=prisma/schema.prisma
+
+  migrate:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main' && (secrets.DATABASE_URL != '')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        run: npm i -g pnpm@9
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Prisma migrate deploy (main)
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: pnpm -w exec prisma migrate deploy --schema=prisma/schema.prisma
+
+  e2e:
+    runs-on: ubuntu-latest
+    needs: [build, migrate]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        run: npm i -g pnpm@9
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm -w -F azora-buildspaces playwright:install
+
+      - name: Build and start app
+        run: |
+          pnpm -w -F azora-buildspaces build
+          pnpm -w -F azora-buildspaces start &
+          sleep 8
+
+      - name: Run Playwright E2E tests
+        run: pnpm -w -F azora-buildspaces test:e2e
+
 
   docker-build:
     runs-on: ubuntu-latest

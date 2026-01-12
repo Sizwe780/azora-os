@@ -30,6 +30,7 @@
     "lint": "turbo run lint",
     "turbo:inspect": "turbo inspect",
     "ci": "pnpm install && pnpm run build",
+    "prisma:migrate:deploy": "pnpm -w exec prisma migrate deploy --schema=prisma/schema.prisma",
     "workspace:info": "pnpm ls -r",
     "git:commit-push": "bash ./scripts/git-commit-push.sh",
     "playwright:install": "npx playwright install --with-deps",
@@ -50,17 +51,15 @@
     "@babel/preset-env": "7.28.5",
     "@babel/preset-typescript": "7.28.5",
     "@playwright/test": "^1.57.0",
+    "@prisma/client": "^7.2.0",
     "@types/jest": "30.0.0",
     "babel-jest": "30.2.0",
     "husky": "8.0.3",
     "jest": "30.2.0",
-    "prisma": "^5.22.0",
+    "prisma": "^7.2.0",
     "rimraf": "^5.0.0",
     "ts-jest": "29.4.5",
     "turbo": "^1.6.5",
     "typescript": "5.9.3"
-  },
-  "dependencies": {
-    "@prisma/client": "^5.22.0"
   }
 }

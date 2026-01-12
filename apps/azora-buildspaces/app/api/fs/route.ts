@@ -41,9 +41,30 @@ export async function GET(request: NextRequest) {
         } else if (operation === 'gitStatus') {
             try {
                 const { stdout } = await execAsync('git status --porcelain', { cwd: absolutePath });
-                return NextResponse.json({ status: stdout });
+                const { stdout: branchOut } = await execAsync('git branch --show-current', { cwd: absolutePath });
+                return NextResponse.json({ status: stdout, branch: branchOut.trim() });
             } catch (e: any) {
                 return NextResponse.json({ error: 'Not a git repository or git not installed' }, { status: 500 });
+            }
+        } else if (operation === 'gitLog') {
+            const limitParam = searchParams.get('limit') || '50'
+            const limit = parseInt(limitParam, 10) || 50
+            try {
+                const { stdout } = await execAsync(`git log -n ${limit} --pretty=format:%H|%an|%ae|%ad|%s`, { cwd: absolutePath })
+                const lines = stdout.split('\n').filter(Boolean)
+                const commits = lines.map(line => {
+                    const [hash, author, email, date, ...messageParts] = line.split('|')
+                    return {
+                        hash,
+                        author,
+                        email,
+                        date,
+                        message: messageParts.join('|')
+                    }
+                })
+                return NextResponse.json({ commits })
+            } catch (e: any) {
+                return NextResponse.json({ error: 'Failed to fetch git log' }, { status: 500 })
             }
         }
         return NextResponse.json({ error: 'Invalid operation' }, { status: 400 });
@@ -93,6 +114,22 @@ export async function POST(request: NextRequest) {
         } else if (operation === 'gitPull') {
             const { remote, branch } = await request.json();
             await execAsync(`git pull ${remote} ${branch}`, { cwd: absolutePath! });
+            return NextResponse.json({ success: true });
+        } else if (operation === 'gitBranch') {
+            const { name } = await request.json();
+            await execAsync(`git branch ${name}`, { cwd: absolutePath! });
+            return NextResponse.json({ success: true });
+        } else if (operation === 'gitCheckout') {
+            const { name, create } = await request.json();
+            if (create) {
+                await execAsync(`git checkout -b ${name}`, { cwd: absolutePath! });
+            } else {
+                await execAsync(`git checkout ${name}`, { cwd: absolutePath! });
+            }
+            return NextResponse.json({ success: true });
+        } else if (operation === 'gitRemoteAdd') {
+            const { name, url } = await request.json();
+            await execAsync(`git remote add ${name} ${url}`, { cwd: absolutePath! });
             return NextResponse.json({ success: true });
         }
 

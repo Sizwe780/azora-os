@@ -1,10 +1,11 @@
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  // Connection URLs moved to prisma/prisma.config.* per Prisma 7
 }
 
 model User {
@@ -392,6 +393,26 @@ enum RefundStatus {
   SUCCEEDED
   FAILED
   CANCELLED
+}
+
+// Audit log model for BuildSpaces and Constitutional events
+model AuditLog {
+  id                     String   @id @default(cuid())
+  timestamp              DateTime @default(now())
+  eventType              String
+  severity               String
+  userId                 String?  @index
+  sessionId              String?
+  ipAddress              String?
+  userAgent              String?
+  resource               String?
+  action                 String?
+  details                Json?
+  constitutionalAlignment Float?
+  success                Boolean  @default(true)
+  error                  String?
+
+  @@map("audit_logs")
 }
 
 enum SubscriptionTier {

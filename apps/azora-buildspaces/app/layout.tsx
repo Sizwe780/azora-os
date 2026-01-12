@@ -1,6 +1,7 @@
 import type React from "react"
 import type { Metadata, Viewport } from "next"
 import { Analytics } from "@vercel/analytics/next"
+import SentryInit from "./sentry-client"
 import "./globals.css"
 
 export const metadata: Metadata = {
@@ -67,6 +68,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
       <body className="font-sans antialiased bg-[#0d1117] text-white">
+        <SentryInit />
         {children}
         <Analytics />
       </body>

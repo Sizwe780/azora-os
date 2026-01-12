@@ -91,21 +91,43 @@ class AuditLogger {
       this.logs.shift()
     }
     
-    // TODO: Persist to database if DATABASE_URL is configured
+    // Persist to database if DATABASE_URL is configured
     if (process.env.DATABASE_URL) {
       try {
-        // Future: Save to database ConstitutionalAuditLog table
-        // const { PrismaClient } = await import("@prisma/client")
-        // const prisma = new PrismaClient()
-        // await prisma.constitutionalAuditLog.create({ data: auditEntry })
+        const { PrismaClient } = await import("@prisma/client")
+        const prisma = new PrismaClient()
+        await prisma.auditLog.create({
+          data: {
+            id: auditEntry.id,
+            timestamp: new Date(auditEntry.timestamp),
+            eventType: auditEntry.eventType,
+            severity: auditEntry.severity,
+            userId: auditEntry.userId,
+            sessionId: auditEntry.sessionId,
+            ipAddress: auditEntry.ipAddress,
+            userAgent: auditEntry.userAgent,
+            resource: auditEntry.resource,
+            action: auditEntry.action,
+            details: auditEntry.details as any,
+            constitutionalAlignment: auditEntry.constitutionalAlignment,
+            success: auditEntry.success,
+            error: auditEntry.error,
+          }
+        })
+        await prisma.$disconnect()
       } catch (error) {
         console.error("[AUDIT] Failed to persist log:", error)
       }
     }
-    
+
     // Send to external monitoring if configured
-    if (process.env.SENTRY_DSN && entry.severity === AuditSeverity.ERROR) {
-      // TODO: Send to Sentry
+    if (process.env.SENTRY_DSN && (entry.severity === AuditSeverity.ERROR || entry.severity === AuditSeverity.CRITICAL)) {
+      try {
+        const Sentry = await import("@sentry/node")
+        Sentry.captureMessage(`[AUDIT] ${auditEntry.severity} - ${auditEntry.eventType}: ${auditEntry.error || ''}`)
+      } catch (err) {
+        console.error('[AUDIT] Failed to send to Sentry:', err)
+      }
     }
   }
   

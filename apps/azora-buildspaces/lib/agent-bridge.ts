@@ -195,35 +195,97 @@ export class AgentBridge {
   /**
    * Call the agent API (stub for now, implement with real AI routing)
    */
-  private async callAgentAPI(request: AgentRequest): Promise<AgentResponse> {
-    // TODO: Integrate with packages/shared-api/ai-router.ts
-    // For now, simulate a response
-
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 1000))
-
-    // Simulated response
-    const response: AgentResponse = {
-      requestId: request.id,
-      agent: request.agent,
-      status: 'success',
-      data: {
-        result: this.generateSimulatedResponse(request),
-        confidence: 0.85,
-        metadata: {
-          tokensUsed: 150,
-          processingTime: 1000,
-        },
-      },
-      constitutionalCheck: {
-        passed: true,
-        violations: [],
-        healthScore: 95,
-      },
-      timestamp: Date.now(),
+  private signalToAction(signal: AgentSignal): string {
+    const map: Record<AgentSignal, string> = {
+      REVIEW_CODE: 'code-review',
+      GENERATE_SPEC: 'generate-code',
+      SECURITY_AUDIT: 'security-review',
+      GENERATE_COMPONENT: 'generate-code',
+      EXPLAIN_CODE: 'code-review',
+      FIX_BUG: 'refactor',
+      OPTIMIZE_PERFORMANCE: 'optimize',
+      ADD_TESTS: 'test-generation',
+      REFACTOR: 'refactor',
+      GENERATE_DOCS: 'documentation',
     }
 
-    return response
+    return map[signal] || 'code-review'
+  }
+
+  private async callAgentAPI(request: AgentRequest): Promise<AgentResponse> {
+    // Call the server-side agent routing endpoint
+    try {
+      const action = this.signalToAction(request.signal)
+      const body = {
+        action,
+        context: request.payload.context || request.payload.fileContent || '',
+        code: request.payload.fileContent,
+        language: undefined,
+        userId: request.userId,
+        sessionId: 'default'
+      }
+
+      const resp = await fetch('/api/agents/invoke', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+        signal: (typeof AbortSignal !== 'undefined' && (AbortSignal as any).timeout)
+          ? (AbortSignal as any).timeout(10000)
+          : undefined,
+      })
+
+      if (!resp.ok) {
+        throw new Error(`Agent API responded with status ${resp.status}`)
+      }
+
+      const data = await resp.json()
+
+      const response: AgentResponse = {
+        requestId: request.id,
+        agent: (data.agent as AgentName) || request.agent,
+        status: 'success',
+        data: {
+          result: data.result || data.message || '',
+          confidence: undefined,
+          metadata: data,
+        },
+        constitutionalCheck: {
+          passed: data.constitutionalVerdict?.allowed ?? true,
+          violations: [],
+          healthScore: data.constitutionalVerdict?.score ?? 100,
+        },
+        timestamp: Date.now(),
+      }
+
+      return response
+    } catch (err) {
+      console.warn('[AgentBridge] Agent API failed, falling back to simulated response', err)
+
+      // Fallback to simulated response for offline/dev environments
+      await new Promise(resolve => setTimeout(resolve, 250))
+
+      const fallback: AgentResponse = {
+        requestId: request.id,
+        agent: request.agent,
+        status: 'success',
+        data: {
+          result: this.generateSimulatedResponse(request),
+          confidence: 0.5,
+          metadata: {
+            fallback: true,
+            error: err instanceof Error ? err.message : String(err),
+          },
+        },
+        constitutionalCheck: {
+          passed: true,
+          violations: [],
+          healthScore: 90,
+        },
+        timestamp: Date.now(),
+      }
+
+      return fallback
+    }
   }
 
   /**

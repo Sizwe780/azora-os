@@ -26,6 +26,7 @@ import {
   Zap,
   GitBranch,
 } from "lucide-react"
+import ErrorButton from "@/components/ui/error-button"
 
 const features = [
   {
@@ -108,6 +109,8 @@ export default function HomePage() {
                 <Button variant="outline" className="border-white/20 hover:bg-white/5 px-8 py-4 text-lg bg-transparent">
                   <Play className="mr-2 h-5 w-5" /> Watch Demo
                 </Button>
+                {/* Test Sentry: this will throw on click and should be captured by Sentry in the browser */}
+                <ErrorButton />
               </div>
 
               {/* Stats */}

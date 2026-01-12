@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
 import { securityHeaders as sharedSecurityHeaders } from "./lib/security-headers"
 
-const RATE_LIMIT = 100
-const WINDOW_MS = 60_000
+const RATE_LIMIT = parseInt(process.env.RATE_LIMIT || '100', 10)
+const WINDOW_MS = parseInt(process.env.RATE_LIMIT_WINDOW_MS || '60000', 10)
 const rateLimitWarning =
   "Rate limiting uses in-memory buckets and only protects a single instance. Configure a shared store (e.g., Redis) before scaling horizontally."
 
@@ -13,6 +13,31 @@ type Bucket = { count: number; expiresAt: number }
 const buckets = new Map<string, Bucket>()
 let lastCleanup = 0
 let warned = false
+
+// Redis client (lazy-loaded)
+let redisClient: any = null
+let redisInitAttempted = false
+
+async function getRedisClient() {
+  if (redisClient) return redisClient
+  if (redisInitAttempted) return null
+  redisInitAttempted = true
+
+  const url = process.env.REDIS_URL
+  if (!url) {
+    console.warn('[RateLimiter] REDIS_URL not set; using in-memory buckets')
+    return null
+  }
+
+  try {
+    const Redis = (await import('ioredis')).default
+    redisClient = new Redis(url)
+    return redisClient
+  } catch (err) {
+    console.warn('[RateLimiter] Failed to load ioredis or connect to Redis, falling back to in-memory:', err)
+    return null
+  }
+}
 
 function getIp(req: NextRequest) {
   const header = req.headers.get("x-forwarded-for")
@@ -31,7 +56,19 @@ function cleanupBuckets(now: number) {
   lastCleanup = now
 }
 
-function isRateLimited(ip: string) {
+async function isRateLimitedRedis(ip: string) {
+  const client = await getRedisClient()
+  if (!client) return null
+
+  const key = `ratelimit:${ip}`
+  const count = await client.incr(key)
+  if (count === 1) {
+    await client.pexpire(key, WINDOW_MS)
+  }
+  return count > RATE_LIMIT
+}
+
+function isRateLimitedMemory(ip: string) {
   const now = Date.now()
   cleanupBuckets(now)
 
@@ -48,7 +85,6 @@ function isRateLimited(ip: string) {
   bucket.count += 1
   return false
 }
-
 function securityHeaders(response: NextResponse) {
   for (const header of sharedSecurityHeaders) {
     response.headers.set(header.key, header.value)
@@ -56,15 +92,28 @@ function securityHeaders(response: NextResponse) {
   return response
 }
 
-export function middleware(req: NextRequest) {
-  if (!warned && process.env.RATE_LIMIT_BACKEND !== "redis") {
+export async function middleware(req: NextRequest) {
+  if (!warned && !process.env.REDIS_URL) {
     console.warn(rateLimitWarning)
     warned = true
   }
 
   const ip = getIp(req)
 
-  if (isRateLimited(ip)) {
+  // Prefer Redis-backed limiter if a REDIS_URL is configured
+  if (process.env.REDIS_URL) {
+    try {
+      const limited = await isRateLimitedRedis(ip)
+      if (limited === true) {
+        const res = NextResponse.json({ error: "Rate limit exceeded" }, { status: 429 })
+        return securityHeaders(res)
+      }
+    } catch (err) {
+      console.warn('[RateLimiter] Redis check failed, falling back to memory limiter:', err)
+    }
+  }
+
+  if (isRateLimitedMemory(ip)) {
     const res = NextResponse.json({ error: "Rate limit exceeded" }, { status: 429 })
     return securityHeaders(res)
   }
@@ -76,4 +125,18 @@ export function middleware(req: NextRequest) {
 export const config = {
   // Exclude health endpoint to keep liveness/readiness probes unthrottled.
   matcher: ["/((?!_next/static|_next/image|favicon.ico|api/health).*)"],
+}
+
+// -- Test helpers (not used in production) --
+export function _test_setRedisClient(client: any) {
+  redisClient = client
+  redisInitAttempted = true
+}
+
+export function _test_resetRateLimiterState() {
+  buckets.clear()
+  lastCleanup = 0
+  warned = false
+  redisClient = null
+  redisInitAttempted = false
 }

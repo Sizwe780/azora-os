@@ -270,14 +270,14 @@ export class FileSystemService extends EventEmitter {
    */
   async getGitStatus(containerId: string, path: string): Promise<GitStatus> {
     try {
-      const response = await fetch(`/api/fs?operation=gitStatus&path=${encodeURIComponent(path)}`);
+        const response = await fetch(`/api/fs?operation=gitStatus&path=${encodeURIComponent(path)}`);
       if (!response.ok) throw new Error(await response.text());
-      const { status } = await response.json();
+      const { status, branch } = await response.json();
 
       // Parse git status output
       const lines = status.split('\n').filter(Boolean);
       const gitStatus: GitStatus = {
-        branch: 'main', // TODO: Parse branch
+        branch: branch || 'main',
         ahead: 0,
         behind: 0,
         staged: [],
@@ -339,29 +339,69 @@ export class FileSystemService extends EventEmitter {
    * Get commit history
    */
   async getGitHistory(containerId: string, path: string, limit = 50): Promise<GitCommit[]> {
-    // TODO: Implement real git log parsing
-    return [];
+    try {
+      const response = await fetch(`/api/fs?operation=gitLog&path=${encodeURIComponent(path)}&limit=${limit}`)
+      if (!response.ok) throw new Error(await response.text())
+      const { commits } = await response.json()
+      return commits.map((c: any) => ({
+        hash: c.hash,
+        author: c.author,
+        email: c.email,
+        date: new Date(c.date),
+        message: c.message,
+        files: []
+      }))
+    } catch (error) {
+      throw new Error(`Failed to get git history: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    }
   }
 
   /**
    * Create new branch
    */
   async createBranch(containerId: string, path: string, branchName: string): Promise<void> {
-    // TODO: Implement real git branch
+    try {
+      const response = await fetch('/api/fs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ operation: 'gitBranch', path, name: branchName })
+      })
+      if (!response.ok) throw new Error(await response.text())
+    } catch (error) {
+      throw new Error(`Failed to create branch: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    }
   }
 
   /**
    * Switch branch
    */
-  async switchBranch(containerId: string, path: string, branchName: string): Promise<void> {
-    // TODO: Implement real git checkout
+  async switchBranch(containerId: string, path: string, branchName: string, create = false): Promise<void> {
+    try {
+      const response = await fetch('/api/fs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ operation: 'gitCheckout', path, name: branchName, create })
+      })
+      if (!response.ok) throw new Error(await response.text())
+    } catch (error) {
+      throw new Error(`Failed to switch branch: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    }
   }
 
   /**
    * Add remote repository
    */
   async addRemote(containerId: string, path: string, name: string, url: string): Promise<void> {
-    // TODO: Implement real git remote add
+    try {
+      const response = await fetch('/api/fs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ operation: 'gitRemoteAdd', path, name, url })
+      })
+      if (!response.ok) throw new Error(await response.text())
+    } catch (error) {
+      throw new Error(`Failed to add remote: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    }
   }
 
   /**

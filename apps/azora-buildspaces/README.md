@@ -235,6 +235,8 @@ See `apps/azora-buildspaces/.env.example` for complete list.
    DATABASE_URL="postgresql://..." pnpm exec prisma migrate dev
    ```
 
+   ⚠️ If you added or updated models (e.g., `AuditLog`), ensure the migration exists in `prisma/migrations` or create one via `pnpm exec prisma migrate dev --name add_audit_log` and then re-run the migrate command.
+
 5. **Start development server**:
    ```bash
    pnpm run dev --filter=azora-buildspaces
