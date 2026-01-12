@@ -52,8 +52,8 @@ async function launchBuildspaces() {
       });
       
       console.log('\n🌟 Azora Buildspaces is now LIVE!');
-      console.log('🔗 Platform URL: https://buildspaces.x.azora.world');
-      console.log('📊 Monitoring Dashboard: https://monitor.x.azora.world');
+      console.log('🔗 Platform URL: https://buildspaces.azora.world');
+      console.log('📊 Monitoring Dashboard: https://monitor.azora.world');
       
     } else {
       console.log('❌ LAUNCH FAILED!');
