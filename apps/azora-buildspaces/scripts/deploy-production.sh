@@ -95,8 +95,8 @@ kubectl wait --for=condition=available --timeout=300s deployment/grafana -n ${MO
 
 print_status "Deployment completed successfully! 🎉"
 
-print_status "Application URL: https://buildspaces.azora.com"
-print_status "API URL: https://api.azora.buildspaces.com"
+print_status "Application URL: https://buildspaces.azora.world"
+print_status "API URL: https://api.azora.world"
 print_status "Monitoring (Grafana): http://grafana-service.monitoring:3000"
 print_status "Metrics (Prometheus): http://prometheus-service.monitoring:9090"
 
