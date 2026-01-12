@@ -74,7 +74,7 @@ spec:
               name: buildspaces-secrets
               key: elara-api-key
         - name: NEXT_PUBLIC_YJS_WEBSOCKET_URL
-          value: "wss://ws.azora.buildspaces.com"
+          value: "wss://ws.buildspaces.x.azora.world"
         resources:
           requests:
             memory: "512Mi"

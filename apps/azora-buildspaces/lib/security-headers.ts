@@ -70,6 +70,8 @@ export const corsOptions = {
     "https://azora.dev",
     "https://*.azora.dev",
     "https://buildspaces.azora.dev",
+    "https://buildspaces.x.azora.world",
+    "https://*.x.azora.world",
   ],
   allowedMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
   allowedHeaders: [

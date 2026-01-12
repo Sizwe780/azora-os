@@ -17,7 +17,7 @@ metadata:
     nginx.ingress.kubernetes.io/rate-limit: "100"
     nginx.ingress.kubernetes.io/rate-limit-window: "1m"
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    nginx.ingress.kubernetes.io/cors-allow-origin: "https://buildspaces.azora.com"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://buildspaces.x.azora.world"
     nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, DELETE, OPTIONS"
     nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization"
     nginx.ingress.kubernetes.io/cors-expose-headers: "Content-Length,Content-Range"
@@ -25,12 +25,12 @@ metadata:
 spec:
   tls:
   - hosts:
-    - buildspaces.azora.com
-    - api.azora.buildspaces.com
-    - ws.azora.buildspaces.com
+    - buildspaces.x.azora.world
+    - api.buildspaces.x.azora.world
+    - ws.buildspaces.x.azora.world
     secretName: buildspaces-tls
   rules:
-  - host: buildspaces.azora.com
+  - host: buildspaces.x.azora.world
     http:
       paths:
       - path: /
@@ -40,7 +40,7 @@ spec:
             name: buildspaces-app-service
             port:
               number: 3000
-  - host: api.azora.buildspaces.com
+  - host: api.buildspaces.x.azora.world
     http:
       paths:
       - path: /
@@ -50,7 +50,7 @@ spec:
             name: buildspaces-app-service
             port:
               number: 3000
-  - host: ws.azora.buildspaces.com
+  - host: ws.buildspaces.x.azora.world
     http:
       paths:
       - path: /

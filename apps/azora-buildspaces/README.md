@@ -277,7 +277,7 @@ vercel --prod
 #### Required Environment Variables in Vercel Dashboard:
 - `DATABASE_URL` - PostgreSQL connection string
 - `NEXTAUTH_SECRET` - Auth secret (generate with `openssl rand -base64 32`)
-- `NEXTAUTH_URL` - Your production URL (e.g., `https://buildspaces.your-domain.com`)
+- `NEXTAUTH_URL` - Your production URL (e.g., `https://buildspaces.x.azora.world`)
 
 **Note**: The `vercel.json` in the buildspaces directory handles Turborepo build configuration automatically.
 
