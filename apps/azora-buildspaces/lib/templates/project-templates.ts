@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 export interface ProjectTemplate {
   id: string
   name: string

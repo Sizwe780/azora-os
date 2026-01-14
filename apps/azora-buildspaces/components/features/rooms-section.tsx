@@ -73,7 +73,7 @@ export function RoomsSection() {
           <span className="mb-4 inline-block rounded-full border border-purple-500/30 bg-purple-500/10 px-4 py-1 text-sm text-purple-400">
             Architecture
           </span>
-          <h2 className="mb-4 text-4xl font-bold text-white sm:text-5xl">The 7 Rooms</h2>
+          <h2 className="mb-4 text-4xl font-bold text-white sm:text-5xl">The 8 Rooms</h2>
           <p className="mx-auto max-w-2xl text-lg text-gray-400">
             Purpose-built environments for every stage of your development workflow. Each room is powered by specialized
             agents and Constitutional AI guardrails.

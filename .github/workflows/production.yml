@@ -2,13 +2,13 @@ name: Production Deployment
 on:
   push:
     branches: [main]
-    tags: ['v*']
+    tags: ["v*"]
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Deployment environment'
+        description: "Deployment environment"
         required: true
-        default: 'production'
+        default: "production"
         type: choice
         options:
           - production
@@ -27,7 +27,7 @@ jobs:
       deploy: ${{ steps.check.outputs.deploy }}
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Constitutional Alignment Check
         id: check
         run: |
@@ -35,7 +35,7 @@ jobs:
           echo "🎯 Truth Score: 98.6%"
           echo "🤝 Ubuntu Score: 100.0%"
           echo "deploy=true" >> $GITHUB_OUTPUT
-          
+
       - name: Verify Critical Files
         run: |
           test -f "CONSTITUTION.md" || exit 1
@@ -57,7 +57,7 @@ jobs:
           - azora-pay
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Check if service exists
         id: check-service
         run: |
@@ -66,26 +66,34 @@ jobs:
           else
             echo "exists=false" >> $GITHUB_OUTPUT
           fi
-      
+
       - name: Check AWS Credentials
         id: check-aws
         run: |
           if [ -n "${{ secrets.AWS_ACCESS_KEY_ID }}" ]; then
+            echo "aws_configured=true" >> $GITHUB_OUTPUT
+          else
+            echo "aws_configured=false" >> $GITHUB_OUTPUT
+          fi
+
+  deploy-backend:
+    name: Deploy Backend
+    needs: [pre-deployment, build-services]
     runs-on: ubuntu-latest
     if: needs.pre-deployment.outputs.deploy == 'true'
     steps:
       - uses: actions/checkout@v4
-      
+
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
-      
+
       - name: Update kubeconfig
         run: |
           aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER_NAME }} --region ${{ env.AWS_REGION }} || echo "⚠️ EKS cluster not found"
-      
+
       - name: Deploy Kubernetes Manifests
         run: |
           if [ -d "infrastructure/k8s" ]; then
@@ -106,7 +114,7 @@ jobs:
           - azora-pay
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Check if app exists
         id: check-app
         run: |
@@ -115,15 +123,23 @@ jobs:
           else
             echo "exists=false" >> $GITHUB_OUTPUT
           fi
-      
+
       - name: Setup Node.js
         if: steps.check-app.outputs.exists == 'true'
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-      
+          node-version: "18"
+
       - name: Build App
         if: steps.check-app.outputs.exists == 'true'
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          REDIS_URL: ${{ secrets.REDIS_URL }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
         run: |
           cd apps/${{ matrix.app }}
           npm install || echo "⚠️ No package.json"
@@ -136,7 +152,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Health Check
         run: |
           echo "🏥 Running health checks..."
@@ -144,7 +160,7 @@ jobs:
           echo "✅ Economic Engine: Active"
           echo "✅ AI Services: Running"
           echo "✅ Frontend Apps: Deployed"
-          
+
       - name: Genesis Event Status
         run: |
           echo "🌍 GENESIS EVENT: COMPLETE"

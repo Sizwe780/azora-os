@@ -458,8 +458,8 @@ export function SpecEditor() {
               <pre className="text-xs font-mono bg-black/20 p-4 rounded overflow-x-auto">
                 {yamlPreview}
               </pre>
-            </CardContent>
-          </Card>
+            </ScrollArea>
+          </CardContent>
         </Card>
       </div>
     </div>

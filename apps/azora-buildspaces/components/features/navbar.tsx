@@ -131,9 +131,9 @@ export function Navbar() {
               <div className="absolute left-1/2 -translate-x-1/2 top-full w-[800px] pt-2">
                 <div className="rounded-xl border border-white/10 bg-[#161b22] p-6 shadow-2xl">
                   <div className="grid grid-cols-3 gap-6">
-                    {/* The 7 Rooms */}
+                    {/* The 8 Rooms */}
                     <div className="col-span-2">
-                      <h3 className="text-xs uppercase tracking-wider text-gray-500 font-semibold mb-4">The 7 Rooms</h3>
+                      <h3 className="text-xs uppercase tracking-wider text-gray-500 font-semibold mb-4">The 8 Rooms</h3>
                       <div className="grid grid-cols-2 gap-2">
                         {platformItems.map((item) => (
                           <Link

@@ -92,7 +92,7 @@ export function CitadelLogo({
         {/* Foundation lines */}
         <path d="M16 44 L32 56 L48 44" stroke="#14B8A6" strokeWidth="1.5" fill="none" opacity="0.6" />
 
-        {/* 7 Rooms indicator dots around the citadel */}
+        {/* 8 Rooms indicator dots around the citadel */}
         {[0, 51.4, 102.8, 154.3, 205.7, 257.1, 308.5].map((angle, i) => {
           const rad = (angle - 90) * (Math.PI / 180)
           const x = 32 + 26 * Math.cos(rad)

@@ -7,8 +7,7 @@ export async function GET() {
   try {
     // Prefer Prisma when configured and available; otherwise fallback to file storage
     try {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const { PRISMA_AVAILABLE } = require('@/lib/db')
+      const { PRISMA_AVAILABLE } = await import('@/lib/db')
       if (PRISMA_AVAILABLE) {
         const projects = await prisma.buildSpaceProject.findMany({ orderBy: { createdAt: 'desc' } })
         return NextResponse.json({ projects })

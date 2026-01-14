@@ -15,10 +15,18 @@ export interface NodeInfo {
 }
 
 export async function negotiateTask(task: TaskRequest) {
-    const nodes: NodeInfo[] = [
-        { id: "Citadel", status: "Active", type: "NPU", ip: "localhost", did: "did:key:z6MkpTHR8V369" },
-        { id: "Forge-X515", status: "Active", type: "CPU", ip: "10.0.0.1", did: "did:key:z6Mkg9X515JAB" }
-    ];
+    let nodes: NodeInfo[] = [];
+    try {
+        const fs = require('fs');
+        const path = require('path');
+        const nodesPath = path.join(process.cwd(), 'data', 'nodes.json');
+        const nodesData = fs.readFileSync(nodesPath, 'utf8');
+        nodes = JSON.parse(nodesData);
+    } catch (error) {
+        console.error("[Governance] Failed to load nodes from data/nodes.json:", error);
+        // Fallback to minimal local node if config fails
+        nodes = [{ id: "Citadel", status: "Active", type: "NPU", ip: "localhost", did: "did:key:z6MkpTHR8V369" }];
+    }
 
     console.log(`[Governance] Negotiating task ${task.id}...`);
 

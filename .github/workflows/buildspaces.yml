@@ -3,13 +3,13 @@ name: Build BuildSpaces
 on:
   push:
     paths:
-      - 'apps/azora-buildspaces/**'
-      - 'apps/buildspaces-ui-reference/**'
-      - '.github/workflows/buildspaces.yml'
+      - "apps/azora-buildspaces/**"
+      - "apps/buildspaces-ui-reference/**"
+      - ".github/workflows/buildspaces.yml"
   pull_request:
     paths:
-      - 'apps/azora-buildspaces/**'
-      - 'apps/buildspaces-ui-reference/**'
+      - "apps/azora-buildspaces/**"
+      - "apps/buildspaces-ui-reference/**"
 
 jobs:
   build:
@@ -26,8 +26,8 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
+          node-version: "20"
+          cache: "pnpm"
 
       - name: Install pnpm
         run: npm i -g pnpm@9
@@ -48,7 +48,10 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           REDIS_URL: ${{ secrets.REDIS_URL }}
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-
+          NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
 
       - name: Build azora-buildspaces
         run: pnpm -w -F azora-buildspaces build
@@ -64,13 +67,15 @@ jobs:
           pkill -f "next start" || true
 
       - name: Run migrations (if DATABASE_URL)
-        if: ${{ secrets.DATABASE_URL != '' }}
+        if: env.DATABASE_URL != ''
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: npx prisma migrate deploy --schema=prisma/schema.prisma
 
   migrate:
     runs-on: ubuntu-latest
     needs: build
-    if: github.ref == 'refs/heads/main' && (secrets.DATABASE_URL != '')
+    if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -78,8 +83,8 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
+          node-version: "20"
+          cache: "pnpm"
 
       - name: Install pnpm
         run: npm i -g pnpm@9
@@ -103,8 +108,8 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
+          node-version: "20"
+          cache: "pnpm"
 
       - name: Install pnpm
         run: npm i -g pnpm@9
@@ -131,7 +136,6 @@ jobs:
           name: playwright-report
           path: apps/azora-buildspaces/playwright-report
           retention-days: 7
-
 
   docker-build:
     runs-on: ubuntu-latest
@@ -185,7 +189,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Install pnpm
         run: npm i -g pnpm@9
@@ -213,6 +217,8 @@ jobs:
     environment:
       name: staging
       url: https://buildspaces-staging.azora.dev
+    env:
+      STAGING_DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -220,8 +226,20 @@ jobs:
       - name: Deploy to staging
         run: |
           echo "🚀 Deploying to staging environment"
-          echo "Image: ghcr.io/${{ github.repository }}/azora-buildspaces:develop-${{ github.sha }}"
-          # Add actual deployment commands here (kubectl, helm, etc.)
+          IMAGE_TAG="develop-${{ github.sha }}"
+          IMAGE="ghcr.io/${{ github.repository }}/azora-buildspaces:$IMAGE_TAG"
+
+          # Replace image in deployment manifest
+          sed -i "s|image: azora/buildspaces:latest|image: $IMAGE|g" apps/azora-buildspaces/k8s/buildspaces-deployment.yaml
+
+          # Apply manifests
+          kubectl apply -f apps/azora-buildspaces/k8s/buildspaces-namespace.yaml
+          # We skip applying buildspaces-secrets.yaml here as it contains placeholders.
+          # In a real scenario, secrets would be managed via external-secrets or pre-created.
+          kubectl apply -f apps/azora-buildspaces/k8s/postgres-deployment.yaml
+          kubectl apply -f apps/azora-buildspaces/k8s/redis-deployment.yaml
+          kubectl apply -f apps/azora-buildspaces/k8s/buildspaces-deployment.yaml
+          kubectl apply -f apps/azora-buildspaces/k8s/buildspaces-ingress.yaml
         env:
           KUBECONFIG: ${{ secrets.STAGING_KUBECONFIG }}
 
@@ -233,14 +251,18 @@ jobs:
           REDIS_URL: ${{ secrets.REDIS_URL }}
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
           NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          NEXTAUTH_URL: https://buildspaces-staging.azora.dev
 
       - name: Run migrations on staging (if STAGING_DATABASE_URL)
-        if: ${{ secrets.STAGING_DATABASE_URL != '' }}
+        if: env.STAGING_DATABASE_URL != ''
+        env:
+          DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
         run: |
           echo "Running prisma migrate deploy against staging DB"
           pnpm -w exec prisma migrate deploy --schema=prisma/schema.prisma
-        env:
-          DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
 
       - name: Health check
         run: |
@@ -261,8 +283,8 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
+          node-version: "20"
+          cache: "pnpm"
 
       - name: Install pnpm
         run: npm i -g pnpm@9

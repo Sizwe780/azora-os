@@ -1,6 +1,6 @@
 let PrismaClient: any
 try {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   PrismaClient = require('@prisma/client').PrismaClient
 } catch (e) {
   PrismaClient = undefined

@@ -11,7 +11,7 @@ const features = [
   },
   {
     icon: Sparkles,
-    title: "The 7 Rooms",
+    title: "The 8 Rooms",
     description: "Purpose-built environments for every workflow",
     href: "/features/rooms",
     color: "purple",

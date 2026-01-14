@@ -3,13 +3,13 @@ name: E2E - BuildSpaces
 on:
   push:
     paths:
-      - 'apps/azora-buildspaces/**'
-      - 'tests/e2e/**'
-      - '.github/workflows/e2e-buildspaces.yml'
+      - "apps/azora-buildspaces/**"
+      - "tests/e2e/**"
+      - ".github/workflows/e2e-buildspaces.yml"
   pull_request:
     paths:
-      - 'apps/azora-buildspaces/**'
-      - 'tests/e2e/**'
+      - "apps/azora-buildspaces/**"
+      - "tests/e2e/**"
 
 jobs:
   playwright:
@@ -25,7 +25,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -38,7 +38,14 @@ jobs:
 
       - name: Run Playwright tests
         env:
-          CI: 'true'
+          CI: "true"
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          REDIS_URL: ${{ secrets.REDIS_URL }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
         run: npx playwright test tests/e2e/collaboration.spec.ts -c playwright.config.ts -p ${{ matrix.browser }} --reporter=list,html
 
       - name: Upload Playwright report

@@ -100,7 +100,7 @@ export function SourceControlView() {
             if (response.ok) {
                 const status: GitStatus = await response.json()
                 setGitStatus(status)
-                
+
                 // Convert Git status to changes format
                 const newChanges: GitChange[] = [
                     ...status.stagedFiles.map((file, idx) => ({
@@ -134,7 +134,7 @@ export function SourceControlView() {
     const handleStage = async (changeId: string) => {
         const change = changes.find(c => c.id === changeId)
         if (!change) return
-        
+
         try {
             const response = await fetch('/api/projects/current/git/stage', {
                 method: 'POST',
@@ -152,7 +152,7 @@ export function SourceControlView() {
     const handleUnstage = async (changeId: string) => {
         const change = changes.find(c => c.id === changeId)
         if (!change) return
-        
+
         try {
             const response = await fetch('/api/projects/current/git/unstage', {
                 method: 'POST',
@@ -195,9 +195,9 @@ export function SourceControlView() {
                         <span className="text-sm font-medium">{gitStatus?.branch || 'main'}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <Button 
-                            variant="ghost" 
-                            size="icon" 
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             className="w-6 h-6"
                             onClick={fetchGitStatus}
                             disabled={isLoading}
@@ -281,66 +281,67 @@ export function SourceControlView() {
                             </div>
                         ) : (
                             <div className="p-3 space-y-4">
-                            {/* Staged Changes */}
-                            {stagedChanges.length > 0 && (
-                                <div>
-                                    <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-                                        Staged Changes ({stagedChanges.length})
-                                    </h4>
-                                    <div className="space-y-1">
-                                        {stagedChanges.map((change) => (
-                                            <div key={change.id} className="flex items-center gap-2 p-2 rounded hover:bg-muted/50">
-                                                {getStatusIcon(change.status)}
-                                                {getFileIcon(change.file)}
-                                                <span className="text-sm flex-1 truncate">{change.file}</span>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    onClick={() => handleUnstage(change.id)}
-                                                    className="h-6 w-6 p-0"
-                                                >
-                                                    <Minus className="w-3 h-3" />
-                                                </Button>
-                                            </div>
-                                        ))}
+                                {/* Staged Changes */}
+                                {stagedChanges.length > 0 && (
+                                    <div>
+                                        <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                                            Staged Changes ({stagedChanges.length})
+                                        </h4>
+                                        <div className="space-y-1">
+                                            {stagedChanges.map((change) => (
+                                                <div key={change.id} className="flex items-center gap-2 p-2 rounded hover:bg-muted/50">
+                                                    {getStatusIcon(change.status)}
+                                                    {getFileIcon(change.file)}
+                                                    <span className="text-sm flex-1 truncate">{change.file}</span>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        onClick={() => handleUnstage(change.id)}
+                                                        className="h-6 w-6 p-0"
+                                                    >
+                                                        <Minus className="w-3 h-3" />
+                                                    </Button>
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
-                                </div>
-                            )}
+                                )}
 
-                            {/* Unstaged Changes */}
-                            {unstagedChanges.length > 0 && (
-                                <div>
-                                    <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-                                        Changes ({unstagedChanges.length})
-                                    </h4>
-                                    <div className="space-y-1">
-                                        {unstagedChanges.map((change) => (
-                                            <div key={change.id} className="flex items-center gap-2 p-2 rounded hover:bg-muted/50">
-                                                {getStatusIcon(change.status)}
-                                                {getFileIcon(change.file)}
-                                                <span className="text-sm flex-1 truncate">{change.file}</span>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    onClick={() => handleStage(change.id)}
-                                                    className="h-6 w-6 p-0"
-                                                >
-                                                    <Plus className="w-3 h-3" />
-                                                </Button>
-                                            </div>
-                                        ))}
+                                {/* Unstaged Changes */}
+                                {unstagedChanges.length > 0 && (
+                                    <div>
+                                        <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                                            Changes ({unstagedChanges.length})
+                                        </h4>
+                                        <div className="space-y-1">
+                                            {unstagedChanges.map((change) => (
+                                                <div key={change.id} className="flex items-center gap-2 p-2 rounded hover:bg-muted/50">
+                                                    {getStatusIcon(change.status)}
+                                                    {getFileIcon(change.file)}
+                                                    <span className="text-sm flex-1 truncate">{change.file}</span>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        onClick={() => handleStage(change.id)}
+                                                        className="h-6 w-6 p-0"
+                                                    >
+                                                        <Plus className="w-3 h-3" />
+                                                    </Button>
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
-                                </div>
-                            )}
+                                )}
 
-                            {mockChanges.length === 0 && (
-                                <div className="flex flex-col items-center justify-center py-8 text-center text-muted-foreground">
-                                    <GitBranch className="w-8 h-8 opacity-20 mb-2" />
-                                    <p className="text-sm">No changes detected.</p>
-                                    <p className="text-xs">Your working directory is clean.</p>
-                                </div>
-                            )}
-                        </div>
+                                {changes.length === 0 && (
+                                    <div className="flex flex-col items-center justify-center py-8 text-center text-muted-foreground">
+                                        <GitBranch className="w-8 h-8 opacity-20 mb-2" />
+                                        <p className="text-sm">No changes detected.</p>
+                                        <p className="text-xs">Your working directory is clean.</p>
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </ScrollArea>
                 </TabsContent>
 

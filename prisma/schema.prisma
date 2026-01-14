@@ -58,6 +58,7 @@ model User {
   proofsOfValue ProofOfValue[]
   buildspacesProjects BuildSpaceProject[]
   figmaFrames         FigmaFrame[]
+  collectibles        Collectible[]
 
   @@index([role])
   @@index([createdAt])
@@ -299,6 +300,27 @@ model FigmaFrame {
   @@map("figma_frames")
 }
 
+model Collectible {
+  id           String   @id @default(cuid())
+  name         String
+  tier         String   // common, uncommon, rare, epic, legendary, mythical
+  power        Int
+  description  String
+  achievements String[]
+  rarity       Float
+  image        String
+  minted       Boolean  @default(false)
+  ownerId      String?
+  transaction  String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  owner User? @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+
+  @@index([ownerId])
+  @@map("collectibles")
+}
+
 model SafetyIncident {
   id          String         @id @default(cuid())
   userId      String
@@ -401,7 +423,7 @@ model AuditLog {
   timestamp              DateTime @default(now())
   eventType              String
   severity               String
-  userId                 String?  @index
+  userId                 String?
   sessionId              String?
   ipAddress              String?
   userAgent              String?
@@ -412,6 +434,7 @@ model AuditLog {
   success                Boolean  @default(true)
   error                  String?
 
+  @@index([userId])
   @@map("audit_logs")
 }
 

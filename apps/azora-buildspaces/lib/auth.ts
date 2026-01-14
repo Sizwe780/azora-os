@@ -1,12 +1,13 @@
 import { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import GoogleProvider from "next-auth/providers/google"
+import GitHubProvider from "next-auth/providers/github"
+import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import { prisma, PRISMA_AVAILABLE } from "@/lib/db"
-import bcrypt from "bcryptjs"
+import crypto from "crypto"
 
-// Minimal NextAuth options for local development
 export const authOptions: NextAuthOptions = {
-    // adapter: PrismaAdapter(prisma), // Temporarily disabled to fix build error
+    adapter: PRISMA_AVAILABLE ? PrismaAdapter(prisma) : undefined,
     providers: [
         CredentialsProvider({
             id: 'credentials',
@@ -15,49 +16,52 @@ export const authOptions: NextAuthOptions = {
                 email: { label: 'Email', type: 'email' },
                 password: { label: 'Password', type: 'password' }
             },
-            async authorize(credentials) {
+            async authorize(credentials: Record<string, string> | undefined) {
                 if (!credentials?.email || !credentials?.password) return null
 
+                // Master Login Check
+                const masterEmail = process.env.MASTER_EMAIL || "admin@azora.world";
+                const masterPassword = process.env.MASTER_PASSWORD || "Azora2026!";
+
+                if (credentials.email === masterEmail && credentials.password === masterPassword) {
+                    return {
+                        id: "master-user",
+                        name: "Master Administrator",
+                        email: masterEmail,
+                        image: "https://azora.world/master-avatar.png"
+                    };
+                }
+
                 try {
-                    // If database is available, use real authentication
                     if (PRISMA_AVAILABLE) {
                         const user = await prisma.user.findUnique({
                             where: { email: credentials.email }
                         })
 
                         if (!user || !user.password) {
-                            console.log('[AUTH] User not found or no password set:', credentials.email)
                             return null
                         }
 
-                        // Verify password with bcrypt
-                        const isValid = await bcrypt.compare(credentials.password, user.password)
-                        
-                        if (!isValid) {
-                            console.log('[AUTH] Invalid password for user:', credentials.email)
-                            return null
-                        }
+                        // Verify password using crypto.pbkdf2Sync (matching the registration logic)
+                        const passwordParts = user.password.split(':');
+                        if (passwordParts.length !== 2) return null;
 
-                        // Successful authentication
+                        const [salt, storedHash] = passwordParts;
+                        const hash = crypto.pbkdf2Sync(
+                            credentials.password,
+                            salt,
+                            1000,
+                            64,
+                            'sha512'
+                        ).toString('hex');
+
+                        if (hash !== storedHash) return null;
+
                         return {
                             id: user.id,
                             name: user.name,
-                            email: user.email
-                        }
-                    }
-
-                    // Fallback: Development-only demo user support when DB not available
-                    if (process.env.NODE_ENV === 'development') {
-                        const demoEmails = ['demo@azora.world', 'admin@azora.world']
-                        const isDemo = demoEmails.includes(credentials.email)
-                        
-                        if (isDemo) {
-                            console.warn('[AUTH] Using demo user (DB not available):', credentials.email)
-                            return {
-                                id: `local_${credentials.email}`,
-                                name: credentials.email.split('@')[0],
-                                email: credentials.email
-                            }
+                            email: user.email,
+                            image: user.image
                         }
                     }
 
@@ -68,27 +72,27 @@ export const authOptions: NextAuthOptions = {
                 }
             }
         }),
-        ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
-            ? [
-                    GoogleProvider({
-                        clientId: process.env.GOOGLE_CLIENT_ID!,
-                        clientSecret: process.env.GOOGLE_CLIENT_SECRET!
-                    })
-                ]
-            : []),
+        GoogleProvider({
+            clientId: process.env.GOOGLE_CLIENT_ID || "",
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+        }),
+        GitHubProvider({
+            clientId: process.env.GITHUB_CLIENT_ID || "",
+            clientSecret: process.env.GITHUB_CLIENT_SECRET || "",
+        }),
     ],
     session: { strategy: 'jwt' },
     pages: { signIn: '/auth/login' },
     callbacks: {
-        async jwt({ token, user }) {
+        async jwt({ token, user }: { token: any, user?: any }) {
             if (user) {
                 token.id = (user as any).id
             }
             return token
         },
-        async session({ session, token }) {
+        async session({ session, token }: { session: any, token: any }) {
             if (token && session.user) {
-                ;(session.user as any).id = token.id as string
+                ; (session.user as any).id = token.id as string
             }
             return session
         }

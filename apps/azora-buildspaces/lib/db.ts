@@ -1,10 +1,10 @@
 let PrismaClient: any
 try {
-  // Try to load generated client; if it doesn't exist, we'll fallback to proxy implementation
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  PrismaClient = require('@prisma/client').PrismaClient
+    // Try to load generated client; if it doesn't exist, we'll fallback to proxy implementation
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    PrismaClient = require('@prisma/client').PrismaClient
 } catch (e) {
-  PrismaClient = undefined
+    PrismaClient = undefined
 }
 
 const globalForPrisma = global as unknown as { prisma: any }

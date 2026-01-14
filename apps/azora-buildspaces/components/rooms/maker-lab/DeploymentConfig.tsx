@@ -8,13 +8,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import { 
-    Globe, 
-    Server, 
-    Database, 
-    Cloud, 
-    Container, 
-    Github, 
+import {
+    Globe,
+    Server,
+    Database,
+    Cloud,
+    Container,
+    Github,
     Play,
     Settings,
     Download,
@@ -38,6 +38,7 @@ interface DeploymentTarget {
 }
 
 export default function DeploymentConfig({ projectName }: DeploymentConfigProps) {
+    const { data: session } = useSession();
     const [targets, setTargets] = useState<DeploymentTarget[]>([
         {
             id: "vercel",
@@ -92,8 +93,8 @@ export default function DeploymentConfig({ projectName }: DeploymentConfigProps)
     });
 
     const updateTargetConfig = (targetId: string, key: string, value: any) => {
-        setTargets(targets.map(target => 
-            target.id === targetId 
+        setTargets(targets.map(target =>
+            target.id === targetId
                 ? { ...target, config: { ...target.config, [key]: value } }
                 : target
         ));
@@ -104,7 +105,7 @@ export default function DeploymentConfig({ projectName }: DeploymentConfigProps)
     };
 
     const updateEnvVar = (index: number, field: string, value: string) => {
-        setEnvVars(envVars.map((env, i) => 
+        setEnvVars(envVars.map((env, i) =>
             i === index ? { ...env, [field]: value } : env
         ));
     };
@@ -196,8 +197,8 @@ spec:
         ports:
         - containerPort: 3000
         env:
-        ${envVars.filter(env => env.required).map(env => 
-          `- name: ${env.key}\n          value: "${env.value}"`
+        ${envVars.filter(env => env.required).map(env =>
+            `- name: ${env.key}\n          value: "${env.value}"`
         ).join('\n        ')}
 ---
 apiVersion: v1
@@ -227,11 +228,10 @@ spec:
                 </div>
                 <div className="space-y-2">
                     {targets.map(target => (
-                        <Card 
+                        <Card
                             key={target.id}
-                            className={`cursor-pointer transition-colors ${
-                                selectedTarget === target.id ? 'bg-primary/10 border-primary' : 'hover:bg-muted/50'
-                            }`}
+                            className={`cursor-pointer transition-colors ${selectedTarget === target.id ? 'bg-primary/10 border-primary' : 'hover:bg-muted/50'
+                                }`}
                             onClick={() => setSelectedTarget(target.id)}
                         >
                             <CardContent className="p-3">
@@ -241,9 +241,9 @@ spec:
                                     {target.provider === 'railway' && <Server className="w-4 h-4" />}
                                     <span className="font-medium text-sm">{target.name}</span>
                                 </div>
-                                <Badge 
-                                    variant={target.status === 'ready' ? 'default' : 
-                                           target.status === 'configured' ? 'secondary' : 'outline'}
+                                <Badge
+                                    variant={target.status === 'ready' ? 'default' :
+                                        target.status === 'configured' ? 'secondary' : 'outline'}
                                     className="text-xs"
                                 >
                                     {target.status}
@@ -267,8 +267,6 @@ spec:
                                     kubernetes: generateKubernetes(),
                                     projectName
                                 }
-
-                                const { data: session } = useSession();
 
                                 const res = await fetch('/api/export', {
                                     method: 'POST',
@@ -295,7 +293,6 @@ spec:
                             </Button>
                             <Button size="sm" onClick={async () => {
                                 const payload = { environment: 'staging', buildType: 'production', projectName }
-                                const { data: session } = useSession();
 
                                 const res = await fetch('/api/deploy', {
                                     method: 'POST',

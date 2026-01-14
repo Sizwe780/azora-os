@@ -55,43 +55,24 @@ const RARITY_CONFIG = {
 export default function CollectibleShowcase() {
     const [cards, setCards] = useState<CollectibleCard[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-        tier: "epic",
-        power: 2500,
-        description: "Early adopter of Constitutional AI with 50+ AI implementations",
-        achievements: ["AI Pioneer", "Constitutional AI", "Agent Trainer"],
-        rarity: 2.1,
-        image: "/themba-avatar.png",
-        minted: true,
-        owner: "You"
-    },
-    {
-        id: "3",
-        name: "Community Builder",
-        tier: "rare",
-        power: 800,
-        description: "Built bridges between developers and contributed to open source",
-        achievements: ["Open Source", "Mentor", "Community Leader"],
-        rarity: 8.5,
-        image: "/elara-github.png",
-        minted: false,
-        owner: null
-    },
-    {
-        id: "4",
-        name: "Learning Sage",
-        tier: "uncommon",
-        power: 300,
-        description: "Completed 25+ courses and taught others",
-        achievements: ["25 Courses", "Teacher", "Knowledge Seeker"],
-        rarity: 15.2,
-        image: "/themba-github.png",
-        minted: true,
-        owner: "You"
-    }
-];
+    const [selectedCard, setSelectedCard] = useState<CollectibleCard | null>(null);
+    const [activeTab, setActiveTab] = useState("gallery");
 
-export default function CollectibleShowcase() {
-    const [cards, setCards] = useState<CollectibleCard[]>(SAMPLE_CARDS);
+    useEffect(() => {
+        const fetchCards = async () => {
+            try {
+                const response = await fetch('/api/collectibles/cards');
+                if (!response.ok) throw new Error('Failed to fetch cards');
+                const data = await response.json();
+                setCards(data.cards);
+            } catch (error) {
+                console.error('Error fetching cards:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchCards();
+    }, []);
     const [selectedCard, setSelectedCard] = useState<CollectibleCard | null>(null);
     const [activeTab, setActiveTab] = useState("gallery");
 
@@ -360,9 +341,9 @@ export default function CollectibleShowcase() {
                                             <div className="flex items-center justify-between">
                                                 <div className="flex items-center gap-4">
                                                     <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold ${rank === 1 ? 'bg-yellow-500 text-black' :
-                                                            rank === 2 ? 'bg-gray-400 text-black' :
-                                                                rank === 3 ? 'bg-orange-600 text-white' :
-                                                                    'bg-white/20 text-white'
+                                                        rank === 2 ? 'bg-gray-400 text-black' :
+                                                            rank === 3 ? 'bg-orange-600 text-white' :
+                                                                'bg-white/20 text-white'
                                                         }`}>
                                                         {rank}
                                                     </div>

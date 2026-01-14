@@ -56,7 +56,7 @@ export class AuthService {
       }
 
       const userData = await res.json()
-      
+
       return {
         id: userData.id,
         name: userData.name,

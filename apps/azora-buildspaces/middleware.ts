@@ -30,7 +30,10 @@ async function getRedisClient() {
   }
 
   try {
-    const Redis = (await import('ioredis')).default
+    // Note: ioredis requires Node.js runtime. If this middleware runs in Edge Runtime,
+    // this import will fail. Consider using a fetch-based Redis client for Edge.
+
+    const { default: Redis } = await import('ioredis')
     redisClient = new Redis(url)
     return redisClient
   } catch (err) {
@@ -40,8 +43,13 @@ async function getRedisClient() {
 }
 
 function getIp(req: NextRequest) {
-  const header = req.headers.get("x-forwarded-for")
-  if (header) return header.split(",")[0]?.trim() || "unknown"
+  const forwarded = req.headers.get("x-forwarded-for")
+  if (forwarded) return forwarded.split(",")[0]?.trim() || "unknown"
+
+  const realIp = req.headers.get("x-real-ip")
+  if (realIp) return realIp
+
+
   return req.ip ?? "unknown"
 }
 
@@ -123,6 +131,7 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
+  runtime: 'nodejs',
   // Exclude health endpoint to keep liveness/readiness probes unthrottled.
   matcher: ["/((?!_next/static|_next/image|favicon.ico|api/health).*)"],
 }

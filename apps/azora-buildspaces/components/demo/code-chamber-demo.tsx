@@ -9,7 +9,7 @@ import {
   File,
   Folder,
   FolderOpen,
-  Terminal,
+  Terminal as TerminalIcon,
   X,
   Plus,
   Settings,
@@ -23,6 +23,8 @@ import {
 import { Button } from "@/components/ui/button"
 import { AfricanAgentAvatar } from "@/components/ui/african-agent-avatar"
 import { CitadelLogo } from "@/components/ui/citadel-logo"
+import { TerminalComponent } from "@/components/ui/terminal-component"
+
 
 interface FileNode {
   name: string
@@ -172,58 +174,27 @@ function FileTreeItem({
     </div>
   )
 }
+import MonacoEditor from "@monaco-editor/react"
 
-function CodeEditor({ content, language }: { content: string; language?: string }) {
-  const lines = content.split("\n")
-
-  const getTokenColor = (token: string, lang?: string) => {
-    const keywords = [
-      "import",
-      "export",
-      "from",
-      "const",
-      "let",
-      "var",
-      "function",
-      "return",
-      "if",
-      "else",
-      "interface",
-      "type",
-      "default",
-      "async",
-      "await",
-      "class",
-      "extends",
-      "implements",
-    ]
-    const types = ["string", "number", "boolean", "void", "null", "undefined", "React", "ReactNode", "Metadata"]
-
-    if (keywords.includes(token)) return "text-pink-400"
-    if (types.includes(token)) return "text-cyan-400"
-    if (token.startsWith('"') || token.startsWith("'") || token.startsWith("`")) return "text-emerald-400"
-    if (token.startsWith("//") || token.startsWith("/*")) return "text-gray-500"
-    if (!isNaN(Number(token))) return "text-amber-400"
-    return "text-gray-300"
-  }
-
+function CodeEditor({ content, language, onChange }: { content: string; language?: string; onChange?: (value: string | undefined) => void }) {
   return (
-    <div className="font-mono text-sm overflow-auto h-full">
-      {lines.map((line, i) => (
-        <div key={i} className="flex hover:bg-white/5">
-          <span className="w-12 text-right pr-4 text-gray-600 select-none">{i + 1}</span>
-          <pre className="flex-1">
-            <code>
-              {line.split(/(\s+|[{}()[\].,;:=<>]|"[^"]*"|'[^']*'|`[^`]*`)/).map((token, j) => (
-                <span key={j} className={getTokenColor(token, language)}>
-                  {token}
-                </span>
-              ))}
-            </code>
-          </pre>
-        </div>
-      ))}
-    </div>
+    <MonacoEditor
+      height="100%"
+      defaultLanguage={language || "typescript"}
+      defaultValue={content}
+      value={content}
+      theme="vs-dark"
+      onChange={onChange}
+      options={{
+        minimap: { enabled: true },
+        fontSize: 14,
+        lineNumbers: "on",
+        roundedSelection: false,
+        scrollBeyondLastLine: false,
+        readOnly: false,
+        automaticLayout: true,
+      }}
+    />
   )
 }
 
@@ -452,34 +423,21 @@ export function CodeChamber() {
             )}
           </div>
 
+
           {/* Terminal */}
           {terminalOpen && (
-            <div className="h-48 bg-[#0d1117] border-t border-white/10">
+            <div className="h-48 bg-[#0d1117] border-t border-white/10 flex flex-col">
               <div className="flex items-center justify-between px-4 py-1 border-b border-white/10">
                 <div className="flex items-center gap-2">
-                  <Terminal className="h-4 w-4 text-emerald-400" />
+                  <TerminalIcon className="h-4 w-4 text-emerald-400" />
                   <span className="text-sm text-gray-400">Terminal</span>
                 </div>
                 <button className="text-gray-500 hover:text-white" onClick={() => setTerminalOpen(false)}>
                   <X className="h-4 w-4" />
                 </button>
               </div>
-              <div ref={terminalRef} className="h-32 overflow-auto p-2 font-mono text-sm">
-                {terminalLines.map((line, i) => (
-                  <div key={i} className={line.startsWith("$") ? "text-emerald-400" : "text-gray-400"}>
-                    {line}
-                  </div>
-                ))}
-                <form onSubmit={handleTerminalSubmit} className="flex items-center">
-                  <span className="text-emerald-400">$ </span>
-                  <input
-                    type="text"
-                    value={terminalInput}
-                    onChange={(e) => setTerminalInput(e.target.value)}
-                    className="flex-1 bg-transparent outline-none text-white ml-1"
-                    autoFocus
-                  />
-                </form>
+              <div className="flex-1 overflow-hidden">
+                <TerminalComponent initialContent={terminalLines} />
               </div>
             </div>
           )}

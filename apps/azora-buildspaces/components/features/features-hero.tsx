@@ -4,7 +4,7 @@ import { AetherBackground } from "@/components/ui/aether-background"
 const subNavItems = [
   { name: "AI Agents", href: "/features/agents", active: false },
   { name: "Code Chamber", href: "/features/code-chamber", active: false },
-  { name: "The 7 Rooms", href: "/features#rooms", active: false },
+  { name: "The 8 Rooms", href: "/features#rooms", active: false },
   { name: "BuildSpaces CLI", href: "/features/cli", active: false },
   { name: "For Business", href: "/features/business", active: false },
   { name: "Tutorials", href: "/features/tutorials", active: false },
@@ -26,9 +26,8 @@ export function FeaturesHero() {
               <Link
                 key={item.name}
                 href={item.href}
-                className={`rounded-lg px-3 py-1.5 text-sm transition-colors ${
-                  item.active ? "bg-white/10 text-white" : "text-gray-400 hover:text-white hover:bg-white/5"
-                }`}
+                className={`rounded-lg px-3 py-1.5 text-sm transition-colors ${item.active ? "bg-white/10 text-white" : "text-gray-400 hover:text-white hover:bg-white/5"
+                  }`}
               >
                 {item.name}
               </Link>

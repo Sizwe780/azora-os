@@ -1,7 +1,0 @@
-# Playwright test results
-test-results/
-playwright-report/
-screenshots/
-
-# Generated test files (optional - remove if you want to commit them)
-# *.spec.ts

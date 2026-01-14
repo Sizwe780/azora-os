@@ -1,6 +1,6 @@
 'use client'
 
-import { AIStudio } from '@/components/features/ai-studio/ai-studio'
+import AIStudio from '@/components/rooms/ai-studio'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, Sparkles, Lock, Zap, Brain, MessageSquare } from 'lucide-react'
 import Link from 'next/link'
