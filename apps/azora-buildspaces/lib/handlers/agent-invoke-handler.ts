@@ -1,5 +1,6 @@
 import { AIFamilyServiceClient, AgentPersonality } from '@/lib/services/ai-family-client'
 import { constitutionalAI, UserActionType } from '@/lib/services/constitutional-ai'
+import OpenAI from 'openai'
 
 export interface AgentRequest {
   action: string
@@ -70,19 +71,61 @@ export async function handleAgentInvoke(body: AgentRequest): Promise<AgentRespon
     }
   } catch (err) {
     if (orchestratorAttempted) {
-      console.log(`[Agent Routing] Using local AI Family Service (orchestrator unavailable)`)
+      console.log(`[Agent Routing] Using OpenAI fallback (orchestrator unavailable)`)
     }
 
-    try {
-      const aiFamily = AIFamilyServiceClient.getInstance()
-      const response = await aiFamily.chat({ agent: agentId as AgentPersonality, message: context, context: { currentCode: code, language } })
-      result = response.response
-      suggestions = response.suggestions || []
-      finalAgentName = response.agentName
-    } catch (err2) {
-      console.error('[Agent Routing] All agent services unavailable:', err2)
-      result = `${agentName} is currently processing your request. The agent service is initializing...`
-      suggestions = ['The service will be available shortly', 'Try again in a moment']
+    // Try OpenAI directly
+    const openaiApiKey = process.env.OPENAI_API_KEY
+    if (openaiApiKey) {
+      try {
+        const openai = new OpenAI({ apiKey: openaiApiKey })
+        const completion = await openai.chat.completions.create({
+          model: 'gpt-4',
+          messages: [
+            {
+              role: 'system',
+              content: `You are ${agentName}, an expert AI assistant. Provide helpful, accurate responses.`
+            },
+            {
+              role: 'user',
+              content: context
+            }
+          ],
+          max_tokens: 1000,
+          temperature: 0.7
+        })
+
+        result = completion.choices[0]?.message?.content || `${agentName} processed your request successfully.`
+        suggestions = ['Response generated using OpenAI GPT-4', 'Consider refining your query for more specific results']
+        finalAgentName = agentName
+      } catch (openaiErr) {
+        console.error('[Agent Routing] OpenAI failed:', openaiErr)
+        // Fall back to AI Family Service
+        try {
+          const aiFamily = AIFamilyServiceClient.getInstance()
+          const response = await aiFamily.chat({ agent: agentId as AgentPersonality, message: context, context: { currentCode: code, language } })
+          result = response.response
+          suggestions = response.suggestions || []
+          finalAgentName = response.agentName
+        } catch (err2) {
+          console.error('[Agent Routing] All agent services unavailable:', err2)
+          result = `${agentName} is currently processing your request. The agent service is initializing...`
+          suggestions = ['The service will be available shortly', 'Try again in a moment']
+        }
+      }
+    } else {
+      // No OpenAI key, try AI Family Service
+      try {
+        const aiFamily = AIFamilyServiceClient.getInstance()
+        const response = await aiFamily.chat({ agent: agentId as AgentPersonality, message: context, context: { currentCode: code, language } })
+        result = response.response
+        suggestions = response.suggestions || []
+        finalAgentName = response.agentName
+      } catch (err2) {
+        console.error('[Agent Routing] All agent services unavailable:', err2)
+        result = `${agentName} is currently processing your request. The agent service is initializing...`
+        suggestions = ['The service will be available shortly', 'Try again in a moment']
+      }
     }
   }
 
