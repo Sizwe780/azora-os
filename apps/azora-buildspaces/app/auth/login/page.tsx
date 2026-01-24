@@ -33,7 +33,7 @@ export default function LoginPage() {
       })
 
       if (res && (res as any).ok) {
-        router.push('/workspace')
+        router.push('/dashboard')
       } else {
         setError('Invalid email or password')
       }
@@ -56,7 +56,7 @@ export default function LoginPage() {
       })
 
       if (res && (res as any).ok) {
-        router.push('/workspace')
+        router.push('/dashboard')
       } else {
         setError('Demo login failed')
       }
