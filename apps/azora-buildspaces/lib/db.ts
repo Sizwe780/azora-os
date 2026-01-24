@@ -77,7 +77,20 @@ function createPrismaClient() {
 }
 
 export const prisma = globalForPrisma.prisma || createPrismaClient();
-export const PRISMA_AVAILABLE = Boolean(process.env.DATABASE_URL && PrismaClient)
+
+// Only mark Prisma as available if we both have the client package and the
+// runtime instance was created successfully. createPrismaClient will return a
+// proxy when initialization fails; detect that case and treat it as not
+// available so callers (e.g., NextAuth adapter) don't attempt to use it.
+let prismaAvailable = false
+try {
+    // A real PrismaClient instance should have a $connect method.
+    prismaAvailable = Boolean(process.env.DATABASE_URL && PrismaClient && typeof prisma.$connect === 'function')
+} catch (e) {
+    prismaAvailable = false
+}
+
+export const PRISMA_AVAILABLE = prismaAvailable
 
 if (process.env.NODE_ENV !== 'production') {
     globalForPrisma.prisma = prisma;

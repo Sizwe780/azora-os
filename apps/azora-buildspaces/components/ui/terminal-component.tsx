@@ -1,8 +1,6 @@
 "use client"
 
 import React, { useEffect, useRef } from 'react'
-import { Terminal } from 'xterm'
-import { FitAddon } from 'xterm-addon-fit'
 import 'xterm/css/xterm.css'
 
 interface TerminalComponentProps {
@@ -17,46 +15,56 @@ export function TerminalComponent({ onData, initialContent = [] }: TerminalCompo
     useEffect(() => {
         if (!terminalRef.current) return
 
-        const term = new Terminal({
-            cursorBlink: true,
-            theme: {
-                background: '#0d1117',
-                foreground: '#e6edf3',
-                cursor: '#10b981',
-                selectionBackground: '#10b98140',
-            },
-            fontSize: 14,
-            fontFamily: 'Menlo, Monaco, "Courier New", monospace',
-        })
+        let term: any = null
+        let fitAddon: any = null
 
-        const fitAddon = new FitAddon()
-        term.loadAddon(fitAddon)
+        const initTerminal = async () => {
+            const { Terminal } = await import('xterm')
+            const { FitAddon } = await import('xterm-addon-fit')
 
-        term.open(terminalRef.current)
-        fitAddon.fit()
+            term = new Terminal({
+                cursorBlink: true,
+                theme: {
+                    background: '#0d1117',
+                    foreground: '#e6edf3',
+                    cursor: '#10b981',
+                    selectionBackground: '#10b98140',
+                },
+                fontSize: 14,
+                fontFamily: 'Menlo, Monaco, "Courier New", monospace',
+            })
 
-        initialContent.forEach(line => term.writeln(line))
-        term.write('\r\n$ ')
+            fitAddon = new FitAddon()
+            term.loadAddon(fitAddon)
 
-        term.onData(data => {
-            if (data === '\r') {
-                term.write('\r\n$ ')
-            } else if (data === '\u007f') { // Backspace
-                term.write('\b \b')
-            } else {
-                term.write(data)
-            }
-            onData?.(data)
-        })
+            term.open(terminalRef.current!)
+            fitAddon.fit()
 
-        xtermRef.current = term
+            initialContent.forEach(line => term.writeln(line))
+            term.write('\r\n$ ')
 
-        const handleResize = () => fitAddon.fit()
+            term.onData((data: string) => {
+                if (data === '\r') {
+                    term.write('\r\n$ ')
+                } else if (data === '\u007f') { // Backspace
+                    term.write('\b \b')
+                } else {
+                    term.write(data)
+                }
+                onData?.(data)
+            })
+
+            xtermRef.current = term
+        }
+
+        initTerminal()
+
+        const handleResize = () => fitAddon?.fit()
         window.addEventListener('resize', handleResize)
 
         return () => {
             window.removeEventListener('resize', handleResize)
-            term.dispose()
+            term?.dispose()
         }
     }, [])
 

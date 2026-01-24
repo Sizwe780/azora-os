@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import { deployToWorkerNode } from "../deploy-node";
 
 export interface TaskRequest {
@@ -17,14 +19,19 @@ export interface NodeInfo {
 export async function negotiateTask(task: TaskRequest) {
     let nodes: NodeInfo[] = [];
     try {
-        const fs = require('fs');
-        const path = require('path');
         const nodesPath = path.join(process.cwd(), 'data', 'nodes.json');
-        const nodesData = fs.readFileSync(nodesPath, 'utf8');
-        nodes = JSON.parse(nodesData);
+        if (fs.existsSync(nodesPath)) {
+            const nodesData = fs.readFileSync(nodesPath, 'utf8');
+            nodes = JSON.parse(nodesData);
+        } else {
+            // Fallback to default nodes if file doesn't exist
+            nodes = [
+                { id: "Citadel", status: "Active", type: "NPU", ip: "localhost", did: "did:key:z6MkpTHR8V369" },
+                { id: "Forge-X515", status: "Active", type: "CPU", ip: "10.0.0.1", did: "did:key:z6Mkg9X515JAB" }
+            ];
+        }
     } catch (error) {
         console.error("[Governance] Failed to load nodes from data/nodes.json:", error);
-        // Fallback to minimal local node if config fails
         nodes = [{ id: "Citadel", status: "Active", type: "NPU", ip: "localhost", did: "did:key:z6MkpTHR8V369" }];
     }
 

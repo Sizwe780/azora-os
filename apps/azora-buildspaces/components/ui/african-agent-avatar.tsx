@@ -36,7 +36,7 @@ export const agentStyles: Record<string, typeof defaultAgentStyle> = {
     description: "XO Architect",
     title: "The Orchestrator",
     theme: "golden-cyan",
-    imageUrl: "/images/agent-elara.png",
+    imageUrl: "/images/agent-elara-copilot.png",
   },
   // Sankofa - The Grandfather/Elder - Wise silver with white glow
   sankofa: {
@@ -48,7 +48,7 @@ export const agentStyles: Record<string, typeof defaultAgentStyle> = {
     description: "Wisdom Keeper",
     title: "The Elder",
     theme: "silver-wisdom",
-    imageUrl: "/images/agent-sankofa.jpg",
+    imageUrl: "/images/agent-sankofa-copilot.png",
   },
   // Themba - Son - Dark with gold African patterns
   themba: {
@@ -60,7 +60,7 @@ export const agentStyles: Record<string, typeof defaultAgentStyle> = {
     description: "Systems Engineer",
     title: "The Builder",
     theme: "gold-patterns",
-    imageUrl: "/images/agent-themba.png",
+    imageUrl: "/images/agent-themba-copilot.png",
   },
   // Jabari - Middle Brother - Bronze warrior guardian
   jabari: {
@@ -72,7 +72,7 @@ export const agentStyles: Record<string, typeof defaultAgentStyle> = {
     description: "Security Chief",
     title: "The Guardian",
     theme: "bronze-fire",
-    imageUrl: "/images/agent-jabari.jpg",
+    imageUrl: "/images/agent-jabari-copilot.png",
   },
   // Nia - Daughter - Dark with blue neural patterns (no crown)
   nia: {
@@ -84,7 +84,7 @@ export const agentStyles: Record<string, typeof defaultAgentStyle> = {
     description: "Data Scientist",
     title: "The Analyst",
     theme: "neural-blue",
-    imageUrl: "/images/agent-nia.png",
+    imageUrl: "/images/agent-nia-copilot.png",
   },
   // Imani - Daughter - Creative pink/rose
   imani: {
@@ -96,7 +96,7 @@ export const agentStyles: Record<string, typeof defaultAgentStyle> = {
     description: "Creative Director",
     title: "The Artist",
     theme: "rose-creative",
-    imageUrl: "/images/agent-imani.svg",
+    imageUrl: "/images/agent-imani-copilot.png",
   },
   // Zuri - Youngest - Titanium/silver
   zuri: {

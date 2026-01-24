@@ -58,7 +58,7 @@ export function validateConstitution(request: AgentRequest): ConstitutionalValid
   if (!request.payload.fileContent || request.payload.fileContent.trim().length === 0) {
     // Exception: Some signals don't require file content
     const noContentAllowed = ['GENERATE_COMPONENT', 'GENERATE_SPEC']
-    
+
     if (!noContentAllowed.includes(request.signal)) {
       violations.push({
         type: 'NO_MOCK',
@@ -216,8 +216,27 @@ export function logConstitutionalCheck(
     console.error('❌ [ConstitutionalGuard] Request blocked:', logEntry)
   }
 
-  // Store in localStorage for debugging (remove in production)
+  // Persist to database via API (Fire and forget)
   if (typeof window !== 'undefined') {
+    fetch('/api/audit/constitutional', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: request.signal,
+        entityType: 'agent_request',
+        entityId: request.id,
+        preChecksPassed: result.passed,
+        postChecksPassed: result.passed, // Simplified for now
+        constitutionalConcern: !result.passed,
+        auditDetails: {
+          violations: result.violations,
+          healthScore: result.healthScore,
+          agent: request.agent
+        }
+      })
+    }).catch(err => console.error('[ConstitutionalGuard] Failed to persist log:', err));
+
+    // Store in localStorage for debugging (remove in production)
     try {
       const logs = JSON.parse(localStorage.getItem('constitutional-logs') || '[]')
       logs.push(logEntry)
@@ -254,7 +273,7 @@ export function getConstitutionalHealth(): {
     const passedRequests = logs.filter((log: any) => log.passed).length
     const avgScore =
       logs.reduce((sum: number, log: any) => sum + log.healthScore, 0) / (totalRequests || 1)
-    
+
     const recentViolations = logs
       .filter((log: any) => !log.passed)
       .flatMap((log: any) => log.violations)

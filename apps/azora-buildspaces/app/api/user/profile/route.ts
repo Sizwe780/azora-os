@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 
 /**
@@ -34,6 +34,28 @@ export async function GET() {
     }
 
     const userId = (session.user as any).id;
+    console.log('[API] Profile request for userId:', userId);
+
+    // DEV AUTH MODE: Handle master user without DB access
+    if (userId === 'master-user') {
+      return NextResponse.json({
+        id: 'master-user',
+        name: 'Master Administrator',
+        email: 'admin@azora.world',
+        createdAt: new Date(),
+        subscription: {
+          plan: 'constitutional',
+          status: 'active',
+          expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year
+          geographicPricing: { country: 'Global', discount: 0 }
+        },
+        verificationStatus: {
+          email: true,
+          identity: true,
+          student: false
+        }
+      });
+    }
 
     // Fetch user from database
     const user = await prisma.user.findUnique({

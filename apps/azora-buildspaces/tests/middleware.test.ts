@@ -1,3 +1,4 @@
+/** @jest-environment node */
 // Mock Next server runtime utilities and Redis client to avoid environment-specific dependencies
 jest.mock('next/server', () => ({
   NextResponse: {

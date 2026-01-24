@@ -1,7 +1,7 @@
 # 🏗️ Azora BuildSpaces
 
 **Tagline**: "Build Together, Deploy Anywhere"  
-**Status**: 🟢 Production Ready (95% Complete)  
+**Status**: 🟡 Beta / Audit Complete (85% Complete)  
 **Version**: 0.1.0  
 **Platform**: Web (Next.js 16 with React 19)
 
@@ -9,7 +9,9 @@
 
 ## 📋 Executive Summary
 
-Azora BuildSpaces is a **production-ready**, AI-powered collaborative development workbench that combines real-time code editing, AI agent orchestration, and secure code execution into a unified workspace. This document provides a comprehensive overview of the current implementation status and deployment readiness.
+Azora BuildSpaces is an AI-powered collaborative development workbench that combines real-time code editing, AI agent orchestration, and secure code execution into a unified workspace. This document provides a comprehensive overview of the current implementation status and deployment readiness.
+
+> ⚠️ **Audit Status (Jan 2026)**: The UI and core room components are fully implemented. However, the backend AI orchestration engine currently uses mock implementations, and authentication is in "Dev Mode" to bypass database instability. See [Known Issues](#-known-issues--remaining-tasks) for details.
 
 ---
 
@@ -83,6 +85,21 @@ BuildSpaces provides developers with specialized "rooms" for different aspects o
     - Collectible card generation
     - Economy integration (AZR tokens)
     - API: `/api/web3/mint`, `/api/collectibles/cards`, `/api/economy/*`
+
+11. **Marketplace** ✅ - Template and asset store
+    - Browse and install project templates
+    - AI agent marketplace
+    - API: `/api/marketplace/templates`
+
+12. **Deep Focus** ✅ - Distraction-free coding environment
+    - Zen mode interface
+    - Pomodoro timer integration
+    - Ambient soundscapes
+
+13. **Task Board** ✅ - Kanban-style project management
+    - Drag-and-drop task management
+    - Integrated into Collaboration Pod
+    - Database persistence for tasks
 
 ---
 
@@ -188,11 +205,11 @@ See `apps/azora-buildspaces/.env.example` for complete list.
 
 | Category | Status | Score | Notes |
 |----------|--------|-------|-------|
-| **Core Functionality** | ✅ Complete | 10/10 | All rooms implemented with real APIs |
+| **Core Functionality** | 🟡 Partial | 8/10 | All rooms UI implemented; Orchestrator backend mocked |
 | **Database Integration** | ✅ Complete | 10/10 | Centralized Prisma schema, all models defined |
 | **API Endpoints** | ✅ Complete | 10/10 | 30+ endpoints, all functional |
-| **Authentication** | ✅ Complete | 10/10 | NextAuth with database sessions |
-| **Security** | ✅ Complete | 10/10 | Headers, validation, sandboxing |
+| **Authentication** | 🟡 Partial | 7/10 | NextAuth implemented but currently in "Dev Mode" (DB bypass) |
+| **Security** | 🟡 Partial | 8/10 | Headers/Validation done; Audit logging is local-only |
 | **Testing** | ✅ Complete | 8/10 | Jest config, 7 test files, room for E2E expansion |
 | **Docker/K8s** | ✅ Complete | 10/10 | Multi-stage Dockerfile, K8s manifests |
 | **CI/CD** | ✅ Complete | 9/10 | GitHub Actions with build, test, deploy |
@@ -200,7 +217,7 @@ See `apps/azora-buildspaces/.env.example` for complete list.
 | **Documentation** | ✅ Complete | 9/10 | Comprehensive READMEs, API docs |
 | **Vercel Ready** | ✅ Complete | 10/10 | vercel.json configured |
 
-**Overall Score: 95/100** 🟢 **Production Ready**
+**Overall Score: 85/100** 🟡 **Beta Ready**
 
 ---
 
@@ -528,7 +545,20 @@ Proprietary - Azora ES (Pty) Ltd
 
 ---
 
-**Status**: 🟢 Production Ready (95% Complete)  
+---
+
+## 🚧 Known Issues & Remaining Tasks
+
+### Critical Backend Gaps
+1.  **Orchestrator Mocks**: The `WorkflowOrchestrator` (`lib/agents/orchestrator.ts`) currently returns mock responses for agent execution and command running. Needs integration with real LLM providers and runtime.
+2.  **Audit Logging**: Constitutional audit logs (`lib/constitutional-guard.ts`) are currently stored in `localStorage` and console. Needs to be persisted to the database for production compliance.
+
+### Authentication
+- **Dev Auth Mode**: Currently enabled to allow master login (`admin@azora.world`) without database dependency. Needs to be switched back to full `PrismaAdapter` mode for production.
+
+---
+
+**Status**: 🟡 Beta / Audit Complete (85% Complete)  
 **Next Milestone**: Full Production Launch  
 **Last Updated**: January 9, 2026
 

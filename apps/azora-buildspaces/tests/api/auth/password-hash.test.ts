@@ -1,7 +1,9 @@
+/** @jest-environment node */
 /**
  * Unit tests for authentication password hashing
  * Tests the password hashing and verification logic used in registration and login
  */
+
 
 import crypto from 'crypto'
 

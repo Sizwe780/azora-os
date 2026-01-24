@@ -103,7 +103,7 @@ export class WorkflowOrchestrator {
   async loadWorkflows(): Promise<void> {
     try {
       const workflowFiles = await fileSystem.listFiles(`/${this.workflowsPath}`)
-      
+
       for (const file of workflowFiles) {
         if (file.type === 'file' && file.name.endsWith('.json')) {
           try {
@@ -115,7 +115,7 @@ export class WorkflowOrchestrator {
           }
         }
       }
-      
+
       console.log(`[Orchestrator] Loaded ${this.workflows.size} workflows`)
     } catch (error) {
       console.log('[Orchestrator] No workflows directory yet, creating...')
@@ -129,7 +129,7 @@ export class WorkflowOrchestrator {
    */
   async saveWorkflow(workflow: Workflow): Promise<void> {
     workflow.updatedAt = Date.now()
-    
+
     try {
       await fileSystem.mkdir(`/${this.workflowsPath}`)
     } catch (error) {
@@ -138,7 +138,7 @@ export class WorkflowOrchestrator {
 
     const filePath = `/${this.workflowsPath}/${workflow.id}.json`
     await fileSystem.writeFile(filePath, JSON.stringify(workflow, null, 2))
-    
+
     this.workflows.set(workflow.id, workflow)
     console.log(`[Orchestrator] Saved workflow: ${workflow.name}`)
   }
@@ -211,9 +211,9 @@ export class WorkflowOrchestrator {
 
       // Execute the workflow graph
       const result = await this.executeNode(triggerNode, workflow, context)
-      
+
       console.log(`[Orchestrator] ✅ Workflow completed`)
-      
+
       return {
         success: true,
         nodeResults: context.nodeOutputs,
@@ -221,7 +221,7 @@ export class WorkflowOrchestrator {
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : 'Unknown error'
       console.error(`[Orchestrator] ❌ Execution failed:`, errorMsg)
-      
+
       return {
         success: false,
         nodeResults: context.nodeOutputs,
@@ -269,7 +269,7 @@ export class WorkflowOrchestrator {
 
     // Find and execute connected nodes
     const connectedEdges = workflow.edges.filter((e) => e.source === node.id)
-    
+
     for (const edge of connectedEdges) {
       const nextNode = workflow.nodes.find((n) => n.id === edge.target)
       if (nextNode) {
@@ -289,11 +289,15 @@ export class WorkflowOrchestrator {
   ): Promise<any> {
     const data = node.data as TriggerNodeData
     console.log(`[Orchestrator] Trigger: ${data.triggerType}`)
-    
+
     // Trigger nodes just pass through the trigger data
     return context.triggerData
   }
 
+  /**
+   * Execute an agent node
+   * Constitutional: Real agent execution with system prompts
+   */
   /**
    * Execute an agent node
    * Constitutional: Real agent execution with system prompts
@@ -303,26 +307,51 @@ export class WorkflowOrchestrator {
     context: ExecutionContext
   ): Promise<any> {
     const data = node.data as AgentNodeData
-    
+
     console.log(`[Orchestrator] Agent: ${data.agentType}`)
     console.log(`[Orchestrator] System Prompt: ${data.systemPrompt}`)
-    console.log(`[Orchestrator] Temperature: ${data.temperature || 0.7}`)
 
     // Get input from previous nodes
     const input = this.getNodeInput(node, context)
+    const inputStr = typeof input === 'string' ? input : JSON.stringify(input)
 
-    // TODO: Connect to actual agent implementations
-    // For now, return a mock response
-    const response = {
-      agent: data.agentType,
-      input,
-      output: `[Mock] ${data.agentType} processed: ${JSON.stringify(input)}`,
-      systemPrompt: data.systemPrompt,
-      temperature: data.temperature,
+    try {
+      // Import dynamically to avoid circular dependencies if any
+      const { AIFamilyServiceClient } = await import('@/lib/services/ai-family-client')
+      const aiClient = AIFamilyServiceClient.getInstance()
+
+      // Construct the message for the agent
+      // We combine system prompt and input into the message or context
+      const message = `${data.systemPrompt}\n\nInput Data:\n${inputStr}`
+
+      const response = await aiClient.chat({
+        agent: data.agentType,
+        message: message,
+        context: {
+          roomType: 'orchestrator',
+          history: [] // Could pass workflow history here if needed
+        }
+      })
+
+      console.log(`[Orchestrator] Agent output:`, response.response)
+
+      return {
+        agent: data.agentType,
+        input,
+        output: response.response,
+        systemPrompt: data.systemPrompt,
+        suggestions: response.suggestions
+      }
+    } catch (error) {
+      console.error(`[Orchestrator] Agent execution failed:`, error)
+      // Fallback to mock if service fails, but log error
+      return {
+        agent: data.agentType,
+        input,
+        output: `[Error] Failed to execute agent ${data.agentType}: ${error instanceof Error ? error.message : String(error)}`,
+        error: true
+      }
     }
-
-    console.log(`[Orchestrator] Agent output:`, response.output)
-    return response
   }
 
   /**
@@ -334,7 +363,7 @@ export class WorkflowOrchestrator {
     context: ExecutionContext
   ): Promise<any> {
     const data = node.data as ActionNodeData
-    
+
     console.log(`[Orchestrator] Action: ${data.actionType}`)
 
     // Get input from previous nodes
@@ -414,7 +443,7 @@ export class WorkflowOrchestrator {
       connectedNodeIds.add(edge.source)
       connectedNodeIds.add(edge.target)
     })
-    
+
     workflow.nodes.forEach((node) => {
       if (!connectedNodeIds.has(node.id) && node.type !== 'trigger') {
         warnings.push(`Node ${node.id} is not connected to the workflow`)
@@ -455,7 +484,7 @@ export class WorkflowOrchestrator {
       recursionStack.add(nodeId)
 
       const outgoingEdges = workflow.edges.filter((e) => e.source === nodeId)
-      
+
       for (const edge of outgoingEdges) {
         if (!visited.has(edge.target)) {
           if (dfs(edge.target)) return true
