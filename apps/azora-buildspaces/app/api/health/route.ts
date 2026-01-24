@@ -47,15 +47,30 @@ export async function GET() {
     if (process.env.DATABASE_URL) {
       try {
         const dbCheckStart = Date.now()
-        const { PrismaClient } = await import("@prisma/client")
-        const prisma = new PrismaClient()
-        await prisma.$queryRaw`SELECT 1`
-        dbLatency = Date.now() - dbCheckStart
-        dbStatus = "connected"
-        await prisma.$disconnect()
+        const maybePrisma = await import("@prisma/client")
+
+        // Defensive: verify PrismaClient exists and is constructible
+        if (!maybePrisma || typeof maybePrisma.PrismaClient !== "function") {
+          dbStatus = "unavailable"
+          console.warn("[Health] Prisma client not available; skipping DB check")
+        } else {
+          const { PrismaClient } = maybePrisma
+          const prisma = new PrismaClient()
+          try {
+            await prisma.$queryRaw`SELECT 1`
+            dbLatency = Date.now() - dbCheckStart
+            dbStatus = "connected"
+          } catch (error) {
+            dbStatus = "disconnected"
+            console.error("[Health] Database query failed:", error)
+          } finally {
+            await prisma.$disconnect()
+          }
+        }
       } catch (error) {
-        dbStatus = "disconnected"
-        console.error("[Health] Database check failed:", error)
+        // Import or construction failed (e.g., generated client missing)
+        dbStatus = "unavailable"
+        console.error("[Health] Database client unavailable:", error)
       }
     }
     
@@ -63,10 +78,11 @@ export async function GET() {
     let status: "healthy" | "degraded" | "unhealthy" = "healthy"
     let ok = true
     
+    // Treat a disconnected DB as unhealthy; an unavailable client is degraded
     if (memPercentage > 90 || dbStatus === "disconnected") {
       status = "unhealthy"
       ok = false
-    } else if (memPercentage > 75) {
+    } else if (memPercentage > 75 || dbStatus === "unavailable") {
       status = "degraded"
     }
     

@@ -1,3 +1,36 @@
+/** @jest-environment node */
+import { GET } from "../../app/api/health/route"
+
+describe("GET /api/health", () => {
+  const OLD_ENV = process.env
+
+  beforeEach(() => {
+    jest.resetModules()
+    process.env = { ...OLD_ENV }
+  })
+
+  afterAll(() => {
+    process.env = OLD_ENV
+  })
+
+  test("returns degraded when Prisma client import fails", async () => {
+    // Simulate a DATABASE_URL configured, but prisma client missing / broken
+    process.env.DATABASE_URL = "postgres://user:pass@localhost:5432/testdb"
+
+    // Mock @prisma/client to throw when imported
+    jest.doMock("@prisma/client", () => {
+      throw new Error("Cannot find module '@prisma/client'. Did you run prisma generate?")
+    })
+
+    const res = await GET()
+    const json = await res.json()
+
+    expect(res.status).toBe(200)
+    expect(json.ok).toBe(true)
+    expect(json.status).toBe("degraded")
+    expect(json.checks.database.status).toBe("unavailable")
+  })
+})
 /**
  * Tests for Health Check Endpoint Logic
  * 
