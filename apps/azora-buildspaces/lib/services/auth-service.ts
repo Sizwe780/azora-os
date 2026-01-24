@@ -34,21 +34,29 @@ export class AuthService {
   }
 
   async getCurrentUser(): Promise<User | null> {
+    console.log('[AuthService] Getting session...');
     const session = await getSession()
+    console.log('[AuthService] Session result:', session);
 
     if (!session || !session.user) {
+      console.log('[AuthService] No session found');
       return null
     }
 
-    // Fetch real user data from the API route instead of using mocks
+    console.log('[AuthService] Fetching user profile...');
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5s timeout
+
       const res = await fetch('/api/user/profile', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include'
+        credentials: 'include',
+        signal: controller.signal
       })
+      clearTimeout(timeoutId);
 
       if (!res.ok) {
         console.error('Failed to fetch user profile:', res.status)

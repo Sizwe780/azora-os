@@ -64,9 +64,16 @@ function createPrismaClient() {
     }
 
     // For Prisma 5, use direct connection
-    return new PrismaClient({
-        log: process.env.NODE_ENV === 'development' ? ['query', 'warn', 'error'] : ['error'],
-    });
+    try {
+        return new PrismaClient({
+            log: process.env.NODE_ENV === 'development' ? ['query', 'warn', 'error'] : ['error'],
+        });
+    } catch (e) {
+        console.error('[SYSTEM INTEGRITY WARNING] Failed to initialize PrismaClient:', e);
+        return new Proxy({} as any, {
+            get: () => async () => { throw new Error('Database initialization failed'); }
+        });
+    }
 }
 
 export const prisma = globalForPrisma.prisma || createPrismaClient();

@@ -3,9 +3,10 @@ import { useState, useEffect, useRef } from "react"
 import { X, FileCode, ChevronRight, Bot, Users, Wifi, WifiOff } from "lucide-react"
 import dynamic from "next/dynamic"
 import { motion, AnimatePresence } from "framer-motion"
-import * as Y from "yjs"
-import { WebsocketProvider } from "y-websocket"
-import { MonacoBinding } from "y-monaco"
+// Yjs imports moved to dynamic import to prevent build hangs
+// import * as Y from "yjs"
+// import { WebsocketProvider } from "y-websocket"
+// import { MonacoBinding } from "y-monaco"
 
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), { ssr: false })
 
@@ -89,35 +90,45 @@ export function EditorPanel({ activeFile, openFiles, onFileSelect, onCloseFile }
   useEffect(() => {
     if (!activeFile) return
 
-    // Clean up previous collaboration session
-    if (bindingRef.current) {
-      bindingRef.current.destroy()
-      bindingRef.current = null
-    }
-    if (providerRef.current) {
-      providerRef.current.destroy()
-      providerRef.current = null
-    }
-    if (ydocRef.current) {
-      ydocRef.current.destroy()
-      ydocRef.current = null
-    }
+    let provider: any = null;
+    let binding: any = null;
+    let ydoc: any = null;
 
-    // Initialize new collaboration session
-    const ydoc = new Y.Doc()
-    ydocRef.current = ydoc
+    const initCollaboration = async () => {
+      // Dynamic imports to avoid SSR/Build issues
+      const Y = await import("yjs");
+      const { WebsocketProvider } = await import("y-websocket");
 
-    // Connect to WebSocket server (you'll need to set up a Yjs WebSocket server)
-    const provider = new WebsocketProvider('ws://localhost:1234', `buildspaces-${activeFile}`, ydoc)
-    providerRef.current = provider
+      // Clean up previous
+      if (bindingRef.current) {
+        bindingRef.current.destroy()
+        bindingRef.current = null
+      }
+      if (providerRef.current) {
+        providerRef.current.destroy()
+        providerRef.current = null
+      }
+      if (ydocRef.current) {
+        ydocRef.current.destroy()
+        ydocRef.current = null
+      }
 
-    provider.on('status', (event: any) => {
-      setIsConnected(event.status === 'connected')
-    })
+      ydoc = new Y.Doc()
+      ydocRef.current = ydoc
 
-    provider.on('peers', (peers: any) => {
-      setCollaborators(Object.keys(peers))
-    })
+      provider = new WebsocketProvider('ws://localhost:1234', `buildspaces-${activeFile}`, ydoc)
+      providerRef.current = provider
+
+      provider.on('status', (event: any) => {
+        setIsConnected(event.status === 'connected')
+      })
+
+      provider.on('peers', (peers: any) => {
+        setCollaborators(Object.keys(peers))
+      })
+    };
+
+    initCollaboration();
 
     return () => {
       if (bindingRef.current) bindingRef.current.destroy()
@@ -142,7 +153,7 @@ export function EditorPanel({ activeFile, openFiles, onFileSelect, onCloseFile }
           <ChevronRight className="w-3 h-3" />
           <span className="text-foreground">{activeFile}</span>
         </div>
-        
+
         {/* Collaboration Status */}
         <div className="flex items-center gap-2">
           {collaborators.length > 0 && (
@@ -164,11 +175,10 @@ export function EditorPanel({ activeFile, openFiles, onFileSelect, onCloseFile }
           <button
             key={tab}
             onClick={() => onFileSelect(tab)}
-            className={`group flex items-center gap-2 px-4 py-2 text-sm border-r border-border transition-colors ${
-              activeFile === tab
-                ? "bg-background text-foreground border-t-2 border-t-primary -mb-px"
-                : "text-muted-foreground hover:text-foreground hover:bg-background/50"
-            }`}
+            className={`group flex items-center gap-2 px-4 py-2 text-sm border-r border-border transition-colors ${activeFile === tab
+              ? "bg-background text-foreground border-t-2 border-t-primary -mb-px"
+              : "text-muted-foreground hover:text-foreground hover:bg-background/50"
+              }`}
           >
             <FileCode className={`w-4 h-4 ${getFileIcon(tab)}`} />
             <span>{tab}</span>
@@ -244,11 +254,15 @@ export function EditorPanel({ activeFile, openFiles, onFileSelect, onCloseFile }
           onChange={handleCodeChange}
           onMount={(editor, monaco) => {
             // Initialize Yjs binding for real-time collaboration
-            if (ydocRef.current && providerRef.current) {
-              const ytext = ydocRef.current.getText('monaco')
-              const binding = new MonacoBinding(ytext, editor.getModel()!, new Set([editor]), providerRef.current.awareness)
-              bindingRef.current = binding
-            }
+            const initBinding = async () => {
+              if (ydocRef.current && providerRef.current) {
+                const { MonacoBinding } = await import("y-monaco");
+                const ytext = ydocRef.current.getText('monaco')
+                const binding = new MonacoBinding(ytext, editor.getModel()!, new Set([editor]), providerRef.current.awareness)
+                bindingRef.current = binding
+              }
+            };
+            initBinding();
           }}
           options={{
             minimap: { enabled: false },
