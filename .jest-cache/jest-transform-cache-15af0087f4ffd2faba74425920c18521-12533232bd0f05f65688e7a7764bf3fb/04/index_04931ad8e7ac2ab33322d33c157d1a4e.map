@@ -1,1 +1,0 @@
-{"version":3,"names":["cov_28xefjbprp","actualCoverage","placeholder","s"],"sources":["index.ts"],"sourcesContent":["export const placeholder = true;\n"],"mappings":";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAAA,cAAA,YAAAA,CAAA;MAAA,OAAAC,cAAA;IAAA;EAAA;EAAA,OAAAA,cAAA;AAAA;AAAAD,cAAA;AAfZ,OAAO,MAAME,WAAW;AAAA;AAAA,CAAAF,cAAA,GAAAG,CAAA,OAAG,IAAI","ignoreList":[]}

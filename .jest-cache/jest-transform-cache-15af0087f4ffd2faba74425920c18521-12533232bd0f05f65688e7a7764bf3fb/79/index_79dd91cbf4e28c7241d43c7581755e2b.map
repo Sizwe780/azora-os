@@ -1,1 +1,0 @@
-{"version":3,"names":["cov_1ghl796bnj","actualCoverage"],"sources":["index.ts"],"sourcesContent":["import './gateway';\n"],"mappings":";;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAAA,cAAA,YAAAA,CAAA;MAAA,OAAAC,cAAA;IAAA;EAAA;EAAA,OAAAA,cAAA;AAAA;AAAAD,cAAA;AAfZ,OAAO,WAAW","ignoreList":[]}

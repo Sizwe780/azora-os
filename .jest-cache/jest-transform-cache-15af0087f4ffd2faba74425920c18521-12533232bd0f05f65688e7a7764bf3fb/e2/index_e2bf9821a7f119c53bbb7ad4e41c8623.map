@@ -1,1 +1,0 @@
-{"version":3,"names":["cov_1z3rxjy2g6","actualCoverage"],"sources":["index.ts"],"sourcesContent":["export * from './mining-engine';\n"],"mappings":";;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAAA,cAAA,YAAAA,CAAA;MAAA,OAAAC,cAAA;IAAA;EAAA;EAAA,OAAAA,cAAA;AAAA;AAAAD,cAAA;AAfZ,cAAc,iBAAiB","ignoreList":[]}

@@ -1,1 +1,0 @@
-{"version":3,"names":["cov_16ahto2kf8","actualCoverage"],"sources":["index.ts"],"sourcesContent":["export * from './ipfs-service';\n"],"mappings":";;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAAA,cAAA,YAAAA,CAAA;MAAA,OAAAC,cAAA;IAAA;EAAA;EAAA,OAAAA,cAAA;AAAA;AAAAD,cAAA;AAfZ,cAAc,gBAAgB","ignoreList":[]}

@@ -1,9 +1,0 @@
-031d7b4a2ab36bc3353889ce2089afd6
-"use strict";
-
-describe('Forge Service Placeholder', () => {
-  it('should pass placeholder test', () => {
-    expect(true).toBe(true);
-  });
-});
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJkZXNjcmliZSIsIml0IiwiZXhwZWN0IiwidG9CZSJdLCJzb3VyY2VzIjpbImZvcmdlLnBsYWNlaG9sZGVyLnRlc3QudHMiXSwic291cmNlc0NvbnRlbnQiOlsiZGVzY3JpYmUoJ0ZvcmdlIFNlcnZpY2UgUGxhY2Vob2xkZXInLCAoKSA9PiB7XHJcbiAgICBpdCgnc2hvdWxkIHBhc3MgcGxhY2Vob2xkZXIgdGVzdCcsICgpID0+IHtcclxuICAgICAgICBleHBlY3QodHJ1ZSkudG9CZSh0cnVlKTtcclxuICAgIH0pO1xyXG59KTtcclxuIl0sIm1hcHBpbmdzIjoiOztBQUFBQSxRQUFRLENBQUMsMkJBQTJCLEVBQUUsTUFBTTtFQUN4Q0MsRUFBRSxDQUFDLDhCQUE4QixFQUFFLE1BQU07SUFDckNDLE1BQU0sQ0FBQyxJQUFJLENBQUMsQ0FBQ0MsSUFBSSxDQUFDLElBQUksQ0FBQztFQUMzQixDQUFDLENBQUM7QUFDTixDQUFDLENBQUMiLCJpZ25vcmVMaXN0IjpbXX0=

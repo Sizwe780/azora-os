@@ -1,1 +1,0 @@
-{"version":3,"names":["cov_1w0autg3s3","actualCoverage"],"sources":["index.ts"],"sourcesContent":["export * from './event-bus';\n"],"mappings":";;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAAA,cAAA,YAAAA,CAAA;MAAA,OAAAC,cAAA;IAAA;EAAA;EAAA,OAAAA,cAAA;AAAA;AAAAD,cAAA;AAfZ,cAAc,aAAa","ignoreList":[]}

@@ -1,1 +1,0 @@
-{"version":3,"names":["cov_22w0qrd70l","actualCoverage","s","console","log"],"sources":["index.js"],"sourcesContent":["console.log('fairlearn module');"],"mappings":";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAAA,cAAA,YAAAA,CAAA;MAAA,OAAAC,cAAA;IAAA;EAAA;EAAA,OAAAA,cAAA;AAAA;AAAAD,cAAA;AAAAA,cAAA,GAAAE,CAAA;AAfZC,OAAO,CAACC,GAAG,CAAC,kBAAkB,CAAC","ignoreList":[]}

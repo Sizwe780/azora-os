@@ -1,9 +1,0 @@
-e8ef33d83226acfef59534cbbed74427
-"use strict";
-
-describe('Research Center Service Placeholder', () => {
-  it('should pass placeholder test', () => {
-    expect(true).toBe(true);
-  });
-});
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJkZXNjcmliZSIsIml0IiwiZXhwZWN0IiwidG9CZSJdLCJzb3VyY2VzIjpbInJlc2VhcmNoLWNlbnRlci5wbGFjZWhvbGRlci50ZXN0LnRzIl0sInNvdXJjZXNDb250ZW50IjpbImRlc2NyaWJlKCdSZXNlYXJjaCBDZW50ZXIgU2VydmljZSBQbGFjZWhvbGRlcicsICgpID0+IHtcbiAgaXQoJ3Nob3VsZCBwYXNzIHBsYWNlaG9sZGVyIHRlc3QnLCAoKSA9PiB7XG4gICAgZXhwZWN0KHRydWUpLnRvQmUodHJ1ZSk7XG4gIH0pO1xufSk7XG4iXSwibWFwcGluZ3MiOiI7O0FBQUFBLFFBQVEsQ0FBQyxxQ0FBcUMsRUFBRSxNQUFNO0VBQ3BEQyxFQUFFLENBQUMsOEJBQThCLEVBQUUsTUFBTTtJQUN2Q0MsTUFBTSxDQUFDLElBQUksQ0FBQyxDQUFDQyxJQUFJLENBQUMsSUFBSSxDQUFDO0VBQ3pCLENBQUMsQ0FBQztBQUNKLENBQUMsQ0FBQyIsImlnbm9yZUxpc3QiOltdfQ==

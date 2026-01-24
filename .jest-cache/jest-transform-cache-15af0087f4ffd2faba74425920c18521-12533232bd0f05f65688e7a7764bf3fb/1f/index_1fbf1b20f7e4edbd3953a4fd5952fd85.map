@@ -1,1 +1,0 @@
-{"version":3,"names":["cov_2e5gqeu446","actualCoverage"],"sources":["index.ts"],"sourcesContent":["export * from './citadel-service';\n"],"mappings":";;;;;;;;;;;;;;;;;;;;;;;IAeY;IAAAA,cAAA,YAAAA,CAAA;MAAA,OAAAC,cAAA;IAAA;EAAA;EAAA,OAAAA,cAAA;AAAA;AAAAD,cAAA;AAfZ,cAAc,mBAAmB","ignoreList":[]}
