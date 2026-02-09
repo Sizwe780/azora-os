@@ -1,12 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 import { constitutionalAI, UserActionType } from '@/lib/services/constitutional-ai'
 import { WorkspaceManager } from '@/lib/services/workspace-manager'
 
 // POST /api/deploy
 export async function POST(request: NextRequest) {
   try {
+    // SECURITY: Require authentication
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+      return NextResponse.json(
+        { error: 'Authentication required' },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json().catch(() => ({}))
-    const { environment = 'staging', buildType = 'production', projectName, userId } = body
+    const { environment = 'staging', buildType = 'production', projectName } = body
+    const userId = (session.user as any).id;
 
     const action = {
       id: `action_deploy_${Date.now()}_${Math.random().toString(36).substr(2,9)}`,

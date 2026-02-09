@@ -12,6 +12,7 @@
     "test:coverage": "jest --coverage",
     "prisma:generate": "pnpm -w exec prisma generate --schema=../../prisma/schema.prisma",
     "prisma:migrate": "pnpm -w exec prisma migrate deploy --schema=../../prisma/schema.prisma",
+    "seed:admin": "node scripts/seed-admin.js",
     "playwright:install": "playwright install --with-deps",
     "test:e2e": "playwright test --config=tests/playwright.config.ts"
   },

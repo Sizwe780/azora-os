@@ -1,11 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getKnowledgeIndexer } from '@/lib/knowledge/indexer'
 import { getSankofa } from '@/lib/agents/sankofa-interface'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const { query, mode = 'local', maxResults = 10 } = body
+
+    const session = await getServerSession(authOptions)
+    if (!session || !session.user) {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
+    }
 
     if (!query || typeof query !== 'string') {
       return NextResponse.json(
@@ -64,6 +71,11 @@ export async function GET(request: NextRequest) {
     const query = searchParams.get('q') || searchParams.get('query')
     const mode = searchParams.get('mode') || 'local'
     const maxResults = parseInt(searchParams.get('limit') || '10', 10)
+
+    const session = await getServerSession(authOptions)
+    if (!session || !session.user) {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
+    }
 
     if (!query) {
       return NextResponse.json(

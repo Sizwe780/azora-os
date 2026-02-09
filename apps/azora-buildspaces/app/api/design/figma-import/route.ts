@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 
 const FIGMA_TOKEN = process.env.FIGMA_TOKEN || ''
 
@@ -12,6 +14,12 @@ function extractFileKey(url: string) {
 }
 
 export async function POST(req: Request) {
+  // SECURITY: Require authentication
+  const session = await getServerSession(authOptions)
+  if (!session || !session.user) {
+    return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
+  }
+
   if (!FIGMA_TOKEN) {
     return NextResponse.json({ error: 'Figma integration not configured. Set FIGMA_TOKEN in server env.' }, { status: 501 })
   }

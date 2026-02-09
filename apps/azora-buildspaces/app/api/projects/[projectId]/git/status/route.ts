@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 import { exec } from 'child_process'
 import { promisify } from 'util'
 
@@ -13,6 +15,11 @@ interface GitStatus {
 
 // GET /api/projects/[projectId]/git/status
 export async function GET(request: NextRequest, { params }: { params: { projectId: string } }) {
+  // SECURITY: Require authentication
+  const session = await getServerSession(authOptions)
+  if (!session || !session.user) {
+    return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
+  }
   try {
     const projectId = params.projectId
     // In a real app, we'd look up the project path from DB using projectId

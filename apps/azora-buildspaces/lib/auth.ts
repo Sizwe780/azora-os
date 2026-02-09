@@ -31,33 +31,36 @@ providers.push(CredentialsProvider({
         password: { label: 'Password', type: 'password' }
     },
     async authorize(credentials) {
-        // Master Login Check (dev/backdoor for operators)
-        const masterEmail = process.env.MASTER_EMAIL || "admin@azora.world";
-        const masterPassword = process.env.MASTER_PASSWORD || "Azora2026!";
-
-        if (credentials?.email === masterEmail && credentials?.password === masterPassword) {
-            return {
-                id: "master-user",
-                name: "Master Administrator",
-                email: masterEmail,
-                image: "https://azora.world/master-avatar.png"
-            }
-        }
-
-        // If Prisma is available, attempt to verify against stored user
-        if (PRISMA_AVAILABLE) {
-            try {
-                const user = await prisma.user.findUnique({ where: { email: credentials?.email } });
-                if (!user) return null;
-
-                // If password is stored as salt:hash, verify using pbkdf2
-                if (user.password && verifyPassword(credentials!.password, user.password)) {
-                    return { id: user.id, name: user.name, email: user.email } as any;
+        // If Prisma is not available, provide a safe development fallback
+        if (!PRISMA_AVAILABLE) {
+            // Development fallback: when DB is not configured, allow a fixed dev admin
+            // ONLY enable this in non-production to avoid accidental leaks.
+            if (process.env.NODE_ENV !== 'production') {
+                const devEmail = process.env.DEV_AUTH_EMAIL || 'admin@azora.world';
+                const devPassword = process.env.DEV_AUTH_PASSWORD || 'Azora2026!';
+                if (credentials?.email === devEmail && credentials?.password === devPassword) {
+                    console.warn('[AUTH] Using development fallback credentials - DATABASE not configured');
+                    return { id: 'dev-admin', name: 'Dev Admin', email: devEmail } as any;
                 }
-            } catch (e) {
-                console.error('[AUTH] Error checking user credentials', e);
+                console.error('[AUTH] Database not configured and credentials did not match dev fallback');
                 return null;
             }
+
+            console.error('[AUTH] Database is required for authentication');
+            return null;
+        }
+
+        try {
+            const user = await prisma!.user.findUnique({ where: { email: credentials?.email } });
+            if (!user) return null;
+
+            // If password is stored as salt:hash, verify using pbkdf2
+            if (user.password && verifyPassword(credentials!.password, user.password)) {
+                return { id: user.id, name: user.name, email: user.email } as any;
+            }
+        } catch (e) {
+            console.error('[AUTH] Error checking user credentials', e);
+            return null;
         }
 
         return null;
@@ -74,7 +77,7 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
 }
 
 export const authOptions: NextAuthOptions = {
-    adapter: PRISMA_AVAILABLE ? PrismaAdapter(prisma) : undefined,
+    adapter: PRISMA_AVAILABLE && prisma ? PrismaAdapter(prisma) : undefined,
     providers,
     session: { strategy: 'jwt' },
     secret: process.env.NEXTAUTH_SECRET || "supersecretkey123",

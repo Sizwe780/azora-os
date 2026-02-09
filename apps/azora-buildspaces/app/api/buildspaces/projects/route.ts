@@ -1,19 +1,25 @@
 import { NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 
 import { listProjects, createProject } from '@/lib/storage'
 
+/**
+ * BuildSpaces Projects API
+ * 
+ * SECURITY: Requires authentication for all operations
+ */
+
 export async function GET() {
   try {
-    // Prefer Prisma when configured and available; otherwise fallback to file storage
-    try {
-      const { PRISMA_AVAILABLE } = await import('@/lib/db')
-      if (PRISMA_AVAILABLE) {
-        const projects = await prisma.buildSpaceProject.findMany({ orderBy: { createdAt: 'desc' } })
-        return NextResponse.json({ projects })
-      }
-    } catch (_) {
-      // continue to file storage fallback
+    // SECURITY: Require authentication
+    const session = await getServerSession(authOptions)
+    if (!session || !session.user) {
+      return NextResponse.json(
+        { error: 'Authentication required' },
+        { status: 401 }
+      )
     }
 
     const projects = await listProjects()
@@ -25,6 +31,16 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
+    // SECURITY: Require authentication
+    const session = await getServerSession(authOptions)
+    if (!session || !session.user) {
+      return NextResponse.json(
+        { error: 'Authentication required' },
+        { status: 401 }
+      )
+    }
+
+    const userId = (session.user as any).id
     const body = await req.json()
     const { name, slug, ownerId, description } = body
     if (!name || !slug || !ownerId) {

@@ -1,4 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+
+/**
+ * Code Execution Endpoint
+ * 
+ * SECURITY: Requires authentication to execute code
+ * Uses Piston API for secure containerized execution
+ */
 
 // Language ID mapping for Piston API
 const LANGUAGE_MAP: Record<string, string> = {
@@ -23,6 +32,15 @@ const LANGUAGE_MAP: Record<string, string> = {
  */
 export async function POST(request: NextRequest) {
     try {
+        // SECURITY: Require authentication
+        const session = await getServerSession(authOptions);
+        if (!session || !session.user) {
+            return NextResponse.json(
+                { error: 'Authentication required to execute code' },
+                { status: 401 }
+            );
+        }
+
         const { code, language, stdin = '' } = await request.json();
 
         if (!code) {

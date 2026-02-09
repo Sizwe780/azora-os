@@ -1,8 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
     try {
-        const { cardId, userId } = await request.json();
+        // SECURITY: Require authentication
+        const session = await getServerSession(authOptions);
+        if (!session || !session.user) {
+            return NextResponse.json(
+                { error: 'Authentication required' },
+                { status: 401 }
+            );
+        }
+
+        const { cardId } = await request.json();
+        const userId = (session.user as any).id;
 
         if (!cardId || !userId) {
             return NextResponse.json({ error: 'Card ID and User ID are required' }, { status: 400 });

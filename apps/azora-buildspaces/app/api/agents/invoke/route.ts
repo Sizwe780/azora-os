@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 import { AIFamilyServiceClient, AgentPersonality } from '@/lib/services/ai-family-client'
 import { constitutionalAI, UserActionType } from '@/lib/services/constitutional-ai'
 
@@ -37,6 +39,14 @@ const AGENT_ROUTING: Record<string, AgentPersonality> = {
 // POST /api/agents/invoke
 export async function POST(request: NextRequest) {
   try {
+        // SECURITY: Require authentication
+        const session = await getServerSession(authOptions);
+        if (!session || !session.user) {
+          return NextResponse.json(
+            { error: 'Authentication required' },
+            { status: 401 }
+          );
+        }
     const body: AgentRequest = await request.json()
     const result = await (await import('@/lib/handlers/agent-invoke-handler')).handleAgentInvoke(body)
     return NextResponse.json(result)

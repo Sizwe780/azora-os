@@ -10,12 +10,58 @@
  * backed by IndexedDB for persistence across sessions.
  */
 
-import FS from 'lightning-fs'
-import git from 'isomorphic-git'
+// Attempt to load a browser-friendly FS (lightning-fs). If unavailable (tests / Node),
+// fall back to Node's `fs` implementation. `isomorphic-git` can operate with either.
+let fs: any
+let pfs: any
+let git: any
+let isNodeFallback = false
+let nodeBasePath = ''
 
-// Initialize the file system
-const fs = new FS('azora-workspace')
-const pfs = fs.promises
+try {
+  // Prefer lightning-fs in browser-like environments
+  // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
+  const LightningFS = require('lightning-fs')
+  // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
+  git = require('isomorphic-git')
+  fs = new LightningFS('azora-workspace')
+  pfs = fs.promises
+} catch (err) {
+  // Fallback for Node (tests, server-side). Use native fs.promises
+  // We'll map the VFS root ('/') to a workspace-local directory to avoid
+  // attempting writes at the real filesystem root which can fail in tests.
+  // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
+  const nodeFs = require('fs')
+  // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
+  const path = require('path')
+  // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
+  git = require('isomorphic-git')
+  fs = nodeFs
+  pfs = nodeFs.promises
+  isNodeFallback = true
+  nodeBasePath = path.join(process.cwd(), '.vfs')
+
+  try {
+    // Ensure base directory exists
+    if (!nodeFs.existsSync(nodeBasePath)) {
+      nodeFs.mkdirSync(nodeBasePath, { recursive: true })
+    }
+  } catch (e) {
+    // ignore
+  }
+}
+
+const pathJoin = (p: string) => {
+  if (!isNodeFallback) return p
+  // Map virtual absolute paths (/...) to workspace-local .vfs directory
+  if (p.startsWith('/')) {
+    // Normalize to avoid double slashes
+    // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
+    const path = require('path')
+    return path.join(nodeBasePath, p)
+  }
+  return p
+}
 
 export interface FileNode {
   path: string
@@ -41,7 +87,7 @@ export interface FileSystemAPI {
  */
 async function exists(path: string): Promise<boolean> {
   try {
-    await pfs.stat(path)
+    await pfs.stat(pathJoin(path))
     return true
   } catch (error) {
     return false
@@ -53,7 +99,7 @@ async function exists(path: string): Promise<boolean> {
  */
 async function readFile(path: string): Promise<string> {
   try {
-    const data = await pfs.readFile(path, { encoding: 'utf8' })
+    const data = await pfs.readFile(pathJoin(path), { encoding: 'utf8' })
     return data as string
   } catch (error) {
     throw new Error(`Failed to read file ${path}: ${error}`)
@@ -68,9 +114,9 @@ async function writeFile(path: string, content: string): Promise<void> {
     // Ensure directory exists
     const dirPath = path.substring(0, path.lastIndexOf('/'))
     if (dirPath && !(await exists(dirPath))) {
-      await pfs.mkdir(dirPath, { recursive: true })
+      await pfs.mkdir(pathJoin(dirPath), { recursive: true })
     }
-    await pfs.writeFile(path, content, { encoding: 'utf8' })
+    await pfs.writeFile(pathJoin(path), content, { encoding: 'utf8' })
   } catch (error) {
     throw new Error(`Failed to write file ${path}: ${error}`)
   }
@@ -81,7 +127,7 @@ async function writeFile(path: string, content: string): Promise<void> {
  */
 async function mkdir(path: string): Promise<void> {
   try {
-    await pfs.mkdir(path, { recursive: true })
+    await pfs.mkdir(pathJoin(path), { recursive: true })
   } catch (error) {
     throw new Error(`Failed to create directory ${path}: ${error}`)
   }
@@ -92,11 +138,12 @@ async function mkdir(path: string): Promise<void> {
  */
 async function deleteFile(path: string): Promise<void> {
   try {
-    const stat = await pfs.stat(path)
+    const mapped = pathJoin(path)
+    const stat = await pfs.stat(mapped)
     if (stat.isDirectory()) {
-      await pfs.rmdir(path, { recursive: true })
+      await pfs.rmdir(mapped, { recursive: true })
     } else {
-      await pfs.unlink(path)
+      await pfs.unlink(mapped)
     }
   } catch (error) {
     throw new Error(`Failed to delete ${path}: ${error}`)
@@ -112,7 +159,7 @@ async function listFiles(dir: string): Promise<FileNode[]> {
       return []
     }
 
-    const entries = await pfs.readdir(dir)
+    const entries = await pfs.readdir(pathJoin(dir))
     const nodes: FileNode[] = []
 
     for (const name of entries) {
@@ -120,7 +167,7 @@ async function listFiles(dir: string): Promise<FileNode[]> {
       if (name.startsWith('.')) continue
 
       const path = `${dir}/${name}`
-      const stat = await pfs.stat(path)
+      const stat = await pfs.stat(pathJoin(path))
 
       if (stat.isDirectory()) {
         const children = await listFiles(path)
@@ -350,7 +397,7 @@ Visit [buildspaces.azora.world](https://buildspaces.azora.world) to learn more.
 
   // Initialize git repository
   try {
-    await git.init({ fs, dir: projectRoot, defaultBranch: 'main' })
+    await git.init({ fs, dir: pathJoin(projectRoot), defaultBranch: 'main' })
     console.log(`Initialized git repository in ${projectRoot}`)
   } catch (error) {
     console.warn('Failed to initialize git:', error)
@@ -363,13 +410,14 @@ Visit [buildspaces.azora.world](https://buildspaces.azora.world) to learn more.
 async function getGitStatus(): Promise<any[]> {
   try {
     // Find the git root (first directory with .git)
-    const dirs = await pfs.readdir('/')
+    const root = pathJoin('/')
+    const dirs = await pfs.readdir(root)
     for (const dir of dirs) {
-      const gitPath = `/${dir}/.git`
-      if (await exists(gitPath)) {
+      const gitPath = `${root}/${dir}/.git`
+      if (await exists(`${root}/${dir}/.git`)) {
         const status = await git.statusMatrix({
           fs,
-          dir: `/${dir}`,
+          dir: pathJoin(`/${dir}`),
         })
         return status
       }
@@ -387,13 +435,14 @@ async function getGitStatus(): Promise<any[]> {
 async function gitCommit(message: string): Promise<string> {
   try {
     // Find the git root
-    const dirs = await pfs.readdir('/')
+    const root = pathJoin('/')
+    const dirs = await pfs.readdir(root)
     for (const dir of dirs) {
-      const gitPath = `/${dir}/.git`
-      if (await exists(gitPath)) {
+      const gitPath = `${root}/${dir}/.git`
+      if (await exists(`${root}/${dir}/.git`)) {
         const sha = await git.commit({
           fs,
-          dir: `/${dir}`,
+          dir: pathJoin(`/${dir}`),
           message,
           author: {
             name: 'BuildSpaces User',

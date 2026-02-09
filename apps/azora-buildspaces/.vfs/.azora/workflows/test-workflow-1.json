@@ -1,0 +1,43 @@
+{
+  "id": "test-workflow-1",
+  "name": "Write Test File",
+  "description": "Test writing files",
+  "nodes": [
+    {
+      "id": "trigger",
+      "type": "trigger",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "data": {
+        "triggerType": "manual"
+      }
+    },
+    {
+      "id": "action",
+      "type": "action",
+      "position": {
+        "x": 100,
+        "y": 0
+      },
+      "data": {
+        "actionType": "write_file",
+        "config": {
+          "filePath": "/tmp/test-output.txt",
+          "content": "Test content from orchestrator"
+        }
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge1",
+      "source": "trigger",
+      "target": "action"
+    }
+  ],
+  "enabled": true,
+  "createdAt": 1770637306765,
+  "updatedAt": 1770637306765
+}

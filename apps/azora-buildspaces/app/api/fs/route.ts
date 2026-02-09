@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 import fs from 'fs/promises';
 import path from 'path';
 import { exec } from 'child_process';
@@ -7,6 +9,11 @@ import { promisify } from 'util';
 const execAsync = promisify(exec);
 
 export async function GET(request: NextRequest) {
+        // SECURITY: Require authentication
+        const session = await getServerSession(authOptions);
+        if (!session || !session.user) {
+            return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+        }
     const { searchParams } = new URL(request.url);
     const operation = searchParams.get('operation');
     const targetPath = searchParams.get('path');
@@ -74,6 +81,11 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+        // SECURITY: Require authentication
+        const session = await getServerSession(authOptions);
+        if (!session || !session.user) {
+            return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+        }
     try {
         const { operation, path: targetPath, content, oldPath, newPath } = await request.json();
 

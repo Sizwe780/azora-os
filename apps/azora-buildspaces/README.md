@@ -295,6 +295,23 @@ PLAYWRIGHT_BASE_URL=https://buildspaces-staging.azora.dev pnpm -w -F azora-build
 ```
 
 The `staging-e2e` CI job runs Playwright against staging after `deploy-staging`.
+
+### Authentication (Local Dev)
+
+If you don't have a database configured (e.g., pure front-end dev), BuildSpaces offers two options for local login:
+
+- **Seed an admin user (recommended when DATABASE_URL is set):**
+   ```bash
+   # Ensure DATABASE_URL is exported
+   pnpm -w -F azora-buildspaces exec node scripts/seed-admin.js
+   # or
+   pnpm -w -F azora-buildspaces run seed:admin
+   ```
+
+- **Dev fallback (no DB):** when `DATABASE_URL` is not set and `NODE_ENV` !== `production`, a built-in dev credential is available for convenience:
+   - Email: `admin@azora.world` (override via `DEV_AUTH_EMAIL`)
+   - Password: `Azora2026!` (override via `DEV_AUTH_PASSWORD`)
+   This fallback is intentionally enabled only in non-production environments.
 ---
 
 ## 🚀 Deployment Options

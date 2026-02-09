@@ -11,6 +11,10 @@
  */
 
 import { fileSystem } from '@/lib/workspace/file-system'
+import { runCommand } from '@/lib/runtime/command-runner'
+import { sendSlackMessage, formatWorkflowStatus } from '@/lib/runtime/slack-integration'
+import { deploy } from '@/lib/runtime/deployment'
+import { auditLogger, AuditEventType, AuditSeverity } from '@/lib/audit-logger'
 
 export type NodeType = 'trigger' | 'agent' | 'action'
 export type TriggerType = 'on_commit' | 'on_save' | 'on_schedule' | 'manual'
@@ -231,6 +235,17 @@ export class WorkflowOrchestrator {
   }
 
   /**
+   * Backwards-compatible alias used by tests and older callers
+   */
+  async execute(
+    workflowId: string,
+    triggerData?: any,
+    approvals?: Map<string, boolean>
+  ): Promise<ExecutionResult> {
+    return this.executeWorkflow(workflowId, triggerData, approvals)
+  }
+
+  /**
    * Execute a single node and its connected nodes
    */
   private async executeNode(
@@ -298,10 +313,6 @@ export class WorkflowOrchestrator {
    * Execute an agent node
    * Constitutional: Real agent execution with system prompts
    */
-  /**
-   * Execute an agent node
-   * Constitutional: Real agent execution with system prompts
-   */
   private async executeAgentNode(
     node: WorkflowNode,
     context: ExecutionContext
@@ -316,40 +327,77 @@ export class WorkflowOrchestrator {
     const inputStr = typeof input === 'string' ? input : JSON.stringify(input)
 
     try {
-      // Import dynamically to avoid circular dependencies if any
+      // Import specific agents
+      const { nia } = await import('@/lib/agents/nia-validator')
+      const { themba } = await import('@/lib/agents/themba-analyzer')
       const { AIFamilyServiceClient } = await import('@/lib/services/ai-family-client')
-      const aiClient = AIFamilyServiceClient.getInstance()
+      
+      let output: any
 
-      // Construct the message for the agent
-      // We combine system prompt and input into the message or context
-      const message = `${data.systemPrompt}\n\nInput Data:\n${inputStr}`
+      switch (data.agentType) {
+        case 'nia':
+          // Nia validates specifications
+          output = await nia.validateSpec(inputStr)
+          break
 
-      const response = await aiClient.chat({
-        agent: data.agentType,
-        message: message,
-        context: {
-          roomType: 'orchestrator',
-          history: [] // Could pass workflow history here if needed
-        }
-      })
+        case 'themba':
+          // Themba analyzes code quality
+          output = await themba.analyzeCode(inputStr)
+          break
 
-      console.log(`[Orchestrator] Agent output:`, response.response)
-
-      return {
-        agent: data.agentType,
-        input,
-        output: response.response,
-        systemPrompt: data.systemPrompt,
-        suggestions: response.suggestions
+        case 'sankofa':
+        case 'kwame':
+        case 'elara':
+        default:
+          // Use AI Family service for other agents
+          const aiClient = AIFamilyServiceClient.getInstance()
+          const response = await aiClient.chat({
+            agent: data.agentType,
+            message: `${data.systemPrompt}\n\nInput Data:\n${inputStr}`,
+            context: {
+              roomType: 'orchestrator',
+              history: [],
+            },
+          })
+          
+          output = {
+            agent: data.agentType,
+            input,
+            output: response.response,
+            systemPrompt: data.systemPrompt,
+            suggestions: response.suggestions,
+          }
+          break
       }
+
+      console.log(`[Orchestrator] Agent output:`, output)
+
+      // Audit log success
+      await auditLogger.info(
+        AuditEventType.AGENT_COMPLETED,
+        {
+          agent: data.agentType,
+          success: true,
+        },
+        { action: `Execute ${data.agentType} agent` }
+      )
+
+      return output
     } catch (error) {
       console.error(`[Orchestrator] Agent execution failed:`, error)
-      // Fallback to mock if service fails, but log error
+      
+      // Audit log failure
+      await auditLogger.error(
+        AuditEventType.AGENT_FAILED,
+        error instanceof Error ? error : new Error(String(error)),
+        { agent: data.agentType }
+      )
+
       return {
         agent: data.agentType,
         input,
         output: `[Error] Failed to execute agent ${data.agentType}: ${error instanceof Error ? error.message : String(error)}`,
-        error: true
+        error: true,
       }
     }
   }
@@ -371,37 +419,129 @@ export class WorkflowOrchestrator {
 
     let result: any
 
-    switch (data.actionType) {
-      case 'write_file':
-        if (data.config.filePath && data.config.content) {
-          await fileSystem.writeFile(data.config.filePath, data.config.content)
-          result = { success: true, filePath: data.config.filePath }
-          console.log(`[Orchestrator] ✅ Wrote file: ${data.config.filePath}`)
-        }
-        break
+    try {
+      switch (data.actionType) {
+        case 'write_file':
+          if (data.config.filePath && data.config.content) {
+            await fileSystem.writeFile(data.config.filePath, data.config.content)
+            result = { success: true, filePath: data.config.filePath }
+            console.log(`[Orchestrator] ✅ Wrote file: ${data.config.filePath}`)
+            
+            // Audit log
+            await auditLogger.info(
+              AuditEventType.CODE_EXECUTED,
+              { action: 'write_file', filePath: data.config.filePath }
+            )
+          }
+          break
 
-      case 'run_command':
-        if (data.config.command) {
-          // TODO: Connect to terminal/runtime
-          result = { success: true, command: data.config.command, output: '[Mock] Command executed' }
-          console.log(`[Orchestrator] ✅ Ran command: ${data.config.command}`)
-        }
-        break
+        case 'run_command':
+          if (data.config.command) {
+            // Execute real command
+            const cmdResult = await runCommand({
+              type: 'bash',
+              command: data.config.command,
+              timeout: 30000,
+            })
+            
+            result = {
+              success: cmdResult.success,
+              command: data.config.command,
+              output: cmdResult.output,
+              error: cmdResult.error,
+              duration: cmdResult.duration,
+            }
+            
+            console.log(`[Orchestrator] ✅ Ran command: ${data.config.command}`)
+            
+            // Audit log
+            await auditLogger.info(
+              AuditEventType.CODE_EXECUTED,
+              {
+                action: 'run_command',
+                command: data.config.command,
+                success: cmdResult.success,
+              }
+            )
+          }
+          break
 
-      case 'send_slack':
-        // TODO: Implement Slack integration
-        result = { success: true, message: 'Slack notification sent' }
-        console.log(`[Orchestrator] ✅ Sent Slack notification`)
-        break
+        case 'send_slack':
+          if (data.config.slackWebhook) {
+            // Send real Slack message
+            const slackMsg = formatWorkflowStatus(
+              context.workflowId,
+              'completed',
+              { input }
+            )
+            
+            const slackResult = await sendSlackMessage(
+              data.config.slackWebhook,
+              slackMsg
+            )
+            
+            result = {
+              success: slackResult.success,
+              message: slackResult.messageId,
+              error: slackResult.error,
+            }
+            
+            console.log(`[Orchestrator] ✅ Sent Slack notification`)
+            
+            // Audit log
+            await auditLogger.info(
+              AuditEventType.AGENT_COMPLETED,
+              { action: 'send_slack', success: slackResult.success }
+            )
+          }
+          break
 
-      case 'deploy':
-        // TODO: Implement deployment
-        result = { success: true, target: data.config.deployTarget }
-        console.log(`[Orchestrator] ✅ Deployed to: ${data.config.deployTarget}`)
-        break
+        case 'deploy':
+          if (data.config.deployTarget) {
+            // Execute real deployment
+            const deployResult = await deploy({
+              target: (data.config.deployTarget as 'kubernetes' | 'vercel' | 'docker'),
+              service: data.config.filePath,
+              image: data.config.content,
+            })
+            
+            result = {
+              success: deployResult.success,
+              deploymentId: deployResult.deploymentId,
+              url: deployResult.url,
+              error: deployResult.error,
+              duration: deployResult.duration,
+            }
+            
+            console.log(`[Orchestrator] ✅ Deployed to: ${data.config.deployTarget}`)
+            
+            // Audit log
+            await auditLogger.info(
+              AuditEventType.AGENT_COMPLETED,
+              {
+                action: 'deploy',
+                target: data.config.deployTarget,
+                success: deployResult.success,
+              }
+            )
+          }
+          break
 
-      default:
-        throw new Error(`Unknown action type: ${data.actionType}`)
+        default:
+          throw new Error(`Unknown action type: ${data.actionType}`)
+      }
+    } catch (error) {
+      result = {
+        success: false,
+        error: error instanceof Error ? error.message : String(error),
+      }
+      
+      // Audit log failure
+      await auditLogger.error(
+        AuditEventType.AGENT_FAILED,
+        error instanceof Error ? error : new Error(String(error)),
+        { action: data.actionType }
+      )
     }
 
     return result

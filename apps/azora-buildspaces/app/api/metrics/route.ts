@@ -7,6 +7,8 @@
  */
 
 import { NextResponse } from "next/server"
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 
 export const dynamic = "force-dynamic"
 
@@ -16,17 +18,17 @@ interface MetricsData {
   process_memory_heap_used_bytes: number
   process_memory_heap_total_bytes: number
   process_memory_rss_bytes: number
-  
+
   // HTTP metrics (in-memory counters)
   http_requests_total: number
   http_request_duration_seconds_sum: number
   http_request_duration_seconds_count: number
-  
+
   // BuildSpaces specific metrics
   buildspaces_active_sessions: number
   buildspaces_code_executions_total: number
   buildspaces_agent_invocations_total: number
-  
+
   // Constitutional metrics
   constitutional_alignment_score: number
   truth_mandate_score: number
@@ -116,10 +118,16 @@ truth_mandate_score ${data.truth_mandate_score}
  * Returns metrics in Prometheus text format
  */
 export async function GET() {
+  // SECURITY: require authenticated session to view metrics
+  const session = await getServerSession(authOptions)
+  if (!session || !session.user) {
+    return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
+  }
+
   updateMetrics()
-  
+
   const metricsText = formatPrometheusMetrics(metrics)
-  
+
   return new NextResponse(metricsText, {
     status: 200,
     headers: {

@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { promises as fs } from 'fs'
 import path from 'path'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 
 interface Template {
   id: string;
@@ -138,6 +140,12 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    // Require authentication
+    const session = await getServerSession(authOptions)
+    if (!session || !session.user) {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
+    }
+
     const body = await request.json()
     const { name, description, category, tags, content, price = 'Free' } = body
 
@@ -156,13 +164,16 @@ export async function POST(request: NextRequest) {
       // Use defaults
     }
 
+    // Determine author from session
+    const author = (session.user as any).email || (session.user as any).id
+
     // Create new template
     const newTemplate: Template = {
       id: `template_${Date.now()}`,
       name,
       description,
       category,
-      author: 'Current User', // TODO: Get from auth
+      author,
       rating: 0,
       downloads: 0,
       price,
