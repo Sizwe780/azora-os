@@ -1,10 +1,18 @@
 import { NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 import { promises as fs } from 'fs'
 import path from 'path'
 
 const ROOT = process.cwd()
 
 export async function GET() {
+  // SECURITY: Require authentication before scanning filesystem
+  const session = await getServerSession(authOptions)
+  if (!session || !session.user) {
+    return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
+  }
+
   try {
     const scanPaths = ['app', 'components', 'lib', 'pages']
     const files: Array<{ path: string; name: string; size: number }> = []
