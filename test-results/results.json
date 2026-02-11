@@ -10,9 +10,7 @@
     "grep": {},
     "grepInvert": null,
     "maxFailures": 0,
-    "metadata": {
-      "actualWorkers": 2
-    },
+    "metadata": {},
     "preserveOutput": "always",
     "reporter": [
       [
@@ -49,9 +47,7 @@
         "outputDir": "/workspaces/azora/test-results",
         "repeatEach": 1,
         "retries": 0,
-        "metadata": {
-          "actualWorkers": 2
-        },
+        "metadata": {},
         "id": "chromium",
         "name": "chromium",
         "testDir": "/workspaces/azora/tests/e2e",
@@ -68,9 +64,7 @@
         "outputDir": "/workspaces/azora/test-results",
         "repeatEach": 1,
         "retries": 0,
-        "metadata": {
-          "actualWorkers": 2
-        },
+        "metadata": {},
         "id": "firefox",
         "name": "firefox",
         "testDir": "/workspaces/azora/tests/e2e",
@@ -87,9 +81,7 @@
         "outputDir": "/workspaces/azora/test-results",
         "repeatEach": 1,
         "retries": 0,
-        "metadata": {
-          "actualWorkers": 2
-        },
+        "metadata": {},
         "id": "webkit",
         "name": "webkit",
         "testDir": "/workspaces/azora/tests/e2e",
@@ -106,9 +98,7 @@
         "outputDir": "/workspaces/azora/test-results",
         "repeatEach": 1,
         "retries": 0,
-        "metadata": {
-          "actualWorkers": 2
-        },
+        "metadata": {},
         "id": "Mobile Chrome",
         "name": "Mobile Chrome",
         "testDir": "/workspaces/azora/tests/e2e",
@@ -125,9 +115,7 @@
         "outputDir": "/workspaces/azora/test-results",
         "repeatEach": 1,
         "retries": 0,
-        "metadata": {
-          "actualWorkers": 2
-        },
+        "metadata": {},
         "id": "Mobile Safari",
         "name": "Mobile Safari",
         "testDir": "/workspaces/azora/tests/e2e",
@@ -154,200 +142,17 @@
       "timeout": 120000
     }
   },
-  "suites": [
+  "suites": [],
+  "errors": [
     {
-      "title": "collaboration.spec.ts",
-      "file": "collaboration.spec.ts",
-      "column": 0,
-      "line": 0,
-      "specs": [],
-      "suites": [
-        {
-          "title": "Collaboration Pod - Yjs cross-tab sync",
-          "file": "collaboration.spec.ts",
-          "line": 8,
-          "column": 6,
-          "specs": [
-            {
-              "title": "synchronizes textarea content across tabs",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 4129,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-12-27T10:58:42.872Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "960cd46fcfcce4c1b118-dc01f498d36915f38ff0",
-              "file": "collaboration.spec.ts",
-              "line": 9,
-              "column": 7
-            },
-            {
-              "title": "synchronizes textarea content across tabs",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "firefox",
-                  "projectName": "firefox",
-                  "results": [
-                    {
-                      "workerIndex": 1,
-                      "parallelIndex": 1,
-                      "status": "passed",
-                      "duration": 5944,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-12-27T10:58:42.875Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "960cd46fcfcce4c1b118-fe681401079bf056b728",
-              "file": "collaboration.spec.ts",
-              "line": 9,
-              "column": 7
-            },
-            {
-              "title": "synchronizes textarea content across tabs",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "webkit",
-                  "projectName": "webkit",
-                  "results": [
-                    {
-                      "workerIndex": 2,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 5669,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-12-27T10:58:48.593Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "960cd46fcfcce4c1b118-eead79da1b8f16704b89",
-              "file": "collaboration.spec.ts",
-              "line": 9,
-              "column": 7
-            },
-            {
-              "title": "synchronizes textarea content across tabs",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "Mobile Chrome",
-                  "projectName": "Mobile Chrome",
-                  "results": [
-                    {
-                      "workerIndex": 3,
-                      "parallelIndex": 1,
-                      "status": "passed",
-                      "duration": 3943,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-12-27T10:58:52.216Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "960cd46fcfcce4c1b118-321176c990dd6a1505d4",
-              "file": "collaboration.spec.ts",
-              "line": 9,
-              "column": 7
-            },
-            {
-              "title": "synchronizes textarea content across tabs",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "Mobile Safari",
-                  "projectName": "Mobile Safari",
-                  "results": [
-                    {
-                      "workerIndex": 4,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 4157,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-12-27T10:58:55.478Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "960cd46fcfcce4c1b118-e25929697fad0ecd7454",
-              "file": "collaboration.spec.ts",
-              "line": 9,
-              "column": 7
-            }
-          ]
-        }
-      ]
+      "message": "Error: Process from config.webServer was not able to start. Exit code: 1",
+      "stack": "Error: Process from config.webServer was not able to start. Exit code: 1"
     }
   ],
-  "errors": [],
   "stats": {
-    "startTime": "2025-12-27T10:58:41.087Z",
-    "duration": 19279.880999999998,
-    "expected": 5,
+    "startTime": "2026-02-11T07:40:50.516Z",
+    "duration": 4016.358,
+    "expected": 0,
     "skipped": 0,
     "unexpected": 0,
     "flaky": 0

@@ -6,6 +6,18 @@ See LICENSE file for details.
 // Learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom'
 
+// Ensure Node test environment has Web Fetch API + OpenAI shims
+import 'openai/shims/node'
+try {
+  // Try to load node-fetch if available to polyfill `fetch` in Node
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const nodeFetch = require('node-fetch')
+  if (!globalThis.fetch) globalThis.fetch = nodeFetch
+  if (!globalThis.Request && nodeFetch && nodeFetch.Request) globalThis.Request = nodeFetch.Request
+} catch (e) {
+  // node-fetch not installed — the openai shims may already provide fetch
+}
+
 // Mock Next.js router
 jest.mock('next/navigation', () => ({
   useRouter() {

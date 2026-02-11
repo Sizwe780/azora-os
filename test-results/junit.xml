@@ -1,22 +1,2 @@
-<testsuites id="" name="" tests="5" failures="0" skipped="0" errors="0" time="19.279880999999996">
-<testsuite name="collaboration.spec.ts" timestamp="2025-12-27T10:58:42.186Z" hostname="chromium" tests="1" failures="0" skipped="0" time="4.129" errors="0">
-<testcase name="Collaboration Pod - Yjs cross-tab sync › synchronizes textarea content across tabs" classname="collaboration.spec.ts" time="4.129">
-</testcase>
-</testsuite>
-<testsuite name="collaboration.spec.ts" timestamp="2025-12-27T10:58:42.186Z" hostname="firefox" tests="1" failures="0" skipped="0" time="5.944" errors="0">
-<testcase name="Collaboration Pod - Yjs cross-tab sync › synchronizes textarea content across tabs" classname="collaboration.spec.ts" time="5.944">
-</testcase>
-</testsuite>
-<testsuite name="collaboration.spec.ts" timestamp="2025-12-27T10:58:42.186Z" hostname="webkit" tests="1" failures="0" skipped="0" time="5.669" errors="0">
-<testcase name="Collaboration Pod - Yjs cross-tab sync › synchronizes textarea content across tabs" classname="collaboration.spec.ts" time="5.669">
-</testcase>
-</testsuite>
-<testsuite name="collaboration.spec.ts" timestamp="2025-12-27T10:58:42.186Z" hostname="Mobile Chrome" tests="1" failures="0" skipped="0" time="3.943" errors="0">
-<testcase name="Collaboration Pod - Yjs cross-tab sync › synchronizes textarea content across tabs" classname="collaboration.spec.ts" time="3.943">
-</testcase>
-</testsuite>
-<testsuite name="collaboration.spec.ts" timestamp="2025-12-27T10:58:42.186Z" hostname="Mobile Safari" tests="1" failures="0" skipped="0" time="4.157" errors="0">
-<testcase name="Collaboration Pod - Yjs cross-tab sync › synchronizes textarea content across tabs" classname="collaboration.spec.ts" time="4.157">
-</testcase>
-</testsuite>
+<testsuites id="" name="" tests="0" failures="0" skipped="0" errors="0" time="4.016358">
 </testsuites>
