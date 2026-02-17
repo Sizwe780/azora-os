@@ -1,0 +1,11 @@
+module.exports = {
+  datasources: {
+    db: {
+      provider: 'postgresql',
+      url: 'postgresql://postgres:test@localhost:5432/azora_test'
+    }
+  },
+  generator: {
+    client: { provider: 'prisma-client-js' }
+  }
+}
