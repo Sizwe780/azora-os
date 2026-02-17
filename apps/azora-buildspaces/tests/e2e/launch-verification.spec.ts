@@ -60,10 +60,8 @@ test.describe('BuildSpaces Launch Verification', () => {
       await emailInput.fill('invalid-email');
       
       // HTML5 validation should prevent submission
-      await emailInput.evaluate((el: HTMLInputElement) => {
-        // Check if input has type="email"
-        expect(el.type).toBe('email');
-      });
+      const inputType = await emailInput.evaluate((el: HTMLInputElement) => el.type);
+      expect(inputType).toBe('email');
     });
   });
 
@@ -118,11 +116,12 @@ test.describe('BuildSpaces Launch Verification', () => {
         'Collaboration Pod',
       ];
       
+      // Ensure at least one known room is visible (permissive but useful)
+      let visibleCount = 0;
       for (const room of rooms) {
-        const roomElement = page.locator(`text=${room}`);
-        // Allow for some rooms to be hidden in UI but present in code
-        // This is a permissive check
+        if (await page.locator(`text=${room}`).isVisible()) visibleCount++;
       }
+      expect(visibleCount).toBeGreaterThanOrEqual(1);
     });
 
     test('should have no console errors', async ({ page }) => {
@@ -137,10 +136,10 @@ test.describe('BuildSpaces Launch Verification', () => {
       await page.goto('/workspace');
       
       // Filter out expected errors
-      const unexpectedErrors = errors.filter(err => 
+      const unexpectedErrors = errors.filter(err =>
         !err.includes('Stripe') && // Expected external
         !err.includes('Sentry') && // Expected external
-        !err.includes('next-auth') === false // NextAuth errors are expected
+        !err.includes('next-auth')
       );
       
       expect(unexpectedErrors).toHaveLength(0);
@@ -233,13 +232,14 @@ test.describe('BuildSpaces Launch Verification', () => {
     });
 
     test('should load quickly (First Paint < 3s)', async ({ page }) => {
+      // Navigate first then measure paint timings on the loaded page
+      await page.goto('/auth/login', { waitUntil: 'load' });
+
       const navigationTiming = await page.evaluate(() => ({
         navigationStart: performance.timing.navigationStart,
         firstPaint: (performance as any).getEntriesByType('paint')[0]?.startTime || 0
       }));
-      
-      await page.goto('/auth/login');
-      
+
       const loadTime = navigationTiming.firstPaint;
       expect(loadTime).toBeLessThan(3000); // 3 seconds
     });

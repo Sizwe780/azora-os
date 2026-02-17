@@ -7,6 +7,9 @@ try {
     PrismaClient = undefined
 }
 
+import { Pool } from 'pg'
+import { PrismaPg } from '@prisma/adapter-pg'
+
 const globalForPrisma = global as unknown as { prisma: any }
 
 /**
@@ -63,16 +66,30 @@ function createPrismaClient() {
         });
     }
 
-    // For Prisma 5, use direct connection
+    const connectionString = process.env.DATABASE_URL!
+
+    // Prisma v7 requires either an adapter or accelerateUrl when the generated client
+    // uses the `client` engine type. Prefer the official Postgres driver adapter here
+    // but gracefully fall back if adapter construction fails.
     try {
         return new PrismaClient({
+            adapter: new PrismaPg(new Pool({ connectionString })),
             log: process.env.NODE_ENV === 'development' ? ['query', 'warn', 'error'] : ['error'],
-        });
+        })
     } catch (e) {
-        console.error('[SYSTEM INTEGRITY WARNING] Failed to initialize PrismaClient:', e);
-        return new Proxy({} as any, {
-            get: () => async () => { throw new Error('Database initialization failed'); }
-        });
+        // If adapter initialization fails (version mismatch or runtime error),
+        // fall back to a standard PrismaClient using DATABASE_URL if available, otherwise return a proxy
+        console.error('[SYSTEM INTEGRITY WARNING] Prisma adapter init failed, falling back to default PrismaClient/proxy:', e)
+        try {
+            return new PrismaClient({
+                log: process.env.NODE_ENV === 'development' ? ['query', 'warn', 'error'] : ['error'],
+            })
+        } catch (err) {
+            console.error('[SYSTEM INTEGRITY WARNING] Failed to initialize PrismaClient:', err)
+            return new Proxy({} as any, {
+                get: () => async () => { throw new Error('Database initialization failed'); }
+            })
+        }
     }
 }
 

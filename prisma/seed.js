@@ -1,7 +1,16 @@
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
 
-const prisma = new PrismaClient();
+// Prisma v7: explicitly pass datasource URL/options when running standalone scripts to
+// avoid PrismaClientInitializationError introduced by `driverAdapters` preview feature.
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: process.env.DATABASE_URL || 'postgresql://postgres:test@localhost:5432/azora_test',
+    },
+  },
+  log: process.env.DEBUG ? ['query', 'info', 'warn', 'error'] : ['error'],
+});
 
 async function main() {
   console.log('🌱 Seeding database...');

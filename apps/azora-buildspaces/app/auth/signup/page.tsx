@@ -175,6 +175,7 @@ export default function SignupPage() {
                   <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                   <Input
                     id="name"
+                    name="name"
                     type="text"
                     placeholder="Your full name"
                     value={formData.name}
@@ -191,6 +192,7 @@ export default function SignupPage() {
                   <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                   <Input
                     id="email"
+                    name="email"
                     type="email"
                     placeholder="you@azora.world"
                     value={formData.email}
@@ -207,6 +209,7 @@ export default function SignupPage() {
                   <MapPin className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                   <Input
                     id="country"
+                    name="country"
                     type="text"
                     placeholder="Your country"
                     value={formData.country}
@@ -225,6 +228,7 @@ export default function SignupPage() {
                   <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                   <Input
                     id="password"
+                    name="password"
                     type={showPassword ? "text" : "password"}
                     placeholder="Create a strong password"
                     value={formData.password}
@@ -254,6 +258,7 @@ export default function SignupPage() {
                   <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                   <Input
                     id="confirmPassword"
+                    name="confirmPassword"
                     type={showConfirmPassword ? "text" : "password"}
                     placeholder="Confirm your password"
                     value={formData.confirmPassword}
