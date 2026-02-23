@@ -30,6 +30,7 @@ interface WorkspaceHeaderProps {
   onToggleTerminal: () => void
   onTogglePreview: () => void
   onToggleKnowledge: () => void
+  onSave?: () => void
   previewOpen: boolean
   knowledgeOceanOpen: boolean
   agentActivity?: { agent: string; action: string; time: string }[]
@@ -43,6 +44,7 @@ export function WorkspaceHeader({
   onToggleTerminal,
   onTogglePreview,
   onToggleKnowledge,
+  onSave,
   previewOpen,
   knowledgeOceanOpen,
   agentActivity = [],
@@ -129,7 +131,7 @@ export function WorkspaceHeader({
 
       {/* Right Section */}
       <div className="flex items-center gap-1">
-        <Button variant="ghost" size="icon" className="h-8 w-8 hidden sm:flex">
+        <Button variant="ghost" size="icon" className="h-8 w-8 hidden sm:flex" onClick={onSave} title="Save (Ctrl+S)">
           <Save className="w-4 h-4" />
         </Button>
 

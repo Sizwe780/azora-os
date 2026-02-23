@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 
-export type SidebarView = 'explorer' | 'search' | 'git' | 'extensions' | 'chat'
-export type PanelView = 'terminal' | 'output' | 'problems' | 'debug'
+export type SidebarView = 'explorer' | 'search' | 'git' | 'extensions' | 'chat' | 'ai-assistant' | 'code-analysis' | 'refactoring'
+export type PanelView = 'terminal' | 'output' | 'problems' | 'debug' | 'testing' | 'performance' | 'code-review'
 
 interface WorkbenchState {
     // Sidebar State

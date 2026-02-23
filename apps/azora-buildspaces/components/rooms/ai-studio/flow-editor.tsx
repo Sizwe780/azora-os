@@ -23,8 +23,6 @@ import ReactFlow, {
   addEdge,
   Connection,
   BackgroundVariant,
-  Panel,
-  MiniMap,
 } from 'reactflow'
 import 'reactflow/dist/style.css'
 
@@ -83,7 +81,7 @@ export function FlowEditor({ workflowId, onSave }: FlowEditorProps) {
    * Handle new connections between nodes
    */
   const onConnect = useCallback(
-    (params: Connection) => setEdges((eds) => addEdge(params, eds)),
+    (params: Connection) => setEdges((eds: Edge[]) => addEdge(params, eds)),
     [setEdges]
   )
 
@@ -97,7 +95,7 @@ export function FlowEditor({ workflowId, onSave }: FlowEditorProps) {
       position: { x: Math.random() * 400, y: Math.random() * 400 },
       data: getDefaultNodeData(type),
     }
-    setNodes((nds) => [...nds, newNode])
+    setNodes((nds: Node[]) => [...nds, newNode])
   }
 
   /**
@@ -286,25 +284,10 @@ export function FlowEditor({ workflowId, onSave }: FlowEditorProps) {
         >
           <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
           <Controls />
-          <MiniMap
-            nodeStrokeColor={(n) => {
-              if (n.type === 'trigger') return '#a855f7'
-              if (n.type === 'agent') return '#3b82f6'
-              if (n.type === 'action') return '#10b981'
-              return '#64748b'
-            }}
-            nodeColor={(n) => {
-              if (n.type === 'trigger') return '#a855f710'
-              if (n.type === 'agent') return '#3b82f610'
-              if (n.type === 'action') return '#10b98110'
-              return '#64748b10'
-            }}
-            nodeBorderRadius={8}
-          />
 
           {/* Instructions Panel */}
           {nodes.length === 0 && (
-            <Panel position="top-center" className="mt-8">
+            <div className="absolute top-8 left-1/2 -translate-x-1/2 z-10">
               <Card className="p-6 max-w-md">
                 <div className="text-center space-y-3">
                   <div className="text-4xl mb-2">🎯</div>
@@ -329,12 +312,12 @@ export function FlowEditor({ workflowId, onSave }: FlowEditorProps) {
                   </div>
                 </div>
               </Card>
-            </Panel>
+            </div>
           )}
 
           {/* Execution Result Panel */}
           {executionResult && (
-            <Panel position="bottom-right" className="mb-4 mr-4">
+            <div className="absolute bottom-4 right-4 z-10">
               <Card className="p-4 max-w-sm">
                 <div className="flex items-start gap-3">
                   <CheckCircle2
@@ -360,7 +343,7 @@ export function FlowEditor({ workflowId, onSave }: FlowEditorProps) {
                   </div>
                 </div>
               </Card>
-            </Panel>
+            </div>
           )}
         </ReactFlow>
       </div>

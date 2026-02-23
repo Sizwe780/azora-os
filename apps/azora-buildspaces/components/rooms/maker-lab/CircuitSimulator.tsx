@@ -2,7 +2,6 @@
 
 import { useState, useCallback, useRef } from 'react';
 import ReactFlow, {
-    MiniMap,
     Controls,
     Background,
     useNodesState,
@@ -12,8 +11,9 @@ import ReactFlow, {
     Edge,
     Node,
     BackgroundVariant,
-    Panel,
 } from 'reactflow';
+import { MiniMap } from '@reactflow/minimap';
+import '@reactflow/minimap/dist/style.css';
 import 'reactflow/dist/style.css';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -122,7 +122,7 @@ export default function CircuitSimulator() {
     const nextIdRef = useRef(initialNodes.length + 1);
 
     const onConnect = useCallback(
-        (params: Connection) => setEdges((eds) => addEdge(params, eds)),
+        (params: Connection) => setEdges((eds: Edge[]) => addEdge(params, eds)),
         [setEdges],
     );
 
@@ -148,7 +148,7 @@ export default function CircuitSimulator() {
             type: 'component'
         };
 
-        setNodes((nds) => [...nds, newNode]);
+        setNodes((nds: Node[]) => [...nds, newNode]);
         setSimulationLogs(prev => [...prev, `Added ${component.name} to circuit`]);
     };
 

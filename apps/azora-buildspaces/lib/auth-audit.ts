@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/db';
+import { prisma } from '@/lib/database/client';
 
 /**
  * Constitutional Auth Audit Logging

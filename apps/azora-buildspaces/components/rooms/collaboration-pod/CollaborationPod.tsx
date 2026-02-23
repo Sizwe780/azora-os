@@ -100,24 +100,9 @@ export default function CollaborationPod() {
                     </TabsList>
 
                     <div className="flex-1 mx-6 mb-6 mt-4">
-                        <ActiveComponent ydoc={ydoc} provider={provider} />
+                        {provider && <ActiveComponent ydoc={ydoc} provider={provider} />}
                     </div>
                 </Tabs>
-            </div>
-        </div>
-    );
-}
-                                </Button>
-                                <Button variant="outline" size="sm">
-                                    Export Session
-                                </Button>
-                                <Button size="sm">
-                                    End Session
-                                </Button>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
             </div>
         </div>
     );

@@ -423,7 +423,7 @@ export default function FirmwareEditor() {
 
                                         const model = editor.getModel();
                                         if (model) {
-                                            window.monaco?.editor.setModelMarkers(model, 'compilation', markers);
+                                            (window as any).monaco?.editor.setModelMarkers(model, 'compilation', markers);
                                         }
                                     }}
                                 />

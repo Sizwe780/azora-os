@@ -13,7 +13,7 @@ import {
 } from '../../../lib/economy/mining-engine'
 
 // Mock the db module
-jest.mock('../../../lib/db', () => ({
+jest.mock('../../../lib/database/client', () => ({
   prisma: {
     $transaction: jest.fn(),
     wallet: {
@@ -80,7 +80,7 @@ describe('Mining Engine', () => {
     })
 
     it('should accept code with function keyword', async () => {
-      const mockDb = require('../../../lib/db')
+      const mockDb = require('../../../lib/database/client')
       mockDb.prisma.$transaction.mockResolvedValue({
         transactionId: 'tx123',
         balance: 1.99
@@ -136,7 +136,7 @@ describe('Mining Engine - Database Not Available', () => {
   beforeAll(() => {
     // Mock DB as unavailable
     jest.resetModules()
-    jest.doMock('../../../lib/db', () => ({
+    jest.doMock('../../../lib/database/client', () => ({
       prisma: {},
       PRISMA_AVAILABLE: false
     }))

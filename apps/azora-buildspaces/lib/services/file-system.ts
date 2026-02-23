@@ -11,7 +11,19 @@ import { azoraPilotClient } from './ai-pilot-client'
 import { constitutionalAI, UserActionType, UserAction } from './constitutional-ai'
 
 // File System Schemas
-const FileEntrySchema = z.object({
+export type FileEntry = {
+  name: string;
+  path: string;
+  type: 'file' | 'directory';
+  size?: number;
+  modified: Date;
+  permissions?: string;
+  isHidden?: boolean;
+  isSymlink?: boolean;
+  children?: FileEntry[];
+};
+
+const FileEntrySchema: z.ZodType<FileEntry> = z.object({
   name: z.string(),
   path: z.string(),
   type: z.enum(['file', 'directory']),
@@ -44,7 +56,7 @@ const GitCommitSchema = z.object({
 })
 
 // Types
-export type FileEntry = z.infer<typeof FileEntrySchema>
+// export type FileEntry = z.infer<typeof FileEntrySchema>
 export type GitStatus = z.infer<typeof GitStatusSchema>
 export type GitCommit = z.infer<typeof GitCommitSchema>
 
@@ -74,7 +86,7 @@ export interface GitRemote {
  */
 export class FileSystemService extends EventEmitter {
   private watchers: Map<string, FileWatcher[]> = new Map()
-  private gitRepositories: Map<string, GitRepository> = new Map()
+  private gitRepositories: Map<string, any> = new Map()
 
   constructor() {
     super()

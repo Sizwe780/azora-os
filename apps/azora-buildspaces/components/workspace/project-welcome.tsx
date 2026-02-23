@@ -2,13 +2,13 @@
 
 import { useState } from "react"
 import { motion } from "framer-motion"
-
-const makeId = () => Math.random().toString(36).slice(2, 9) // helper to generate ids without Date.now during render
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Sparkles, Plus, FolderOpen, GitBranch } from "lucide-react"
 import { projectTemplates, ProjectTemplate } from "@/lib/templates/project-templates"
+
+const makeId = () => Math.random().toString(36).slice(2, 9) // helper to generate ids without Date.now during render
 
 interface ProjectWelcomeProps {
   onProjectSelect: (projectId: string) => void

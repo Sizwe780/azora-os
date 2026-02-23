@@ -180,7 +180,7 @@ export default function VerificationPage() {
               </p>
             </div>
 
-            <Card className="bg-white/5 border-white/10 mb-8">
+            <Card className="bg-white/[0.02] border-white/[0.06] mb-8">
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <Clock className="h-5 w-5 text-yellow-400" />
@@ -233,9 +233,9 @@ export default function VerificationPage() {
             {verificationTypes.map((type) => (
               <Card
                 key={type.id}
-                className={`cursor-pointer transition-all ${selectedVerification === type.id
-                    ? 'border-emerald-500/50 bg-emerald-500/5'
-                    : 'border-white/10 bg-white/5 hover:border-white/20'
+                className={`cursor-pointer transition-all duration-300 ${selectedVerification === type.id
+                    ? 'border-emerald-500/30 bg-emerald-500/[0.04] shadow-lg shadow-emerald-500/5'
+                    : 'border-white/[0.06] bg-white/[0.02] hover:border-white/[0.12] hover:bg-white/[0.04]'
                   }`}
                 onClick={() => setSelectedVerification(type.id)}
               >
@@ -275,7 +275,7 @@ export default function VerificationPage() {
 
           {/* Document Upload */}
           {selectedVerification && (
-            <Card className="bg-white/5 border-white/10 mb-8">
+            <Card className="bg-white/[0.02] border-white/[0.06] mb-8 transition-all duration-300 hover:border-white/[0.12]">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Upload className="h-5 w-5 text-emerald-400" />

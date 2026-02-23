@@ -24,13 +24,14 @@ Navigate to: **Settings → Secrets and variables → Actions → New repository
 4. Generate access keys
 5. Copy the Access Key ID and Secret Access Key
 
-### Vercel Deployment Secrets (Optional)
+### OAuth Provider Secrets
 
 | Secret Name | Description | How to Get |
 |-------------|-------------|------------|
-| `VERCEL_TOKEN` | Vercel API token | Vercel Account Settings → Tokens |
-| `VERCEL_ORG_ID` | Vercel organization ID | Vercel Project Settings |
-| `VERCEL_PROJECT_ID` | Vercel project ID | Vercel Project Settings |
+| `GOOGLE_CLIENT_ID` | Google OAuth client ID | Google Cloud Console → APIs & Services → Credentials |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth client secret | Google Cloud Console → APIs & Services → Credentials |
+| `GITHUB_ID` | GitHub OAuth app ID | GitHub Settings → Developer settings → OAuth Apps |
+| `GITHUB_SECRET` | GitHub OAuth client secret | GitHub Settings → Developer settings → OAuth Apps |
 
 **Vercel Setup:**
 1. Go to https://vercel.com/account/tokens

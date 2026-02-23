@@ -1,3 +1,4 @@
+// @ts-ignore
 import { BaseAgent, AgenticContext, Pattern, ProposedAction } from '@azora/shared-ai';
 
 export class BuildAgent extends BaseAgent {

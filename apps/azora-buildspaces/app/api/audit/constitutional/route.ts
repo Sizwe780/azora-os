@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from "next/server";
-import { prisma } from "@/lib/db";
+import { prisma } from "@/lib/database/client";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { authOptions } from "@/lib/auth/config";
 
 /**
  * GET /api/audit/constitutional
@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
 
         // Calculate statistics
         const totalLogs = await prisma.constitutionalAuditLog.count({ where });
-        const violations = logs.filter(l => l.constitutionalConcern);
+        const violations = logs.filter((l: any) => l.constitutionalConcern);
 
         return NextResponse.json({
             logs,
@@ -105,9 +105,6 @@ export async function POST(req: Request) {
         return NextResponse.json(
             { error: "Internal server error" },
             { status: 500 }
-        );
-    }
-}
         );
     }
 }

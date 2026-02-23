@@ -409,7 +409,7 @@ export class KnowledgeIndexer {
         ...result,
         score: result.score,
         match: result.match || {}
-      } as SearchResult))
+      } as unknown as SearchResult))
     } catch (error) {
       console.error('[KnowledgeIndexer] Search failed:', error)
       return []

@@ -12,9 +12,7 @@ import { ExtensionsView } from "./views/extensions-view"
 import { OutputView } from "./panels/output-view"
 import { ProblemsView } from "./panels/problems-view"
 import { DebugView } from "./panels/debug-view"
-import { CommandDesk } from "./command-desk"
 import { EditorPanel } from "./editor-panel"
-import { TerminalPanel } from "./terminal-panel"
 import { ProjectWelcome } from "./project-welcome"
 
 interface CodeChamberProps {
@@ -64,18 +62,18 @@ export function CodeChamber({ id }: CodeChamberProps) {
             case 'search': return <SearchView />
             case 'git': return <SourceControlView />
             case 'extensions': return <ExtensionsView />
-            case 'chat': return <CommandDesk onSwitchToKnowledge={() => { }} />
+            case 'chat': return <div>Chat View</div>
             default: return <ExplorerView />
         }
     }
 
     const renderPanel = () => {
         switch (activePanelView) {
-            case 'terminal': return <TerminalPanel onClose={() => { }} />
+            case 'terminal': return <div>Terminal View</div>
             case 'output': return <OutputView />
             case 'problems': return <ProblemsView />
             case 'debug': return <DebugView />
-            default: return <TerminalPanel onClose={() => { }} />
+            default: return <div>Terminal View</div>
         }
     }
 

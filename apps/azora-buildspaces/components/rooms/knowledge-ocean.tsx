@@ -1,364 +1,686 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { Search, FileText, FolderTree, Database, Clock, RefreshCw, Code2, Brain, Layers, FileCode, Zap, Check, Globe, BookOpen, Link2, Upload, Trash2 } from "lucide-react"
+import { useState, useEffect, useCallback, useMemo } from "react"
+import {
+  Search,
+  FileText,
+  FolderTree,
+  Database,
+  Clock,
+  RefreshCw,
+  Code2,
+  Brain,
+  Layers,
+  FileCode,
+  Zap,
+  Globe,
+  BookOpen,
+  Link2,
+  Upload,
+  Trash2,
+  Filter,
+  ChevronRight,
+  Star,
+  Eye,
+  ArrowUpRight,
+  Hash,
+  Sparkles,
+  Network,
+  GitBranch,
+  Package,
+  Shield,
+  BarChart3,
+  X,
+  Check,
+  Copy,
+  ExternalLink,
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { motion, AnimatePresence } from "framer-motion"
+import { Badge } from "@/components/ui/badge"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Card, CardContent } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
+import { motion, AnimatePresence } from "framer-motion"
 
+/* ─── types ─── */
 interface KnowledgeItem {
   id: string
   title: string
-  type: "file" | "function" | "component" | "api" | "schema" | "doc" | "external"
+  type: "file" | "function" | "component" | "api" | "schema" | "doc" | "external" | "package" | "test"
   path?: string
   description?: string
   relevance?: number
   source?: string
+  language?: string
+  size?: number
+  lastModified?: string
 }
 
-interface KnowledgeOceanProps {
-  onSwitchToCommand: () => void
+interface IndexStats {
+  totalFiles: number
+  totalFunctions: number
+  totalComponents: number
+  totalApis: number
+  totalDocs: number
+  lastScan: Date | null
 }
 
-export default function KnowledgeOcean({ onSwitchToCommand }: KnowledgeOceanProps) {
+/* ─── type config ─── */
+const TYPE_CONFIG: Record<string, { icon: any; color: string; label: string }> = {
+  file: { icon: FileText, color: "text-blue-400", label: "File" },
+  function: { icon: Code2, color: "text-emerald-400", label: "Function" },
+  component: { icon: Layers, color: "text-purple-400", label: "Component" },
+  api: { icon: Globe, color: "text-orange-400", label: "API" },
+  schema: { icon: Database, color: "text-red-400", label: "Schema" },
+  doc: { icon: BookOpen, color: "text-yellow-400", label: "Doc" },
+  external: { icon: Link2, color: "text-cyan-400", label: "External" },
+  package: { icon: Package, color: "text-pink-400", label: "Package" },
+  test: { icon: Shield, color: "text-green-400", label: "Test" },
+}
+
+const TABS = [
+  { id: "all", label: "All", icon: Layers },
+  { id: "files", label: "Files", icon: FileText },
+  { id: "functions", label: "Functions", icon: Code2 },
+  { id: "components", label: "Components", icon: Layers },
+  { id: "apis", label: "APIs", icon: Globe },
+  { id: "docs", label: "Docs", icon: BookOpen },
+]
+
+/* ─── knowledge item card ─── */
+function KnowledgeCard({ item }: { item: KnowledgeItem }) {
+  const config = TYPE_CONFIG[item.type] || TYPE_CONFIG.file
+  const Icon = config.icon
+  const [copied, setCopied] = useState(false)
+
+  const copyPath = () => {
+    if (item.path) {
+      navigator.clipboard.writeText(item.path)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    }
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="group px-4 py-3 border-b border-zinc-800/50 hover:bg-zinc-800/20 transition-colors cursor-pointer"
+    >
+      <div className="flex items-start gap-3">
+        <div className={`mt-0.5 p-1.5 rounded-md bg-zinc-800/50 ${config.color}`}>
+          <Icon className="w-3.5 h-3.5" />
+        </div>
+
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-0.5">
+            <h4 className="text-sm font-medium text-zinc-200 truncate group-hover:text-white transition-colors">
+              {item.title}
+            </h4>
+            <Badge variant="outline" className={`text-[9px] h-4 px-1 border-zinc-700/50 ${config.color}`}>
+              {config.label}
+            </Badge>
+            {item.relevance != null && item.relevance > 0 && (
+              <span className="text-[10px] text-zinc-600 ml-auto flex-shrink-0">
+                {Math.round(item.relevance * 100)}%
+              </span>
+            )}
+          </div>
+
+          {item.path && (
+            <div className="flex items-center gap-1.5 group/path">
+              <p className="text-[11px] text-zinc-500 truncate font-mono">{item.path}</p>
+              <button
+                onClick={(e) => { e.stopPropagation(); copyPath() }}
+                className="opacity-0 group-hover/path:opacity-100 transition-opacity flex-shrink-0"
+              >
+                {copied ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3 text-zinc-600 hover:text-zinc-400" />}
+              </button>
+            </div>
+          )}
+
+          {item.description && (
+            <p className="text-xs text-zinc-500 mt-1 line-clamp-2 leading-relaxed">{item.description}</p>
+          )}
+
+          {item.language && (
+            <div className="flex items-center gap-2 mt-1.5">
+              <Badge variant="outline" className="text-[9px] h-4 px-1.5 border-zinc-800 text-zinc-500">
+                {item.language}
+              </Badge>
+              {item.size != null && (
+                <span className="text-[10px] text-zinc-600">
+                  {item.size > 1024 ? `${(item.size / 1024).toFixed(1)} KB` : `${item.size} B`}
+                </span>
+              )}
+            </div>
+          )}
+        </div>
+
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-7 px-2 opacity-0 group-hover:opacity-100 transition-opacity text-zinc-500 hover:text-white"
+        >
+          <ArrowUpRight className="w-3.5 h-3.5" />
+        </Button>
+      </div>
+    </motion.div>
+  )
+}
+
+/* ═══════════════════════════════════════════════ */
+/*              KNOWLEDGE OCEAN                    */
+/* ═══════════════════════════════════════════════ */
+export default function KnowledgeOcean() {
   const [knowledgeItems, setKnowledgeItems] = useState<KnowledgeItem[]>([])
   const [searchQuery, setSearchQuery] = useState("")
   const [isScanning, setIsScanning] = useState(false)
-  const [activeTab, setActiveTab] = useState("files")
+  const [activeTab, setActiveTab] = useState("all")
+  const [searchMode, setSearchMode] = useState<"local" | "semantic">("local")
+  const [ragQuestion, setRagQuestion] = useState("")
+  const [ragAnswer, setRagAnswer] = useState("")
+  const [ragSources, setRagSources] = useState<any[]>([])
+  const [isAskingRag, setIsAskingRag] = useState(false)
+  const [showAskPanel, setShowAskPanel] = useState(false)
+  const [conversationHistory, setConversationHistory] = useState<{ question: string; answer: string; sources: any[]; timestamp: string }[]>([])
+  const [relatedQuestions, setRelatedQuestions] = useState<string[]>([])
+  const [showHistory, setShowHistory] = useState(false)
+  const [stats, setStats] = useState<IndexStats>({
+    totalFiles: 0,
+    totalFunctions: 0,
+    totalComponents: 0,
+    totalApis: 0,
+    totalDocs: 0,
+    lastScan: null,
+  })
 
-  // Dynamic file scanning function using new Knowledge Engine
-  const scanProjectFiles = async () => {
+  // Scan project files using Knowledge Engine
+  const scanProjectFiles = useCallback(async () => {
     setIsScanning(true)
     try {
-      // First, trigger indexing
-      const indexResponse = await fetch('/api/knowledge/index', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ rootPath: '/' })
+      // Trigger indexing
+      const indexResponse = await fetch("/api/knowledge/index", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ rootPath: "/" }),
       })
 
-      if (!indexResponse.ok) {
-        console.error('Failed to index project')
-        setKnowledgeItems([])
-        setIsScanning(false)
-        return
+      if (indexResponse.ok) {
+        const indexData = await indexResponse.json()
+        console.log("[KnowledgeOcean] Indexed:", indexData.stats)
+
+        if (indexData.stats) {
+          setStats({
+            totalFiles: indexData.stats.files || 0,
+            totalFunctions: indexData.stats.functions || 0,
+            totalComponents: indexData.stats.components || 0,
+            totalApis: indexData.stats.apis || 0,
+            totalDocs: indexData.stats.docs || 0,
+            lastScan: new Date(),
+          })
+        }
       }
 
-      const indexData = await indexResponse.json()
-      console.log('[KnowledgeOcean] Indexed:', indexData.stats)
-
-      // Then, get a sample of items using a broad search
-      const searchResponse = await fetch('/api/knowledge/search', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: '*', mode: 'local', maxResults: 1000 })
+      // Get items via search
+      const searchResponse = await fetch("/api/knowledge/search", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: "*", mode: "local", maxResults: 1000 }),
       })
 
       if (searchResponse.ok) {
         const searchData = await searchResponse.json()
-        // Convert search results to KnowledgeItems
         const items: KnowledgeItem[] = (searchData.results || []).map((result: any) => ({
           id: result.id,
           title: result.name,
           type: result.type,
           path: result.path,
-          description: result.content ? result.content.substring(0, 100) : undefined,
-          relevance: result.score || result.relevanceScore
+          description: result.content ? result.content.substring(0, 150) : undefined,
+          relevance: result.score || result.relevanceScore,
+          language: result.language,
+          size: result.size,
         }))
         setKnowledgeItems(items)
       } else {
-        console.error('Failed to fetch indexed items')
         setKnowledgeItems([])
       }
     } catch (error) {
-      console.error('Error scanning files:', error)
+      console.error("Error scanning files:", error)
       setKnowledgeItems([])
     } finally {
       setIsScanning(false)
     }
-  }
+  }, [])
+
+  // Semantic search
+  const performSearch = useCallback(async (query: string) => {
+    if (!query.trim()) return
+
+    try {
+      const resp = await fetch("/api/knowledge/search", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query, mode: searchMode, maxResults: 50 }),
+      })
+
+      if (resp.ok) {
+        const data = await resp.json()
+        const items: KnowledgeItem[] = (data.results || []).map((r: any) => ({
+          id: r.id,
+          title: r.name,
+          type: r.type,
+          path: r.path,
+          description: r.content ? r.content.substring(0, 150) : undefined,
+          relevance: r.score || r.relevanceScore,
+          language: r.language,
+        }))
+        setKnowledgeItems(items)
+      }
+    } catch (error) {
+      console.error("Search failed:", error)
+    }
+  }, [searchMode])
+
+  // RAG Q&A — Ask questions about the codebase
+  const askQuestion = useCallback(async () => {
+    if (!ragQuestion.trim() || isAskingRag) return
+    setIsAskingRag(true)
+    setRagAnswer("")
+    setRagSources([])
+
+    // Emit cross-room event for achievement tracking
+    try {
+      fetch('/api/collectibles/achievements', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ event: 'knowledge-ask', room: 'knowledge-ocean' }),
+      }).catch(() => {})
+    } catch { /* silent */ }
+
+    try {
+      // First, retrieve relevant context via search
+      const searchResp = await fetch("/api/knowledge/search", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: ragQuestion, mode: "local", maxResults: 10 }),
+      })
+
+      let context: any[] = []
+      if (searchResp.ok) {
+        const searchData = await searchResp.json()
+        context = (searchData.results || []).map((r: any) => ({
+          title: r.name,
+          path: r.path,
+          content: r.content ? r.content.substring(0, 500) : r.name,
+          relevance: r.score,
+        }))
+      }
+
+      // Then, ask the RAG endpoint
+      const ragResp = await fetch("/api/knowledge/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: ragQuestion, context }),
+      })
+
+      if (ragResp.ok) {
+        const ragData = await ragResp.json()
+        const answer = ragData.answer || "No answer generated."
+        const sources = ragData.sources || []
+        setRagAnswer(answer)
+        setRagSources(sources)
+
+        // Save to conversation history
+        const entry = { question: ragQuestion, answer, sources, timestamp: new Date().toISOString() }
+        setConversationHistory(prev => [...prev, entry])
+
+        // Fetch related follow-up questions
+        try {
+          const relResp = await fetch("/api/knowledge/graph", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ action: "suggest-related", question: ragQuestion, answer }),
+          })
+          if (relResp.ok) {
+            const relData = await relResp.json()
+            setRelatedQuestions(relData.suggestions || [])
+          }
+        } catch { /* silent */ }
+      } else {
+        setRagAnswer("Sorry, I couldn't generate an answer. Please try again.")
+      }
+    } catch (error) {
+      console.error("RAG Q&A failed:", error)
+      setRagAnswer("An error occurred while processing your question.")
+    } finally {
+      setIsAskingRag(false)
+    }
+  }, [ragQuestion, isAskingRag])
 
   useEffect(() => {
     scanProjectFiles()
-  }, [])
+  }, [scanProjectFiles])
 
-  const filteredKnowledge = knowledgeItems.filter(item =>
-    item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    item.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    item.path?.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  // Debounced search
+  useEffect(() => {
+    if (!searchQuery.trim()) return
+    const timer = setTimeout(() => performSearch(searchQuery), 300)
+    return () => clearTimeout(timer)
+  }, [searchQuery, performSearch])
 
-  const getTypeIcon = (type: KnowledgeItem['type']) => {
-    switch (type) {
-      case 'file': return FileText
-      case 'function': return Code2
-      case 'component': return Layers
-      case 'api': return Globe
-      case 'schema': return Database
-      case 'doc': return BookOpen
-      case 'external': return Link2
-      default: return FileText
+  // Filter by tab
+  const filteredItems = useMemo(() => {
+    let items = knowledgeItems
+
+    if (activeTab !== "all") {
+      const typeMap: Record<string, string[]> = {
+        files: ["file"],
+        functions: ["function"],
+        components: ["component"],
+        apis: ["api"],
+        docs: ["doc", "external"],
+      }
+      const types = typeMap[activeTab] || []
+      items = items.filter((item) => types.includes(item.type))
     }
-  }
 
-  const getTypeColor = (type: KnowledgeItem['type']) => {
-    switch (type) {
-      case 'file': return 'text-blue-500'
-      case 'function': return 'text-green-500'
-      case 'component': return 'text-purple-500'
-      case 'api': return 'text-orange-500'
-      case 'schema': return 'text-red-500'
-      case 'doc': return 'text-yellow-500'
-      case 'external': return 'text-cyan-500'
-      default: return 'text-gray-500'
+    if (searchQuery && !searchMode) {
+      items = items.filter(
+        (item) =>
+          item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.path?.toLowerCase().includes(searchQuery.toLowerCase())
+      )
     }
-  }
+
+    return items
+  }, [knowledgeItems, activeTab, searchQuery, searchMode])
+
+  const totalIndexed = knowledgeItems.length
 
   return (
-    <div className="h-full flex flex-col bg-background">
-      {/* Header */}
-      <div className="h-12 border-b flex items-center justify-between px-4 bg-muted/20">
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-2 px-2 py-1 bg-blue-500/10 text-blue-500 rounded-md border border-blue-500/20">
-            <Brain className="w-4 h-4" />
-            <span className="text-sm font-medium">Knowledge Ocean</span>
+    <div className="h-full flex flex-col bg-zinc-950 text-zinc-100">
+      {/* ── Header ── */}
+      <div className="h-14 border-b border-zinc-800 flex items-center justify-between px-6 bg-zinc-900/30 backdrop-blur-sm">
+        <div className="flex items-center gap-3">
+          <div className="p-1.5 rounded-lg bg-blue-500/10">
+            <Brain className="w-4 h-4 text-blue-400" />
           </div>
+          <h1 className="font-semibold text-base">Knowledge Ocean</h1>
+          <Badge variant="outline" className="text-[10px] h-5 px-1.5 border-zinc-700 text-zinc-500">
+            {totalIndexed} indexed
+          </Badge>
+        </div>
+
+        <div className="flex items-center gap-2">
+          {/* Search Mode Toggle */}
+          <div className="flex items-center bg-zinc-900 border border-zinc-800 rounded-lg p-0.5">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setSearchMode("local")}
+              className={`h-7 px-2.5 text-xs gap-1 ${searchMode === "local" ? "bg-zinc-800 text-white" : "text-zinc-500"}`}
+            >
+              <Search className="w-3 h-3" />
+              Text
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setSearchMode("semantic")}
+              className={`h-7 px-2.5 text-xs gap-1 ${searchMode === "semantic" ? "bg-zinc-800 text-white" : "text-zinc-500"}`}
+            >
+              <Sparkles className="w-3 h-3" />
+              Semantic
+            </Button>
+          </div>
+
           <Button
-            variant="ghost"
+            variant="outline"
+            size="sm"
+            onClick={() => setShowAskPanel(!showAskPanel)}
+            className={`h-8 gap-1.5 border-zinc-700 ${showAskPanel ? "text-blue-400 border-blue-500/50" : "text-zinc-300"}`}
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            Ask AI
+          </Button>
+
+          <Button
+            variant="outline"
             size="sm"
             onClick={scanProjectFiles}
             disabled={isScanning}
-            className="gap-2"
+            className="h-8 gap-1.5 border-zinc-700 text-zinc-300"
           >
-            <RefreshCw className={`w-4 h-4 ${isScanning ? 'animate-spin' : ''}`} />
-            {isScanning ? 'Scanning...' : 'Rescan'}
+            <RefreshCw className={`w-3.5 h-3.5 ${isScanning ? "animate-spin" : ""}`} />
+            {isScanning ? "Scanning…" : "Rescan"}
           </Button>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <input
-              type="text"
-              placeholder="Search knowledge base..."
-              className="pl-10 pr-4 py-1 bg-muted/50 border border-border rounded-md text-sm w-64"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
         </div>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 overflow-hidden">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full flex flex-col">
-          <TabsList className="grid w-full grid-cols-4 m-4 mb-0">
-            <TabsTrigger value="files">Files</TabsTrigger>
-            <TabsTrigger value="functions">Functions</TabsTrigger>
-            <TabsTrigger value="apis">APIs</TabsTrigger>
-            <TabsTrigger value="docs">Docs</TabsTrigger>
+      {/* ── Search Bar ── */}
+      <div className="px-6 py-3 border-b border-zinc-800/50">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+          <Input
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder={searchMode === "semantic" ? "Search with natural language..." : "Search knowledge base..."}
+            className="pl-10 h-9 bg-zinc-900/50 border-zinc-700/50 text-sm text-zinc-200 placeholder:text-zinc-600"
+          />
+          {searchQuery && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => { setSearchQuery(""); scanProjectFiles() }}
+              className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 p-0 text-zinc-500"
+            >
+              <X className="w-3.5 h-3.5" />
+            </Button>
+          )}
+        </div>
+      </div>
+
+      {/* ── Ask AI Panel (RAG) ── */}
+      <AnimatePresence>
+        {showAskPanel && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="border-b border-zinc-800/50 overflow-hidden"
+          >
+            <div className="px-6 py-4 bg-zinc-900/30">
+              <div className="flex items-center gap-2 mb-3">
+                <Brain className="w-4 h-4 text-blue-400" />
+                <span className="text-sm font-medium text-zinc-200">Ask about your codebase</span>
+                {conversationHistory.length > 0 && (
+                  <button
+                    onClick={() => setShowHistory(!showHistory)}
+                    className="ml-auto text-[10px] text-zinc-500 hover:text-zinc-300 flex items-center gap-1 transition-colors"
+                  >
+                    <Clock className="w-3 h-3" />
+                    {conversationHistory.length} previous {conversationHistory.length === 1 ? "question" : "questions"}
+                  </button>
+                )}
+              </div>
+
+              {/* Conversation History */}
+              {showHistory && conversationHistory.length > 0 && (
+                <div className="mb-3 max-h-40 overflow-y-auto space-y-2 scrollbar-thin scrollbar-thumb-zinc-700">
+                  {conversationHistory.map((entry, i) => (
+                    <button
+                      key={i}
+                      onClick={() => { setRagQuestion(entry.question); setShowHistory(false) }}
+                      className="w-full text-left p-2 rounded-md bg-zinc-800/30 hover:bg-zinc-800/60 border border-zinc-800/50 transition-colors"
+                    >
+                      <div className="text-xs text-zinc-400 truncate">{entry.question}</div>
+                      <div className="text-[10px] text-zinc-600 truncate mt-0.5">{entry.answer.substring(0, 80)}…</div>
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              <div className="flex gap-2">
+                <Input
+                  value={ragQuestion}
+                  onChange={(e) => setRagQuestion(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && askQuestion()}
+                  placeholder="e.g. How does the authentication flow work?"
+                  className="flex-1 h-9 bg-zinc-900/50 border-zinc-700/50 text-sm text-zinc-200 placeholder:text-zinc-600"
+                  disabled={isAskingRag}
+                />
+                <Button
+                  onClick={askQuestion}
+                  disabled={isAskingRag || !ragQuestion.trim()}
+                  size="sm"
+                  className="h-9 gap-1.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+                >
+                  {isAskingRag ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+                  {isAskingRag ? "Thinking…" : "Ask"}
+                </Button>
+              </div>
+              {ragAnswer && (
+                <div className="mt-3 p-3 bg-zinc-800/50 rounded-lg border border-zinc-700/30">
+                  <div className="text-sm text-zinc-300 whitespace-pre-wrap leading-relaxed">{ragAnswer}</div>
+                  {ragSources.length > 0 && (
+                    <div className="mt-3 pt-2 border-t border-zinc-700/30">
+                      <span className="text-[10px] uppercase tracking-wider text-zinc-600 font-medium">Sources</span>
+                      <div className="flex flex-wrap gap-1.5 mt-1.5">
+                        {ragSources.map((src: any, i: number) => (
+                          <Badge key={i} variant="outline" className="text-[10px] h-5 px-1.5 border-zinc-700 text-zinc-500">
+                            {src.title || src.path}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Related Questions */}
+              {relatedQuestions.length > 0 && (
+                <div className="mt-3 p-3 bg-zinc-800/30 rounded-lg border border-zinc-700/20">
+                  <span className="text-[10px] uppercase tracking-wider text-zinc-500 font-medium">Related Questions</span>
+                  <div className="flex flex-wrap gap-1.5 mt-2">
+                    {relatedQuestions.map((q, i) => (
+                      <button
+                        key={i}
+                        onClick={() => { setRagQuestion(q); setRelatedQuestions([]) }}
+                        className="text-[11px] px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 border border-blue-500/20 transition-colors"
+                      >
+                        {q}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Stats Bar ── */}
+      <div className="px-6 py-2 border-b border-zinc-800/30 flex items-center gap-4 text-[11px] text-zinc-600">
+        <span className="flex items-center gap-1">
+          <FileText className="w-3 h-3" /> {stats.totalFiles} files
+        </span>
+        <span className="flex items-center gap-1">
+          <Code2 className="w-3 h-3" /> {stats.totalFunctions} functions
+        </span>
+        <span className="flex items-center gap-1">
+          <Layers className="w-3 h-3" /> {stats.totalComponents} components
+        </span>
+        <span className="flex items-center gap-1">
+          <Globe className="w-3 h-3" /> {stats.totalApis} APIs
+        </span>
+        {stats.lastScan && (
+          <span className="ml-auto flex items-center gap-1">
+            <Clock className="w-3 h-3" /> {stats.lastScan.toLocaleTimeString()}
+          </span>
+        )}
+      </div>
+
+      {/* ── Tabs + Content ── */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
+        <div className="px-6 pt-2">
+          <TabsList className="bg-zinc-900/50 h-8 p-0.5">
+            {TABS.map((tab) => {
+              const Icon = tab.icon
+              const count = tab.id === "all"
+                ? filteredItems.length
+                : knowledgeItems.filter((i) => {
+                    const typeMap: Record<string, string[]> = {
+                      files: ["file"], functions: ["function"], components: ["component"], apis: ["api"], docs: ["doc", "external"],
+                    }
+                    return (typeMap[tab.id] || []).includes(i.type)
+                  }).length
+              return (
+                <TabsTrigger
+                  key={tab.id}
+                  value={tab.id}
+                  className="gap-1.5 text-[11px] h-7 data-[state=active]:bg-zinc-800"
+                >
+                  <Icon className="w-3 h-3" />
+                  {tab.label}
+                  <span className="text-zinc-600 ml-0.5">{count}</span>
+                </TabsTrigger>
+              )
+            })}
           </TabsList>
+        </div>
 
-          <TabsContent value="files" className="flex-1 overflow-y-auto p-4 space-y-2">
-            <AnimatePresence>
-              {filteredKnowledge
-                .filter(item => item.type === 'file')
-                .map((item) => {
-                  const Icon = getTypeIcon(item.type)
-                  return (
-                    <motion.div
-                      key={item.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      className="p-3 border border-border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
+        {/* Content for all tabs */}
+        {TABS.map((tab) => (
+          <TabsContent key={tab.id} value={tab.id} className="flex-1 m-0 overflow-hidden">
+            <ScrollArea className="h-full">
+              {isScanning ? (
+                <div className="flex flex-col items-center justify-center py-16">
+                  <RefreshCw className="w-8 h-8 text-blue-400 animate-spin mb-4" />
+                  <p className="text-sm text-zinc-400">Scanning project files…</p>
+                  <p className="text-xs text-zinc-600 mt-1">Indexing code, docs, and APIs</p>
+                </div>
+              ) : filteredItems.length > 0 ? (
+                <div>
+                  {filteredItems.map((item) => (
+                    <KnowledgeCard key={item.id} item={item} />
+                  ))}
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-16">
+                  <Brain className="w-10 h-10 text-zinc-700 mb-3" />
+                  <p className="text-sm text-zinc-500 mb-1">
+                    {searchQuery ? "No results found" : "No items indexed"}
+                  </p>
+                  <p className="text-xs text-zinc-600 mb-4">
+                    {searchQuery ? "Try different search terms" : 'Click "Rescan" to index your project'}
+                  </p>
+                  {!searchQuery && (
+                    <Button
+                      onClick={scanProjectFiles}
+                      size="sm"
+                      className="gap-1.5 bg-blue-600 hover:bg-blue-700"
                     >
-                      <div className="flex items-start gap-3">
-                        <Icon className={`w-5 h-5 mt-0.5 ${getTypeColor(item.type)}`} />
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
-                            <h4 className="font-medium text-sm truncate">{item.title}</h4>
-                            {item.relevance && (
-                              <span className="text-xs text-muted-foreground">
-                                {Math.round(item.relevance * 100)}% relevant
-                              </span>
-                            )}
-                          </div>
-                          {item.path && (
-                            <p className="text-xs text-muted-foreground truncate mt-1">
-                              {item.path}
-                            </p>
-                          )}
-                          {item.description && (
-                            <p className="text-sm text-muted-foreground mt-2">
-                              {item.description}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    </motion.div>
-                  )
-                })}
-            </AnimatePresence>
-            {filteredKnowledge.filter(item => item.type === 'file').length === 0 && !isScanning && (
-              <div className="text-center py-8 text-muted-foreground">
-                <FileText className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                <p>No files found. Click "Rescan" to index your project.</p>
-              </div>
-            )}
+                      <RefreshCw className="w-3.5 h-3.5" />
+                      Scan Project
+                    </Button>
+                  )}
+                </div>
+              )}
+            </ScrollArea>
           </TabsContent>
+        ))}
+      </Tabs>
 
-          <TabsContent value="functions" className="flex-1 overflow-y-auto p-4 space-y-2">
-            <AnimatePresence>
-              {filteredKnowledge
-                .filter(item => item.type === 'function')
-                .map((item) => {
-                  const Icon = getTypeIcon(item.type)
-                  return (
-                    <motion.div
-                      key={item.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      className="p-3 border border-border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
-                    >
-                      <div className="flex items-start gap-3">
-                        <Icon className={`w-5 h-5 mt-0.5 ${getTypeColor(item.type)}`} />
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
-                            <h4 className="font-medium text-sm">{item.title}</h4>
-                            <code className="text-xs bg-muted px-2 py-1 rounded">function</code>
-                          </div>
-                          {item.path && (
-                            <p className="text-xs text-muted-foreground truncate mt-1">
-                              {item.path}
-                            </p>
-                          )}
-                          {item.description && (
-                            <p className="text-sm text-muted-foreground mt-2">
-                              {item.description}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    </motion.div>
-                  )
-                })}
-            </AnimatePresence>
-            {filteredKnowledge.filter(item => item.type === 'function').length === 0 && !isScanning && (
-              <div className="text-center py-8 text-muted-foreground">
-                <Code2 className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                <p>No functions found. Click "Rescan" to index your project.</p>
-              </div>
-            )}
-          </TabsContent>
-
-          <TabsContent value="apis" className="flex-1 overflow-y-auto p-4 space-y-2">
-            <AnimatePresence>
-              {filteredKnowledge
-                .filter(item => item.type === 'api')
-                .map((item) => {
-                  const Icon = getTypeIcon(item.type)
-                  return (
-                    <motion.div
-                      key={item.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      className="p-3 border border-border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
-                    >
-                      <div className="flex items-start gap-3">
-                        <Icon className={`w-5 h-5 mt-0.5 ${getTypeColor(item.type)}`} />
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
-                            <h4 className="font-medium text-sm">{item.title}</h4>
-                            <code className="text-xs bg-muted px-2 py-1 rounded">API</code>
-                          </div>
-                          {item.path && (
-                            <p className="text-xs text-muted-foreground truncate mt-1">
-                              {item.path}
-                            </p>
-                          )}
-                          {item.description && (
-                            <p className="text-sm text-muted-foreground mt-2">
-                              {item.description}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    </motion.div>
-                  )
-                })}
-            </AnimatePresence>
-            {filteredKnowledge.filter(item => item.type === 'api').length === 0 && !isScanning && (
-              <div className="text-center py-8 text-muted-foreground">
-                <Globe className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                <p>No APIs found. Click "Rescan" to index your project.</p>
-              </div>
-            )}
-          </TabsContent>
-
-          <TabsContent value="docs" className="flex-1 overflow-y-auto p-4 space-y-2">
-            <AnimatePresence>
-              {filteredKnowledge
-                .filter(item => item.type === 'doc')
-                .map((item) => {
-                  const Icon = getTypeIcon(item.type)
-                  return (
-                    <motion.div
-                      key={item.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      className="p-3 border border-border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
-                    >
-                      <div className="flex items-start gap-3">
-                        <Icon className={`w-5 h-5 mt-0.5 ${getTypeColor(item.type)}`} />
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
-                            <h4 className="font-medium text-sm">{item.title}</h4>
-                            <code className="text-xs bg-muted px-2 py-1 rounded">DOC</code>
-                          </div>
-                          {item.path && (
-                            <p className="text-xs text-muted-foreground truncate mt-1">
-                              {item.path}
-                            </p>
-                          )}
-                          {item.description && (
-                            <p className="text-sm text-muted-foreground mt-2">
-                              {item.description}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    </motion.div>
-                  )
-                })}
-            </AnimatePresence>
-            {filteredKnowledge.filter(item => item.type === 'doc').length === 0 && !isScanning && (
-              <div className="text-center py-8 text-muted-foreground">
-                <BookOpen className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                <p>No documentation found. Click "Rescan" to index your project.</p>
-              </div>
-            )}
-          </TabsContent>
-        </Tabs>
-      </div>
-
-      {/* Status Bar */}
-      <div className="h-8 border-t flex items-center justify-between px-4 bg-muted/10 text-xs text-muted-foreground">
-        <span>{filteredKnowledge.length} items indexed</span>
-        <div className="flex items-center gap-4">
-          <span>Last scan: {new Date().toLocaleTimeString()}</span>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onSwitchToCommand}
-            className="h-6 px-2 text-xs"
-          >
-            Ask AI
-          </Button>
+      {/* ── Status Bar ── */}
+      <div className="h-7 border-t border-zinc-800 flex items-center justify-between px-6 bg-zinc-900/20 text-[11px] text-zinc-600">
+        <span>{filteredItems.length} items</span>
+        <div className="flex items-center gap-3">
+          <span>Mode: {searchMode === "semantic" ? "AI Semantic" : "Text Search"}</span>
+          {stats.lastScan && <span>Last scan: {stats.lastScan.toLocaleTimeString()}</span>}
         </div>
       </div>
     </div>

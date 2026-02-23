@@ -18,12 +18,13 @@ import ReactFlow, {
   addEdge,
   Background,
   Controls,
-  MiniMap,
   useNodesState,
   useEdgesState,
   Connection,
-  NodeTypes,
 } from 'reactflow'
+import type { NodeTypes } from '@reactflow/core'
+import { MiniMap } from '@reactflow/minimap'
+import '@reactflow/minimap/dist/style.css'
 import 'reactflow/dist/style.css'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -46,10 +47,14 @@ function ComponentNode({ data }: { data: any }) {
         <div className="flex items-center justify-between">
           <span className="font-semibold text-sm">{data.label}</span>
           {hasA11yIssue && (
-            <AlertTriangle className="w-4 h-4 text-yellow-400" title="A11y Issue" />
+            <div title="A11y Issue">
+              <AlertTriangle className="w-4 h-4 text-yellow-400" />
+            </div>
           )}
           {hasResponsiveIssue && (
-            <AlertTriangle className="w-4 h-4 text-orange-400" title="Not Mobile Responsive" />
+            <div title="Not Mobile Responsive">
+              <AlertTriangle className="w-4 h-4 text-orange-400" />
+            </div>
           )}
         </div>
 
@@ -95,7 +100,7 @@ export function StudioCanvas({ onNodeSelect, initialNodes = [] }: StudioCanvasPr
   const [viewportMode, setViewportMode] = useState<'desktop' | 'tablet' | 'mobile'>('desktop')
 
   const onConnect = useCallback(
-    (params: Connection) => setEdges((eds) => addEdge(params, eds)),
+    (params: Connection) => setEdges((eds: Edge[]) => addEdge(params, eds)),
     [setEdges]
   )
 
@@ -128,7 +133,7 @@ export function StudioCanvas({ onNodeSelect, initialNodes = [] }: StudioCanvasPr
     // Ubuntu Philosophy: Mobile Responsiveness
     newNode.data.mobileResponsive = checkMobileResponsiveness(newNode)
 
-    setNodes((nds) => [...nds, newNode])
+    setNodes((nds: Node[]) => [...nds, newNode])
   }
 
   // Check accessibility compliance

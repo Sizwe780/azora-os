@@ -30,6 +30,7 @@ export default function LoginPage() {
         redirect: false,
         email,
         password,
+        callbackUrl: '/dashboard'
       })
 
       if (res && (res as any).ok) {
@@ -52,7 +53,8 @@ export default function LoginPage() {
       const res = await signIn('credentials', {
         redirect: false,
         email: 'demo@azora.world',
-        password: 'demo123456'
+        password: 'demo123456',
+        callbackUrl: '/dashboard'
       })
 
       if (res && (res as any).ok) {
@@ -72,7 +74,7 @@ export default function LoginPage() {
     setError(null)
 
     try {
-      await signIn(provider)
+      await signIn(provider, { callbackUrl: '/dashboard' })
     } catch (err) {
       setError(`${provider} login failed`)
     } finally {
@@ -86,8 +88,11 @@ export default function LoginPage() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-[#0d1117] text-white flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-[#0d1117] text-white flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Ambient background glows */}
+      <div className="pointer-events-none absolute top-1/4 -left-32 h-96 w-96 rounded-full bg-emerald-500/[0.06] blur-[100px]" />
+      <div className="pointer-events-none absolute bottom-1/4 -right-32 h-80 w-80 rounded-full bg-cyan-500/[0.04] blur-[100px]" />
+      <div className="w-full max-w-md relative z-10">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
@@ -97,14 +102,14 @@ export default function LoginPage() {
             <Shield className="h-4 w-4 mr-2" />
             Constitutional AI Access
           </Badge>
-          <h1 className="text-3xl font-bold mb-2">Welcome Back</h1>
+          <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent">Welcome Back</h1>
           <p className="text-gray-400">
             Sign in to your Constitutional AI development environment
           </p>
         </div>
 
         {/* Login Form */}
-        <Card className="bg-white/5 border-white/10">
+        <Card className="bg-white/[0.02] border-white/[0.06] backdrop-blur-xl shadow-2xl shadow-black/20">
           <CardHeader>
             <CardTitle>Sign In</CardTitle>
             <CardDescription>

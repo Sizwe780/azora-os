@@ -106,17 +106,18 @@ export default function SignupPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-[#0d1117] text-white flex items-center justify-center p-4">
-        <div className="w-full max-w-md text-center">
+      <div className="min-h-screen bg-[#0d1117] text-white flex items-center justify-center p-4 relative overflow-hidden">
+        <div className="pointer-events-none absolute top-1/4 -left-32 h-96 w-96 rounded-full bg-emerald-500/[0.06] blur-[100px]" />
+        <div className="w-full max-w-md text-center relative z-10">
           <div className="mb-8">
             <CheckCircle className="h-16 w-16 text-emerald-400 mx-auto mb-4" />
-            <h1 className="text-3xl font-bold mb-2">Welcome to BuildSpaces!</h1>
+            <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent">Welcome to BuildSpaces!</h1>
             <p className="text-gray-400">
               Your account has been created successfully. You'll be redirected to sign in shortly.
             </p>
           </div>
 
-          <Card className="bg-white/5 border-white/10">
+          <Card className="bg-white/[0.02] border-white/[0.06] backdrop-blur-xl">
             <CardContent className="p-6">
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
@@ -142,8 +143,10 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0d1117] text-white flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-[#0d1117] text-white flex items-center justify-center p-4 relative overflow-hidden">
+      <div className="pointer-events-none absolute top-1/4 -left-32 h-96 w-96 rounded-full bg-emerald-500/[0.06] blur-[100px]" />
+      <div className="pointer-events-none absolute bottom-1/4 -right-32 h-80 w-80 rounded-full bg-cyan-500/[0.04] blur-[100px]" />
+      <div className="w-full max-w-md relative z-10">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
@@ -153,14 +156,14 @@ export default function SignupPage() {
             <Sparkles className="h-4 w-4 mr-2" />
             Join Constitutional AI
           </Badge>
-          <h1 className="text-3xl font-bold mb-2">Create Your Account</h1>
+          <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent">Create Your Account</h1>
           <p className="text-gray-400">
             Start building with Constitutional AI - 30 days free, no credit card required
           </p>
         </div>
 
         {/* Signup Form */}
-        <Card className="bg-white/5 border-white/10">
+        <Card className="bg-white/[0.02] border-white/[0.06] backdrop-blur-xl shadow-2xl shadow-black/20">
           <CardHeader>
             <CardTitle>Sign Up</CardTitle>
             <CardDescription>

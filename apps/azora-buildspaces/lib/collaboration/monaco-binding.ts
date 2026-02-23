@@ -13,12 +13,12 @@
 import * as Y from 'yjs'
 import { MonacoBinding } from 'y-monaco'
 import type { editor } from 'monaco-editor'
-import { Awareness } from 'y-protocols/awareness'
+// import { Awareness } from 'y-protocols/awareness'
 
 export interface BindingOptions {
   yText: Y.Text
   editor: editor.IStandaloneCodeEditor
-  awareness?: Awareness
+  awareness?: any
 }
 
 /**
@@ -45,7 +45,7 @@ export function setupCollaborativeEditing(
   doc: Y.Doc,
   filePath: string,
   editor: editor.IStandaloneCodeEditor,
-  awareness?: Awareness
+  awareness?: any
 ): MonacoBinding {
   // Get or create YText for this file
   const yText = doc.getText(filePath)
@@ -115,7 +115,7 @@ export interface ConflictResolution {
 export function detectConflicts(
   doc: Y.Doc,
   filePath: string,
-  awareness: Awareness
+  awareness: any
 ): boolean {
   const yText = doc.getText(filePath)
   const users = Array.from(awareness.getStates().values())

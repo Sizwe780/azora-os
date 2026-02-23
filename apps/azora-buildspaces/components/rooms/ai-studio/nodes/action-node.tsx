@@ -5,7 +5,7 @@
 
 'use client'
 
-import { Handle, Position } from 'reactflow'
+import { Handle, Position } from '@reactflow/core'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { FileText, MessageSquare, Rocket, Terminal } from 'lucide-react'
@@ -63,8 +63,8 @@ export function ActionNode({ data }: { data: any }) {
             <Badge variant="destructive" className="text-xs">
               Approval Required
             </Badge>
-          </div>
-        )}
+          )}
+        </div>
         <div className="font-semibold text-sm mb-1">
           {getActionLabel(data.actionType)}
         </div>

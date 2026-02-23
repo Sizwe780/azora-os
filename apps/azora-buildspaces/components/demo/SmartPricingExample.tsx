@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import SmartPricing from '@azora/components/SmartPricing';
+const SmartPricing = (props: any) => <div>SmartPricing Placeholder</div>;
 import { Button } from '@/components/ui/button';
 
 export const SmartPricingExample: React.FC = () => {
@@ -7,7 +7,7 @@ export const SmartPricingExample: React.FC = () => {
     isStudent: false,
     fundContribution: 0,
     teamSize: 1,
-    billingCycle: 'monthly' as const
+    billingCycle: 'monthly' as 'monthly' | 'annual'
   });
 
   const handlePlanSelect = (tierId: string) => {

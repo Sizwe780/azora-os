@@ -1,91 +1,69 @@
 'use client'
 
-import { Navbar } from '@/components/features/navbar'
-import { Footer } from '@/components/features/footer'
-import KnowledgeOcean from "@/components/rooms/knowledge-ocean"
-import { Button } from '@/components/ui/button'
-import { BookOpen, Search, Database, Layers, Play } from 'lucide-react'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { RoomPageLayout } from "@/components/layouts/room-page-layout"
+import { BookOpen, Search, Database, Layers, Brain, GitBranch } from "lucide-react"
 
 export default function KnowledgeOceanPage() {
-    const router = useRouter()
-
-    return (
-        <div className="min-h-screen bg-[#0d1117] text-white flex flex-col">
-            <Navbar />
-
-            <main className="flex-1 px-4 sm:px-6 lg:px-8 py-6">
-                <div className="mx-auto max-w-7xl">
-                    {/* Header */}
-                    <div className="mb-6 space-y-4">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <h1 className="text-3xl font-bold mb-2">Knowledge Ocean</h1>
-                                <p className="text-gray-400">
-                                    Explore, search, and navigate your entire codebase with AI-powered semantic understanding
-                                </p>
-                            </div>
-                            <div className="flex items-center gap-4">
-                                <Button variant="outline" onClick={() => router.push('/demo-knowledge-ocean')} className="border-white/20 text-white hover:bg-white/10">
-                                    <Play className="w-4 h-4 mr-2" />
-                                    Try Demo
-                                </Button>
-                                <Link href="/features" className="text-emerald-400 hover:text-emerald-300">
-                                    ← Back to features
-                                </Link>
-                            </div>
-                        </div>
-
-                        {/* Stats */}
-                        <div className="grid grid-cols-4 gap-4">
-                            <div className="bg-white/5 border border-white/10 rounded-lg p-4">
-                                <div className="flex items-center gap-3">
-                                    <BookOpen className="w-5 h-5 text-blue-400" />
-                                    <div>
-                                        <p className="text-xs text-gray-400">Indexed Files</p>
-                                        <p className="text-xl font-bold text-white">1,247</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="bg-white/5 border border-white/10 rounded-lg p-4">
-                                <div className="flex items-center gap-3">
-                                    <Search className="w-5 h-5 text-emerald-400" />
-                                    <div>
-                                        <p className="text-xs text-gray-400">Searches Today</p>
-                                        <p className="text-xl font-bold text-white">89</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="bg-white/5 border border-white/10 rounded-lg p-4">
-                                <div className="flex items-center gap-3">
-                                    <Database className="w-5 h-5 text-purple-400" />
-                                    <div>
-                                        <p className="text-xs text-gray-400">Knowledge Nodes</p>
-                                        <p className="text-xl font-bold text-white">3,891</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="bg-white/5 border border-white/10 rounded-lg p-4">
-                                <div className="flex items-center gap-3">
-                                    <Layers className="w-5 h-5 text-amber-400" />
-                                    <div>
-                                        <p className="text-xs text-gray-400">Connections</p>
-                                        <p className="text-xl font-bold text-white">12.4k</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Main Component */}
-                    <div className="h-[600px]">
-                        <KnowledgeOcean onSwitchToCommand={() => router.push('/features/command-desk')} />
-                    </div>
+  return (
+    <RoomPageLayout
+      roomName="Knowledge Ocean"
+      roomTagline="AI-Powered Knowledge Graph"
+      roomDescription="Explore, search, and navigate your entire codebase with AI-powered semantic understanding. Vector search, knowledge indexing, and deep contextual connections."
+      roomIcon={BookOpen}
+      accentColor="indigo"
+      demoHref="/demo-knowledge-ocean"
+      ctaTitle="Dive Into the Ocean"
+      ctaDescription="Unlock deep understanding of your codebase — semantic search, knowledge graphs, and AI-powered documentation."
+      features={[
+        { icon: Search, title: "Semantic Search", description: "Find code by meaning, not just keywords — natural language queries across your entire codebase" },
+        { icon: Database, title: "Vector Indexing", description: "Automatic embedding and indexing of every file, function, and comment in your project" },
+        { icon: Layers, title: "Knowledge Graph", description: "Visual graph of connections between modules, functions, and concepts in your code" },
+        { icon: Brain, title: "AI Summaries", description: "Instant AI-generated summaries of any file, module, or architectural pattern" },
+        { icon: GitBranch, title: "Change Tracking", description: "Track how knowledge evolves across branches, PRs, and versions" },
+        { icon: BookOpen, title: "Living Documentation", description: "Auto-generated docs that update as your codebase changes" },
+      ]}
+      capabilities={[
+        "Full-text and semantic code search",
+        "Dependency graph visualization",
+        "Architecture pattern detection",
+        "Cross-repository knowledge linking",
+        "API surface discovery",
+        "Code complexity analysis",
+        "Technical debt identification",
+        "Onboarding guide generation",
+        "Impact analysis for changes",
+        "Knowledge export and sharing",
+      ]}
+      visual={
+        <div className="rounded-2xl bg-[#161b22] border border-white/[0.06] overflow-hidden shadow-2xl shadow-indigo-500/5">
+          <div className="bg-[#0d1117] px-4 py-2.5 border-b border-white/[0.06] flex items-center gap-2">
+            <div className="flex gap-1.5"><div className="w-3 h-3 rounded-full bg-red-500/60" /><div className="w-3 h-3 rounded-full bg-yellow-500/60" /><div className="w-3 h-3 rounded-full bg-green-500/60" /></div>
+            <span className="text-xs text-gray-500 font-mono ml-3">knowledge-ocean — search</span>
+          </div>
+          <div className="p-5 space-y-3">
+            <div className="flex items-center gap-2 p-2 rounded-lg bg-white/[0.03] border border-white/[0.06]">
+              <Search className="w-3.5 h-3.5 text-indigo-400" />
+              <span className="text-xs text-gray-400">how does the auth middleware work?</span>
+            </div>
+            <div className="text-[11px] text-gray-500">3 results · 12ms</div>
+            <div className="space-y-2">
+              {[
+                { file: "middleware/auth.ts", match: "JWT validation and session management", score: "98%" },
+                { file: "lib/session.ts", match: "Session store with Redis fallback", score: "87%" },
+                { file: "api/auth/route.ts", match: "OAuth2 flow handlers", score: "82%" },
+              ].map((r) => (
+                <div key={r.file} className="p-2.5 rounded-lg bg-white/[0.02] border border-white/[0.04] hover:border-indigo-500/20 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-indigo-400 font-mono">{r.file}</span>
+                    <span className="text-[10px] text-gray-600">{r.score}</span>
+                  </div>
+                  <p className="text-[10px] text-gray-500 mt-0.5">{r.match}</p>
                 </div>
-            </main>
-
-            <Footer />
+              ))}
+            </div>
+          </div>
         </div>
-    )
+      }
+    />
+  )
 }

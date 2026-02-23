@@ -11,7 +11,6 @@ import ReactFlow, {
     Edge,
     Node,
     BackgroundVariant,
-    MarkerType,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 
@@ -81,7 +80,7 @@ export default function ModelVisualizer() {
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
     const onConnect = useCallback(
-        (params: Connection) => setEdges((eds) => addEdge(params, eds)),
+        (params: Connection) => setEdges((eds: Edge[]) => addEdge(params, eds)),
         [setEdges],
     );
 

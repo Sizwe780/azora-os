@@ -1,95 +1,131 @@
 import { Navbar } from "@/components/features/navbar"
 import { Footer } from "@/components/features/footer"
-import { Rocket, Zap, Shield, Bug, Gift } from "lucide-react"
-import Link from "next/link"
+import { GitCommit, Sparkles, Bug, Zap, Shield } from "lucide-react"
 
-export default function ChangeLogPage() {
-  const releases = [
-    {
-      version: "v0.1.0-alpha",
-      date: "December 31, 2025",
-      title: "The Genesis Release",
-      description: "Initial launch of the Azora BuildSpaces platform with core agent orchestration and constitutional verification.",
-      changes: [
-        { type: "feature", text: "Integrated Elara Orchestrator for multi-agent task management.", icon: Rocket },
-        { type: "feature", text: "Launched Constitutional AI verification pipeline.", icon: Shield },
-        { type: "feature", text: "Unified Workspace UI with real-time task synchronization.", icon: Zap },
-        { type: "improvement", text: "Optimized AI routing for lower latency and cost.", icon: Zap },
-        { type: "fix", text: "Resolved synchronization issues in collaborative rooms.", icon: Bug }
-      ]
-    }
-  ];
+const releases = [
+  {
+    version: "v0.1.0-alpha",
+    date: "2026-01-15",
+    tag: "Latest",
+    tagColor: "emerald",
+    changes: [
+      { type: "feature", text: "Initial alpha release of BuildSpaces platform" },
+      { type: "feature", text: "8 rooms: Code Chamber, Design Studio, Spec Chamber, AI Studio, Command Desk, Maker Lab, Collaboration Pod, Knowledge Ocean" },
+      { type: "feature", text: "8 AI agents with Constitutional AI validation" },
+      { type: "feature", text: "Monaco-based code editor with full IDE features" },
+      { type: "feature", text: "Real-time collaboration with Yjs CRDT" },
+    ],
+  },
+  {
+    version: "v0.0.9-dev",
+    date: "2025-12-20",
+    tag: "Pre-release",
+    tagColor: "amber",
+    changes: [
+      { type: "feature", text: "Knowledge Ocean with vector search" },
+      { type: "feature", text: "Agent routing system (LOCAL_LLM → RAP_SYSTEM → EXTERNAL_LLM)" },
+      { type: "fix", text: "Fixed workspace persistence across sessions" },
+      { type: "perf", text: "Optimized editor load time by 40%" },
+    ],
+  },
+  {
+    version: "v0.0.8-dev",
+    date: "2025-12-01",
+    tag: "Pre-release",
+    tagColor: "amber",
+    changes: [
+      { type: "feature", text: "Command Desk CLI interface" },
+      { type: "feature", text: "Spec Chamber spec-to-test generation" },
+      { type: "fix", text: "Fixed agent context window management" },
+      { type: "security", text: "Added Constitutional AI validation layer" },
+    ],
+  },
+  {
+    version: "v0.0.5-dev",
+    date: "2025-11-01",
+    tag: "Pre-release",
+    tagColor: "amber",
+    changes: [
+      { type: "feature", text: "Initial Code Chamber with Monaco editor" },
+      { type: "feature", text: "Elara AI pair programming assistant" },
+      { type: "feature", text: "Basic workspace management" },
+    ],
+  },
+]
 
+const typeIcon: Record<string, typeof Sparkles> = {
+  feature: Sparkles,
+  fix: Bug,
+  perf: Zap,
+  security: Shield,
+}
+
+const typeColor: Record<string, string> = {
+  feature: "text-emerald-400",
+  fix: "text-blue-400",
+  perf: "text-amber-400",
+  security: "text-red-400",
+}
+
+export default function ChangelogPage() {
   return (
     <div className="min-h-screen bg-[#0d1117] text-white">
       <Navbar />
-      <main className="py-24 px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-4xl">
-          <div className="mb-16">
-            <h1 className="text-5xl font-bold mb-4">Changelog</h1>
-            <p className="text-xl text-gray-400">
-              Stay up to date with the latest features, improvements, and 
-              fixes in the Azora ecosystem.
+      <main>
+        <section className="relative py-24 lg:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/5 to-transparent" />
+          <div className="relative mx-auto max-w-4xl text-center">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-wider mb-6">
+              <GitCommit className="h-3.5 w-3.5" />
+              Changelog
+            </div>
+            <h1 className="text-4xl sm:text-5xl font-bold mb-6">
+              What&apos;s
+              <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent"> New</span>
+            </h1>
+            <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+              Track every update, feature, and fix as we build BuildSpaces.
             </p>
           </div>
+        </section>
 
-          <div className="space-y-16">
-            {releases.map((release) => (
-              <div key={release.version} className="relative pl-8 border-l border-white/10">
-                <div className="absolute -left-1.5 top-0 h-3 w-3 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.5)]" />
-                <div className="mb-8">
-                  <div className="flex items-center gap-4 mb-2">
-                    <span className="text-emerald-400 font-mono font-bold">{release.version}</span>
-                    <span className="text-gray-500 text-sm">{release.date}</span>
-                  </div>
-                  <h2 className="text-3xl font-bold mb-4">{release.title}</h2>
-                  <p className="text-gray-400 leading-relaxed">{release.description}</p>
-                </div>
+        <section className="py-12 px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-3xl">
+            <div className="relative">
+              {/* Timeline line */}
+              <div className="absolute left-[18px] top-0 bottom-0 w-px bg-white/[0.06]" />
 
-                <div className="grid grid-cols-1 gap-4">
-                  {release.changes.map((change, idx) => (
-                    <div key={idx} className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10">
-                      <div className={`p-2 rounded-lg ${
-                        change.type === 'feature' ? 'bg-emerald-400/10 text-emerald-400' :
-                        change.type === 'improvement' ? 'bg-blue-400/10 text-blue-400' :
-                        'bg-red-400/10 text-red-400'
-                      }`}>
-                        <change.icon className="h-5 w-5" />
-                      </div>
-                      <div>
-                        <span className="text-xs font-bold uppercase tracking-wider opacity-50 mb-1 block">{change.type}</span>
-                        <p className="text-gray-300">{change.text}</p>
-                      </div>
+              <div className="space-y-12">
+                {releases.map((release, i) => (
+                  <div key={i} className="relative pl-12">
+                    {/* Timeline dot */}
+                    <div className="absolute left-[11px] top-1 w-4 h-4 rounded-full bg-[#0d1117] border-2 border-emerald-500/40" />
+
+                    <div className="flex items-center gap-3 mb-4">
+                      <h2 className="text-xl font-bold font-mono">{release.version}</h2>
+                      <span className={`px-2 py-0.5 rounded-full bg-${release.tagColor}-500/10 text-${release.tagColor}-400 text-[10px] font-bold uppercase`}>{release.tag}</span>
+                      <span className="text-xs text-gray-600">{release.date}</span>
                     </div>
-                  ))}
-                </div>
+
+                    <div className="space-y-2">
+                      {release.changes.map((change, j) => {
+                        const Icon = typeIcon[change.type] || Sparkles
+                        return (
+                          <div key={j} className="flex items-start gap-3 p-3 rounded-lg bg-white/[0.02] border border-white/[0.04]">
+                            <Icon className={`h-4 w-4 mt-0.5 flex-shrink-0 ${typeColor[change.type]}`} />
+                            <span className="text-sm text-gray-300">{change.text}</span>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
-
-          <div className="mt-20 p-12 rounded-3xl bg-gradient-to-b from-white/5 to-transparent border border-white/10 text-center">
-            <Gift className="h-12 w-12 text-emerald-400 mx-auto mb-6" />
-            <h2 className="text-2xl font-bold mb-4">Want to see a feature?</h2>
-            <p className="text-gray-400 mb-8">We build in public and love hearing from our community.</p>
-            <Button asChild>
-              <a href="https://github.com/Azora-OS/azora/issues" target="_blank" rel="noopener noreferrer">Open an Issue on GitHub</a>
-            </Button>
-          </div>
-
-          <div className="mt-12 text-center">
-            <Link href="/" className="text-emerald-400 hover:underline">Back to home</Link>
-          </div>
-        </div>
+        </section>
       </main>
       <Footer />
     </div>
-  )
-}
-
-function Button({ children, asChild }: { children: React.ReactNode, asChild?: boolean }) {
-  return (
-    <button className="px-8 py-3 rounded-lg bg-emerald-400 text-black font-bold hover:bg-emerald-500 transition-colors">
-      {children}
-    </button>
   )
 }

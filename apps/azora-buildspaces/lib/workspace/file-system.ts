@@ -21,7 +21,7 @@ let nodeBasePath = ''
 try {
   // Prefer lightning-fs in browser-like environments
   // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
-  const LightningFS = require('lightning-fs')
+  const LightningFS = require('@isomorphic-git/lightning-fs')
   // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
   git = require('isomorphic-git')
   fs = new LightningFS('azora-workspace')
@@ -30,24 +30,26 @@ try {
   // Fallback for Node (tests, server-side). Use native fs.promises
   // We'll map the VFS root ('/') to a workspace-local directory to avoid
   // attempting writes at the real filesystem root which can fail in tests.
-  // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
-  const nodeFs = require('fs')
-  // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
-  const path = require('path')
-  // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
-  git = require('isomorphic-git')
-  fs = nodeFs
-  pfs = nodeFs.promises
-  isNodeFallback = true
-  nodeBasePath = path.join(process.cwd(), '.vfs')
+  if (typeof window === 'undefined') {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
+    const nodeFs = eval('require')('fs')
+    // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
+    const path = eval('require')('path')
+    // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
+    git = require('isomorphic-git')
+    fs = nodeFs
+    pfs = nodeFs.promises
+    isNodeFallback = true
+    nodeBasePath = path.join(process.cwd(), '.vfs')
 
-  try {
-    // Ensure base directory exists
-    if (!nodeFs.existsSync(nodeBasePath)) {
-      nodeFs.mkdirSync(nodeBasePath, { recursive: true })
+    try {
+      // Ensure base directory exists
+      if (!nodeFs.existsSync(nodeBasePath)) {
+        nodeFs.mkdirSync(nodeBasePath, { recursive: true })
+      }
+    } catch (e) {
+      // ignore
     }
-  } catch (e) {
-    // ignore
   }
 }
 

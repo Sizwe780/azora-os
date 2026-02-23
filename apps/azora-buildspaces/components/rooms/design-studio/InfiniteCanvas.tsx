@@ -11,8 +11,9 @@ import ReactFlow, {
     Edge,
     Node,
     BackgroundVariant,
-    NodeResizer,
 } from 'reactflow';
+import { NodeResizer } from '@reactflow/node-resizer';
+import '@reactflow/node-resizer/dist/style.css';
 import 'reactflow/dist/style.css';
 
 type FrameNodeData = {
@@ -65,15 +66,15 @@ export default function InfiniteCanvas({ extraNodes = [] }: { extraNodes?: Node[
     // Sync extra nodes
     useEffect(() => {
         if (extraNodes.length > 0) {
-            setNodes(nds => {
-                const newNodes = extraNodes.filter(en => !nds.find(n => n.id === en.id));
+            setNodes((nds: Node[]) => {
+                const newNodes = extraNodes.filter(en => !nds.find((n: Node) => n.id === en.id));
                 return [...nds, ...newNodes];
             });
         }
     }, [extraNodes, setNodes]);
 
     const onConnect = useCallback(
-        (params: Connection) => setEdges((eds) => addEdge(params, eds)),
+        (params: Connection) => setEdges((eds: Edge[]) => addEdge(params, eds)),
         [setEdges],
     );
 

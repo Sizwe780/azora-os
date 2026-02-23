@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { authOptions } from '@/lib/auth/config';
 import fs from 'fs/promises';
 import path from 'path';
 import { exec } from 'child_process';
@@ -8,23 +8,60 @@ import { promisify } from 'util';
 
 const execAsync = promisify(exec);
 
-export async function GET(request: NextRequest) {
-        // SECURITY: Require authentication
-        const session = await getServerSession(authOptions);
-        if (!session || !session.user) {
-            return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+/**
+ * Validate and scope path to user's workspace
+ * Prevents path traversal attacks and ensures workspace isolation
+ */
+function validateWorkspacePath(targetPath: string, workspaceId: string): { valid: boolean; absolutePath?: string; error?: string } {
+    try {
+        // Normalize the path to prevent traversal attacks
+        const normalizedPath = path.normalize(targetPath);
+        
+        // Check for path traversal attempts
+        if (normalizedPath.includes('..')) {
+            return { valid: false, error: 'Path traversal detected' };
         }
+        
+        // Define workspace root (in production, this would be per-user)
+        const workspaceRoot = path.join(process.cwd(), 'workspaces', workspaceId);
+        
+        // Resolve the absolute path
+        const absolutePath = path.resolve(workspaceRoot, normalizedPath);
+        
+        // Ensure the resolved path is within the workspace
+        if (!absolutePath.startsWith(workspaceRoot)) {
+            return { valid: false, error: 'Access denied: Path outside workspace' };
+        }
+        
+        return { valid: true, absolutePath };
+    } catch (error) {
+        return { valid: false, error: 'Invalid path' };
+    }
+}
+
+export async function GET(request: NextRequest) {
+    // SECURITY: Require authentication
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+        return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+    }
+    
     const { searchParams } = new URL(request.url);
     const operation = searchParams.get('operation');
     const targetPath = searchParams.get('path');
+    const workspaceId = searchParams.get('workspaceId') || session.user.id;
 
     if (!targetPath) {
         return NextResponse.json({ error: 'Path is required' }, { status: 400 });
     }
 
-    // Security: Ensure path is within allowed directory
-    // For now, we'll allow any path for audit purposes, but in production this must be restricted
-    const absolutePath = path.resolve(targetPath);
+    // SECURITY: Validate and scope path to user's workspace
+    const validation = validateWorkspacePath(targetPath, workspaceId);
+    if (!validation.valid) {
+        return NextResponse.json({ error: validation.error }, { status: 403 });
+    }
+    
+    const absolutePath = validation.absolutePath!;
 
     try {
         if (operation === 'list') {
@@ -81,19 +118,29 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-        // SECURITY: Require authentication
-        const session = await getServerSession(authOptions);
-        if (!session || !session.user) {
-            return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
-        }
+    // SECURITY: Require authentication
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+        return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+    }
+    
     try {
-        const { operation, path: targetPath, content, oldPath, newPath } = await request.json();
+        const { operation, path: targetPath, content, oldPath, newPath, workspaceId: reqWorkspaceId } = await request.json();
+        const workspaceId = reqWorkspaceId || session.user.id;
 
         if (!targetPath && !oldPath) {
             return NextResponse.json({ error: 'Path is required' }, { status: 400 });
         }
 
-        const absolutePath = targetPath ? path.resolve(targetPath) : null;
+        // SECURITY: Validate and scope path to user's workspace
+        let absolutePath: string | null = null;
+        if (targetPath) {
+            const validation = validateWorkspacePath(targetPath, workspaceId);
+            if (!validation.valid) {
+                return NextResponse.json({ error: validation.error }, { status: 403 });
+            }
+            absolutePath = validation.absolutePath!;
+        }
 
         if (operation === 'write') {
             await fs.writeFile(absolutePath!, content, 'utf-8');
@@ -105,7 +152,18 @@ export async function POST(request: NextRequest) {
             await fs.rm(absolutePath!, { recursive: true, force: true });
             return NextResponse.json({ success: true });
         } else if (operation === 'rename') {
-            await fs.rename(path.resolve(oldPath), path.resolve(newPath));
+            // SECURITY: Validate both old and new paths
+            const oldValidation = validateWorkspacePath(oldPath, workspaceId);
+            const newValidation = validateWorkspacePath(newPath, workspaceId);
+            
+            if (!oldValidation.valid) {
+                return NextResponse.json({ error: `Old path: ${oldValidation.error}` }, { status: 403 });
+            }
+            if (!newValidation.valid) {
+                return NextResponse.json({ error: `New path: ${newValidation.error}` }, { status: 403 });
+            }
+            
+            await fs.rename(oldValidation.absolutePath!, newValidation.absolutePath!);
             return NextResponse.json({ success: true });
         } else if (operation === 'gitInit') {
             await execAsync('git init', { cwd: absolutePath! });

@@ -1,12 +1,12 @@
 /** @jest-environment node */
 
 // Mock prisma and PRISMA_AVAILABLE so authorize uses DB path
-jest.mock('@/lib/db', () => ({
+jest.mock('@/lib/database/client', () => ({
   prisma: { user: { findUnique: jest.fn() } },
   PRISMA_AVAILABLE: true
 }))
 
-import { authOptions } from '@/lib/auth'
+import { authOptions } from '@/lib/auth/config'
 // Helper to hash password (same method used in register route)
 import crypto from 'crypto'
 
@@ -16,7 +16,7 @@ function hashPassword(password: string): string {
   return `${salt}:${hash}`
 }
 
-import { prisma } from '@/lib/db'
+import { prisma } from '@/lib/database/client'
 
 describe('Credentials Provider authorize', () => {
   const credentialProvider = (authOptions.providers || []).find((p: any) => p.id === 'credentials')

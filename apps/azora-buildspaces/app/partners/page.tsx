@@ -1,108 +1,107 @@
+'use client'
+
 import { Navbar } from "@/components/features/navbar"
 import { Footer } from "@/components/features/footer"
-import { Handshake, Globe, Cpu, Shield, Zap, Users } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Handshake, Globe, Code2, Building2, Send, Sparkles } from "lucide-react"
+import { useState } from "react"
 import Link from "next/link"
 
+const partnerTypes = [
+  { icon: Code2, title: "Technology Partners", description: "Integrate your tools, APIs, or services with the BuildSpaces platform." },
+  { icon: Building2, title: "Enterprise Partners", description: "Bring BuildSpaces to your organization with co-branded solutions." },
+  { icon: Globe, title: "Community Partners", description: "Help grow the open-source ecosystem through education, events, and advocacy." },
+  { icon: Sparkles, title: "AI Partners", description: "Contribute models, agents, or AI capabilities to the Constitutional AI framework." },
+]
+
 export default function PartnersPage() {
-  const partnerTypes = [
-    {
-      title: "Technology Partners",
-      description: "Integrate your AI models, infrastructure, or tools directly into the Azora ecosystem.",
-      icon: Cpu
-    },
-    {
-      title: "Solution Partners",
-      description: "Help organizations deploy and manage Azora-based AI solutions for their specific needs.",
-      icon: Zap
-    },
-    {
-      title: "Research Partners",
-      description: "Collaborate on the future of constitutional AI and ethical agent frameworks.",
-      icon: Shield
-    }
-  ];
+  const [submitted, setSubmitted] = useState(false)
 
   return (
     <div className="min-h-screen bg-[#0d1117] text-white">
       <Navbar />
-      <main className="py-24 px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl">
-          <div className="text-center mb-20">
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent">
-              Partner with Azora
+      <main>
+        <section className="relative py-24 lg:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/5 to-transparent" />
+          <div className="relative mx-auto max-w-4xl text-center">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-bold uppercase tracking-wider mb-6">
+              <Handshake className="h-3.5 w-3.5" />
+              Partners
+            </div>
+            <h1 className="text-4xl sm:text-5xl font-bold mb-6">
+              Partner
+              <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent"> With Us</span>
             </h1>
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              Join a global network of innovators building the next generation 
-              of intelligent, ethical, and sovereign AI infrastructure.
+            <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+              Join a growing ecosystem of organizations committed to ethical AI development.
             </p>
           </div>
+        </section>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
-            {partnerTypes.map((type) => (
-              <div key={type.title} className="p-8 rounded-2xl bg-white/5 border border-white/10 hover:border-emerald-400/30 transition-all">
-                <type.icon className="h-12 w-12 text-emerald-400 mb-6" />
-                <h3 className="text-2xl font-bold mb-4">{type.title}</h3>
-                <p className="text-gray-400 leading-relaxed">{type.description}</p>
+        {/* Partner Types */}
+        <section className="py-16 px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-6xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+            {partnerTypes.map((type, i) => (
+              <div key={i} className="p-6 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:border-cyan-500/20 transition-all duration-300">
+                <div className="p-2.5 rounded-lg bg-cyan-500/10 w-fit mb-4">
+                  <type.icon className="h-5 w-5 text-cyan-400" />
+                </div>
+                <h3 className="font-semibold mb-2">{type.title}</h3>
+                <p className="text-sm text-gray-400 leading-relaxed">{type.description}</p>
               </div>
             ))}
           </div>
+        </section>
 
-          <div className="bg-gradient-to-br from-emerald-500/10 to-blue-500/10 rounded-3xl p-12 border border-white/10 mb-24">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              <div>
-                <h2 className="text-4xl font-bold mb-6">Why Partner with Us?</h2>
-                <div className="space-y-6">
-                  <div className="flex gap-4">
-                    <Globe className="h-6 w-6 text-emerald-400 shrink-0" />
-                    <div>
-                      <h4 className="font-bold mb-1">Global Reach</h4>
-                      <p className="text-gray-400 text-sm">Access a worldwide community of developers and enterprises building on Azora.</p>
-                    </div>
+        {/* Partner Form */}
+        <section className="py-20 px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-2xl">
+            <h2 className="text-2xl font-bold text-center mb-8">Become a Partner</h2>
+            <div className="p-8 rounded-2xl bg-white/[0.02] border border-white/[0.06]">
+              {submitted ? (
+                <div className="text-center py-8">
+                  <div className="p-3 rounded-full bg-emerald-500/10 w-fit mx-auto mb-4">
+                    <Send className="h-6 w-6 text-emerald-400" />
                   </div>
-                  <div className="flex gap-4">
-                    <Handshake className="h-6 w-6 text-emerald-400 shrink-0" />
-                    <div>
-                      <h4 className="font-bold mb-1">Co-Marketing</h4>
-                      <p className="text-gray-400 text-sm">Joint webinars, case studies, and event opportunities to showcase our collaboration.</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-4">
-                    <Users className="h-6 w-6 text-emerald-400 shrink-0" />
-                    <div>
-                      <h4 className="font-bold mb-1">Technical Support</h4>
-                      <p className="text-gray-400 text-sm">Direct access to our engineering team and early access to new APIs and features.</p>
-                    </div>
-                  </div>
+                  <h3 className="text-xl font-bold mb-2">Application Received!</h3>
+                  <p className="text-gray-400">We&apos;ll review your application and get back to you within 48 hours.</p>
                 </div>
-              </div>
-              <div className="p-8 rounded-2xl bg-black/40 border border-white/5">
-                <h3 className="text-2xl font-bold mb-6">Become a Partner</h3>
-                <form className="space-y-4">
-                  <input type="text" placeholder="Company Name" className="w-full p-3 rounded-lg bg-white/5 border border-white/10 focus:border-emerald-400 outline-none transition-colors" />
-                  <input type="email" placeholder="Work Email" className="w-full p-3 rounded-lg bg-white/5 border border-white/10 focus:border-emerald-400 outline-none transition-colors" />
-                  <select className="w-full p-3 rounded-lg bg-white/5 border border-white/10 focus:border-emerald-400 outline-none transition-colors text-gray-400">
-                    <option value="">Select Partner Type</option>
-                    <option value="tech">Technology Partner</option>
-                    <option value="solution">Solution Partner</option>
-                    <option value="research">Research Partner</option>
-                  </select>
-                  <textarea placeholder="Tell us about your interest..." rows={3} className="w-full p-3 rounded-lg bg-white/5 border border-white/10 focus:border-emerald-400 outline-none transition-colors resize-none"></textarea>
-                  <Button className="w-full py-6 text-lg">Submit Application</Button>
+              ) : (
+                <form onSubmit={(e) => { e.preventDefault(); setSubmitted(true) }} className="space-y-5">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-1.5">Name</label>
+                      <input type="text" required className="w-full px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06] text-white placeholder-gray-600 focus:border-cyan-500/40 focus:outline-none transition-colors" placeholder="Your name" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-1.5">Organization</label>
+                      <input type="text" required className="w-full px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06] text-white placeholder-gray-600 focus:border-cyan-500/40 focus:outline-none transition-colors" placeholder="Company name" />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-1.5">Email</label>
+                    <input type="email" required className="w-full px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06] text-white placeholder-gray-600 focus:border-cyan-500/40 focus:outline-none transition-colors" placeholder="you@company.com" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-1.5">Partnership Type</label>
+                    <select className="w-full px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06] text-white focus:border-cyan-500/40 focus:outline-none transition-colors">
+                      <option value="technology">Technology Partner</option>
+                      <option value="enterprise">Enterprise Partner</option>
+                      <option value="community">Community Partner</option>
+                      <option value="ai">AI Partner</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-1.5">Tell us about your interest</label>
+                    <textarea rows={4} required className="w-full px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06] text-white placeholder-gray-600 focus:border-cyan-500/40 focus:outline-none transition-colors resize-none" placeholder="How would you like to partner with Azora?" />
+                  </div>
+                  <button type="submit" className="w-full py-3 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold rounded-xl shadow-lg shadow-cyan-500/20 transition-all flex items-center justify-center gap-2">
+                    <Send className="h-4 w-4" /> Submit Application
+                  </button>
                 </form>
-              </div>
+              )}
             </div>
           </div>
-
-          <div className="text-center">
-            <p className="text-gray-400 mb-8">Interested in a quick chat first?</p>
-            <a href="mailto:partners@azora.world" className="text-emerald-400 font-bold text-xl hover:underline">partners@azora.world</a>
-          </div>
-
-          <div className="mt-20 text-center">
-            <Link href="/about" className="text-emerald-400 hover:underline">Learn more about Azora</Link>
-          </div>
-        </div>
+        </section>
       </main>
       <Footer />
     </div>

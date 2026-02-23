@@ -97,7 +97,7 @@ function isComponentCandidate(node: FigmaNode): boolean {
     // Check if it has children
     const hasChildren = node.children && node.children.length > 0
 
-    return hasGoodName && hasChildren
+    return !!(hasGoodName && hasChildren)
   }
 
   return false

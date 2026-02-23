@@ -1,82 +1,50 @@
 import { Navbar } from "@/components/features/navbar"
 import { Footer } from "@/components/features/footer"
-import { Shield, Lock, Eye, FileText } from "lucide-react"
-import Link from "next/link"
+import { Eye } from "lucide-react"
 
 export default function PrivacyPage() {
   return (
     <div className="min-h-screen bg-[#0d1117] text-white">
       <Navbar />
-      <main className="py-24 px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-4xl">
-          <div className="mb-12">
-            <h1 className="text-4xl font-bold mb-4">Privacy Policy</h1>
-            <p className="text-gray-400">Last updated: December 31, 2025</p>
+      <main>
+        <section className="relative py-24 lg:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-blue-500/5 to-transparent" />
+          <div className="relative mx-auto max-w-4xl text-center">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold uppercase tracking-wider mb-6">
+              <Eye className="h-3.5 w-3.5" />
+              Privacy Policy
+            </div>
+            <h1 className="text-4xl sm:text-5xl font-bold mb-6">
+              Privacy
+              <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent"> Policy</span>
+            </h1>
+            <p className="text-sm text-gray-500">Last updated: January 15, 2026</p>
           </div>
+        </section>
 
-          <div className="space-y-12">
-            <section>
-              <div className="flex items-center gap-3 mb-4">
-                <Shield className="h-6 w-6 text-emerald-400" />
-                <h2 className="text-2xl font-bold">Our Commitment</h2>
-              </div>
-              <p className="text-gray-400 leading-relaxed">
-                At Azora, privacy is not an afterthought; it is a fundamental right. 
-                Our infrastructure is built on the principle of data sovereignty. 
-                We believe that you should own your data, your models, and your intelligence.
-              </p>
-            </section>
-
-            <section>
-              <div className="flex items-center gap-3 mb-4">
-                <Lock className="h-6 w-6 text-emerald-400" />
-                <h2 className="text-2xl font-bold">Data Collection</h2>
-              </div>
-              <p className="text-gray-400 leading-relaxed mb-4">
-                We collect only the minimum amount of data necessary to provide our services. 
-                This includes:
-              </p>
-              <ul className="list-disc list-inside text-gray-400 space-y-2 ml-4">
-                <li>Account information (email, name) for authentication.</li>
-                <li>Workspace configuration and task metadata.</li>
-                <li>Agent execution logs for debugging and constitutional auditing.</li>
-              </ul>
-            </section>
-
-            <section>
-              <div className="flex items-center gap-3 mb-4">
-                <Eye className="h-6 w-6 text-emerald-400" />
-                <h2 className="text-2xl font-bold">How We Use Data</h2>
-              </div>
-              <p className="text-gray-400 leading-relaxed">
-                Your data is used exclusively to power your AI agents and improve your workspace experience. 
-                We do not sell your data to third parties, and we do not use your private data to train 
-                foundation models without your explicit, opt-in consent.
-              </p>
-            </section>
-
-            <section className="p-8 rounded-2xl bg-white/5 border border-white/10">
-              <div className="flex items-center gap-3 mb-4">
-                <FileText className="h-6 w-6 text-emerald-400" />
-                <h2 className="text-xl font-bold">Constitutional Privacy</h2>
-              </div>
-              <p className="text-gray-400 text-sm leading-relaxed">
-                Our privacy practices are governed by the Azora Constitution. 
-                Any changes to how we handle data must be verified against our core principles 
-                of transparency and user sovereignty.
-              </p>
-            </section>
+        <section className="py-12 px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-3xl prose prose-invert prose-sm">
+            <div className="space-y-8">
+              {[
+                { title: "1. Information We Collect", content: "We collect information you provide directly (account details, workspace content) and usage data (analytics, error logs). We do NOT train AI models on your private code or sell your data to third parties." },
+                { title: "2. How We Use Your Information", content: "Your data is used to: provide and improve the BuildSpaces service, authenticate your identity, process payments, send critical service notifications, and comply with legal obligations." },
+                { title: "3. AI and Your Code", content: "When you use AI agents, your code context is processed to provide assistance. We do NOT retain your code for model training. All AI processing follows Constitutional AI principles. You can opt out of cloud AI and use local LLMs exclusively." },
+                { title: "4. Data Storage and Security", content: "All data is encrypted in transit (TLS 1.3) and at rest (AES-256). We use SOC 2 Type II compliant infrastructure. Workspaces are isolated per user with strict access controls." },
+                { title: "5. Data Sharing", content: "We do not sell your personal information. We share data only with: service providers who help operate the platform (under strict contracts), and when required by law." },
+                { title: "6. Your Rights", content: "You have the right to: access your data, correct inaccurate data, delete your account and all associated data, export your data in standard formats, and opt out of non-essential data processing." },
+                { title: "7. Cookies", content: "We use essential cookies for authentication and security. Analytics cookies are optional and can be disabled in your account settings." },
+                { title: "8. GDPR Compliance", content: "For EU residents: Azora acts as a data controller. Our legal basis for processing is legitimate interest and contract performance. You may contact our DPO at privacy@azora.dev." },
+                { title: "9. Changes", content: "We will notify users of material changes to this policy via email and in-app notification at least 30 days before changes take effect." },
+                { title: "10. Contact", content: "For privacy questions or requests, contact us at privacy@azora.dev." },
+              ].map((section, i) => (
+                <div key={i} className="p-6 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+                  <h2 className="text-lg font-semibold mb-3">{section.title}</h2>
+                  <p className="text-sm text-gray-400 leading-relaxed">{section.content}</p>
+                </div>
+              ))}
+            </div>
           </div>
-
-          <div className="mt-16 p-8 rounded-xl bg-emerald-400/5 border border-emerald-400/10 text-center">
-            <p className="text-gray-400 mb-4">Questions about your privacy?</p>
-            <a href="mailto:privacy@azora.world" className="text-emerald-400 font-bold hover:underline">privacy@azora.world</a>
-          </div>
-
-          <div className="mt-12 text-center">
-            <Link href="/" className="text-emerald-400 hover:underline">Back to home</Link>
-          </div>
-        </div>
+        </section>
       </main>
       <Footer />
     </div>

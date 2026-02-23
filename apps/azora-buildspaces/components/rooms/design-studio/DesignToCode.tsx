@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Code2, Eye, Copy, Download, Check, Loader2, Sparkles } from "lucide-react";
+import { Code2, Eye, Copy, Download, Check, Loader2, Sparkles, Accessibility } from "lucide-react";
 import Editor from "@monaco-editor/react";
 
 interface DesignToCodeProps {
@@ -17,6 +17,26 @@ export default function DesignToCode({ frameData, onClose, projectId }: DesignTo
     const [code, setCode] = useState("");
     const [isGenerating, setIsGenerating] = useState(false);
     const [copied, setCopied] = useState(false);
+    const [a11yResults, setA11yResults] = useState<any>(null);
+    const [isCheckingA11y, setIsCheckingA11y] = useState(false);
+
+    const checkAccessibility = async () => {
+        if (!code) return;
+        setIsCheckingA11y(true);
+        try {
+            const response = await fetch("/api/design/a11y-check", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ code })
+            });
+            const data = await response.json();
+            setA11yResults(data.results);
+        } catch (error) {
+            console.error("A11y check failed", error);
+        } finally {
+            setIsCheckingA11y(false);
+        }
+    };
 
     const generateCode = async () => {
         setIsGenerating(true);
@@ -99,7 +119,11 @@ export default function DesignToCode({ frameData, onClose, projectId }: DesignTo
                                 <TabsList className="bg-transparent border-none">
                                     <TabsTrigger value="code" className="data-[state=active]:bg-white/5">
                                         <Code2 className="w-4 h-4 mr-2" />
-                                        Code
+                                        React Code
+                                    </TabsTrigger>
+                                    <TabsTrigger value="a11y" className="data-[state=active]:bg-white/5">
+                                        <Accessibility className="w-4 h-4 mr-2" />
+                                        Accessibility
                                     </TabsTrigger>
                                 </TabsList>
                                 <div className="flex items-center gap-2">
@@ -122,6 +146,49 @@ export default function DesignToCode({ frameData, onClose, projectId }: DesignTo
                                         padding: { top: 20 }
                                     }}
                                 />
+                            </TabsContent>
+
+                            <TabsContent value="a11y" className="flex-1 m-0 p-6 overflow-y-auto bg-slate-900">
+                                <div className="max-w-3xl mx-auto space-y-6">
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <h3 className="text-lg font-semibold text-white">Accessibility Check</h3>
+                                            <p className="text-sm text-slate-400">Validate WCAG 2.2 compliance for the generated code.</p>
+                                        </div>
+                                        <Button 
+                                            onClick={checkAccessibility} 
+                                            disabled={isCheckingA11y}
+                                            className="bg-pink-600 hover:bg-pink-700"
+                                        >
+                                            {isCheckingA11y ? (
+                                                <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Checking...</>
+                                            ) : "Run Check"}
+                                        </Button>
+                                    </div>
+
+                                    {a11yResults && (
+                                        <div className="space-y-4">
+                                            {a11yResults.length === 0 ? (
+                                                <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-lg flex items-center gap-3">
+                                                    <Check className="w-5 h-5 text-green-400" />
+                                                    <span className="text-green-200">No accessibility issues found!</span>
+                                                </div>
+                                            ) : (
+                                                a11yResults.map((issue: any, i: number) => (
+                                                    <div key={i} className="p-4 bg-red-500/10 border border-red-500/20 rounded-lg">
+                                                        <h4 className="font-medium text-red-400 mb-1">{issue.rule}</h4>
+                                                        <p className="text-sm text-red-200/80">{issue.description}</p>
+                                                        {issue.suggestion && (
+                                                            <div className="mt-3 p-3 bg-slate-800/50 rounded border border-white/5">
+                                                                <p className="text-xs text-slate-300 font-mono">{issue.suggestion}</p>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                ))
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
                             </TabsContent>
                         </Tabs>
                     )}

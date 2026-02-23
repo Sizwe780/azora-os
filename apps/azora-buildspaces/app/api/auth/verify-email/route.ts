@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
+import { prisma } from '@/lib/database/client';
 import crypto from 'crypto';
 
 /**
@@ -32,7 +32,8 @@ export async function POST(req: Request) {
     // Hash the token to verify against stored hash
     const verificationTokenHash = crypto.createHash('sha256').update(token).digest('hex');
 
-    // TODO: Find user with matching verification token
+    // NOTE: Requires database schema update for email verification
+    // Uncomment when User model includes: emailVerificationToken, emailVerificationExpires, emailVerified
     // const user = await prisma.user.findFirst({
     //   where: {
     //     emailVerificationToken: verificationTokenHash,
@@ -58,7 +59,7 @@ export async function POST(req: Request) {
       message: 'Email verification feature coming soon. Schema updates in progress.'
     });
 
-    // TODO: When schema is ready, uncomment and implement:
+    // NOTE: Implementation ready - awaiting schema migration
     // // Mark email as verified
     // await prisma.user.update({
     //   where: { id: user.id },
@@ -109,7 +110,8 @@ export async function PUT(req: Request) {
 
     const normalizedEmail = email.toLowerCase().trim();
 
-    // TODO: Find user and regenerate verification token
+    // NOTE: Requires database schema update
+    // Uncomment when User model includes email verification fields
     // const user = await prisma.user.findUnique({
     //   where: { email: normalizedEmail }
     // });
@@ -129,7 +131,8 @@ export async function PUT(req: Request) {
     //   }, { status: 400 });
     // }
 
-    // TODO: Generate new verification token and send email
+    // NOTE: Implementation ready - awaiting schema migration
+    // Will generate new verification token and send email
 
     console.log(`[AUTH] Verification email resend requested for: ${normalizedEmail}`);
 

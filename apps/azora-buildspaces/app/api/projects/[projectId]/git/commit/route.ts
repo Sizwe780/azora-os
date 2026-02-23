@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+import { authOptions } from '@/lib/auth/config'
 import { exec } from 'child_process'
 import { promisify } from 'util'
 
 const execAsync = promisify(exec)
 
 // POST /api/projects/[projectId]/git/commit
-export async function POST(request: NextRequest, { params }: { params: { projectId: string } }) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ projectId: string }> }) {
   try {
     // SECURITY: Require authentication
     const session = await getServerSession(authOptions)
@@ -15,7 +15,7 @@ export async function POST(request: NextRequest, { params }: { params: { project
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
     }
 
-    const projectId = params.projectId
+    const { projectId } = await params
     const { message } = await request.json()
 
     if (!message || typeof message !== 'string') {

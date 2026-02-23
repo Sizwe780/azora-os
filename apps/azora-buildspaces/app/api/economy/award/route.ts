@@ -1,73 +1,146 @@
 /**
- * Award Tokens API Endpoint
+ * Token Award API Endpoint
  * 
- * POST /api/economy/award
- * Internal endpoint for awarding tokens (requires authentication)
+ * POST /api/economy/award - Award tokens to a user
+ * 
+ * Constitutional Compliance:
+ * - Article III: Economic Constitution - Fair token distribution
+ * - Article VIII: Truth as Currency - Rewards for truth contributions
+ * - No Mock Protocol: Real token awards via mining engine
  */
 
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
-import { awardTokens, verifyAndAward, REWARD_AMOUNTS, type RewardAction } from '@/lib/economy/mining-engine'
+import { authOptions } from '@/lib/auth/config'
+import { miningEngine, REWARD_RATES, type RewardType } from '@/lib/economy/mining-engine'
+import { z } from 'zod'
 
-interface AwardRequest {
-  userId?: string // If omitted, awards to authenticated user
-  action: RewardAction
-  value?: number
-  workContent?: string // For quality verification
-  metadata?: Record<string, any>
-}
+// Request validation schema
+const AwardRequestSchema = z.object({
+  userId: z.string().optional(), // If not provided, awards to current user
+  rewardType: z.enum([
+    'CODE_COMMIT',
+    'CODE_REVIEW',
+    'BUG_FIX',
+    'FEATURE_COMPLETE',
+    'DOCUMENTATION',
+    'TUTORIAL_CREATE',
+    'QUESTION_ANSWER',
+    'KNOWLEDGE_SHARE',
+    'TRUTH_VERIFICATION',
+    'FACT_CHECK',
+    'SOURCE_CITATION',
+    'MENTORSHIP_SESSION',
+    'WORKSHOP_HOST',
+    'COMMUNITY_SUPPORT',
+    'PROJECT_CREATE',
+    'PROJECT_COMPLETE',
+    'COLLABORATION',
+    'PEER_REVIEW'
+  ] as const),
+  description: z.string().optional(),
+  metadata: z.record(z.any()).optional()
+})
 
 export async function POST(request: NextRequest) {
   try {
-    // Get authenticated user
+    // Authenticate user
     const session = await getServerSession(authOptions)
     
-    if (!session?.user) {
+    if (!session?.user?.id) {
       return NextResponse.json(
-        { error: 'Unauthorized' },
+        { error: 'Unauthorized - Please sign in' },
         { status: 401 }
       )
     }
 
-    const body: AwardRequest = await request.json()
-    const { action, value, workContent, metadata } = body
-    const targetUserId = body.userId ?? (session.user as any).id
+    // Parse and validate request body
+    const body = await request.json()
+    const validationResult = AwardRequestSchema.safeParse(body)
 
-    // Validate action type
-    if (!action || !(action in REWARD_AMOUNTS)) {
+    if (!validationResult.success) {
       return NextResponse.json(
-        { error: 'Invalid action type' },
+        { 
+          error: 'Invalid request',
+          details: validationResult.error.errors
+        },
         { status: 400 }
       )
     }
 
-    // If work content is provided, verify quality before awarding
-    let result
-    if (workContent) {
-      result = await verifyAndAward(targetUserId, action, workContent, metadata)
-    } else {
-      result = await awardTokens(targetUserId, action, value, metadata)
-    }
+    const { userId, rewardType, description, metadata } = validationResult.data
+
+    // Use current user if no userId specified
+    const targetUserId = userId || session.user.id
+
+    // Award tokens using mining engine (calls awardTokens internally)
+    const result = await miningEngine.awardByType(
+      targetUserId,
+      rewardType as RewardType,
+      description
+    )
 
     if (!result.success) {
       return NextResponse.json(
-        { error: result.error || 'Failed to award tokens' },
-        { status: 400 }
+        { 
+          error: 'Failed to award tokens',
+          details: result.error
+        },
+        { status: 500 }
+      )
+    }
+
+    // Return success response
+    return NextResponse.json({
+      success: true,
+      transaction: {
+        id: result.transactionId,
+        userId: targetUserId,
+        amount: result.amount,
+        rewardType,
+        description: description || `Reward for ${rewardType}`,
+        newBalance: result.newBalance,
+        truthScore: result.truthScore
+      },
+      message: `Successfully awarded ${result.amount} AZR tokens`
+    })
+  } catch (error) {
+    console.error('Award API Error:', error)
+    return NextResponse.json(
+      { 
+        error: 'Failed to process award',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
+  }
+}
+
+// GET endpoint to view available reward types
+export async function GET(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions)
+    
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { error: 'Unauthorized - Please sign in' },
+        { status: 401 }
       )
     }
 
     return NextResponse.json({
       success: true,
-      transactionId: result.transactionId,
-      amount: result.amount,
-      netAmount: result.netAmount,
-      taxAmount: result.taxAmount
+      rewardTypes: Object.entries(REWARD_RATES).map(([type, amount]) => ({
+        type,
+        amount,
+        description: type.replace(/_/g, ' ').toLowerCase()
+      })),
+      totalTypes: Object.keys(REWARD_RATES).length
     })
   } catch (error) {
-    console.error('[API] Award error:', error)
+    console.error('Award API Error:', error)
     return NextResponse.json(
-      { error: 'Failed to award tokens' },
+      { error: 'Failed to fetch reward types' },
       { status: 500 }
     )
   }

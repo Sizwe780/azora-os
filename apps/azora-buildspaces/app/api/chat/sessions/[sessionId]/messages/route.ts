@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/db'
+import { prisma } from '@/lib/database/client'
 import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+import { authOptions } from '@/lib/auth/config'
 
 // Constants for agent roles
 const AGENT_ROLE_USER = 'user';
@@ -12,10 +12,10 @@ const AGENT_ROLE_ASSISTANT = 'assistant';
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { sessionId: string } }
+  { params }: { params: Promise<{ sessionId: string }> }
 ) {
   try {
-    const sessionId = params.sessionId
+    const { sessionId } = await params
 
     // For now, return BuildSpaceExecution records as messages
     // Since ChatSession model doesn't exist in schema
@@ -30,7 +30,7 @@ export async function GET(
     // Note: User messages are stored with agentName='user' (not the target agent name)
     // This is a limitation of using BuildSpaceExecution for chat storage
     // Consider adding proper ChatSession/ChatMessage models in the future [Target: Q1 2026]
-    const messages = executions.map(exec => {
+    const messages = executions.map((exec: any) => {
       // User messages have input, assistant messages have output
       const isUserMessage = exec.agentName === AGENT_ROLE_USER;
       const content = isUserMessage ? exec.input : (exec.output || '');
@@ -68,10 +68,10 @@ export async function GET(
  */
 export async function POST(
   request: NextRequest,
-  { params }: { params: { sessionId: string } }
+  { params }: { params: Promise<{ sessionId: string }> }
 ) {
   try {
-    const sessionId = params.sessionId
+    const { sessionId } = await params
     const body = await request.json()
     const { role, content, metadata } = body
 

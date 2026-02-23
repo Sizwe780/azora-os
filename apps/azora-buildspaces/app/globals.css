@@ -242,3 +242,75 @@
   background: rgba(16, 185, 129, 0.3);
   color: white;
 }
+
+/* ─── 2026 Design System Additions ─────────────────────── */
+
+/* Shimmer / skeleton loader */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.04) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+/* Gradient border utility */
+.gradient-border {
+  position: relative;
+}
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(16,185,129,0.3), rgba(6,182,212,0.15), rgba(168,85,247,0.15));
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: xor;
+  pointer-events: none;
+}
+
+/* Glassmorphism card */
+.glass-card {
+  background: rgba(255,255,255,0.02);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.glass-card:hover {
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(255,255,255,0.1);
+}
+
+/* Scroll-reveal fade-in */
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out forwards;
+}
+
+/* Subtle radial glow behind hero */
+.hero-glow {
+  background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(16,185,129,0.12) 0%, transparent 70%);
+}
+
+/* Smooth morphing word transition */
+@keyframes morph-word {
+  0% { opacity: 0; filter: blur(8px); transform: translateY(12px); }
+  20% { opacity: 1; filter: blur(0px); transform: translateY(0); }
+  80% { opacity: 1; filter: blur(0px); transform: translateY(0); }
+  100% { opacity: 0; filter: blur(8px); transform: translateY(-12px); }
+}
+
+/* Glow ring for active elements */
+@keyframes glow-ring {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(16,185,129,0); }
+}
+.animate-glow-ring {
+  animation: glow-ring 2s ease-in-out infinite;
+}

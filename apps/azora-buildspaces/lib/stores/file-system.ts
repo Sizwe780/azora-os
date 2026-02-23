@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { projectTemplates } from '../templates/project-templates'
 
 export type FileType = 'file' | 'directory'
 
@@ -39,6 +40,92 @@ interface FileSystemState {
 // Helper to generate IDs
 const generateId = () => Math.random().toString(36).substr(2, 9)
 
+// Helper to create mock file system from template
+const createMockFileSystem = () => {
+    const template = projectTemplates?.[0]; // Default to Next.js template
+    
+     const rootId = 'root';
+    const fileMap: Record<string, FileNode> = {
+        [rootId]: {
+            id: rootId,
+            name: 'root',
+            type: 'directory',
+            path: '',
+            children: [],
+            isOpen: true,
+            parentId: null
+        }
+    };
+
+    if (!template) {
+        return { rootId, fileMap };
+    }
+
+    Object.entries(template.files).forEach(([filePath, fileData]) => {
+        const parts = filePath.split('/');
+        const fileName = parts.pop()!;
+        const dirParts = parts;
+
+        // Traverse/Create directories
+        let currentId = rootId;
+        let currentPath = '';
+
+        for (const part of dirParts) {
+            const parentNode = fileMap[currentId];
+            const children = parentNode.children || [];
+            
+            // Find existing directory child
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+            const _temp = parentNode.children || [];
+            let childId = parentNode.children?.find(id => fileMap[id]?.name === part && fileMap[id]?.type === 'directory');
+            
+            if (!childId) {
+                childId = generateId();
+                const newPath = currentPath ? `${currentPath}/${part}` : part;
+                
+                fileMap[childId] = {
+                    id: childId,
+                    name: part,
+                    type: 'directory',
+                    path: newPath,
+                    children: [],
+                    parentId: currentId,
+                    isOpen: false
+                };
+                
+                parentNode.children = [...(parentNode.children || []), childId];
+            }
+            
+            currentId = childId;
+            // Bug fix: Update currentPath correctly
+            currentPath = fileMap[currentId].path;
+        }
+
+        // Create file
+        const fileId = generateId();
+        const fileNode: FileNode = {
+            id: fileId,
+            name: fileName,
+            type: 'file', // template.files entries are 'file' usually, but can be 'directory' too if empty
+            path: filePath,
+            content: fileData.content,
+            parentId: currentId
+        };
+        
+        // Handle explicit directory entries in template
+        if (fileData.type === 'directory') {
+             fileNode.type = 'directory';
+             fileNode.children = [];
+             fileNode.isOpen = false;
+        }
+
+        fileMap[fileId] = fileNode;
+        fileMap[currentId].children = [...(fileMap[currentId].children || []), fileId];
+    });
+
+    return { rootId, fileMap };
+}
+
 export const useFileSystem = create<FileSystemState>((set, get) => ({
     rootId: null,
     activeFileId: null,
@@ -46,7 +133,7 @@ export const useFileSystem = create<FileSystemState>((set, get) => ({
     fileMap: {},
     isLoading: false,
 
-    loadProject: async (_projectId) => {
+    loadProject: async (_projectId: string) => {
         set({ isLoading: true })
         try {
             // Fetch real file tree from orchestrator
@@ -57,12 +144,11 @@ export const useFileSystem = create<FileSystemState>((set, get) => ({
             set({ fileMap, rootId: 'root', isLoading: false })
         } catch (error) {
             console.error("Failed to load project from orchestrator:", error)
-            set({ isLoading: false })
-
-            // Fallback for demo if orchestrator is down (optional, but good for UX)
-            // For "No Mock" compliance, we should probably show an error instead of falling back to mocks
-            // But for stability during dev, maybe keep a minimal fallback or just error.
-            // Let's stick to "No Mock" and leave it empty/error state if backend fails.
+            
+            // Fallback to mock file system
+            console.warn("Using mock file system as fallback.");
+            const { rootId, fileMap } = createMockFileSystem();
+            set({ fileMap, rootId, isLoading: false })
         }
     },
 

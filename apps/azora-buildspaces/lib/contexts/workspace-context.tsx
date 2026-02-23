@@ -21,8 +21,8 @@ export interface Task {
   id: string
   title: string
   description: string
-  status: "todo" | "in-progress" | "done" | "pending" | "active" | "complete" | "error"
-  priority: "low" | "medium" | "high"
+  status: "todo" | "in-progress" | "done" | "pending" | "active" | "complete" | "error" | "backlog" | "in-review" | "cancelled"
+  priority: "low" | "medium" | "high" | "urgent" | "none"
   assignee?: string
   agentId?: string
   agentName?: string
@@ -52,15 +52,34 @@ export function WorkspaceProvider({ children, initialRoom }: { children: React.R
   const [tasks, setTasks] = useState<Task[]>([])
 
   useEffect(() => {
-    const savedRoom = localStorage.getItem('lastActiveRoom') as RoomType | null
-    if (savedRoom && !initialRoom) {
-      setActiveRoomState(savedRoom)
+    if (initialRoom) {
+      setActiveRoomState(initialRoom)
+    } else {
+      const savedRoom = localStorage.getItem('lastActiveRoom') as RoomType | null
+      if (savedRoom) {
+        setActiveRoomState(savedRoom)
+      }
     }
   }, [initialRoom])
 
   const setActiveRoom = (room: RoomType) => {
     setActiveRoomState(room)
     localStorage.setItem('lastActiveRoom', room)
+
+    // Track visited rooms for cross-room achievements
+    try {
+      const visited = JSON.parse(localStorage.getItem('buildspaces-visited-rooms') || '[]')
+      if (!visited.includes(room)) {
+        visited.push(room)
+        localStorage.setItem('buildspaces-visited-rooms', JSON.stringify(visited))
+        // Fire achievement event
+        fetch('/api/collectibles/achievements', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ event: visited.length >= 12 ? 'all-rooms-visited' : 'room-navigate', room, data: { visitedCount: visited.length } }),
+        }).catch(() => {})
+      }
+    } catch { /* silent */ }
   }
 
   const addTask = (task: Omit<Task, 'id'>) => {

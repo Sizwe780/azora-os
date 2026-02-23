@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { authOptions } from "@/lib/auth/config";
+import { prisma as db } from "@/lib/database/client";
 import { scaffoldProject } from "@/lib/scaffold-project";
 
 export async function launchWorkspace(projectId: string, organizationId: string) {

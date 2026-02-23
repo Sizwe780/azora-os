@@ -3,7 +3,7 @@
 import { POST } from '@/app/api/auth/register/route'
 
 // Mock the prisma client used by the route
-jest.mock('@/lib/db', () => ({
+jest.mock('@/lib/database/client', () => ({
   prisma: {
     user: {
       findUnique: jest.fn(),
@@ -12,7 +12,7 @@ jest.mock('@/lib/db', () => ({
   }
 }))
 
-import { prisma } from '@/lib/db'
+import { prisma } from '@/lib/database/client'
 
 describe('POST /api/auth/register', () => {
   afterEach(() => {

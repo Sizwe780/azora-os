@@ -77,7 +77,7 @@ export default async function CriticalReposPage() {
                   {r.url && (
                     <button
                       onClick={() => {
-                        navigator.clipboard?.writeText(`git clone ${r.url.replace('https://github.com/', 'git@github.com:')}.git`)
+                        navigator.clipboard?.writeText(`git clone ${r.url?.replace('https://github.com/', 'git@github.com:')}.git`)
                       }}
                       className="px-3 py-2 bg-white/5 rounded text-sm"
                     >

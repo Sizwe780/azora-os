@@ -1,82 +1,50 @@
 import { Navbar } from "@/components/features/navbar"
 import { Footer } from "@/components/features/footer"
-import { Scale, Gavel, CheckCircle, AlertCircle } from "lucide-react"
-import Link from "next/link"
+import { FileText } from "lucide-react"
 
 export default function TermsPage() {
   return (
     <div className="min-h-screen bg-[#0d1117] text-white">
       <Navbar />
-      <main className="py-24 px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-4xl">
-          <div className="mb-12">
-            <h1 className="text-4xl font-bold mb-4">Terms of Service</h1>
-            <p className="text-gray-400">Last updated: December 31, 2025</p>
+      <main>
+        <section className="relative py-24 lg:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-gray-500/5 to-transparent" />
+          <div className="relative mx-auto max-w-4xl text-center">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-500/10 border border-gray-500/20 text-gray-400 text-xs font-bold uppercase tracking-wider mb-6">
+              <FileText className="h-3.5 w-3.5" />
+              Terms of Service
+            </div>
+            <h1 className="text-4xl sm:text-5xl font-bold mb-6">
+              Terms of
+              <span className="bg-gradient-to-r from-gray-400 to-gray-300 bg-clip-text text-transparent"> Service</span>
+            </h1>
+            <p className="text-sm text-gray-500">Last updated: January 15, 2026</p>
           </div>
+        </section>
 
-          <div className="space-y-12">
-            <section>
-              <div className="flex items-center gap-3 mb-4">
-                <Scale className="h-6 w-6 text-emerald-400" />
-                <h2 className="text-2xl font-bold">1. Acceptance of Terms</h2>
-              </div>
-              <p className="text-gray-400 leading-relaxed">
-                By accessing or using the Azora platform and BuildSpaces, you agree to be bound by these 
-                Terms of Service and our Constitutional AI principles. If you do not agree to these terms, 
-                please do not use our services.
-              </p>
-            </section>
-
-            <section>
-              <div className="flex items-center gap-3 mb-4">
-                <CheckCircle className="h-6 w-6 text-emerald-400" />
-                <h2 className="text-2xl font-bold">2. Use of Services</h2>
-              </div>
-              <p className="text-gray-400 leading-relaxed mb-4">
-                You are responsible for all activity that occurs under your account. 
-                You agree to use the services only for lawful purposes and in accordance 
-                with the Azora Constitution.
-              </p>
-              <div className="p-4 rounded-lg bg-white/5 border border-white/10 flex gap-4">
-                <AlertCircle className="h-5 w-5 text-emerald-400 shrink-0 mt-1" />
-                <p className="text-sm text-gray-400">
-                  Misuse of AI agents to generate harmful, illegal, or unethical content 
-                  is a violation of these terms and will result in immediate account suspension.
-                </p>
-              </div>
-            </section>
-
-            <section>
-              <div className="flex items-center gap-3 mb-4">
-                <Gavel className="h-6 w-6 text-emerald-400" />
-                <h2 className="text-2xl font-bold">3. Intellectual Property</h2>
-              </div>
-              <p className="text-gray-400 leading-relaxed">
-                You retain all rights to the content you create and the data you provide. 
-                Azora retains all rights to the platform infrastructure, agent frameworks, 
-                and proprietary algorithms.
-              </p>
-            </section>
-
-            <section>
-              <h2 className="text-2xl font-bold mb-4">4. Limitation of Liability</h2>
-              <p className="text-gray-400 leading-relaxed">
-                Azora provides its services "as is" and "as available." We do not guarantee 
-                that the services will be uninterrupted or error-free. In no event shall 
-                Azora be liable for any indirect, incidental, or consequential damages.
-              </p>
-            </section>
+        <section className="py-12 px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-3xl">
+            <div className="space-y-8">
+              {[
+                { title: "1. Acceptance of Terms", content: "By accessing or using Azora BuildSpaces, you agree to be bound by these Terms of Service. If you do not agree, do not use the service." },
+                { title: "2. Description of Service", content: "BuildSpaces is a cloud-based integrated development environment with AI-powered agents, real-time collaboration, and workspace management tools." },
+                { title: "3. User Accounts", content: "You must provide accurate information when creating an account. You are responsible for maintaining the security of your account credentials. You must be at least 16 years old to use the service." },
+                { title: "4. Acceptable Use", content: "You may not use BuildSpaces to: generate malicious software, violate any laws, infringe on intellectual property rights, attempt to circumvent Constitutional AI safety measures, or abuse AI agents." },
+                { title: "5. Your Content", content: "You retain full ownership of all code, specifications, and content you create using BuildSpaces. We claim no intellectual property rights over your work." },
+                { title: "6. AI Agent Usage", content: "AI agents provide suggestions and assistance only. You are responsible for reviewing and accepting any AI-generated code or content. All agent actions are subject to Constitutional AI validation." },
+                { title: "7. Open Source License", content: "The BuildSpaces platform is open source under the MIT License. Self-hosted instances are governed by the MIT License terms. The hosted service (azora.dev) is additionally governed by these Terms." },
+                { title: "8. Payment Terms", content: "Paid plans are billed monthly or annually. You may cancel at any time. Refunds are provided pro-rata for annual plans. No refunds for monthly plans." },
+                { title: "9. Limitation of Liability", content: "BuildSpaces is provided \"as is\" without warranties. We are not liable for any damages arising from the use of AI suggestions, code generated by agents, or service interruptions." },
+                { title: "10. Changes to Terms", content: "We may modify these terms with 30 days notice. Continued use after changes constitutes acceptance." },
+              ].map((section, i) => (
+                <div key={i} className="p-6 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+                  <h2 className="text-lg font-semibold mb-3">{section.title}</h2>
+                  <p className="text-sm text-gray-400 leading-relaxed">{section.content}</p>
+                </div>
+              ))}
+            </div>
           </div>
-
-          <div className="mt-16 p-8 rounded-xl bg-emerald-400/5 border border-emerald-400/10 text-center">
-            <p className="text-gray-400 mb-4">Legal questions?</p>
-            <a href="mailto:legal@azora.world" className="text-emerald-400 font-bold hover:underline">legal@azora.world</a>
-          </div>
-
-          <div className="mt-12 text-center">
-            <Link href="/" className="text-emerald-400 hover:underline">Back to home</Link>
-          </div>
-        </div>
+        </section>
       </main>
       <Footer />
     </div>

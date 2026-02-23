@@ -338,7 +338,7 @@ function MessageBubble({ message, onToolApproval }: MessageBubbleProps) {
   if (isAgent) {
     return (
       <div className="flex justify-start gap-2">
-        <AfricanAgentAvatar agent="elara" size="xs" showGlow={false} showAura={false} />
+        <AfricanAgentAvatar agent="elara" size="sm" showGlow={false} showAura={false} />
         <div className="max-w-[85%] space-y-2">
           <div className="rounded-lg px-3 py-2 bg-[#2d2d2d] text-gray-300 border border-[#3e3e42]">
             <p className="text-sm whitespace-pre-wrap">{message.content}</p>

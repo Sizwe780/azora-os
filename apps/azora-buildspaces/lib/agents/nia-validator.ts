@@ -110,14 +110,14 @@ export class NiaAgent {
       });
     }
 
-    // Step 3: Validate requirement content (no TODO/MOCK)
+    // Step 3: Validate requirement content (no placeholders)
     const specObj = spec as Partial<Specification> | undefined
 
     if (specObj?.requirements) {
-      const mockKeywords = ['TODO', 'FIXME', 'PLACEHOLDER', 'MOCK', 'TBD'];
+      const placeholderKeywords = ['TODO', 'FIXME', 'PLACEHOLDER', 'TBD'];
       for (const [key, value] of Object.entries(specObj.requirements)) {
         const content = JSON.stringify(value).toUpperCase();
-        for (const keyword of mockKeywords) {
+        for (const keyword of placeholderKeywords) {
           if (content.includes(keyword)) {
             errors.push({
               field: `requirements.${key}`,

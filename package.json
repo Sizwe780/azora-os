@@ -19,7 +19,8 @@
     "deploy:production": "bash scripts/production-deploy.sh",
     "deploy:post-check": "ts-node scripts/post-deployment-check.ts",
     "optimize:production": "ts-node scripts/production-optimization.ts",
-    "improve:continuous": "ts-node scripts/continuous-improvement.ts",
+    "improve:continuous": "ts-node scripts/continuous-improvement.ts"
+    ,
     "precommit:scan": "node ./scripts/prevent-secrets.js",
     "hooks:install": "npx husky install",
     "scan:todos": "node ./scripts/list-todos.js",
@@ -30,12 +31,9 @@
     "lint": "turbo run lint",
     "turbo:inspect": "turbo inspect",
     "ci": "pnpm install && pnpm run build",
-    "prisma:migrate:deploy": "pnpm -w exec prisma migrate deploy --schema=prisma/schema.prisma",
-    "workspace:info": "pnpm ls -r",
-    "git:commit-push": "bash ./scripts/git-commit-push.sh",
-    "playwright:install": "npx playwright install --with-deps",
-    "test:e2e": "npx playwright test",
-    "test:e2e:ci": "npx playwright test --reporter=github --workers=2"
+    "workspace:info": "pnpm ls -r"
+    ,
+    "git:commit-push": "bash ./scripts/git-commit-push.sh"
   },
   "engines": {
     "node": ">=20"
@@ -50,17 +48,20 @@
   "devDependencies": {
     "@babel/preset-env": "7.28.5",
     "@babel/preset-typescript": "7.28.5",
-    "@playwright/test": "^1.57.0",
-    "@prisma/client": "^7.2.0",
     "@types/jest": "30.0.0",
+    "@types/node": "20.5.2",
     "babel-jest": "30.2.0",
-    "bcryptjs": "^2.4.3",
-    "husky": "8.0.3",
     "jest": "30.2.0",
-    "prisma": "^7.2.0",
-    "rimraf": "^5.0.0",
     "ts-jest": "29.4.5",
-    "turbo": "^1.6.5",
     "typescript": "5.9.3"
+    ,
+    "husky": "8.0.3"
+    ,
+    "turbo": "^1.6.5",
+    "rimraf": "^5.0.0"
   }
 }
+
+
+
+

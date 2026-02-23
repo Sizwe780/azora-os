@@ -50,7 +50,7 @@ function getIp(req: NextRequest) {
   if (realIp) return realIp
 
 
-  return req.ip ?? "unknown"
+  return (req as any).ip ?? "unknown"
 }
 
 function cleanupBuckets(now: number) {

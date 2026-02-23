@@ -1,8 +1,6 @@
 packages:
   - 'apps/*'
-  - 'apps/**'
   - 'packages/*'
-  - 'packages/**'
   - 'services/*'
-  - 'services/**'
   - '.github/workflows'
+

@@ -169,35 +169,81 @@ BuildSpaces provides developers with specialized "rooms" for different aspects o
 ### Environment Variables Required
 
 #### Essential (Core Functionality)
+
+These variables are **required** for BuildSpaces to function:
+
 ```env
-DATABASE_URL=postgresql://user:password@host:5432/azora
+# Database - PostgreSQL connection string
+DATABASE_URL=postgresql://user:password@host:5432/azora_buildspaces
+
+# Authentication - NextAuth configuration
 NEXTAUTH_SECRET=<generate-with-openssl-rand-base64-32>
-NEXTAUTH_URL=https://buildspaces.azora.world
+NEXTAUTH_URL=http://localhost:3002  # or your production URL
+
+# Application
+NODE_ENV=development  # or production
 ```
 
-#### Optional (Enhanced Features)
+**Generate secrets**:
+```bash
+# Generate NEXTAUTH_SECRET
+openssl rand -base64 32
+
+# Or use Node.js
+node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+```
+
+#### Recommended (Enhanced Features)
+
 ```env
-# AI Providers (at least one recommended)
-OPENAI_API_KEY=sk-...
-ANTHROPIC_API_KEY=sk-ant-...
+# AI Providers (at least one recommended for AI features)
+OPENAI_API_KEY=sk-...              # For GPT-4 integration
+ANTHROPIC_API_KEY=sk-ant-...       # For Claude integration
 
 # Real-time Features
-REDIS_URL=redis://localhost:6379
+REDIS_URL=redis://localhost:6379   # For session caching and real-time sync
 
 # Design Studio
-FIGMA_TOKEN=figd_...
+FIGMA_TOKEN=figd_...               # For Figma integration
+NEXT_PUBLIC_FIGMA_ENABLED=true
 
 # AI Studio / Notebooks
 NOTEBOOK_EXECUTOR_URL=http://jupyter-kernel:8888
+NEXT_PUBLIC_NOTEBOOK_ENABLED=true
 
 # GitHub Integration
-GITHUB_TOKEN=ghp_...
-
-# Monitoring
-SENTRY_DSN=https://...@sentry.io/...
+GITHUB_TOKEN=ghp_...               # For repository operations
 ```
 
-See `apps/azora-buildspaces/.env.example` for complete list.
+#### Optional (Advanced Features)
+
+```env
+# Monitoring & Observability
+SENTRY_DSN=https://...@sentry.io/...
+PROMETHEUS_ENABLED=true
+LOG_LEVEL=info
+
+# Payments & Economy
+STRIPE_SECRET_KEY=sk_live_...
+STRIPE_PUBLISHABLE_KEY=pk_live_...
+AZR_MINT_ENABLED=true
+
+# Feature Flags
+ENABLE_CONSTITUTIONAL_GATES=true
+ENABLE_AGENT_EXECUTION=true
+SANDBOX_ENABLED=true
+```
+
+#### Environment Variable Validation
+
+BuildSpaces validates environment variables on startup using Zod schemas. If required variables are missing, you'll see clear error messages:
+
+```bash
+# Validate environment configuration
+pnpm verify:env
+```
+
+See `.env.example` for the complete list with descriptions.
 
 ---
 
@@ -231,6 +277,31 @@ See `apps/azora-buildspaces/.env.example` for complete list.
 
 ### Local Development
 
+#### Automated Setup (Recommended)
+
+Run the automated setup script from the repository root:
+
+```bash
+# Navigate to buildspaces directory
+cd apps/azora-buildspaces
+
+# Run setup script
+pnpm setup
+```
+
+This script will:
+- ✅ Check Node.js and pnpm versions
+- ✅ Verify `.env.local` exists (or guide you to create it)
+- ✅ Validate required environment variables
+- ✅ Generate Prisma client
+- ✅ Run database migrations
+- ✅ Verify database connectivity
+- ✅ Display setup summary
+
+#### Manual Setup
+
+If you prefer manual setup or need to troubleshoot:
+
 1. **Install dependencies** (from repository root):
    ```bash
    pnpm install --frozen-lockfile
@@ -238,30 +309,58 @@ See `apps/azora-buildspaces/.env.example` for complete list.
 
 2. **Set up environment variables**:
    ```bash
-   cp apps/azora-buildspaces/.env.example apps/azora-buildspaces/.env.local
-   # Edit .env.local with your values
+   cd apps/azora-buildspaces
+   cp .env.example .env.local
+   ```
+   
+   Edit `.env.local` and configure at minimum:
+   ```env
+   DATABASE_URL=postgresql://user:password@localhost:5432/azora_buildspaces
+   NEXTAUTH_SECRET=<generate-with-openssl-rand-base64-32>
+   NEXTAUTH_URL=http://localhost:3002
    ```
 
 3. **Generate Prisma client**:
    ```bash
+   # From repository root
+   pnpm prisma:generate
+   
+   # Or with explicit DATABASE_URL
    DATABASE_URL="postgresql://..." pnpm exec prisma generate
    ```
+   
+   > 📖 **Detailed Guide**: See [PRISMA_GENERATION_GUIDE.md](./PRISMA_GENERATION_GUIDE.md) for comprehensive Prisma client generation instructions, troubleshooting, and verification steps.
 
 4. **Run database migrations**:
    ```bash
+   # From repository root
+   pnpm prisma:migrate
+   
+   # Or with explicit DATABASE_URL
    DATABASE_URL="postgresql://..." pnpm exec prisma migrate dev
    ```
 
-   ⚠️ If you added or updated models (e.g., `AuditLog`), ensure the migration exists in `prisma/migrations` or create one via `pnpm exec prisma migrate dev --name add_audit_log` and then re-run the migrate command.
-
-5. **Start development server**:
+5. **Verify setup**:
    ```bash
-   pnpm run dev --filter=azora-buildspaces
+   cd apps/azora-buildspaces
+   pnpm verify:prisma
+   pnpm verify:env
    ```
 
-6. **Access the app**:
+6. **Start development server**:
+   ```bash
+   # From repository root
+   pnpm run dev --filter=azora-buildspaces
+   
+   # Or from buildspaces directory
+   cd apps/azora-buildspaces
+   pnpm dev
+   ```
+
+7. **Access the app**:
    - BuildSpaces: `http://localhost:3002`
    - Health check: `http://localhost:3002/api/health`
+   - API metrics: `http://localhost:3002/api/metrics`
 
 ### Running Tests
 
@@ -473,6 +572,476 @@ pnpm --filter=azora-buildspaces test:coverage
 
 ---
 
+## 🔧 Troubleshooting
+
+### Common Setup Issues
+
+#### 1. Prisma Client Not Generated
+
+**Error**: `Cannot find module '@prisma/client'` or `PrismaClient is not a constructor`
+
+**Solution**:
+```bash
+# Generate Prisma client
+pnpm prisma:generate
+
+# Or with explicit DATABASE_URL
+DATABASE_URL="postgresql://..." pnpm exec prisma generate
+
+# Verify generation
+pnpm verify:prisma
+pnpm verify:prisma:generation
+```
+
+**Why it happens**: The Prisma client must be generated after installing dependencies or changing the schema.
+
+> 📖 **Detailed Guide**: See [PRISMA_GENERATION_GUIDE.md](./PRISMA_GENERATION_GUIDE.md) for step-by-step instructions, verification steps, and advanced troubleshooting.
+
+---
+
+#### 2. Database Connection Failed
+
+**Error**: `Can't reach database server` or `Connection refused`
+
+**Solutions**:
+
+a) **Check DATABASE_URL format**:
+```env
+# Correct format
+DATABASE_URL=postgresql://username:password@host:port/database
+
+# Example
+DATABASE_URL=postgresql://postgres:mypassword@localhost:5432/azora_buildspaces
+```
+
+b) **Verify PostgreSQL is running**:
+```bash
+# Check if PostgreSQL is running
+pg_isready
+
+# Or check the service
+sudo systemctl status postgresql  # Linux
+brew services list | grep postgresql  # macOS
+```
+
+c) **Test connection manually**:
+```bash
+psql -h localhost -U postgres -d azora_buildspaces
+```
+
+d) **Check firewall/network**:
+- Ensure port 5432 is open
+- Check if PostgreSQL accepts remote connections (if not localhost)
+
+---
+
+#### 3. Database Schema Out of Sync
+
+**Error**: `Invalid prisma.table.findMany() invocation` or `Unknown field`
+
+**Solution**:
+```bash
+# Run migrations
+pnpm prisma:migrate
+
+# Or reset database (⚠️ deletes all data)
+DATABASE_URL="..." pnpm exec prisma migrate reset
+
+# Then regenerate client
+pnpm prisma:generate
+```
+
+---
+
+#### 4. Authentication Not Working
+
+**Error**: `Invalid credentials` or `Session not found`
+
+**Solutions**:
+
+a) **Check NEXTAUTH_SECRET is set**:
+```bash
+# Generate a new secret
+openssl rand -base64 32
+
+# Add to .env.local
+NEXTAUTH_SECRET=<generated-secret>
+```
+
+b) **Verify NEXTAUTH_URL matches your environment**:
+```env
+# Development
+NEXTAUTH_URL=http://localhost:3002
+
+# Production
+NEXTAUTH_URL=https://buildspaces.azora.world
+```
+
+c) **Check database adapter is working**:
+```bash
+# Verify database connectivity
+curl http://localhost:3002/api/health
+```
+
+d) **Development fallback mode**:
+If database is unavailable, BuildSpaces provides dev credentials:
+- Email: `admin@azora.world`
+- Password: `Azora2026!`
+
+This only works in development (`NODE_ENV !== production`).
+
+---
+
+#### 5. Port Already in Use
+
+**Error**: `Port 3002 is already in use`
+
+**Solutions**:
+
+a) **Find and kill the process**:
+```bash
+# Find process using port 3002
+lsof -i :3002  # macOS/Linux
+netstat -ano | findstr :3002  # Windows
+
+# Kill the process
+kill -9 <PID>  # macOS/Linux
+taskkill /PID <PID> /F  # Windows
+```
+
+b) **Use a different port**:
+```bash
+PORT=3003 pnpm dev
+```
+
+---
+
+#### 6. Module Not Found Errors
+
+**Error**: `Cannot find module 'X'` or `Module not found: Can't resolve 'Y'`
+
+**Solutions**:
+
+a) **Clean install**:
+```bash
+# Remove node_modules and lockfile
+rm -rf node_modules pnpm-lock.yaml
+
+# Reinstall from repository root
+pnpm install --frozen-lockfile
+```
+
+b) **Clear Next.js cache**:
+```bash
+rm -rf .next
+pnpm dev
+```
+
+c) **Verify you're in the correct directory**:
+```bash
+# Should be in repository root for pnpm commands
+pwd  # Should show /path/to/azora
+
+# Or in buildspaces directory
+cd apps/azora-buildspaces
+```
+
+---
+
+#### 7. TypeScript Errors
+
+**Error**: Type errors or `Cannot find type definition`
+
+**Solutions**:
+
+a) **Regenerate Prisma types**:
+```bash
+pnpm prisma:generate
+```
+
+b) **Restart TypeScript server** (in VS Code):
+- Press `Cmd+Shift+P` (macOS) or `Ctrl+Shift+P` (Windows/Linux)
+- Type "TypeScript: Restart TS Server"
+
+c) **Check tsconfig.json**:
+Ensure `prisma/generated` is in include paths (should be automatic).
+
+---
+
+#### 8. Build Failures
+
+**Error**: Build fails with various errors
+
+**Solutions**:
+
+a) **Check for syntax errors**:
+```bash
+# Run TypeScript check
+pnpm type-check
+```
+
+b) **Verify all environment variables**:
+```bash
+pnpm verify:env
+```
+
+c) **Clean build**:
+```bash
+rm -rf .next
+rm -rf node_modules/.cache
+pnpm build
+```
+
+---
+
+### Code Organization Issues
+
+#### Import Errors After Reorganization
+
+If you see errors like `Module not found: Can't resolve 'lib/db'`:
+
+**Solution**: The codebase has been reorganized. Update imports:
+
+```typescript
+// ❌ Old imports (deprecated)
+import { prisma } from 'lib/db'
+import { prisma } from 'lib/prisma'
+import { authOptions } from 'lib/auth'
+
+// ✅ New imports (current)
+import { prisma } from 'lib/database/client'
+import { authOptions } from 'lib/auth/config'
+```
+
+Run the verification script to check for outdated imports:
+```bash
+pnpm verify:auth-imports
+```
+
+---
+
+### Performance Issues
+
+#### Slow Database Queries
+
+**Solutions**:
+
+a) **Check connection pooling**:
+```env
+# In .env.local
+DATABASE_URL=postgresql://user:pass@host:5432/db?connection_limit=20
+```
+
+b) **Monitor slow queries**:
+```bash
+# Enable Prisma query logging
+DEBUG=prisma:query pnpm dev
+```
+
+c) **Add database indexes** (if needed):
+Check `prisma/schema.prisma` for `@@index` directives on frequently queried fields.
+
+---
+
+#### High Memory Usage
+
+**Solutions**:
+
+a) **Check for memory leaks**:
+```bash
+# Monitor memory
+node --inspect pnpm dev
+# Open chrome://inspect in Chrome
+```
+
+b) **Reduce connection pool size**:
+```env
+DATABASE_URL=postgresql://...?connection_limit=10
+```
+
+---
+
+### Getting Help
+
+If you're still experiencing issues:
+
+1. **Check the health endpoint**:
+   ```bash
+   curl http://localhost:3002/api/health
+   ```
+
+2. **Review logs**:
+   ```bash
+   # Development logs are in console
+   # Production logs (if using Docker):
+   docker logs <container-id>
+   ```
+
+3. **Run diagnostics**:
+   ```bash
+   pnpm verify:prisma
+   pnpm verify:env
+   ```
+
+4. **Check related documentation**:
+   - [Database Guide](../../docs/DATABASE-GUIDE.md)
+   - [Deployment Guide](../../docs/DEPLOYMENT.md)
+   - [Security Guide](../../docs/SECURITY.md)
+
+5. **Report an issue**:
+   - Include error messages
+   - Include relevant logs
+   - Include environment details (OS, Node version, etc.)
+   - Include steps to reproduce
+
+---
+
+## 📁 Code Organization
+
+### New Structure (Post-Reorganization)
+
+BuildSpaces follows a modular, domain-driven code organization:
+
+```
+apps/azora-buildspaces/
+├── app/                          # Next.js App Router
+│   ├── api/                      # API routes
+│   │   ├── auth/                 # Authentication endpoints
+│   │   │   └── [...nextauth]/   # NextAuth handler
+│   │   ├── health/               # Health check endpoint
+│   │   ├── agents/               # AI agent endpoints
+│   │   ├── buildspaces/          # Project management
+│   │   ├── chat/                 # Command Desk chat
+│   │   ├── design/               # Design Studio (Figma)
+│   │   ├── economy/              # Token economy
+│   │   ├── fs/                   # File system operations
+│   │   ├── knowledge/            # Knowledge Ocean search
+│   │   ├── maker-lab/            # Database designer
+│   │   ├── marketplace/          # Template marketplace
+│   │   ├── metrics/              # Prometheus metrics
+│   │   └── notebook/             # AI Studio notebooks
+│   ├── (dashboard)/              # Dashboard layout group
+│   └── (auth)/                   # Auth layout group
+│
+├── lib/                          # Core business logic
+│   ├── database/                 # ✨ Database module
+│   │   ├── client.ts             # Prisma client singleton
+│   │   ├── types.ts              # Database type exports
+│   │   ├── utils.ts              # Database utilities
+│   │   └── index.ts              # Main export
+│   │
+│   ├── auth/                     # ✨ Authentication module
+│   │   ├── config.ts             # NextAuth configuration
+│   │   ├── providers.ts          # Auth providers (GitHub, Google, etc.)
+│   │   ├── callbacks.ts          # NextAuth callbacks
+│   │   ├── utils.ts              # Password hashing, verification
+│   │   └── index.ts              # Main export
+│   │
+│   ├── config/                   # ✨ Configuration module
+│   │   ├── env.ts                # Environment validation (Zod)
+│   │   ├── constants.ts          # Application constants
+│   │   └── index.ts              # Main export
+│   │
+│   ├── agents/                   # AI agent interfaces
+│   │   ├── orchestrator.ts       # Workflow orchestration
+│   │   ├── sankofa-interface.ts  # Sankofa AI integration
+│   │   └── types.ts              # Agent types
+│   │
+│   ├── economy/                  # Token economy
+│   │   ├── mining-engine.ts      # AZR token mining
+│   │   └── wallet.ts             # Wallet operations
+│   │
+│   ├── knowledge/                # Knowledge Ocean
+│   │   ├── indexer.ts            # File indexing
+│   │   └── search.ts             # Semantic search
+│   │
+│   ├── services/                 # External services
+│   │   ├── file-system.ts        # File operations
+│   │   ├── integrated-terminal.ts # Terminal service
+│   │   └── constitutional-ai.ts  # Constitutional validation
+│   │
+│   └── utils.ts                  # General utilities
+│
+├── components/                   # React components
+│   ├── ui/                       # shadcn/ui components
+│   ├── rooms/                    # Room-specific components
+│   └── shared/                   # Shared components
+│
+├── scripts/                      # ✨ Utility scripts
+│   ├── setup.ts                  # Automated setup
+│   ├── verify-prisma.ts          # Prisma verification
+│   └── verify-auth-imports.ts    # Import verification
+│
+├── tests/                        # Test files
+│   ├── api/                      # API endpoint tests
+│   └── lib/                      # Library tests
+│
+├── public/                       # Static assets
+├── styles/                       # Global styles
+└── k8s/                          # Kubernetes manifests
+```
+
+### Key Principles
+
+1. **Single Source of Truth**
+   - Database client: `lib/database/client.ts`
+   - Auth configuration: `lib/auth/config.ts`
+   - Environment config: `lib/config/env.ts`
+
+2. **Clear Module Boundaries**
+   - Each module has a clear responsibility
+   - Modules export through `index.ts` for clean imports
+   - No circular dependencies
+
+3. **Type Safety**
+   - All modules are fully typed with TypeScript
+   - Prisma generates types automatically
+   - Zod validates runtime data
+
+4. **Testability**
+   - Business logic separated from UI
+   - Modules can be tested independently
+   - Mock-free testing (real database/APIs)
+
+### Import Patterns
+
+```typescript
+// ✅ Correct imports (use these)
+import { prisma, PRISMA_AVAILABLE } from 'lib/database/client'
+import { authOptions } from 'lib/auth/config'
+import { env } from 'lib/config/env'
+import { hashPassword, verifyPassword } from 'lib/auth/utils'
+
+// ❌ Deprecated imports (don't use)
+import { prisma } from 'lib/db'           // File removed
+import { prisma } from 'lib/prisma'       // File removed
+import { authOptions } from 'lib/auth'    // Moved to lib/auth/config
+```
+
+### Migration Guide
+
+If you have existing code using old imports:
+
+1. **Find all occurrences**:
+   ```bash
+   grep -r "from 'lib/db'" .
+   grep -r "from 'lib/prisma'" .
+   ```
+
+2. **Update imports**:
+   ```bash
+   # Run verification script
+   pnpm verify:auth-imports
+   ```
+
+3. **Test changes**:
+   ```bash
+   pnpm type-check
+   pnpm test
+   ```
+
+---
+
 ## 🚦 Health Monitoring
 
 ### Health Check Endpoint: `/api/health`
@@ -553,12 +1122,27 @@ Proprietary - Azora ES (Pty) Ltd
 
 ## 🔗 Related Documentation
 
-- [Production Readiness Report](./PRODUCTION-READINESS.md)
-- [Gap Analysis](./BUILDSPACES-GAP-ANALYSIS.md)
-- [Constitutional Compliance Audit](./BUILDSPACES-AUDIT-REPORT.md)
-- [Root Apps README](../README.md)
-- [Azora Constitution](../../CONSTITUTION.md)
-- [AI Dev Laws](../../AI_DEV_LAWS.md)
+- **Setup & Configuration**:
+  - [SETUP.md](./SETUP.md) - Detailed setup instructions
+  - [CODE_ORGANIZATION.md](./CODE_ORGANIZATION.md) - Code structure and patterns
+  - [.env.example](./.env.example) - Environment variables reference
+
+- **Production & Deployment**:
+  - [Production Readiness Report](./PRODUCTION-READINESS.md)
+  - [Gap Analysis](./BUILDSPACES-GAP-ANALYSIS.md)
+  - [Constitutional Compliance Audit](./BUILDSPACES-AUDIT-REPORT.md)
+
+- **General Documentation**:
+  - [Root Apps README](../README.md)
+  - [Database Guide](../../docs/DATABASE-GUIDE.md)
+  - [Deployment Guide](../../docs/DEPLOYMENT.md)
+  - [Security Guide](../../docs/SECURITY.md)
+  - [Testing Guide](../../docs/testing/TESTING-STANDARDS.md)
+
+- **Azora Philosophy**:
+  - [Azora Constitution](../../CONSTITUTION.md)
+  - [AI Dev Laws](../../AI_DEV_LAWS.md)
+  - [Ubuntu Philosophy](../../docs/UBUNTU-PHILOSOPHY.md)
 
 ---
 

@@ -1,83 +1,96 @@
+'use client'
+
 import { Navbar } from "@/components/features/navbar"
 import { Footer } from "@/components/features/footer"
-import { Mail, MessageSquare, MapPin, Globe } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
+import { Mail, MessageSquare, MapPin, Send } from "lucide-react"
+import { useState } from "react"
 
 export default function ContactPage() {
+  const [submitted, setSubmitted] = useState(false)
+
   return (
     <div className="min-h-screen bg-[#0d1117] text-white">
       <Navbar />
-      <main className="py-24 px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-5xl">
-          <div className="text-center mb-16">
-            <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent">
-              Get in Touch
-            </h1>
-            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-              Have questions about Azora, BuildSpaces, or our AI infrastructure? 
-              Our team is here to help you navigate the future.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-            <div className="p-8 rounded-2xl bg-white/5 border border-white/10 text-center">
-              <Mail className="h-10 w-10 text-emerald-400 mx-auto mb-4" />
-              <h3 className="text-xl font-bold mb-2">General Inquiries</h3>
-              <p className="text-gray-400 text-sm mb-6">For general questions and partnership opportunities.</p>
-              <a href="mailto:hello@azora.world" className="text-emerald-400 font-medium hover:underline">hello@azora.world</a>
-            </div>
-            <div className="p-8 rounded-2xl bg-white/5 border border-white/10 text-center">
-              <MessageSquare className="h-10 w-10 text-emerald-400 mx-auto mb-4" />
-              <h3 className="text-xl font-bold mb-2">Sales & Enterprise</h3>
-              <p className="text-gray-400 text-sm mb-6">For custom plans, enterprise deployments, and demos.</p>
-              <a href="mailto:sales@azora.world" className="text-emerald-400 font-medium hover:underline">sales@azora.world</a>
-            </div>
-            <div className="p-8 rounded-2xl bg-white/5 border border-white/10 text-center">
-              <Globe className="h-10 w-10 text-emerald-400 mx-auto mb-4" />
-              <h3 className="text-xl font-bold mb-2">Support</h3>
-              <p className="text-gray-400 text-sm mb-6">Need help with your workspace or agent execution?</p>
-              <a href="mailto:support@azora.world" className="text-emerald-400 font-medium hover:underline">support@azora.world</a>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-8">
+      <main>
+        <section className="relative py-24 lg:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-blue-500/5 to-transparent" />
+          <div className="relative mx-auto max-w-6xl">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+              {/* Left */}
               <div>
-                <h2 className="text-3xl font-bold mb-4">Global Presence</h2>
-                <p className="text-gray-400 leading-relaxed">
-                  Azora is a distributed organization with a global footprint. 
-                  While our roots are digital, our impact is felt across borders.
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold uppercase tracking-wider mb-6">
+                  <Mail className="h-3.5 w-3.5" />
+                  Contact
+                </div>
+                <h1 className="text-4xl sm:text-5xl font-bold mb-6 leading-tight">
+                  Get in
+                  <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent"> Touch</span>
+                </h1>
+                <p className="text-lg text-gray-400 mb-12 leading-relaxed">
+                  Have questions about BuildSpaces? Want to discuss enterprise plans?
+                  We&apos;d love to hear from you.
                 </p>
-              </div>
-              <div className="space-y-4">
-                <div className="flex items-start gap-4">
-                  <MapPin className="h-6 w-6 text-emerald-400 mt-1" />
-                  <div>
-                    <h4 className="font-bold">Digital Headquarters</h4>
-                    <p className="text-gray-400 text-sm">azora.world / decentralized</p>
-                  </div>
+                <div className="space-y-6">
+                  {[
+                    { icon: Mail, label: "Email", value: "hello@azora.dev" },
+                    { icon: MessageSquare, label: "Discord", value: "discord.gg/azora" },
+                    { icon: MapPin, label: "Location", value: "Remote-first, Global" },
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-center gap-4">
+                      <div className="p-2.5 rounded-lg bg-blue-500/10">
+                        <item.icon className="h-5 w-5 text-blue-400" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">{item.label}</p>
+                        <p className="text-sm text-gray-300">{item.value}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
-            </div>
-            <div className="p-8 rounded-3xl bg-gradient-to-br from-emerald-500/5 to-blue-500/5 border border-white/10">
-              <h3 className="text-2xl font-bold mb-6">Send us a message</h3>
-              <form className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <input type="text" placeholder="Name" className="w-full p-3 rounded-lg bg-white/5 border border-white/10 focus:border-emerald-400 outline-none transition-colors" />
-                  <input type="email" placeholder="Email" className="w-full p-3 rounded-lg bg-white/5 border border-white/10 focus:border-emerald-400 outline-none transition-colors" />
-                </div>
-                <input type="text" placeholder="Subject" className="w-full p-3 rounded-lg bg-white/5 border border-white/10 focus:border-emerald-400 outline-none transition-colors" />
-                <textarea placeholder="Message" rows={4} className="w-full p-3 rounded-lg bg-white/5 border border-white/10 focus:border-emerald-400 outline-none transition-colors resize-none"></textarea>
-                <Button className="w-full py-6 text-lg">Send Message</Button>
-              </form>
-            </div>
-          </div>
 
-          <div className="mt-16 text-center">
-            <Link href="/" className="text-emerald-400 hover:underline">Back to home</Link>
+              {/* Right — Form */}
+              <div className="p-8 rounded-2xl bg-white/[0.02] border border-white/[0.06]">
+                {submitted ? (
+                  <div className="flex flex-col items-center justify-center h-full text-center py-12">
+                    <div className="p-3 rounded-full bg-emerald-500/10 mb-4">
+                      <Send className="h-6 w-6 text-emerald-400" />
+                    </div>
+                    <h3 className="text-xl font-bold mb-2">Message Sent!</h3>
+                    <p className="text-gray-400">We&apos;ll get back to you within 24 hours.</p>
+                  </div>
+                ) : (
+                  <form onSubmit={(e) => { e.preventDefault(); setSubmitted(true) }} className="space-y-5">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-1.5">Name</label>
+                      <input type="text" required className="w-full px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06] text-white placeholder-gray-600 focus:border-blue-500/40 focus:outline-none transition-colors" placeholder="Your name" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-1.5">Email</label>
+                      <input type="email" required className="w-full px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06] text-white placeholder-gray-600 focus:border-blue-500/40 focus:outline-none transition-colors" placeholder="you@company.com" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-1.5">Subject</label>
+                      <select className="w-full px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06] text-white focus:border-blue-500/40 focus:outline-none transition-colors">
+                        <option value="general">General Inquiry</option>
+                        <option value="enterprise">Enterprise Plans</option>
+                        <option value="support">Technical Support</option>
+                        <option value="partnership">Partnership</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-1.5">Message</label>
+                      <textarea rows={5} required className="w-full px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06] text-white placeholder-gray-600 focus:border-blue-500/40 focus:outline-none transition-colors resize-none" placeholder="Tell us what you need..." />
+                    </div>
+                    <button type="submit" className="w-full py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl shadow-lg shadow-blue-500/20 transition-all flex items-center justify-center gap-2">
+                      <Send className="h-4 w-4" /> Send Message
+                    </button>
+                  </form>
+                )}
+              </div>
+            </div>
           </div>
-        </div>
+        </section>
       </main>
       <Footer />
     </div>

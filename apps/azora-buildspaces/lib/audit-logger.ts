@@ -123,6 +123,7 @@ class AuditLogger {
     // Send to external monitoring if configured
     if (process.env.SENTRY_DSN && (entry.severity === AuditSeverity.ERROR || entry.severity === AuditSeverity.CRITICAL)) {
       try {
+        // @ts-ignore
         const Sentry = await import("@sentry/node")
         Sentry.captureMessage(`[AUDIT] ${auditEntry.severity} - ${auditEntry.eventType}: ${auditEntry.error || ''}`)
       } catch (err) {

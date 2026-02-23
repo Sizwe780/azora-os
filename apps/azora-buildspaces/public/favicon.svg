@@ -1,0 +1,30 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="32" height="32" rx="6" fill="url(#gradient)"/>
+
+  <!-- Code brackets -->
+  <path d="M8 12L12 8L12 16L8 12Z" fill="#60A5FA"/>
+  <path d="M24 12L20 8L20 16L24 12Z" fill="#60A5FA"/>
+
+  <!-- Circuit lines -->
+  <rect x="14" y="10" width="4" height="1" fill="#34D399"/>
+  <rect x="14" y="13" width="4" height="1" fill="#34D399"/>
+  <rect x="14" y="16" width="4" height="1" fill="#34D399"/>
+
+  <!-- Nodes -->
+  <circle cx="16" cy="10.5" r="1" fill="#FBBF24"/>
+  <circle cx="16" cy="13.5" r="1" fill="#FBBF24"/>
+  <circle cx="16" cy="16.5" r="1" fill="#FBBF24"/>
+
+  <!-- Build icon -->
+  <path d="M16 6L20 10V14L16 18L12 14V10L16 6Z" fill="#A78BFA"/>
+  <rect x="14" y="10" width="4" height="1" fill="#FFFFFF"/>
+
+  <!-- Gradient definition -->
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1E293B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0F172A;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+</svg>

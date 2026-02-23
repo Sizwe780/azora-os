@@ -25,10 +25,24 @@ import {
     Flame,
     Gem,
     Shield,
-    Crown as CrownIcon,
     Infinity,
-    Heart
+    Heart,
+    Lock,
+    CheckCircle2
 } from "lucide-react";
+import { useRoomEvents } from "@/lib/hooks/use-room-events";
+
+interface Achievement {
+    id: string;
+    name: string;
+    description: string;
+    room: string;
+    power: number;
+    tier: keyof typeof RARITY_CONFIG;
+    icon: string;
+    unlocked: boolean;
+    unlockedAt?: string;
+}
 
 interface CollectibleCard {
     id: string;
@@ -44,27 +58,49 @@ interface CollectibleCard {
 }
 
 const RARITY_CONFIG = {
-    common: { color: 'bg-gray-500', textColor: 'text-gray-500', icon: Star, range: [0, 99] },
-    uncommon: { color: 'bg-green-500', textColor: 'text-green-500', icon: Award, range: [100, 499] },
-    rare: { color: 'bg-blue-500', textColor: 'text-blue-500', icon: Medal, range: [500, 999] },
-    epic: { color: 'bg-purple-500', textColor: 'text-purple-500', icon: Crown, range: [1000, 4999] },
-    legendary: { color: 'bg-orange-500', textColor: 'text-orange-500', icon: Flame, range: [5000, 9999] },
-    mythical: { color: 'bg-pink-500', textColor: 'text-pink-500', icon: Infinity, range: [10000, Infinity] }
+    common: { color: 'bg-gray-500', textColor: 'text-gray-500', icon: Star, range: [0, 99] as [number, number] },
+    uncommon: { color: 'bg-green-500', textColor: 'text-green-500', icon: Award, range: [100, 499] as [number, number] },
+    rare: { color: 'bg-blue-500', textColor: 'text-blue-500', icon: Medal, range: [500, 999] as [number, number] },
+    epic: { color: 'bg-purple-500', textColor: 'text-purple-500', icon: Crown, range: [1000, 4999] as [number, number] },
+    legendary: { color: 'bg-orange-500', textColor: 'text-orange-500', icon: Flame, range: [5000, 9999] as [number, number] },
+    mythical: { color: 'bg-pink-500', textColor: 'text-pink-500', icon: Infinity, range: [10000, Number.POSITIVE_INFINITY] as [number, number] }
 };
 
 export default function CollectibleShowcase() {
+    const { emit, ROOM_EVENTS } = useRoomEvents('collectible-showcase');
     const [cards, setCards] = useState<CollectibleCard[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [selectedCard, setSelectedCard] = useState<CollectibleCard | null>(null);
     const [activeTab, setActiveTab] = useState("gallery");
+    const [achievements, setAchievements] = useState<Achievement[]>([]);
+    const [recentUnlocks, setRecentUnlocks] = useState<Achievement[]>([]);
+    const [showUnlockBanner, setShowUnlockBanner] = useState(false);
+
+    // Fetch achievement progress
+    useEffect(() => {
+        const fetchAchievements = async () => {
+            try {
+                const resp = await fetch('/api/collectibles/achievements');
+                if (resp.ok) {
+                    const data = await resp.json();
+                    setAchievements(data.progress || []);
+                }
+            } catch { /* silent */ }
+        };
+        fetchAchievements();
+        // Poll for new achievements every 30 seconds
+        const interval = setInterval(fetchAchievements, 30000);
+        return () => clearInterval(interval);
+    }, []);
 
     useEffect(() => {
         const fetchCards = async () => {
             try {
                 const response = await fetch('/api/collectibles/cards');
-                if (!response.ok) throw new Error('Failed to fetch cards');
-                const data = await response.json();
-                setCards(data.cards);
+                if (response.ok) {
+                    const data = await response.json();
+                    setCards(data.cards || []);
+                }
             } catch (error) {
                 console.error('Error fetching cards:', error);
             } finally {
@@ -73,19 +109,59 @@ export default function CollectibleShowcase() {
         };
         fetchCards();
     }, []);
-    const [selectedCard, setSelectedCard] = useState<CollectibleCard | null>(null);
-    const [activeTab, setActiveTab] = useState("gallery");
 
-    // Real-time stats (simulated for now but using the formula)
+    // Group achievements by room
+    const achievementsByRoom = achievements.reduce((acc, a) => {
+        const room = a.room || 'cross-room';
+        if (!acc[room]) acc[room] = [];
+        acc[room].push(a);
+        return acc;
+    }, {} as Record<string, Achievement[]>);
+
+    const unlockedCount = achievements.filter(a => a.unlocked).length;
+    const totalAchievementPower = achievements.filter(a => a.unlocked).reduce((s, a) => s + a.power, 0);
+
     const [stats, setStats] = useState({
-        projects: 12,
-        courses: 5,
-        specs: 24,
-        contributions: 3,
-        teachingHours: 10,
-        azrEarned: 5000,
-        streak: 15
+        projects: 0,
+        courses: 0,
+        specs: 0,
+        contributions: 0,
+        teachingHours: 0,
+        azrEarned: 0,
+        streak: 0
     });
+
+    const [leaderboard, setLeaderboard] = useState<{ rank: number; name: string; power: number; badge: string }[]>([]);
+
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                const resp = await fetch('/api/collectibles/stats');
+                if (resp.ok) {
+                    const data = await resp.json();
+                    if (data.stats) setStats(data.stats);
+                }
+            } catch (error) {
+                console.error('Failed to fetch stats:', error);
+            }
+        };
+        fetchStats();
+    }, []);
+
+    useEffect(() => {
+        const fetchLeaderboard = async () => {
+            try {
+                const resp = await fetch('/api/collectibles/leaderboard');
+                if (resp.ok) {
+                    const data = await resp.json();
+                    if (data.entries) setLeaderboard(data.entries);
+                }
+            } catch (error) {
+                console.error('Failed to fetch leaderboard:', error);
+            }
+        };
+        fetchLeaderboard();
+    }, []);
 
     const calculatePowerScore = () => {
         const { projects, courses, specs, contributions, teachingHours, azrEarned, streak } = stats;
@@ -99,8 +175,24 @@ export default function CollectibleShowcase() {
     };
 
     const powerScore = calculatePowerScore();
-    const [totalMinted, setTotalMinted] = useState(3);
-    const [leaderboardRank, setLeaderboardRank] = useState(42);
+    const [totalMinted, setTotalMinted] = useState(0);
+    const [leaderboardRank, setLeaderboardRank] = useState(0);
+
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const resp = await fetch('/api/collectibles/profile');
+                if (resp.ok) {
+                    const data = await resp.json();
+                    setTotalMinted(data.totalMinted ?? 0);
+                    setLeaderboardRank(data.rank ?? 0);
+                }
+            } catch (error) {
+                console.error('Failed to fetch profile:', error);
+            }
+        };
+        fetchProfile();
+    }, []);
 
     const mintCard = async (cardId: string) => {
         try {
@@ -185,10 +277,17 @@ export default function CollectibleShowcase() {
             <div className="flex-1 overflow-hidden">
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full flex flex-col">
                     <div className="px-6 pt-4">
-                        <TabsList className="grid w-full grid-cols-4 bg-white/10">
+                        <TabsList className="grid w-full grid-cols-5 bg-white/10">
                             <TabsTrigger value="gallery" className="data-[state=active]:bg-white/20">
                                 <Trophy className="w-4 h-4 mr-2" />
                                 Gallery
+                            </TabsTrigger>
+                            <TabsTrigger value="achievements" className="data-[state=active]:bg-white/20">
+                                <Award className="w-4 h-4 mr-2" />
+                                Achievements
+                                {unlockedCount > 0 && (
+                                    <Badge className="ml-1.5 h-4 px-1 text-[9px] bg-emerald-500">{unlockedCount}</Badge>
+                                )}
                             </TabsTrigger>
                             <TabsTrigger value="leaderboard" className="data-[state=active]:bg-white/20">
                                 <TrendingUp className="w-4 h-4 mr-2" />
@@ -206,6 +305,82 @@ export default function CollectibleShowcase() {
                     </div>
 
                     <div className="flex-1 overflow-hidden">
+                        {/* Achievements Tab */}
+                        <TabsContent value="achievements" className="h-full m-0 p-6 overflow-y-auto">
+                            <div className="space-y-6">
+                                <div className="flex items-center justify-between">
+                                    <h2 className="text-xl font-bold text-white">Achievements</h2>
+                                    <div className="flex items-center gap-3">
+                                        <Badge className="bg-emerald-500/20 text-emerald-400">
+                                            {unlockedCount} / {achievements.length} Unlocked
+                                        </Badge>
+                                        <Badge className="bg-yellow-500/20 text-yellow-400">
+                                            {totalAchievementPower.toLocaleString()} Power
+                                        </Badge>
+                                    </div>
+                                </div>
+
+                                {Object.entries(achievementsByRoom).map(([room, roomAchievements]) => (
+                                    <div key={room}>
+                                        <h3 className="text-sm font-semibold text-slate-400 mb-3 uppercase tracking-wider flex items-center gap-2">
+                                            <div className="w-2 h-2 rounded-full bg-blue-500" />
+                                            {room.replace(/-/g, ' ')}
+                                        </h3>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                                            {roomAchievements.map((achievement) => {
+                                                const tierConfig = RARITY_CONFIG[achievement.tier] || RARITY_CONFIG.common;
+                                                return (
+                                                    <motion.div
+                                                        key={achievement.id}
+                                                        whileHover={{ scale: 1.02 }}
+                                                        className={`rounded-lg border p-4 transition-all ${
+                                                            achievement.unlocked
+                                                                ? `bg-gradient-to-br ${tierConfig.color}/10 border-${tierConfig.color}/50`
+                                                                : 'bg-white/5 border-white/10 opacity-60'
+                                                        }`}
+                                                    >
+                                                        <div className="flex items-start gap-3">
+                                                            <div className="text-2xl">{achievement.icon}</div>
+                                                            <div className="flex-1">
+                                                                <div className="flex items-center gap-2">
+                                                                    <h4 className="font-semibold text-white text-sm">{achievement.name}</h4>
+                                                                    {achievement.unlocked ? (
+                                                                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                                                                    ) : (
+                                                                        <Lock className="w-3 h-3 text-zinc-600" />
+                                                                    )}
+                                                                </div>
+                                                                <p className="text-xs text-slate-400 mt-0.5">{achievement.description}</p>
+                                                                <div className="flex items-center gap-2 mt-2">
+                                                                    <Badge variant="outline" className={`text-[9px] ${tierConfig.textColor}`}>
+                                                                        {achievement.tier.toUpperCase()}
+                                                                    </Badge>
+                                                                    <span className="text-[10px] text-yellow-400">+{achievement.power} power</span>
+                                                                    {achievement.unlockedAt && (
+                                                                        <span className="text-[10px] text-zinc-500">
+                                                                            {new Date(achievement.unlockedAt).toLocaleDateString()}
+                                                                        </span>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </motion.div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                ))}
+
+                                {achievements.length === 0 && (
+                                    <div className="text-center py-12">
+                                        <Award className="w-12 h-12 text-white/20 mx-auto mb-3" />
+                                        <p className="text-slate-400">Start using rooms to unlock achievements!</p>
+                                        <p className="text-xs text-slate-500 mt-1">Every action across all 12 rooms earns achievement progress</p>
+                                    </div>
+                                )}
+                            </div>
+                        </TabsContent>
+
                         <TabsContent value="stats" className="h-full m-0 p-6 overflow-y-auto">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <Card className="bg-white/5 border-white/10 text-white">
@@ -335,43 +510,39 @@ export default function CollectibleShowcase() {
                         <TabsContent value="leaderboard" className="h-full m-0 p-6 overflow-y-auto">
                             <div className="space-y-4">
                                 <h2 className="text-xl font-bold text-white mb-4">Global Leaderboard</h2>
-                                {[1, 2, 3, 4, 5].map((rank) => (
-                                    <Card key={rank} className="bg-white/10 border-white/20">
-                                        <CardContent className="p-4">
-                                            <div className="flex items-center justify-between">
-                                                <div className="flex items-center gap-4">
-                                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold ${rank === 1 ? 'bg-yellow-500 text-black' :
-                                                        rank === 2 ? 'bg-gray-400 text-black' :
-                                                            rank === 3 ? 'bg-orange-600 text-white' :
-                                                                'bg-white/20 text-white'
-                                                        }`}>
-                                                        {rank}
-                                                    </div>
-                                                    <div>
-                                                        <div className="font-bold text-white">
-                                                            {rank === 1 ? 'CodeMaster' :
-                                                                rank === 2 ? 'AIWizard' :
-                                                                    rank === 3 ? 'DesignGuru' :
-                                                                        `Developer${rank}`}
+                                {leaderboard.length === 0 ? (
+                                    <div className="text-center py-12">
+                                        <TrendingUp className="w-10 h-10 text-white/20 mx-auto mb-3" />
+                                        <p className="text-slate-500 text-sm">Loading leaderboard…</p>
+                                    </div>
+                                ) : (
+                                    leaderboard.map((entry) => (
+                                        <Card key={entry.rank} className="bg-white/10 border-white/20">
+                                            <CardContent className="p-4">
+                                                <div className="flex items-center justify-between">
+                                                    <div className="flex items-center gap-4">
+                                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold ${entry.rank === 1 ? 'bg-yellow-500 text-black' :
+                                                            entry.rank === 2 ? 'bg-gray-400 text-black' :
+                                                                entry.rank === 3 ? 'bg-orange-600 text-white' :
+                                                                    'bg-white/20 text-white'
+                                                            }`}>
+                                                            {entry.rank}
                                                         </div>
-                                                        <div className="text-sm text-slate-400">
-                                                            {rank === 1 ? '45,230' :
-                                                                rank === 2 ? '38,120' :
-                                                                    rank === 3 ? '32,890' :
-                                                                        `${30000 - rank * 1000}`} power
+                                                        <div>
+                                                            <div className="font-bold text-white">{entry.name}</div>
+                                                            <div className="text-sm text-slate-400">
+                                                                {entry.power.toLocaleString()} power
+                                                            </div>
                                                         </div>
                                                     </div>
+                                                    <Badge variant="outline" className="text-slate-400">
+                                                        {entry.badge}
+                                                    </Badge>
                                                 </div>
-                                                <Badge variant="outline" className="text-slate-400">
-                                                    {rank === 1 ? 'Champion' :
-                                                        rank === 2 ? 'Master' :
-                                                            rank === 3 ? 'Expert' :
-                                                                'Contributor'}
-                                                </Badge>
-                                            </div>
-                                        </CardContent>
-                                    </Card>
-                                ))}
+                                            </CardContent>
+                                        </Card>
+                                    ))
+                                )}
                             </div>
                         </TabsContent>
 

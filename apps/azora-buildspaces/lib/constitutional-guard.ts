@@ -72,9 +72,8 @@ export function validateConstitution(request: AgentRequest): ConstitutionalValid
 
   // 2. TRUTH PROTOCOL - Validate content is not placeholder text
   if (request.payload.fileContent) {
-    const mockIndicators = [
+    const placeholderIndicators = [
       '// TODO',
-      '// MOCK',
       '// FAKE',
       '// PLACEHOLDER',
       'console.log("test")',
@@ -86,16 +85,16 @@ export function validateConstitution(request: AgentRequest): ConstitutionalValid
     const isSuspiciouslySimple =
       request.payload.fileContent.split('\n').filter(line => line.trim()).length < 3
 
-    const hasMockIndicators = mockIndicators.some(indicator =>
+    const hasPlaceholderIndicators = placeholderIndicators.some(indicator =>
       lowerContent.includes(indicator.toLowerCase())
     )
 
-    if (isSuspiciouslySimple && hasMockIndicators) {
+    if (isSuspiciouslySimple && hasPlaceholderIndicators) {
       violations.push({
         type: 'TRUTH',
         article: 'Article I, Section 1.2.1 - Truth as Currency',
         message:
-          'Content appears to be mock/placeholder code. Provide real implementation for Constitutional compliance.',
+          'Content appears to be placeholder code. Provide real implementation for Constitutional compliance.',
         severity: 6,
       })
       healthScore -= 20

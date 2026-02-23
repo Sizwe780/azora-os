@@ -1,0 +1,2290 @@
+{
+  "id": "4e5ad563-0d60-4b9f-8538-cab85356e72e",
+  "timestamp": "2026-02-19T03:07:21.958Z",
+  "overallScore": 76,
+  "launchStatus": "NEEDS_WORK",
+  "results": [
+    {
+      "category": "CONSTITUTIONAL_COMPLIANCE",
+      "score": 77,
+      "passed": false,
+      "findings": [
+        {
+          "id": "0bbf6e37-2cd8-48a2-ad59-73bf1893682f",
+          "category": "CONSTITUTIONAL_COMPLIANCE",
+          "severity": "MEDIUM",
+          "title": "Constitutional AI: Missing privacy protection",
+          "description": "Constitutional AI should implement privacy protection per Article I Section 1.3.",
+          "constitutionalArticle": "Article I, Section 1.3",
+          "requirement": "1.1",
+          "filePath": "lib/services/constitutional-ai.ts",
+          "remediation": [
+            "Add privacy protection to Constitutional AI service",
+            "Document implementation in code comments",
+            "Ensure alignment with Article I Section 1.3"
+          ]
+        },
+        {
+          "id": "4e0edc4e-7c48-4061-838b-c10d68108114",
+          "category": "CONSTITUTIONAL_COMPLIANCE",
+          "severity": "MEDIUM",
+          "title": "Educational Constitution: Limited Learning Features",
+          "description": "No dedicated learning section found. Article IV requires accessible education.",
+          "constitutionalArticle": "Article IV, Section 4.1",
+          "requirement": "1.4",
+          "remediation": [
+            "Consider adding /learn route for educational content",
+            "Integrate AI tutoring features",
+            "Implement learning progress tracking"
+          ]
+        },
+        {
+          "id": "9850afbf-911e-4819-b4ef-3b231cf57c8e",
+          "category": "CONSTITUTIONAL_COMPLIANCE",
+          "severity": "LOW",
+          "title": "Governance Structure: No Governance Implementation",
+          "description": "No governance system found. Article VI requires community governance.",
+          "constitutionalArticle": "Article VI, Section 6.2",
+          "requirement": "1.6",
+          "remediation": [
+            "Consider implementing governance features for future releases",
+            "Plan for community proposal system",
+            "Design Constitutional Court mechanisms"
+          ]
+        },
+        {
+          "id": "62d0140c-8cb7-48f3-af01-9bedcf941109",
+          "category": "CONSTITUTIONAL_COMPLIANCE",
+          "severity": "MEDIUM",
+          "title": "Security & Protection: Missing Azora Aegis",
+          "description": "Azora Aegis security framework not found. Article VII requires comprehensive security.",
+          "constitutionalArticle": "Article VII, Section 7.1",
+          "requirement": "1.7",
+          "remediation": [
+            "Implement lib/security/aegis.ts security framework",
+            "Add threat detection mechanisms",
+            "Implement security monitoring"
+          ]
+        },
+        {
+          "id": "be51bac0-13c9-4be5-a8b8-a4f84a4e6224",
+          "category": "CONSTITUTIONAL_COMPLIANCE",
+          "severity": "LOW",
+          "title": "Security & Protection: No Backup System",
+          "description": "No backup system found. Article VII Section 7.1 recommends backup mechanisms.",
+          "constitutionalArticle": "Article VII, Section 7.1",
+          "requirement": "1.7",
+          "remediation": [
+            "Consider implementing automated backup system",
+            "Add data recovery procedures",
+            "Document backup and restore processes"
+          ]
+        },
+        {
+          "id": "b019556f-a843-4a58-9599-68e8c28d4c0b",
+          "category": "CONSTITUTIONAL_COMPLIANCE",
+          "severity": "LOW",
+          "title": "Evolution & Adaptation: No Analytics System",
+          "description": "No analytics found. Article X requires continuous improvement through feedback.",
+          "constitutionalArticle": "Article X, Section 10.1",
+          "requirement": "1.10",
+          "remediation": [
+            "Consider implementing analytics for user feedback",
+            "Add system performance monitoring",
+            "Track improvement metrics"
+          ]
+        },
+        {
+          "id": "1d79fd2e-1701-4382-a519-a29c3d4a89dd",
+          "category": "CONSTITUTIONAL_COMPLIANCE",
+          "severity": "LOW",
+          "title": "Emergency Provisions: No Phoenix Protocol",
+          "description": "Phoenix Protocol not found. Article XI Section 11.2 describes autonomous resurrection.",
+          "constitutionalArticle": "Article XI, Section 11.2",
+          "requirement": "1.11",
+          "remediation": [
+            "Consider implementing Phoenix Protocol for future releases",
+            "Plan for system recovery procedures",
+            "Document emergency response protocols"
+          ]
+        }
+      ],
+      "criticalCount": 0,
+      "highCount": 0,
+      "mediumCount": 3,
+      "lowCount": 4,
+      "infoCount": 0,
+      "executionTime": 170,
+      "timestamp": "2026-02-19T03:07:20.592Z"
+    },
+    {
+      "category": "NO_MOCK_PROTOCOL",
+      "score": 0,
+      "passed": true,
+      "findings": [
+        {
+          "id": "5d0cad0f-a332-457a-9b29-fa21d806850f",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "TODO Violation Detected",
+          "description": "Found todo pattern \"// TODO: Add\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\app\\api\\auth\\forgot-password\\route.ts",
+          "lineNumber": 53,
+          "evidence": "// TODO: Add passwordResetToken, passwordResetExpires fields to User model",
+          "remediation": [
+            "Complete the TODO item",
+            "Implement the required functionality",
+            "Remove TODO comment once complete",
+            "Test the implementation"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "96c453fc-e398-48f2-ab6e-48702737aad3",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "TODO Violation Detected",
+          "description": "Found todo pattern \"// TODO: Add\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\app\\api\\user\\profile\\route.ts",
+          "lineNumber": 80,
+          "evidence": "// TODO: Add proper subscription model to database schema [Target: Q1 2026]",
+          "remediation": [
+            "Complete the TODO item",
+            "Implement the required functionality",
+            "Remove TODO comment once complete",
+            "Test the implementation"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "7963506b-269a-4568-afe8-1d307dbf19df",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "TODO Violation Detected",
+          "description": "Found todo pattern \"// TODO: Add\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\app\\api\\user\\profile\\route.ts",
+          "lineNumber": 91,
+          "evidence": "// TODO: Add identity and student verification fields to User model [Target: Q1 2026]",
+          "remediation": [
+            "Complete the TODO item",
+            "Implement the required functionality",
+            "Remove TODO comment once complete",
+            "Test the implementation"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "8ee16208-edd3-4321-b228-e55c6642eec7",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\app\\auth\\login\\page.tsx",
+          "lineNumber": 124,
+          "evidence": "placeholder=\"you@azora.world\"",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "e70d79a0-45f2-4361-97a8-dd3e08a091ae",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\app\\auth\\login\\page.tsx",
+          "lineNumber": 141,
+          "evidence": "placeholder=\"Enter your password\"",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "27a18964-2c9f-4de4-bedc-7d134cd68bc0",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\app\\auth\\signup\\page.tsx",
+          "lineNumber": 180,
+          "evidence": "placeholder=\"Your full name\"",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "963729bf-6b1a-4d6e-829e-6da0612c3907",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\app\\auth\\signup\\page.tsx",
+          "lineNumber": 197,
+          "evidence": "placeholder=\"you@azora.world\"",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "a2c97666-be73-4837-b811-6c544dbd2b47",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\app\\auth\\signup\\page.tsx",
+          "lineNumber": 214,
+          "evidence": "placeholder=\"Your country\"",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "166f0c8d-5f62-49a0-a134-ce416d28acf3",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\app\\auth\\signup\\page.tsx",
+          "lineNumber": 233,
+          "evidence": "placeholder=\"Create a strong password\"",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "9de9d903-e02c-403c-9569-96e6e86b36a9",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\app\\auth\\signup\\page.tsx",
+          "lineNumber": 263,
+          "evidence": "placeholder=\"Confirm your password\"",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "0ae4322f-b96d-494e-a2b2-937483367cbd",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\app\\blog\\page.tsx",
+          "lineNumber": 86,
+          "evidence": "placeholder=\"email@azora.world\"",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "f0ddf036-9ba8-409c-8bc0-1d0d0ea0568f",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\app\\contact\\page.tsx",
+          "lineNumber": 67,
+          "evidence": "<input type=\"text\" placeholder=\"Name\" className=\"w-full p-3 rounded-lg bg-white/5 border border-white/10 focus:border-emerald-400 outline-none transition-colors\" />",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "50cb0027-716b-4967-8232-ca922629c2de",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\app\\contact\\page.tsx",
+          "lineNumber": 68,
+          "evidence": "<input type=\"email\" placeholder=\"Email\" className=\"w-full p-3 rounded-lg bg-white/5 border border-white/10 focus:border-emerald-400 outline-none transition-colors\" />",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "9274bf47-ea21-45ed-8809-79a05581db0f",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\app\\contact\\page.tsx",
+          "lineNumber": 70,
+          "evidence": "<input type=\"text\" placeholder=\"Subject\" className=\"w-full p-3 rounded-lg bg-white/5 border border-white/10 focus:border-emerald-400 outline-none transition-colors\" />",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "746d7062-fdfb-416d-8d9f-b446352c4c78",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\app\\contact\\page.tsx",
+          "lineNumber": 71,
+          "evidence": "<textarea placeholder=\"Message\" rows={4} className=\"w-full p-3 rounded-lg bg-white/5 border border-white/10 focus:border-emerald-400 outline-none transition-colors resize-none\"></textarea>",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "f6319b0b-ffc5-47ff-abcb-286d0f68722e",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\app\\docs\\page.tsx",
+          "lineNumber": 63,
+          "evidence": "placeholder=\"Search documentation...\"",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "b2c509db-9592-4a4f-b6ea-28d27d0c6478",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\app\\features\\buildspaces\\page.tsx",
+          "lineNumber": 52,
+          "evidence": "<input value={name} onChange={(e) => setName(e.target.value)} placeholder=\"Project name\" className=\"flex-1 px-3 py-2 bg-transparent border rounded\" />",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "7cd391b7-dee9-4d38-8234-d650df32af7a",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\app\\features\\buildspaces\\page.tsx",
+          "lineNumber": 53,
+          "evidence": "<input value={slug} onChange={(e) => setSlug(e.target.value)} placeholder=\"slug\" className=\"px-3 py-2 bg-transparent border rounded\" />",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "1cc5c25a-bd93-4a88-8628-6cdae0a4ca5a",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\app\\features\\collaboration-pod\\page.tsx",
+          "lineNumber": 295,
+          "evidence": "placeholder=\"Start typing to collaborate in real-time...\"",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "25d000cf-5833-4ae3-ab5c-5740c3878fc9",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\app\\page.tsx",
+          "lineNumber": 216,
+          "evidence": "placeholder=\"Describe what you want to build...\"",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "2deab6cf-c28c-4514-86a4-7afb47bc8ba5",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\app\\page.tsx",
+          "lineNumber": 217,
+          "evidence": "className=\"flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:border-emerald-500/50 focus:outline-none\"",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "b6eaf29b-06bd-4404-b156-1d472003be05",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\app\\partners\\page.tsx",
+          "lineNumber": 82,
+          "evidence": "<input type=\"text\" placeholder=\"Company Name\" className=\"w-full p-3 rounded-lg bg-white/5 border border-white/10 focus:border-emerald-400 outline-none transition-colors\" />",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "85d89029-0ccd-472b-afc8-1de97914c3a7",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\app\\partners\\page.tsx",
+          "lineNumber": 83,
+          "evidence": "<input type=\"email\" placeholder=\"Work Email\" className=\"w-full p-3 rounded-lg bg-white/5 border border-white/10 focus:border-emerald-400 outline-none transition-colors\" />",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "011fceec-af1f-44a8-af2a-70fd0830549a",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\app\\partners\\page.tsx",
+          "lineNumber": 90,
+          "evidence": "<textarea placeholder=\"Tell us about your interest...\" rows={3} className=\"w-full p-3 rounded-lg bg-white/5 border border-white/10 focus:border-emerald-400 outline-none transition-colors resize-none\"></textarea>",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "29614290-15ab-4e90-85b1-ea04c68efd23",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\app\\settings\\page.tsx",
+          "lineNumber": 283,
+          "evidence": "placeholder=\"http://localhost:8000\"",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "ac57f871-6708-41da-b97d-138a67c47f5e",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\app\\settings\\page.tsx",
+          "lineNumber": 332,
+          "evidence": "placeholder=\"sk-...\"",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "be610b26-ac4a-4311-8146-614ba5c318f4",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\app\\settings\\page.tsx",
+          "lineNumber": 368,
+          "evidence": "placeholder=\"claude-...\"",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "06a4bbcf-89ea-4824-8b28-7a04ce91487f",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\app\\settings\\page.tsx",
+          "lineNumber": 404,
+          "evidence": "placeholder=\"...\"",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "26af6e9d-80d4-4fa1-abfb-7d08220a0b22",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\components\\demo\\code-chamber-demo.tsx",
+          "lineNumber": 474,
+          "evidence": "className=\"flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 outline-none focus:border-emerald-500/50\"",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "511d2a83-62fb-47be-ba35-ea500d8fc7b7",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\components\\demos\\agent-interaction-demo.tsx",
+          "lineNumber": 179,
+          "evidence": "className=\"flex-1 bg-[#3c3c3c] border border-[#3e3e42] rounded px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500/50\"",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "5ee069fd-8f2a-4d9a-828d-8abeab2d43ab",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\components\\landing\\demo-section.tsx",
+          "lineNumber": 130,
+          "evidence": "className=\"w-full pl-12 pr-4 py-3 rounded-xl bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary\"",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "620dfea6-a469-4832-9c38-733188b0b4c3",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\components\\rooms\\innovation-theater\\SlideEditor.tsx",
+          "lineNumber": 75,
+          "evidence": "className=\"text-3xl font-bold bg-transparent border-none outline-none mb-4 placeholder:text-muted-foreground/50\"",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "a24d3d1d-0e8a-4c39-8e89-b960876f387a",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\components\\rooms\\maker-lab\\spark-input.tsx",
+          "lineNumber": 32,
+          "evidence": "placeholder?: string",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "eec7a40e-9040-43a7-9251-bb14f549fed3",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\components\\rooms\\maker-lab\\spark-input.tsx",
+          "lineNumber": 46,
+          "evidence": "placeholder = 'What do you want to build?',",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "81964932-59a2-49d6-9f16-51736843c75f",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "TODO Violation Detected",
+          "description": "Found todo pattern \"// TODO: Implement\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\components\\rooms\\spec-chamber.tsx",
+          "lineNumber": 207,
+          "evidence": "// TODO: Implement ${req}",
+          "remediation": [
+            "Complete the TODO item",
+            "Implement the required functionality",
+            "Remove TODO comment once complete",
+            "Test the implementation"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "f5500215-dc67-4722-8250-ea986a3531f2",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\components\\ui\\african-agent-avatar.tsx",
+          "lineNumber": 259,
+          "evidence": "src={style.imageUrl || \"/placeholder.svg\"}",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "74beb56f-c70d-4086-b620-162f34e3bbf3",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\components\\ui\\command.tsx",
+          "lineNumber": 76,
+          "evidence": "'placeholder:text-muted-foreground flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-hidden disabled:cursor-not-allowed disabled:opacity-50',",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "227d3663-9800-411f-8fb2-20a65c3e29f7",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\components\\ui\\copilot-agent-avatar.tsx",
+          "lineNumber": 170,
+          "evidence": "src={style.imageUrl || \"/placeholder.svg\"}",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "0bafd65e-2b89-426b-8896-07c7ba1ca1b7",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\components\\ui\\input.tsx",
+          "lineNumber": 11,
+          "evidence": "'file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "cf627a48-08e4-4053-9dd0-23fdc0ecc91d",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\components\\ui\\select.tsx",
+          "lineNumber": 40,
+          "evidence": "\"border-input data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 dark:hover:bg-input/50 flex w-fit items-center justify-between gap-2 rounded-md border bg-transparent px-3 py-2 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-9 data-[size=sm]:h-8 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4\",",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "b5a7e925-500c-4b06-a8f1-63b72bdf448a",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\components\\ui\\textarea.tsx",
+          "lineNumber": 10,
+          "evidence": "'border-input placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 flex field-sizing-content min-h-16 w-full rounded-md border bg-transparent px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "3907cda4-c9a6-4869-9984-583d1da134ec",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\components\\workspace\\agent-rail.tsx",
+          "lineNumber": 276,
+          "evidence": "className=\"flex-1 bg-[#3c3c3c] border border-[#3e3e42] rounded px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500/50 disabled:opacity-50\"",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "e9353e0f-76fb-44bc-8b24-619cc029ee00",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\components\\workspace\\ai-assistant-panel.tsx",
+          "lineNumber": 143,
+          "evidence": "className=\"flex-1 px-4 py-2.5 rounded-xl bg-muted border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm\"",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "837b2747-4c4b-4ba8-88ee-a6218732e8ca",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\components\\workspace\\workspace-sidebar.tsx",
+          "lineNumber": 259,
+          "evidence": "className=\"flex-1 bg-transparent text-xs placeholder:text-muted-foreground focus:outline-none\"",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "b1b6a634-5011-4a9f-9b19-ac9b6ea518f8",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\lib\\agents\\kwame-scaffolder.ts",
+          "lineNumber": 524,
+          "evidence": "placeholder=\"e.g., Apple\"",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "f5cea415-b377-4086-843d-0a75d87503e5",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\lib\\agents\\kwame-scaffolder.ts",
+          "lineNumber": 538,
+          "evidence": "placeholder=\"e.g., 95\"",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "a5f0cb4c-fad8-494d-afa3-205cc5ba0e31",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\lib\\agents\\kwame-scaffolder.ts",
+          "lineNumber": 637,
+          "evidence": "placeholder=\"Enter item...\"",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "075751a3-16bd-4188-8dd2-1b6419fcd1a4",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholderKeywords\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\lib\\agents\\nia-validator.ts",
+          "lineNumber": 117,
+          "evidence": "const placeholderKeywords = ['TODO', 'FIXME', 'PLACEHOLDER', 'TBD'];",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "727a6785-accd-41d3-ac5c-a65c84ee10c3",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"PLACEHOLDER\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\lib\\agents\\nia-validator.ts",
+          "lineNumber": 117,
+          "evidence": "const placeholderKeywords = ['TODO', 'FIXME', 'PLACEHOLDER', 'TBD'];",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "da0d3016-2174-4899-acf5-4c80c48fc7d3",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholderKeywords\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\lib\\agents\\nia-validator.ts",
+          "lineNumber": 120,
+          "evidence": "for (const keyword of placeholderKeywords) {",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "127dcd15-e354-4b43-a2df-7e7c69e23cc8",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\lib\\agents\\nia-validator.ts",
+          "lineNumber": 124,
+          "evidence": "message: `Requirement contains placeholder content: ${keyword}`,",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "79e840d7-9ab5-4b59-aeb0-935d67160b6e",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholders\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\lib\\audit\\orchestrator.ts",
+          "lineNumber": 315,
+          "evidence": "[AuditCategory.NO_MOCK_PROTOCOL]: 'Guarantees production-ready code with no placeholders',",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "240aeeac-ec87-489c-867d-8ec37265828e",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"Placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\lib\\auth-audit.ts",
+          "lineNumber": 89,
+          "evidence": "return []; // Placeholder",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "45f31852-9855-4d3e-bbad-b6e281dca038",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "TODO Violation Detected",
+          "description": "Found todo pattern \"// TODO: Implement\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\lib\\auth-audit.ts",
+          "lineNumber": 108,
+          "evidence": "// TODO: Implement pattern detection",
+          "remediation": [
+            "Complete the TODO item",
+            "Implement the required functionality",
+            "Remove TODO comment once complete",
+            "Test the implementation"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "ce44a426-1877-4796-b172-f6d8936a5529",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholderIndicators\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\lib\\constitutional-guard.ts",
+          "lineNumber": 75,
+          "evidence": "const placeholderIndicators = [",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "c3b82dc0-a89a-4d36-b01a-1ffaf2be14c7",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"PLACEHOLDER\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\lib\\constitutional-guard.ts",
+          "lineNumber": 78,
+          "evidence": "'// PLACEHOLDER',",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "4202fc26-f4cc-4193-b51e-eb8ac20367d0",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"PlaceholderIndicators\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\lib\\constitutional-guard.ts",
+          "lineNumber": 88,
+          "evidence": "const hasPlaceholderIndicators = placeholderIndicators.some(indicator =>",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "7591d762-e5a9-4fce-b5e2-422e2fe30baa",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholderIndicators\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\lib\\constitutional-guard.ts",
+          "lineNumber": 88,
+          "evidence": "const hasPlaceholderIndicators = placeholderIndicators.some(indicator =>",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "c668aa4d-5c36-4554-9d8b-cd8f3ae9acb3",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"PlaceholderIndicators\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\lib\\constitutional-guard.ts",
+          "lineNumber": 92,
+          "evidence": "if (isSuspiciouslySimple && hasPlaceholderIndicators) {",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "39c4664a-abb4-42ef-9526-0db48391bb71",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\lib\\constitutional-guard.ts",
+          "lineNumber": 97,
+          "evidence": "'Content appears to be placeholder code. Provide real implementation for Constitutional compliance.',",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "96694b60-bc35-45ef-8914-382b83821a7c",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\lib\\engines\\spark-generator.ts",
+          "lineNumber": 412,
+          "evidence": "1. **Truth as Currency**: All code is complete and working - no placeholder comments",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "6cf7dd6f-0c8b-434c-b636-442a929e6ac2",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\lib\\services\\constitutional-ai.ts",
+          "lineNumber": 423,
+          "evidence": "/placeholder/i,",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "f24eeabc-20d0-403c-9b16-d9e45b16e305",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholders\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\lib\\services\\constitutional-ai.ts",
+          "lineNumber": 438,
+          "evidence": "principle: 'No Mock Protocol - Absolute prohibition of stubs and placeholders',",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "6e303a42-d935-441d-a6a8-51ac882af26e",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\lib\\services\\constitutional-ai.ts",
+          "lineNumber": 440,
+          "evidence": "description: 'Code contains stub or placeholder implementations which violate Article VIII Section 8.3',",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "b55eec31-8157-479d-8b1a-22c3c7da6beb",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\lib\\services\\constitutional-ai.ts",
+          "lineNumber": 441,
+          "evidence": "remediation: ['Replace stubs with real implementations', 'Remove placeholder code', 'Implement actual functionality']",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        },
+        {
+          "id": "fb508689-3ae7-4fd1-b25f-090cdc5b7518",
+          "category": "NO_MOCK_PROTOCOL",
+          "severity": "MEDIUM",
+          "title": "PLACEHOLDER Violation Detected",
+          "description": "Found placeholder pattern \"placeholder\" in production code",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\lib\\services\\file-system.ts",
+          "lineNumber": 332,
+          "evidence": "return 'commit-hash-placeholder'; // Real hash would require parsing output",
+          "remediation": [
+            "Complete the implementation",
+            "Replace placeholder with production-ready code",
+            "Test thoroughly before deployment"
+          ],
+          "constitutionalArticle": "Article VIII, Section 8.3",
+          "requirement": "2.1, 2.2"
+        }
+      ],
+      "criticalCount": 0,
+      "highCount": 0,
+      "mediumCount": 66,
+      "lowCount": 0,
+      "infoCount": 0,
+      "executionTime": 1530,
+      "timestamp": "2026-02-19T03:07:21.954Z"
+    },
+    {
+      "category": "AUTHENTICATION_SECURITY",
+      "score": 85,
+      "passed": false,
+      "findings": [
+        {
+          "id": "0c98237c-04c6-4098-8fc4-9345556f50b9",
+          "category": "AUTHENTICATION_SECURITY",
+          "severity": "MEDIUM",
+          "title": "No middleware.ts file found",
+          "description": "Protected routes should be guarded by middleware or page-level authentication checks.",
+          "remediation": [
+            "Create middleware.ts to protect routes",
+            "Or implement page-level authentication checks",
+            "Ensure /workspace and /dashboard require authentication"
+          ],
+          "requirement": "3.5"
+        },
+        {
+          "id": "ca25da53-e31c-411f-8fbf-d07083c9e55d",
+          "category": "AUTHENTICATION_SECURITY",
+          "severity": "INFO",
+          "title": "Email/Password configured",
+          "description": "The Email/Password authentication channel is properly configured.",
+          "remediation": [],
+          "requirement": "3.4"
+        },
+        {
+          "id": "b36f9bea-b1b9-44a1-8ff8-4e11402d1b3e",
+          "category": "AUTHENTICATION_SECURITY",
+          "severity": "MEDIUM",
+          "title": "GitHub OAuth not configured",
+          "description": "The GitHub OAuth authentication channel is not configured. Missing GITHUB_ID or GITHUB_SECRET environment variables",
+          "remediation": [
+            "Configure GitHub OAuth environment variables",
+            "Add provider to authOptions in lib/auth.ts",
+            "Test authentication flow"
+          ],
+          "requirement": "3.3"
+        },
+        {
+          "id": "c4bf1e50-2032-4e5d-a197-75047c28b03c",
+          "category": "AUTHENTICATION_SECURITY",
+          "severity": "MEDIUM",
+          "title": "Google OAuth not configured",
+          "description": "The Google OAuth authentication channel is not configured. Missing GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET environment variables",
+          "remediation": [
+            "Configure Google OAuth environment variables",
+            "Add provider to authOptions in lib/auth.ts",
+            "Test authentication flow"
+          ],
+          "requirement": "3.4"
+        }
+      ],
+      "criticalCount": 0,
+      "highCount": 0,
+      "mediumCount": 3,
+      "lowCount": 0,
+      "infoCount": 1,
+      "executionTime": 62,
+      "timestamp": "2026-02-19T03:07:20.488Z"
+    },
+    {
+      "category": "FILE_SYSTEM_SECURITY",
+      "score": 85,
+      "passed": false,
+      "findings": [
+        {
+          "id": "a68ad3f8-0c77-42a6-97bb-8d79a3aacb33",
+          "category": "FILE_SYSTEM_SECURITY",
+          "severity": "MEDIUM",
+          "title": "Backup Mechanisms (Article VII Section 7.1)",
+          "description": "No backup mechanism found for file deletion",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\lib\\services\\file-system.ts",
+          "remediation": [
+            "Implement backup mechanism for file deletion operations",
+            "Create snapshots before destructive operations",
+            "Provide file recovery functionality",
+            "Comply with Article VII Section 7.1 requirements"
+          ],
+          "constitutionalArticle": "Article VII, Section 7.1",
+          "requirement": "6.5"
+        },
+        {
+          "id": "f5ec7ac4-b6f9-4ad7-9321-a1aedbc62421",
+          "category": "FILE_SYSTEM_SECURITY",
+          "severity": "HIGH",
+          "title": "Path Validation in Service",
+          "description": "No path validation found in service methods",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\lib\\services\\file-system.ts",
+          "remediation": [
+            "Add path validation to all service methods",
+            "Use path.normalize() and path.resolve()",
+            "Check for path traversal attempts",
+            "Validate paths against allowed directories"
+          ],
+          "constitutionalArticle": "Article VII, Section 7.1",
+          "requirement": "6.1, 6.2"
+        }
+      ],
+      "criticalCount": 0,
+      "highCount": 1,
+      "mediumCount": 1,
+      "lowCount": 0,
+      "infoCount": 0,
+      "executionTime": 85,
+      "timestamp": "2026-02-19T03:07:20.516Z"
+    },
+    {
+      "category": "ECONOMIC_SYSTEM",
+      "score": 84,
+      "passed": true,
+      "findings": [
+        {
+          "id": "economic-1",
+          "category": "ECONOMIC_SYSTEM",
+          "severity": "INFO",
+          "title": "Total Supply Configured",
+          "description": "Found reference to 1 billion token supply in mining engine",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\lib\\economy\\mining-engine.ts",
+          "remediation": [],
+          "requirement": "7.1"
+        },
+        {
+          "id": "economic-2",
+          "category": "ECONOMIC_SYSTEM",
+          "severity": "INFO",
+          "title": "Community Tax Implemented",
+          "description": "Found community tax implementation in mining engine",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\lib\\economy\\mining-engine.ts",
+          "remediation": [],
+          "requirement": "7.1"
+        },
+        {
+          "id": "economic-3",
+          "category": "ECONOMIC_SYSTEM",
+          "severity": "INFO",
+          "title": "Reward Structure Defined",
+          "description": "Found REWARD_AMOUNTS configuration in mining engine",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\lib\\economy\\mining-engine.ts",
+          "remediation": [],
+          "requirement": "7.1"
+        },
+        {
+          "id": "economic-4",
+          "category": "ECONOMIC_SYSTEM",
+          "severity": "MEDIUM",
+          "title": "Deflationary Mechanism Not Found",
+          "description": "No evidence of deflationary mechanism implementation",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\lib\\economy\\mining-engine.ts",
+          "evidence": "Missing token burn or supply reduction logic",
+          "remediation": [
+            "Consider implementing token burn mechanism",
+            "Document deflationary strategy",
+            "Align with Article III economic principles"
+          ],
+          "constitutionalArticle": "Article III, Section 3.1",
+          "requirement": "7.1"
+        },
+        {
+          "id": "economic-5",
+          "category": "ECONOMIC_SYSTEM",
+          "severity": "INFO",
+          "title": "/api/economy/wallet Protected",
+          "description": "Wallet endpoint has authentication protection",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\app\\api\\economy\\wallet\\route.ts",
+          "remediation": [],
+          "requirement": "7.5"
+        },
+        {
+          "id": "economic-6",
+          "category": "ECONOMIC_SYSTEM",
+          "severity": "INFO",
+          "title": "Wallet Balance Returned",
+          "description": "Wallet endpoint returns user balance",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\app\\api\\economy\\wallet\\route.ts",
+          "remediation": [],
+          "requirement": "7.3"
+        },
+        {
+          "id": "economic-7",
+          "category": "ECONOMIC_SYSTEM",
+          "severity": "INFO",
+          "title": "/api/economy/award Protected",
+          "description": "Award endpoint has authentication protection",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\app\\api\\economy\\award\\route.ts",
+          "remediation": [],
+          "requirement": "7.5"
+        },
+        {
+          "id": "economic-8",
+          "category": "ECONOMIC_SYSTEM",
+          "severity": "INFO",
+          "title": "Award Endpoint Functional",
+          "description": "Award endpoint integrates with mining engine",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\app\\api\\economy\\award\\route.ts",
+          "remediation": [],
+          "requirement": "7.3"
+        },
+        {
+          "id": "economic-9",
+          "category": "ECONOMIC_SYSTEM",
+          "severity": "MEDIUM",
+          "title": "Action Validation Missing",
+          "description": "Award endpoint does not validate action types",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\app\\api\\economy\\award\\route.ts",
+          "remediation": [
+            "Validate action against REWARD_AMOUNTS",
+            "Return 400 for invalid action types",
+            "Document valid action types in API"
+          ],
+          "requirement": "7.3"
+        }
+      ],
+      "criticalCount": 0,
+      "highCount": 0,
+      "mediumCount": 2,
+      "lowCount": 0,
+      "infoCount": 7,
+      "executionTime": 69,
+      "timestamp": "2026-02-19T03:07:20.517Z"
+    },
+    {
+      "category": "SECURITY_HEADERS",
+      "score": 100,
+      "passed": true,
+      "findings": [
+        {
+          "id": "0f6747b1-ede9-42dc-a242-841cf76d92df",
+          "category": "SECURITY_HEADERS",
+          "severity": "INFO",
+          "title": "Strict-Transport-Security properly configured",
+          "description": "The Strict-Transport-Security header is present and correctly configured.",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\next.config.mjs",
+          "evidence": "Value: \"max-age=63072000; includeSubDomains; preload\"",
+          "remediation": [],
+          "requirement": "12.1"
+        },
+        {
+          "id": "5d9992b4-e85c-4e4e-8364-d5242d89571b",
+          "category": "SECURITY_HEADERS",
+          "severity": "INFO",
+          "title": "Content-Security-Policy properly configured",
+          "description": "The Content-Security-Policy header is present and correctly configured.",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\next.config.mjs",
+          "evidence": "Value: \"CSP directives found (array format)\"",
+          "remediation": [],
+          "requirement": "12.2"
+        },
+        {
+          "id": "35564c58-59d1-4a3f-a38c-a8d2cff79e42",
+          "category": "SECURITY_HEADERS",
+          "severity": "INFO",
+          "title": "X-Frame-Options properly configured",
+          "description": "The X-Frame-Options header is present and correctly configured.",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\next.config.mjs",
+          "evidence": "Value: \"DENY\"",
+          "remediation": [],
+          "requirement": "12.3"
+        },
+        {
+          "id": "af3f4365-a0e0-4d54-9c15-ed3a275ade0e",
+          "category": "SECURITY_HEADERS",
+          "severity": "INFO",
+          "title": "X-Content-Type-Options properly configured",
+          "description": "The X-Content-Type-Options header is present and correctly configured.",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\next.config.mjs",
+          "evidence": "Value: \"nosniff\"",
+          "remediation": [],
+          "requirement": "12.4"
+        },
+        {
+          "id": "bd075385-1068-49da-9e8f-861f537c815d",
+          "category": "SECURITY_HEADERS",
+          "severity": "INFO",
+          "title": "X-XSS-Protection properly configured",
+          "description": "The X-XSS-Protection header is present and correctly configured.",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\next.config.mjs",
+          "evidence": "Value: \"1; mode=block\"",
+          "remediation": [],
+          "requirement": "12.5"
+        },
+        {
+          "id": "70ea2747-58c8-49c0-930c-45f253379595",
+          "category": "SECURITY_HEADERS",
+          "severity": "INFO",
+          "title": "Referrer-Policy header configured",
+          "description": "The Referrer-Policy header is present (recommended but not required).",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\next.config.mjs",
+          "remediation": [],
+          "requirement": "12.2"
+        },
+        {
+          "id": "310dc4f7-8da0-4a36-8436-9c46dc728065",
+          "category": "SECURITY_HEADERS",
+          "severity": "INFO",
+          "title": "Permissions-Policy header configured",
+          "description": "The Permissions-Policy header is present (recommended but not required).",
+          "filePath": "C:\\Users\\Azora Sapiens\\Documents\\azora\\apps\\azora-buildspaces\\next.config.mjs",
+          "remediation": [],
+          "requirement": "12.2"
+        }
+      ],
+      "criticalCount": 0,
+      "highCount": 0,
+      "mediumCount": 0,
+      "lowCount": 0,
+      "infoCount": 7,
+      "executionTime": 36,
+      "timestamp": "2026-02-19T03:07:20.497Z"
+    },
+    {
+      "category": "DEPLOYMENT_READINESS",
+      "score": 100,
+      "passed": true,
+      "findings": [],
+      "criticalCount": 0,
+      "highCount": 0,
+      "mediumCount": 0,
+      "lowCount": 0,
+      "infoCount": 0,
+      "executionTime": 78,
+      "timestamp": "2026-02-19T03:07:20.555Z"
+    }
+  ],
+  "blockers": [],
+  "recommendations": [
+    {
+      "id": "f5ec7ac4-b6f9-4ad7-9321-a1aedbc62421",
+      "priority": "HIGH",
+      "title": "Path Validation in Service",
+      "description": "No path validation found in service methods",
+      "category": "FILE_SYSTEM_SECURITY",
+      "benefit": "Prevents unauthorized file access and data breaches",
+      "estimatedEffort": "1-2 hours"
+    },
+    {
+      "id": "0bbf6e37-2cd8-48a2-ad59-73bf1893682f",
+      "priority": "MEDIUM",
+      "title": "Constitutional AI: Missing privacy protection",
+      "description": "Constitutional AI should implement privacy protection per Article I Section 1.3.",
+      "category": "CONSTITUTIONAL_COMPLIANCE",
+      "benefit": "Ensures alignment with Azora Constitution and Ubuntu principles",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "4e0edc4e-7c48-4061-838b-c10d68108114",
+      "priority": "MEDIUM",
+      "title": "Educational Constitution: Limited Learning Features",
+      "description": "No dedicated learning section found. Article IV requires accessible education.",
+      "category": "CONSTITUTIONAL_COMPLIANCE",
+      "benefit": "Ensures alignment with Azora Constitution and Ubuntu principles",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "62d0140c-8cb7-48f3-af01-9bedcf941109",
+      "priority": "MEDIUM",
+      "title": "Security & Protection: Missing Azora Aegis",
+      "description": "Azora Aegis security framework not found. Article VII requires comprehensive security.",
+      "category": "CONSTITUTIONAL_COMPLIANCE",
+      "benefit": "Ensures alignment with Azora Constitution and Ubuntu principles",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "5d0cad0f-a332-457a-9b29-fa21d806850f",
+      "priority": "MEDIUM",
+      "title": "TODO Violation Detected",
+      "description": "Found todo pattern \"// TODO: Add\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "96c453fc-e398-48f2-ab6e-48702737aad3",
+      "priority": "MEDIUM",
+      "title": "TODO Violation Detected",
+      "description": "Found todo pattern \"// TODO: Add\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "7963506b-269a-4568-afe8-1d307dbf19df",
+      "priority": "MEDIUM",
+      "title": "TODO Violation Detected",
+      "description": "Found todo pattern \"// TODO: Add\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "8ee16208-edd3-4321-b228-e55c6642eec7",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "e70d79a0-45f2-4361-97a8-dd3e08a091ae",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "27a18964-2c9f-4de4-bedc-7d134cd68bc0",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "963729bf-6b1a-4d6e-829e-6da0612c3907",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "a2c97666-be73-4837-b811-6c544dbd2b47",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "166f0c8d-5f62-49a0-a134-ce416d28acf3",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "9de9d903-e02c-403c-9569-96e6e86b36a9",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "0ae4322f-b96d-494e-a2b2-937483367cbd",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "f0ddf036-9ba8-409c-8bc0-1d0d0ea0568f",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "50cb0027-716b-4967-8232-ca922629c2de",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "9274bf47-ea21-45ed-8809-79a05581db0f",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "746d7062-fdfb-416d-8d9f-b446352c4c78",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "f6319b0b-ffc5-47ff-abcb-286d0f68722e",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "b2c509db-9592-4a4f-b6ea-28d27d0c6478",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "7cd391b7-dee9-4d38-8234-d650df32af7a",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "1cc5c25a-bd93-4a88-8628-6cdae0a4ca5a",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "25d000cf-5833-4ae3-ab5c-5740c3878fc9",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "2deab6cf-c28c-4514-86a4-7afb47bc8ba5",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "b6eaf29b-06bd-4404-b156-1d472003be05",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "85d89029-0ccd-472b-afc8-1de97914c3a7",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "011fceec-af1f-44a8-af2a-70fd0830549a",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "29614290-15ab-4e90-85b1-ea04c68efd23",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "ac57f871-6708-41da-b97d-138a67c47f5e",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "be610b26-ac4a-4311-8146-614ba5c318f4",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "06a4bbcf-89ea-4824-8b28-7a04ce91487f",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "26af6e9d-80d4-4fa1-abfb-7d08220a0b22",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "511d2a83-62fb-47be-ba35-ea500d8fc7b7",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "5ee069fd-8f2a-4d9a-828d-8abeab2d43ab",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "620dfea6-a469-4832-9c38-733188b0b4c3",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "a24d3d1d-0e8a-4c39-8e89-b960876f387a",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "eec7a40e-9040-43a7-9251-bb14f549fed3",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "81964932-59a2-49d6-9f16-51736843c75f",
+      "priority": "MEDIUM",
+      "title": "TODO Violation Detected",
+      "description": "Found todo pattern \"// TODO: Implement\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "f5500215-dc67-4722-8250-ea986a3531f2",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "74beb56f-c70d-4086-b620-162f34e3bbf3",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "227d3663-9800-411f-8fb2-20a65c3e29f7",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "0bafd65e-2b89-426b-8896-07c7ba1ca1b7",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "cf627a48-08e4-4053-9dd0-23fdc0ecc91d",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "b5a7e925-500c-4b06-a8f1-63b72bdf448a",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "3907cda4-c9a6-4869-9984-583d1da134ec",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "e9353e0f-76fb-44bc-8b24-619cc029ee00",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "837b2747-4c4b-4ba8-88ee-a6218732e8ca",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "b1b6a634-5011-4a9f-9b19-ac9b6ea518f8",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "f5cea415-b377-4086-843d-0a75d87503e5",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "a5f0cb4c-fad8-494d-afa3-205cc5ba0e31",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "075751a3-16bd-4188-8dd2-1b6419fcd1a4",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholderKeywords\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "727a6785-accd-41d3-ac5c-a65c84ee10c3",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"PLACEHOLDER\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "da0d3016-2174-4899-acf5-4c80c48fc7d3",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholderKeywords\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "127dcd15-e354-4b43-a2df-7e7c69e23cc8",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "79e840d7-9ab5-4b59-aeb0-935d67160b6e",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholders\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "240aeeac-ec87-489c-867d-8ec37265828e",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"Placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "45f31852-9855-4d3e-bbad-b6e281dca038",
+      "priority": "MEDIUM",
+      "title": "TODO Violation Detected",
+      "description": "Found todo pattern \"// TODO: Implement\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "ce44a426-1877-4796-b172-f6d8936a5529",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholderIndicators\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "c3b82dc0-a89a-4d36-b01a-1ffaf2be14c7",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"PLACEHOLDER\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "4202fc26-f4cc-4193-b51e-eb8ac20367d0",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"PlaceholderIndicators\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "7591d762-e5a9-4fce-b5e2-422e2fe30baa",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholderIndicators\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "c668aa4d-5c36-4554-9d8b-cd8f3ae9acb3",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"PlaceholderIndicators\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "39c4664a-abb4-42ef-9526-0db48391bb71",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "96694b60-bc35-45ef-8914-382b83821a7c",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "6cf7dd6f-0c8b-434c-b636-442a929e6ac2",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "f24eeabc-20d0-403c-9b16-d9e45b16e305",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholders\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "6e303a42-d935-441d-a6a8-51ac882af26e",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "b55eec31-8157-479d-8b1a-22c3c7da6beb",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "fb508689-3ae7-4fd1-b25f-090cdc5b7518",
+      "priority": "MEDIUM",
+      "title": "PLACEHOLDER Violation Detected",
+      "description": "Found placeholder pattern \"placeholder\" in production code",
+      "category": "NO_MOCK_PROTOCOL",
+      "benefit": "Guarantees production-ready code with no placeholders",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "0c98237c-04c6-4098-8fc4-9345556f50b9",
+      "priority": "MEDIUM",
+      "title": "No middleware.ts file found",
+      "description": "Protected routes should be guarded by middleware or page-level authentication checks.",
+      "category": "AUTHENTICATION_SECURITY",
+      "benefit": "Protects user data and prevents unauthorized access",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "b36f9bea-b1b9-44a1-8ff8-4e11402d1b3e",
+      "priority": "MEDIUM",
+      "title": "GitHub OAuth not configured",
+      "description": "The GitHub OAuth authentication channel is not configured. Missing GITHUB_ID or GITHUB_SECRET environment variables",
+      "category": "AUTHENTICATION_SECURITY",
+      "benefit": "Protects user data and prevents unauthorized access",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "c4bf1e50-2032-4e5d-a197-75047c28b03c",
+      "priority": "MEDIUM",
+      "title": "Google OAuth not configured",
+      "description": "The Google OAuth authentication channel is not configured. Missing GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET environment variables",
+      "category": "AUTHENTICATION_SECURITY",
+      "benefit": "Protects user data and prevents unauthorized access",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "a68ad3f8-0c77-42a6-97bb-8d79a3aacb33",
+      "priority": "MEDIUM",
+      "title": "Backup Mechanisms (Article VII Section 7.1)",
+      "description": "No backup mechanism found for file deletion",
+      "category": "FILE_SYSTEM_SECURITY",
+      "benefit": "Prevents unauthorized file access and data breaches",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "economic-4",
+      "priority": "MEDIUM",
+      "title": "Deflationary Mechanism Not Found",
+      "description": "No evidence of deflationary mechanism implementation",
+      "category": "ECONOMIC_SYSTEM",
+      "benefit": "Enables fair token distribution and economic opportunity",
+      "estimatedEffort": "30-60 minutes"
+    },
+    {
+      "id": "economic-9",
+      "priority": "MEDIUM",
+      "title": "Action Validation Missing",
+      "description": "Award endpoint does not validate action types",
+      "category": "ECONOMIC_SYSTEM",
+      "benefit": "Enables fair token distribution and economic opportunity",
+      "estimatedEffort": "30-60 minutes"
+    }
+  ],
+  "summary": {
+    "totalFindings": 95,
+    "criticalFindings": 0,
+    "highFindings": 1,
+    "mediumFindings": 75,
+    "lowFindings": 4,
+    "infoFindings": 15,
+    "categoriesAudited": 7,
+    "categoriesPassed": 4,
+    "totalExecutionTime": 1550
+  },
+  "metadata": {
+    "auditVersion": "1.0.0",
+    "nodeVersion": "v22.21.1",
+    "platform": "win32",
+    "buildspacesVersion": "0.1.0"
+  }
+}

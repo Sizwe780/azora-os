@@ -74,7 +74,7 @@ export function ExplorerView() {
         setExpandedFolders(newExpanded)
     }
 
-    const renderFileTree = (parentId: string | null = null, depth = 0): JSX.Element[] => {
+    const renderFileTree = (parentId: string | null = null, depth = 0): React.ReactNode[] => {
         const children = Object.values(fileMap).filter(file => file.parentId === parentId)
 
         return children.map((file) => {
@@ -123,8 +123,8 @@ export function ExplorerView() {
                         <span className="truncate flex-1">{file.name}</span>
 
                         {/* Git Status Indicator */}
-                        {file.gitStatus && (
-                            <div className={`w-2 h-2 rounded-full ${getGitStatusColor(file.gitStatus)}`} />
+                        {(file as any).gitStatus && (
+                            <div className={`w-2 h-2 rounded-full ${getGitStatusColor((file as any).gitStatus)}`} />
                         )}
 
                         {/* Context Menu */}

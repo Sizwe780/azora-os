@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getKnowledgeIndexer } from '@/lib/knowledge/indexer'
 import { getSankofa } from '@/lib/agents/sankofa-interface'
 import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+import { authOptions } from '@/lib/auth/config'
 
 export async function POST(request: NextRequest) {
   try {

@@ -1,127 +1,69 @@
-import { Navbar } from '@/components/features/navbar'
-import { Footer } from '@/components/features/footer'
-import { AIStudio } from '@/components/features/ai-studio/ai-studio'
-import { Brain, MessageSquare, Zap, TrendingUp } from 'lucide-react'
-import Link from 'next/link'
+'use client'
+
+import { RoomPageLayout } from "@/components/layouts/room-page-layout"
+import { Brain, MessageSquare, Wand2, Shield, Zap, BookOpen } from "lucide-react"
 
 export default function AIStudioPage() {
   return (
-    <div className="min-h-screen bg-[#0d1117] text-white flex flex-col">
-      <Navbar />
-      <main className="flex-1 px-4 sm:px-6 lg:px-8 py-6">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-6 space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-bold mb-2">AI Studio</h1>
-                <p className="text-gray-400">
-                  Interact with your team of AI agents: Code review, testing, security, performance, and documentation
-                </p>
-              </div>
-              <Link href="/features" className="text-emerald-400 hover:text-emerald-300">
-                ← Back to features
-              </Link>
-            </div>
-            <div className="grid grid-cols-4 gap-4">
-              <div className="bg-white/5 border border-white/10 rounded-lg p-4">
-                <div className="flex items-center gap-3">
-                  <Brain className="w-5 h-5 text-purple-400" />
-                  <div>
-                    <p className="text-xs text-gray-400">AI Agents</p>
-                    <p className="text-xl font-bold text-white">5</p>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-white/5 border border-white/10 rounded-lg p-4">
-                <div className="flex items-center gap-3">
-                  <MessageSquare className="w-5 h-5 text-blue-400" />
-                  <div>
-                    <p className="text-xs text-gray-400">Conversations</p>
-                    <p className="text-xl font-bold text-white">143</p>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-white/5 border border-white/10 rounded-lg p-4">
-                <div className="flex items-center gap-3">
-                  <Zap className="w-5 h-5 text-emerald-400" />
-                  <div>
-                    <p className="text-xs text-gray-400">Issues Fixed</p>
-                    <p className="text-xl font-bold text-white">87</p>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-white/5 border border-white/10 rounded-lg p-4">
-                <div className="flex items-center gap-3">
-                  <TrendingUp className="w-5 h-5 text-green-400" />
-                  <div>
-                    <p className="text-xs text-gray-400">Time Saved</p>
-                    <p className="text-xl font-bold text-white">127h</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+    <RoomPageLayout
+      roomName="AI Studio"
+      roomTagline="Your AI Agent Command Center"
+      roomDescription="Interact with your team of AI agents — code review, testing, security, performance, and documentation. Powered by Ubuntu Ethics and Constitutional AI."
+      roomIcon={Brain}
+      accentColor="purple"
+      demoHref="/demo-ai-studio"
+      ctaTitle="Meet Your AI Team"
+      ctaDescription="Start collaborating with 8 specialized AI agents, each with unique expertise and African-inspired identity."
+      features={[
+        { icon: Brain, title: "Multi-Agent Intelligence", description: "8 specialized agents — Elara, Sankofa, Themba, Jabari, Nia, Imani, Zuri, Kwame — each with distinct expertise" },
+        { icon: MessageSquare, title: "Natural Conversations", description: "Chat naturally with agents or let auto-routing find the best agent for your request" },
+        { icon: Wand2, title: "Code Generation", description: "Generate, refactor, and optimize code with AI that understands your full codebase context" },
+        { icon: Shield, title: "Security Analysis", description: "Jabari scans for vulnerabilities, OWASP compliance, and security best practices" },
+        { icon: Zap, title: "Performance Tuning", description: "Nia identifies bottlenecks, suggests optimizations, and benchmarks improvements" },
+        { icon: BookOpen, title: "Auto Documentation", description: "Imani generates and maintains documentation that stays in sync with your code" },
+      ]}
+      capabilities={[
+        "Multi-agent code review",
+        "Automated test generation",
+        "Security vulnerability scanning",
+        "Performance profiling & optimization",
+        "Documentation generation",
+        "Dependency analysis",
+        "Architecture recommendations",
+        "Code migration assistance",
+        "Bug detection and auto-fix",
+        "Knowledge graph building",
+      ]}
+      visual={
+        <div className="rounded-2xl bg-[#161b22] border border-white/[0.06] overflow-hidden shadow-2xl shadow-purple-500/5">
+          <div className="bg-[#0d1117] px-4 py-2.5 border-b border-white/[0.06] flex items-center gap-2">
+            <div className="flex gap-1.5"><div className="w-3 h-3 rounded-full bg-red-500/60" /><div className="w-3 h-3 rounded-full bg-yellow-500/60" /><div className="w-3 h-3 rounded-full bg-green-500/60" /></div>
+            <span className="text-xs text-gray-500 font-mono ml-3">ai-studio — agents</span>
           </div>
-          <div className="grid grid-cols-4 gap-4 h-[600px]">
-            <div className="col-span-3">
-              <AIStudio />
-            </div>
-            <div className="space-y-4 overflow-y-auto">
-              <div className="bg-white/5 border border-white/10 rounded-lg p-4">
-                <h3 className="text-sm font-semibold text-white mb-3">Agents</h3>
-                <div className="space-y-2">
-                  <div className="p-3 rounded bg-blue-500/10 border border-blue-500/30">
-                    <p className="text-sm font-medium text-blue-300">👨‍💻 Sankofa</p>
-                    <p className="text-xs text-blue-200">Code Architect</p>
-                  </div>
-                  <div className="p-3 rounded bg-purple-500/10 border border-purple-500/30">
-                    <p className="text-sm font-medium text-purple-300">🧪 Themba</p>
-                    <p className="text-xs text-purple-200">Testing Specialist</p>
-                  </div>
-                  <div className="p-3 rounded bg-red-500/10 border border-red-500/30">
-                    <p className="text-sm font-medium text-red-300">🔒 Jabari</p>
-                    <p className="text-xs text-red-200">Security Expert</p>
-                  </div>
-                  <div className="p-3 rounded bg-yellow-500/10 border border-yellow-500/30">
-                    <p className="text-sm font-medium text-yellow-300">⚡ Nia</p>
-                    <p className="text-xs text-yellow-200">Performance</p>
-                  </div>
-                  <div className="p-3 rounded bg-cyan-500/10 border border-cyan-500/30">
-                    <p className="text-sm font-medium text-cyan-300">📚 Imani</p>
-                    <p className="text-xs text-cyan-200">Knowledge Manager</p>
-                  </div>
+          <div className="p-4 space-y-2.5">
+            {[
+              { name: "Elara", role: "Lead Engineer", color: "text-emerald-400", bg: "bg-emerald-500/10" },
+              { name: "Sankofa", role: "Code Architect", color: "text-blue-400", bg: "bg-blue-500/10" },
+              { name: "Jabari", role: "Security Expert", color: "text-red-400", bg: "bg-red-500/10" },
+              { name: "Nia", role: "Performance", color: "text-yellow-400", bg: "bg-yellow-500/10" },
+            ].map((agent) => (
+              <div key={agent.name} className={`flex items-center gap-3 p-2.5 rounded-lg ${agent.bg} border border-white/[0.04]`}>
+                <div className={`w-2 h-2 rounded-full ${agent.color.replace('text-', 'bg-')} animate-pulse`} />
+                <div>
+                  <span className={`text-xs font-semibold ${agent.color}`}>{agent.name}</span>
+                  <span className="text-[10px] text-gray-500 ml-2">{agent.role}</span>
                 </div>
+                <span className="text-[10px] text-gray-600 ml-auto">online</span>
               </div>
-              <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-lg p-4">
-                <h3 className="text-sm font-semibold text-emerald-300 mb-2">💡 Pro Tip</h3>
-                <p className="text-xs text-emerald-200">
-                  You can mention agents by name or use auto-routing to find the best agent for your request.
-                </p>
+            ))}
+            <div className="mt-3 p-3 rounded-lg bg-purple-500/5 border border-purple-500/10">
+              <div className="text-[11px] text-gray-400">
+                <span className="text-purple-400 font-semibold">Elara:</span> I&apos;ve reviewed the auth module — found 2 potential improvements. Want me to apply them?
               </div>
             </div>
-          </div>
-          <div className="mt-8 grid grid-cols-3 gap-4">
-            <div className="bg-white/5 border border-white/10 rounded-lg p-6">
-              <h3 className="text-lg font-semibold text-white mb-2">🚀 Code Review</h3>
-              <p className="text-sm text-gray-400">
-                Get instant feedback on code quality, architecture, and best practices from Sankofa.
-              </p>
-            </div>
-            <div className="bg-white/5 border border-white/10 rounded-lg p-6">
-              <h3 className="text-lg font-semibold text-white mb-2">🔐 Security Audit</h3>
-              <p className="text-sm text-gray-400">
-                Have Jabari analyze your code for security vulnerabilities and compliance issues.
-              </p>
-            </div>
-            <div className="bg-white/5 border border-white/10 rounded-lg p-6">
-              <h3 className="text-lg font-semibold text-white mb-2">📊 Performance Analysis</h3>
-              <p className="text-sm text-gray-400">
-                Let Nia identify bottlenecks and optimize your code for maximum performance.
-              </p>
-          </div>
           </div>
         </div>
-      </main>
-      <Footer />
-    </div>
+      }
+    />
   )
 }

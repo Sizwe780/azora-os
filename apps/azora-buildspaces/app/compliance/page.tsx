@@ -1,94 +1,93 @@
 import { Navbar } from "@/components/features/navbar"
 import { Footer } from "@/components/features/footer"
-import { ClipboardCheck, Globe, Shield, FileText, CheckCircle2 } from "lucide-react"
+import { Shield, CheckCircle2, FileText, Globe, Lock, Eye } from "lucide-react"
 import Link from "next/link"
 
-export default function CompliancePage() {
-  const certifications = [
-    { name: "SOC 2 Type II", status: "Compliant", description: "Rigorous auditing of security, availability, and confidentiality." },
-    { name: "GDPR", status: "Compliant", description: "Full adherence to EU data protection and privacy regulations." },
-    { name: "HIPAA", status: "Ready", description: "Infrastructure configured for healthcare data security standards." },
-    { name: "ISO 27001", status: "In Progress", description: "International standard for information security management." }
-  ];
+const frameworks = [
+  { name: "SOC 2 Type II", status: "In Progress", statusColor: "amber", description: "Service Organization Control certification for security, availability, and confidentiality." },
+  { name: "GDPR", status: "Compliant", statusColor: "emerald", description: "Full compliance with the EU General Data Protection Regulation." },
+  { name: "HIPAA", status: "Planned", statusColor: "gray", description: "Health Insurance Portability and Accountability Act compliance for healthcare clients." },
+  { name: "ISO 27001", status: "Planned", statusColor: "gray", description: "Information security management system certification." },
+  { name: "CCPA", status: "Compliant", statusColor: "emerald", description: "California Consumer Privacy Act compliance for US data protection." },
+  { name: "Constitutional AI", status: "Active", statusColor: "emerald", description: "Our own ethical AI governance framework ensuring every AI action meets dignity, transparency, and benefit standards." },
+]
 
+export default function CompliancePage() {
   return (
     <div className="min-h-screen bg-[#0d1117] text-white">
       <Navbar />
-      <main className="py-24 px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-5xl">
-          <div className="text-center mb-16">
-            <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent">
-              Compliance & Governance
+      <main>
+        <section className="relative py-24 lg:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-blue-500/5 to-transparent" />
+          <div className="relative mx-auto max-w-4xl text-center">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold uppercase tracking-wider mb-6">
+              <Shield className="h-3.5 w-3.5" />
+              Compliance
+            </div>
+            <h1 className="text-4xl sm:text-5xl font-bold mb-6">
+              Trust &
+              <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent"> Compliance</span>
             </h1>
-            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-              Azora is built to meet the most demanding regulatory requirements, 
-              providing a secure foundation for enterprise and government AI deployments.
+            <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+              BuildSpaces is built with enterprise-grade compliance and security standards from the ground up.
             </p>
           </div>
+        </section>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
-            {certifications.map((cert) => (
-              <div key={cert.name} className="p-6 rounded-2xl bg-white/5 border border-white/10 flex items-start gap-4">
-                <div className="p-2 rounded-lg bg-emerald-400/10 text-emerald-400">
-                  <CheckCircle2 className="h-6 w-6" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-3 mb-1">
-                    <h3 className="text-xl font-bold">{cert.name}</h3>
-                    <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-400/20 text-emerald-400 border border-emerald-400/30">
-                      {cert.status}
-                    </span>
+        {/* Compliance Frameworks */}
+        <section className="py-16 px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-4xl">
+            <h2 className="text-2xl font-bold mb-8">Compliance Frameworks</h2>
+            <div className="space-y-4">
+              {frameworks.map((fw, i) => (
+                <div key={i} className="flex items-start justify-between p-6 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:border-white/[0.12] transition-all duration-300">
+                  <div className="flex items-start gap-4">
+                    <div className="p-2 rounded-lg bg-blue-500/10 mt-0.5">
+                      <Shield className="h-4 w-4 text-blue-400" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">{fw.name}</h3>
+                      <p className="text-sm text-gray-400 mt-1">{fw.description}</p>
+                    </div>
                   </div>
-                  <p className="text-gray-400 text-sm">{cert.description}</p>
+                  <span className={`px-2.5 py-1 rounded-full bg-${fw.statusColor}-500/10 text-${fw.statusColor}-400 text-xs font-semibold whitespace-nowrap`}>{fw.status}</span>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
+        </section>
 
-          <div className="space-y-12 mb-16">
-            <section>
-              <div className="flex items-center gap-3 mb-4">
-                <Globe className="h-6 w-6 text-emerald-400" />
-                <h2 className="text-2xl font-bold">Global Data Residency</h2>
-              </div>
-              <p className="text-gray-400 leading-relaxed">
-                We offer flexible data residency options, allowing you to store and process 
-                data in specific regions to comply with local laws and regulations. 
-                Our distributed infrastructure supports deployments in the US, EU, and Asia-Pacific.
-              </p>
-            </section>
-
-            <section>
-              <div className="flex items-center gap-3 mb-4">
-                <Shield className="h-6 w-6 text-emerald-400" />
-                <h2 className="text-2xl font-bold">Constitutional Auditing</h2>
-              </div>
-              <p className="text-gray-400 leading-relaxed">
-                Every agent interaction is logged and can be audited against your 
-                internal compliance policies. Our Constitutional AI layer provides 
-                automated enforcement of governance rules.
-              </p>
-            </section>
-
-            <section className="p-8 rounded-2xl bg-white/5 border border-white/10">
-              <div className="flex items-center gap-3 mb-4">
-                <FileText className="h-6 w-6 text-emerald-400" />
-                <h2 className="text-xl font-bold">Compliance Documentation</h2>
-              </div>
-              <p className="text-gray-400 text-sm mb-6">
-                Need our latest SOC 2 report or a Data Processing Agreement (DPA)? 
-                Our compliance team is ready to assist with your due diligence process.
-              </p>
-              <Button variant="outline" asChild>
-                <a href="mailto:compliance@azora.world">Request Documentation</a>
-              </Button>
-            </section>
+        {/* Key Practices */}
+        <section className="py-20 px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-6xl">
+            <h2 className="text-2xl font-bold text-center mb-12">Our Security Practices</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {[
+                { icon: Lock, title: "Data Encryption", description: "TLS 1.3 in transit, AES-256 at rest. Your code never leaves encrypted channels." },
+                { icon: Eye, title: "Access Control", description: "Role-based access, MFA enforcement, and session management across all accounts." },
+                { icon: FileText, title: "Audit Trail", description: "Complete logging of all actions, AI decisions, and data access events." },
+              ].map((practice, i) => (
+                <div key={i} className="p-6 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+                  <div className="p-2.5 rounded-lg bg-blue-500/10 w-fit mb-4">
+                    <practice.icon className="h-5 w-5 text-blue-400" />
+                  </div>
+                  <h3 className="font-semibold mb-2">{practice.title}</h3>
+                  <p className="text-sm text-gray-400 leading-relaxed">{practice.description}</p>
+                </div>
+              ))}
+            </div>
           </div>
+        </section>
 
-          <div className="mt-12 text-center">
-            <Link href="/security" className="text-emerald-400 hover:underline">View Security Overview</Link>
+        {/* CTA */}
+        <section className="py-20 px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="text-gray-400 mb-6">Need detailed compliance documentation or a security questionnaire?</p>
+            <Link href="/contact" className="inline-flex items-center gap-2 px-8 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl shadow-lg shadow-blue-500/20 transition-all">
+              <CheckCircle2 className="h-4 w-4" /> Request Compliance Docs
+            </Link>
           </div>
-        </div>
+        </section>
       </main>
       <Footer />
     </div>

@@ -1,3 +1,4 @@
+// @ts-ignore
 import { Client } from 'ssh2';
 import { readFileSync } from 'fs';
 
@@ -25,7 +26,7 @@ export async function deployToWorkerNode(
             const deployDir = `/home/${username}/deployments/${Date.now()}`;
             const mkdirCmd = `mkdir -p ${deployDir}`;
 
-            conn.exec(mkdirCmd, (err, stream) => {
+            conn.exec(mkdirCmd, (err: any, stream: any) => {
                 if (err) {
                     conn.end();
                     return resolve({ success: false, logs, error: err.message });
@@ -42,7 +43,7 @@ export async function deployToWorkerNode(
                     const base64Content = Buffer.from(dockerComposeContent).toString('base64');
                     const writeCmd = `echo "${base64Content}" | base64 -d > ${deployDir}/docker-compose.yml`;
 
-                    conn.exec(writeCmd, (err, stream) => {
+                    conn.exec(writeCmd, (err: any, stream: any) => {
                         if (err) {
                             conn.end();
                             return resolve({ success: false, logs, error: err.message });
@@ -58,7 +59,7 @@ export async function deployToWorkerNode(
                             const deployCmd = `cd ${deployDir} && docker compose up -d`;
                             logs.push(`Executing: ${deployCmd}`);
 
-                            conn.exec(deployCmd, (err, stream) => {
+                            conn.exec(deployCmd, (err: any, stream: any) => {
                                 if (err) {
                                     conn.end();
                                     return resolve({ success: false, logs, error: err.message });
@@ -80,7 +81,7 @@ export async function deployToWorkerNode(
                     });
                 });
             });
-        }).on('error', (err) => {
+        }).on('error', (err: any) => {
             resolve({ success: false, logs, error: `SSH Connection Failed: ${err.message}` });
         }).connect({
             host,

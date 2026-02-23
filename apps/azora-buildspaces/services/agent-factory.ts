@@ -1,4 +1,5 @@
 import { BuildAgent } from './build-agent';
+// @ts-ignore
 import { BaseAgent, JabariAgent } from '@azora/shared-ai';
 
 export class AgentFactory {

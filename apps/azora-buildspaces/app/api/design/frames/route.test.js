@@ -3,7 +3,7 @@ function makeResponse(body, status = 200) {
   return { status, json: async () => body }
 }
 
-const path = '../../../lib/db'
+const path = '../../../lib/database/client'
 
 function getDb() {
   try {

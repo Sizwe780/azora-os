@@ -8,9 +8,11 @@ import { Figma, Loader2, CheckCircle2 } from "lucide-react";
 
 interface FigmaImportDialogProps {
     onImport: (data: any) => void;
+    open?: boolean;
+    onOpenChange?: (open: boolean) => void;
 }
 
-export default function FigmaImportDialog({ onImport }: FigmaImportDialogProps) {
+export default function FigmaImportDialog({ onImport, open, onOpenChange }: FigmaImportDialogProps) {
     const [url, setUrl] = useState("");
     const [isImporting, setIsImporting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);

@@ -257,18 +257,3 @@ export default function Whiteboard({ ydoc, provider }: WhiteboardProps) {
         </div>
     );
 }
-                    </div>
-                ))}
-
-                {/* Canvas Content Placeholder */}
-                <div className="absolute inset-0 flex items-center justify-center text-slate-400 pointer-events-none">
-                    <div className="text-center">
-                        <Palette className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                        <p className="text-lg">Start drawing on the whiteboard</p>
-                        <p className="text-sm">Collaborate in real-time with your team</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-}

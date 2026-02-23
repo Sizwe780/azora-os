@@ -1,17 +1,20 @@
 "use client"
 
 import { useState, useCallback } from 'react';
-import ReactFlow, {
-    MiniMap,
-    Controls,
-    Background,
+import {
+    ReactFlow,
     useNodesState,
     useEdgesState,
     addEdge,
     Connection,
     Edge,
-} from 'reactflow';
-import 'reactflow/dist/style.css';
+} from '@reactflow/core';
+import { MiniMap as MiniMapComponent } from '@reactflow/minimap';
+import { Controls as ControlsComponent } from '@reactflow/controls';
+import { Background as BackgroundComponent, BackgroundVariant } from '@reactflow/background';
+import '@reactflow/core/dist/style.css';
+import '@reactflow/minimap/dist/style.css';
+import '@reactflow/controls/dist/style.css';
 
 const initialNodes = [
     { id: '1', position: { x: 0, y: 0 }, data: { label: 'App Root' } },
@@ -38,9 +41,9 @@ export function VisualCanvas() {
                 onConnect={onConnect}
                 fitView
             >
-                <Controls />
-                <MiniMap />
-                <Background gap={12} size={1} />
+                <ControlsComponent />
+                <MiniMapComponent />
+                <BackgroundComponent variant={BackgroundVariant.Dots} gap={12} size={1} />
             </ReactFlow>
         </div>
     );

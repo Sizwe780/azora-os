@@ -15,11 +15,11 @@ export function useVoice(): UseVoiceReturn {
     const [isListening, setIsListening] = useState(false)
     const [transcript, setTranscript] = useState('')
     const [isSupported, setIsSupported] = useState(false)
-    const [recognition, setRecognition] = useState<SpeechRecognition | null>(null)
+    const [recognition, setRecognition] = useState<any | null>(null)
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
-            const globalWin = window as unknown as { webkitSpeechRecognition?: { new(): SpeechRecognition } }
+            const globalWin = window as unknown as { webkitSpeechRecognition?: { new(): any } }
             if (globalWin.webkitSpeechRecognition) {
                 const RecognitionClass = globalWin.webkitSpeechRecognition
                 const recognitionInstance = new RecognitionClass()
@@ -31,7 +31,7 @@ export function useVoice(): UseVoiceReturn {
                     setRecognition(recognitionInstance)
                 })
 
-            recognitionInstance.onresult = (event: SpeechRecognitionEvent) => {
+            recognitionInstance.onresult = (event: any) => {
                 const results = event.results as SpeechRecognitionResultList
                 for (let i = event.resultIndex; i < results.length; i++) {
                     const transcriptPart = results[i][0].transcript
@@ -49,7 +49,7 @@ export function useVoice(): UseVoiceReturn {
                 cancelAnimationFrame(raf)
                 try {
                     // cleanup
-                    recognitionInstance.onresult = null as unknown as (event: SpeechRecognitionEvent) => void
+                    recognitionInstance.onresult = null as unknown as (event: any) => void
                     recognitionInstance.onend = null as unknown as () => void
                     recognitionInstance.stop()
                 } catch (e) {

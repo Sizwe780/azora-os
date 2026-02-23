@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { X, Sparkles, Code2, Palette, Brain, Terminal, Check } from "lucide-react"
 
 interface OnboardingProps {
-  onComplete: () => void
+  onComplete?: () => void
 }
 
 const steps = [
@@ -46,21 +46,32 @@ const steps = [
 
 export function Onboarding({ onComplete }: OnboardingProps) {
   const [currentStep, setCurrentStep] = useState(0)
-  const [isVisible, setIsVisible] = useState(true)
+  const [isVisible, setIsVisible] = useState(false)
   const CurrentIcon = steps[currentStep].icon
+
+  useEffect(() => {
+    const dismissed = localStorage.getItem('buildspaces-onboarding-complete')
+    if (!dismissed) {
+      setIsVisible(true)
+    }
+  }, [])
+
+  const handleDismiss = () => {
+    setIsVisible(false)
+    localStorage.setItem('buildspaces-onboarding-complete', 'true')
+    if (onComplete) setTimeout(onComplete, 300)
+  }
 
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1)
     } else {
-      setIsVisible(false)
-      setTimeout(onComplete, 300)
+      handleDismiss()
     }
   }
 
   const handleSkip = () => {
-    setIsVisible(false)
-    setTimeout(onComplete, 300)
+    handleDismiss()
   }
 
   if (!isVisible) return null
@@ -71,7 +82,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4"
       >
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
@@ -79,13 +90,13 @@ export function Onboarding({ onComplete }: OnboardingProps) {
           exit={{ scale: 0.9, opacity: 0 }}
           className="max-w-md w-full"
         >
-          <Card className="relative">
+          <Card className="relative bg-[#0d1117] border-white/10 shadow-2xl shadow-emerald-500/5">
             <CardHeader className="text-center">
-              <div className="mx-auto mb-4 p-3 rounded-full bg-primary/10 w-fit">
-                <CurrentIcon className="w-6 h-6 text-primary" />
+              <div className="mx-auto mb-4 p-3 rounded-full bg-emerald-500/10 w-fit ring-1 ring-emerald-500/20">
+                <CurrentIcon className="w-6 h-6 text-emerald-400" />
               </div>
-              <CardTitle className="text-xl">{steps[currentStep].title}</CardTitle>
-              <CardDescription className="text-base">
+              <CardTitle className="text-xl text-white">{steps[currentStep].title}</CardTitle>
+              <CardDescription className="text-base text-gray-400">
                 {steps[currentStep].description}
               </CardDescription>
             </CardHeader>
@@ -97,7 +108,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
                   <div
                     key={index}
                     className={`w-2 h-2 rounded-full transition-colors ${
-                      index === currentStep ? "bg-primary" : "bg-muted"
+                      index === currentStep ? "bg-emerald-400" : "bg-white/10"
                     }`}
                   />
                 ))}
@@ -105,10 +116,10 @@ export function Onboarding({ onComplete }: OnboardingProps) {
 
               {/* Action Buttons */}
               <div className="flex gap-3">
-                <Button variant="ghost" onClick={handleSkip} className="flex-1">
+                <Button variant="ghost" onClick={handleSkip} className="flex-1 text-gray-400 hover:text-white hover:bg-white/5">
                   Skip Tour
                 </Button>
-                <Button onClick={handleNext} className="flex-1">
+                <Button onClick={handleNext} className="flex-1 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 border border-emerald-500/20">
                   {currentStep === steps.length - 1 ? (
                     <>
                       <Check className="w-4 h-4 mr-2" />
@@ -122,8 +133,8 @@ export function Onboarding({ onComplete }: OnboardingProps) {
 
               {/* Keyboard Shortcuts Hint */}
               {currentStep > 0 && (
-                <div className="text-center text-sm text-muted-foreground">
-                  Pro tip: Use <Badge variant="outline" className="mx-1">Ctrl+{currentStep}</Badge> to jump to this room
+                <div className="text-center text-sm text-gray-500">
+                  Pro tip: Use <Badge variant="outline" className="mx-1 border-white/10 text-gray-400">Ctrl+{currentStep}</Badge> to jump to this room
                 </div>
               )}
             </CardContent>
@@ -132,7 +143,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
             <Button
               variant="ghost"
               size="icon"
-              className="absolute top-2 right-2"
+              className="absolute top-2 right-2 text-gray-500 hover:text-white hover:bg-white/5"
               onClick={handleSkip}
             >
               <X className="w-4 h-4" />

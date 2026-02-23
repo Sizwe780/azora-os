@@ -4,6 +4,7 @@ import '@testing-library/jest-dom';
 // Some modules import Decimal from '@prisma/client/runtime/library'. If the
 // generated Prisma runtime is not resolvable in the test environment, this
 // virtual mock supplies a minimal Decimal implementation so unit tests can run.
+// @ts-ignore
 jest.mock('@prisma/client/runtime/library', () => {
 	class Decimal {
 		value: any
@@ -13,3 +14,7 @@ jest.mock('@prisma/client/runtime/library', () => {
 	}
 	return { Decimal }
 }, { virtual: true })
+
+// Mock canvas to prevent jsdom loading issues
+// @ts-ignore
+jest.mock('canvas', () => ({}), { virtual: true })

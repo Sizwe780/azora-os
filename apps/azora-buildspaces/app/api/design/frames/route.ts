@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { prisma, PRISMA_AVAILABLE } from '@/lib/db'
+import { prisma, PRISMA_AVAILABLE } from '@/lib/database/client'
 
 export async function POST(req: Request) {
   if (!PRISMA_AVAILABLE) {
@@ -15,10 +15,11 @@ export async function POST(req: Request) {
       // dynamic import so tests or environments without next-auth don't crash
       const { getServerSession } = await import('next-auth/next')
       // import authOptions if available in monorepo packages
+      // @ts-ignore
       const maybeAuth = await import('packages/lib/auth').catch(() => null)
       const authOptions = maybeAuth?.authOptions
       if (typeof getServerSession === 'function') {
-        const session = authOptions ? await getServerSession(authOptions) : await getServerSession()
+        const session: any = authOptions ? await getServerSession(authOptions) : await getServerSession()
         sessionUserId = session?.user?.id ?? null
       }
     } catch (e) {

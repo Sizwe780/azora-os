@@ -5,14 +5,29 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  // Connection URLs moved to prisma/prisma.config.* per Prisma 7
+}
+
+
+enum UserRole {
+  STUDENT
+  TEACHER
+  ADMIN
+}
+
+enum CourseLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
 }
 
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
   name      String
-  password  String
+  password  String?
+  emailVerified DateTime?
+  image     String?
   role      UserRole @default(STUDENT)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -60,6 +75,10 @@ model User {
   figmaFrames         FigmaFrame[]
   collectibles        Collectible[]
 
+  // NextAuth fields
+  accounts Account[]
+  sessions Session[]
+
   @@index([role])
   @@index([createdAt])
   @@map("users")
@@ -79,6 +98,45 @@ model UserProfile {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("user_profiles")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verificationtokens")
 }
 
 model Course {
@@ -338,22 +396,10 @@ model SafetyIncident {
   @@map("safety_incidents")
 }
 
-enum UserRole {
-  STUDENT
-  EDUCATOR
-  ADMIN
-}
-
 enum CourseStatus {
   DRAFT
   PUBLISHED
   ARCHIVED
-}
-
-enum CourseLevel {
-  BEGINNER
-  INTERMEDIATE
-  ADVANCED
 }
 
 enum EnrollmentStatus {
@@ -562,6 +608,7 @@ model Wallet {
   currency  String   // AZR, BTC, ETH, USD
   balance   Decimal  @default(0) @db.Decimal(20, 8)
   address   String   @unique
+  truthScore Int     @default(50)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

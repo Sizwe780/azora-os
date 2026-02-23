@@ -10,7 +10,7 @@ interface TerminalComponentProps {
 
 export function TerminalComponent({ onData, initialContent = [] }: TerminalComponentProps) {
     const terminalRef = useRef<HTMLDivElement>(null)
-    const xtermRef = useRef<Terminal | null>(null)
+    const xtermRef = useRef<any>(null)
 
     useEffect(() => {
         if (!terminalRef.current) return

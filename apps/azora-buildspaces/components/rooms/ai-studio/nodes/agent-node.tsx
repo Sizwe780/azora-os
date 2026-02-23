@@ -5,7 +5,7 @@
 
 'use client'
 
-import { Handle, Position } from 'reactflow'
+import { Handle, Position } from '@reactflow/core'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Bot, Brain, Shield, Sparkles, Hammer } from 'lucide-react'

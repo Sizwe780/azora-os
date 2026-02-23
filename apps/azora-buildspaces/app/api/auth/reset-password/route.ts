@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
+import { prisma } from '@/lib/database/client';
 import crypto from 'crypto';
 
 /**
@@ -40,7 +40,8 @@ export async function POST(req: Request) {
     // Hash the token to verify against stored hash
     const resetTokenHash = crypto.createHash('sha256').update(token).digest('hex');
 
-    // TODO: Find user with matching reset token
+    // NOTE: Requires database schema update for password reset tokens
+    // Uncomment when User model includes: passwordResetToken, passwordResetExpires
     // const user = await prisma.user.findFirst({
     //   where: {
     //     passwordResetToken: resetTokenHash,
@@ -65,7 +66,8 @@ export async function POST(req: Request) {
       message: 'Password reset feature will be available soon. Schema updates needed.'
     });
 
-    // TODO: When schema is ready, uncomment and implement:
+    // NOTE: Implementation ready - awaiting schema migration
+    // Uncomment when database schema is updated with reset token fields
     // // Hash new password
     // function hashPassword(pwd: string): string {
     //   const salt = crypto.randomBytes(16).toString('hex');

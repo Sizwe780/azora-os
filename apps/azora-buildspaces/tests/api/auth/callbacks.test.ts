@@ -1,6 +1,6 @@
 /** @jest-environment node */
 
-import { authOptions } from '@/lib/auth'
+import { authOptions } from '@/lib/auth/config'
 
 describe('NextAuth callbacks', () => {
   test('jwt callback persists user id to token', async () => {

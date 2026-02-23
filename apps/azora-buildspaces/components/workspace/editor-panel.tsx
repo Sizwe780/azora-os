@@ -24,9 +24,9 @@ export function EditorPanel({ activeFile, openFiles, onFileSelect, onCloseFile }
   const [isConnected, setIsConnected] = useState(false)
   const [collaborators, setCollaborators] = useState<string[]>([])
 
-  const ydocRef = useRef<Y.Doc | null>(null)
-  const providerRef = useRef<WebsocketProvider | null>(null)
-  const bindingRef = useRef<MonacoBinding | null>(null)
+  const ydocRef = useRef<any | null>(null)
+  const providerRef = useRef<any | null>(null)
+  const bindingRef = useRef<any | null>(null)
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   // Fetch file content

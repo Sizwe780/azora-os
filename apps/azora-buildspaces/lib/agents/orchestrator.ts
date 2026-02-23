@@ -352,7 +352,7 @@ export class WorkflowOrchestrator {
           // Use AI Family service for other agents
           const aiClient = AIFamilyServiceClient.getInstance()
           const response = await aiClient.chat({
-            agent: data.agentType,
+            agent: data.agentType as any,
             message: `${data.systemPrompt}\n\nInput Data:\n${inputStr}`,
             context: {
               roomType: 'orchestrator',
@@ -390,7 +390,7 @@ export class WorkflowOrchestrator {
       await auditLogger.error(
         AuditEventType.AGENT_FAILED,
         error instanceof Error ? error : new Error(String(error)),
-        { agent: data.agentType }
+        { details: { agent: data.agentType } }
       )
 
       return {

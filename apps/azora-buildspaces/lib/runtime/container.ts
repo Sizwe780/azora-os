@@ -244,7 +244,7 @@ export class RuntimeEngine {
 
       if (!this.serverUrl) {
         // Fallback: construct URL from default port
-        this.serverUrl = await this.container.getServerUrl(3000)
+        this.serverUrl = await (this.container as any).getServerUrl(3000)
       }
 
       console.log(`[Runtime] Server URL: ${this.serverUrl}`)

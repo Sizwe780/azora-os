@@ -58,29 +58,57 @@ export class AuthService {
       })
       clearTimeout(timeoutId);
 
-      if (!res.ok) {
-        console.error('Failed to fetch user profile:', res.status)
-        return null
+      if (res.ok) {
+        const contentType = res.headers.get('content-type')
+        if (contentType && contentType.includes('application/json')) {
+          const userData = await res.json()
+          return {
+            id: userData.id,
+            name: userData.name,
+            email: userData.email,
+            createdAt: new Date(userData.createdAt),
+            subscription: {
+              plan: userData.subscription?.plan ?? 'constitutional',
+              status: userData.subscription?.status ?? 'trial',
+              expiresAt: new Date(userData.subscription?.expiresAt ?? Date.now() + 30 * 24 * 60 * 60 * 1000),
+              geographicPricing: userData.subscription?.geographicPricing
+            },
+            verificationStatus: userData.verificationStatus
+          }
+        }
       }
 
-      const userData = await res.json()
-
+      // Profile API failed - fall back to session data so we stay authenticated
+      console.warn('[AuthService] Profile API failed, falling back to session data')
+      const sessionUser = session.user as any
       return {
-        id: userData.id,
-        name: userData.name,
-        email: userData.email,
-        createdAt: new Date(userData.createdAt),
+        id: sessionUser.id ?? sessionUser.sub ?? 'unknown',
+        name: sessionUser.name ?? 'User',
+        email: sessionUser.email ?? '',
+        createdAt: new Date(),
         subscription: {
-          plan: userData.subscription.plan,
-          status: userData.subscription.status,
-          expiresAt: new Date(userData.subscription.expiresAt),
-          geographicPricing: userData.subscription.geographicPricing
+          plan: 'constitutional',
+          status: 'trial',
+          expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         },
-        verificationStatus: userData.verificationStatus
+        verificationStatus: { email: false, identity: false }
       }
     } catch (error) {
-      console.error('Error fetching user profile:', error)
-      return null
+      console.error('Error fetching user profile, falling back to session:', error)
+      // Fall back to session data rather than returning null
+      const sessionUser = (session.user as any)
+      return {
+        id: sessionUser.id ?? sessionUser.sub ?? 'unknown',
+        name: sessionUser.name ?? 'User',
+        email: sessionUser.email ?? '',
+        createdAt: new Date(),
+        subscription: {
+          plan: 'constitutional',
+          status: 'trial',
+          expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        },
+        verificationStatus: { email: false, identity: false }
+      }
     }
   }
 
@@ -103,6 +131,10 @@ export class AuthService {
       return { success: true }
     } catch (error) {
       console.error('Signup error:', error)
+      // Handle non-JSON responses
+      if (error instanceof SyntaxError) {
+        return { success: false, error: 'Server returned an unexpected response. Please try again.' }
+      }
       return { success: false, error: 'An unexpected error occurred' }
     }
   }

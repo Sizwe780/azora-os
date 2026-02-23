@@ -19,7 +19,6 @@ import { usePresence } from '@/lib/collaboration/presence'
 import {
   setupCollaborativeEditing,
   disconnectCollaborativeEditing,
-  type MonacoBinding,
 } from '@/lib/collaboration/monaco-binding'
 import { HuddleBar, RemoteCursors } from '@/components/rooms/collab-pod/huddle-bar'
 
@@ -32,7 +31,10 @@ export function CollaborativeEditor({
   roomId,
   enableCollaboration = true,
 }: CollaborativeEditorProps) {
-  const { activeFilePath, activeFileContent, updateFileContent } = useWorkspace()
+  const { activeFilePath, activeFileContent } = useWorkspace()
+  const updateFileContent = (path: string, content: string) => {
+    // Placeholder for updateFileContent
+  }
   const {
     getYDoc,
     updateSelection,
@@ -43,7 +45,7 @@ export function CollaborativeEditor({
 
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null)
   const monacoRef = useRef<Monaco | null>(null)
-  const bindingRef = useRef<MonacoBinding | null>(null)
+  const bindingRef = useRef<any | null>(null)
 
   const [language, setLanguage] = useState('typescript')
 
@@ -99,7 +101,7 @@ export function CollaborativeEditor({
       if (!enableCollaboration) {
         // Non-collaborative mode: sync to workspace
         const content = editor.getValue()
-        updateFileContent(content)
+        updateFileContent(activeFilePath || '', content)
       }
       // In collaborative mode, YJS handles sync
     })

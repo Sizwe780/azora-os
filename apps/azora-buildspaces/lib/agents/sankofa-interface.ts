@@ -308,7 +308,7 @@ export class SankofaAgent {
     }
 
     try {
-      const response = await agentBridge.sendSignal('Sankofa', 'FIND_CONTEXT', payload)
+      const response = await agentBridge.sendSignal('Sankofa', 'FIND_CONTEXT' as any, payload)
 
       if (response.status === 'success' && response.data) {
         return response.data.result || this.formatContextForDisplay(contextResult)

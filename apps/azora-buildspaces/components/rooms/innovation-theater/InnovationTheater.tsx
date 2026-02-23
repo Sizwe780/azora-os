@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Play, Pause, Square, Settings, Users, MessageSquare, Mic, MicOff, Video, VideoOff, Record, Share2, QrCode } from "lucide-react";
+import { Play, Pause, Square, Settings, Users, MessageSquare, Mic, MicOff, Video, VideoOff, Circle as Record, Share2, QrCode } from "lucide-react";
 import SlideEditor from "./SlideEditor";
 import LiveDemo from "./LiveDemo";
 import AudienceFeedback from "./AudienceFeedback";

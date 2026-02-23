@@ -1,106 +1,119 @@
 import { Navbar } from "@/components/features/navbar"
 import { Footer } from "@/components/features/footer"
-import { Play, BookOpen, Code, Cpu, Shield, Zap, Clock } from "lucide-react"
+import { GraduationCap, Play, Clock, ArrowRight } from "lucide-react"
 import Link from "next/link"
 
-export default function TutorialsPage() {
-  const tutorials = [
-    {
-      title: "Building Your First Agent",
-      description: "A step-by-step guide to creating a custom agent using the Azora SDK.",
-      level: "Beginner",
-      duration: "15 min",
-      icon: Cpu,
-      category: "Development"
-    },
-    {
-      title: "Implementing Constitutional Guardrails",
-      description: "Learn how to define and enforce ethical principles for your AI agents.",
-      level: "Intermediate",
-      duration: "25 min",
-      icon: Shield,
-      category: "Safety"
-    },
-    {
-      title: "Multi-Agent Orchestration",
-      description: "How to coordinate multiple specialized agents to solve complex tasks.",
-      level: "Advanced",
-      duration: "40 min",
-      icon: Zap,
-      category: "Architecture"
-    },
-    {
-      title: "Custom Tool Integration",
-      description: "Connect your agents to external APIs and databases securely.",
-      level: "Intermediate",
-      duration: "20 min",
-      icon: Code,
-      category: "Integration"
-    }
-  ];
+const tutorials = [
+  {
+    title: "Getting Started with BuildSpaces",
+    description: "Create your first workspace, explore the rooms, and meet the AI agents.",
+    duration: "10 min",
+    level: "Beginner",
+    levelColor: "emerald",
+    href: "#",
+  },
+  {
+    title: "Code Chamber: Full IDE Walkthrough",
+    description: "Master the Monaco editor, terminal, Git integration, and Elara pair programming.",
+    duration: "15 min",
+    level: "Beginner",
+    levelColor: "emerald",
+    href: "#",
+  },
+  {
+    title: "Spec-Driven Development with Spec Chamber",
+    description: "Write living specifications and generate tests automatically.",
+    duration: "12 min",
+    level: "Intermediate",
+    levelColor: "amber",
+    href: "#",
+  },
+  {
+    title: "Working with AI Agents",
+    description: "Learn to invoke agents, customize prompts, and use auto-routing.",
+    duration: "20 min",
+    level: "Intermediate",
+    levelColor: "amber",
+    href: "#",
+  },
+  {
+    title: "Building a Full-Stack App in Maker Lab",
+    description: "Scaffold, prototype, and deploy a complete application in one session.",
+    duration: "30 min",
+    level: "Intermediate",
+    levelColor: "amber",
+    href: "#",
+  },
+  {
+    title: "Real-Time Collaboration in Collaboration Pod",
+    description: "Set up team workspaces, pair program, and use the shared whiteboard.",
+    duration: "15 min",
+    level: "Beginner",
+    levelColor: "emerald",
+    href: "#",
+  },
+  {
+    title: "Knowledge Ocean: Semantic Code Search",
+    description: "Use vector search and knowledge graphs to navigate large codebases.",
+    duration: "18 min",
+    level: "Advanced",
+    levelColor: "red",
+    href: "#",
+  },
+  {
+    title: "Constitutional AI: Understanding Ethics-First Development",
+    description: "Deep dive into how Constitutional AI validates every agent action.",
+    duration: "25 min",
+    level: "Advanced",
+    levelColor: "red",
+    href: "#",
+  },
+]
 
+export default function TutorialsPage() {
   return (
     <div className="min-h-screen bg-[#0d1117] text-white">
       <Navbar />
-      <main className="py-24 px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl">
-          <div className="text-center mb-16">
-            <h1 className="text-5xl font-bold mb-4">Tutorials</h1>
-            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-              Master the Azora platform with hands-on guides and real-world 
-              examples designed for builders of all levels.
+      <main>
+        <section className="relative py-24 lg:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/5 to-transparent" />
+          <div className="relative mx-auto max-w-4xl text-center">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-wider mb-6">
+              <GraduationCap className="h-3.5 w-3.5" />
+              Tutorials
+            </div>
+            <h1 className="text-4xl sm:text-5xl font-bold mb-6">
+              Learn by
+              <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent"> Doing</span>
+            </h1>
+            <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+              Step-by-step guides to master every room, agent, and workflow in BuildSpaces.
             </p>
           </div>
+        </section>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
-            {tutorials.map((tutorial) => (
-              <div key={tutorial.title} className="group p-8 rounded-2xl bg-white/5 border border-white/10 hover:border-emerald-400/30 transition-all flex flex-col">
-                <div className="flex items-start justify-between mb-6">
-                  <div className="p-3 rounded-xl bg-emerald-400/10 text-emerald-400 group-hover:scale-110 transition-transform">
-                    <tutorial.icon className="h-8 w-8" />
+        <section className="py-12 px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-4xl">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {tutorials.map((tutorial, i) => (
+                <Link key={i} href={tutorial.href} className="block group">
+                  <div className="h-full p-6 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:border-emerald-500/20 hover:bg-white/[0.04] transition-all duration-300">
+                    <div className="flex items-center gap-3 mb-3">
+                      <span className={`px-2 py-0.5 rounded-full bg-${tutorial.levelColor}-500/10 text-${tutorial.levelColor}-400 text-[10px] font-bold uppercase`}>{tutorial.level}</span>
+                      <span className="text-xs text-gray-600 flex items-center gap-1"><Clock className="h-3 w-3" />{tutorial.duration}</span>
+                    </div>
+                    <h3 className="font-semibold mb-2 group-hover:text-emerald-400 transition-colors">{tutorial.title}</h3>
+                    <p className="text-sm text-gray-400 leading-relaxed">{tutorial.description}</p>
+                    <div className="flex items-center gap-2 mt-4 text-xs text-gray-600 group-hover:text-emerald-400 transition-colors">
+                      <Play className="h-3 w-3" /> Start Tutorial
+                      <ArrowRight className="h-3 w-3 ml-auto" />
+                    </div>
                   </div>
-                  <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-gray-500">
-                    <span className="flex items-center gap-1">
-                      <Clock className="h-3 w-3" />
-                      {tutorial.duration}
-                    </span>
-                    <span className="px-2 py-1 rounded bg-white/5 border border-white/10">
-                      {tutorial.level}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex-grow">
-                  <span className="text-emerald-400 text-xs font-bold uppercase tracking-wider mb-2 block">{tutorial.category}</span>
-                  <h3 className="text-2xl font-bold mb-3 group-hover:text-emerald-400 transition-colors">{tutorial.title}</h3>
-                  <p className="text-gray-400 leading-relaxed mb-8">{tutorial.description}</p>
-                </div>
-                <button className="flex items-center gap-2 text-emerald-400 font-bold hover:gap-3 transition-all">
-                  Start Tutorial
-                  <Play className="h-4 w-4 fill-current" />
-                </button>
-              </div>
-            ))}
-          </div>
-
-          <div className="p-12 rounded-3xl bg-white/5 border border-white/10 flex flex-col md:flex-row items-center justify-between gap-8">
-            <div className="flex items-center gap-6">
-              <div className="p-4 rounded-full bg-emerald-400/10 text-emerald-400">
-                <BookOpen className="h-10 w-10" />
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold mb-1">Looking for the full reference?</h2>
-                <p className="text-gray-400">Check out our comprehensive documentation for every API and tool.</p>
-              </div>
+                </Link>
+              ))}
             </div>
-            <Link href="/docs" className="px-8 py-3 rounded-lg bg-emerald-400 text-black font-bold hover:bg-emerald-500 transition-colors whitespace-nowrap">
-              Explore Documentation
-            </Link>
           </div>
-
-          <div className="mt-12 text-center">
-            <Link href="/" className="text-emerald-400 hover:underline">Back to home</Link>
-          </div>
-        </div>
+        </section>
       </main>
       <Footer />
     </div>

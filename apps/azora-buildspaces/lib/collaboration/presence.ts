@@ -14,7 +14,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import * as Y from 'yjs'
 import { WebsocketProvider } from 'y-websocket'
-import { Awareness } from 'y-protocols/awareness'
+// import { Awareness } from 'y-protocols/awareness'
 
 export interface UserPresence {
   userId: string
@@ -36,7 +36,7 @@ export interface PresenceState {
   localUser: UserPresence
   remoteUsers: Map<number, UserPresence>
   provider: WebsocketProvider | null
-  awareness: Awareness | null
+  awareness: any | null
 }
 
 const COLORS = [

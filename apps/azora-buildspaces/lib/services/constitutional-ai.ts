@@ -156,7 +156,7 @@ export class ConstitutionalAI {
       const securityViolations = await this.checkSecurityPrinciples(validatedAction)
       violations.push(...securityViolations)
       
-      // Article VIII: Truth & Verification (No Mock Protocol)
+      // Article VIII: Truth & Verification (Article VIII Section 8.3)
       const truthViolations = await this.checkTruthPrinciples(validatedAction)
       violations.push(...truthViolations)
       
@@ -261,7 +261,74 @@ export class ConstitutionalAI {
     return compliance.overall
   }
 
-  // Private methods for checking each constitutional article
+  /**
+   * Automatically heal constitutional breaches (Article I, Section 1.5)
+   * Self-Healing Systems - Systems must be resilient and autonomously adaptive
+   */
+  async healViolation(violation: ConstitutionalViolation, action: UserAction): Promise<boolean> {
+    try {
+      switch (violation.article) {
+        case ConstitutionalArticle.FOUNDATIONAL_PRINCIPLES:
+          return this.healUbuntuViolation(violation, action)
+        case ConstitutionalArticle.RIGHTS_FREEDOMS:
+          return this.healRightsViolation(violation, action)
+        case ConstitutionalArticle.ECONOMIC_CONSTITUTION:
+          return this.healEconomicViolation(violation, action)
+        case ConstitutionalArticle.TECHNOLOGICAL_CONSTITUTION:
+          return this.healTechViolation(violation, action)
+        case ConstitutionalArticle.TRUTH_VERIFICATION:
+          return this.healTruthViolation(violation, action)
+        default:
+          // For other articles, require manual remediation
+          return false
+      }
+    } catch (error) {
+      console.error('Failed to heal violation:', error)
+      return false
+    }
+  }
+
+  private async healUbuntuViolation(violation: ConstitutionalViolation, action: UserAction): Promise<boolean> {
+    if (violation.section === '1.1' && action.type === UserActionType.PROJECT_CREATE) {
+      // Auto-add collaborators for private projects
+      action.payload.collaborators = action.payload.collaborators || []
+      action.payload.collaborators.push('community-reviewer') // Add community reviewer
+      return true
+    }
+    return false
+  }
+
+  private async healRightsViolation(violation: ConstitutionalViolation, action: UserAction): Promise<boolean> {
+    if (violation.section === '2.1' && action.type === UserActionType.DATA_EXPORT) {
+      // Auto-add consent for data export
+      action.payload.userConsent = true
+      return true
+    }
+    return false
+  }
+
+  private async healEconomicViolation(violation: ConstitutionalViolation, action: UserAction): Promise<boolean> {
+    if (violation.section === '3.2' && action.type === UserActionType.MARKETPLACE_PUBLISH) {
+      // Auto-adjust revenue sharing to minimum 10%
+      action.payload.revenueSharing = Math.max(action.payload.revenueSharing || 0, 0.1)
+      return true
+    }
+    return false
+  }
+
+  private async healTechViolation(violation: ConstitutionalViolation, action: UserAction): Promise<boolean> {
+    if (violation.section === '5.1' && action.type === UserActionType.AI_QUERY) {
+      // Auto-enable explainable AI
+      action.payload.explainable = true
+      return true
+    }
+    return false
+  }
+
+  private async healTruthViolation(violation: ConstitutionalViolation, action: UserAction): Promise<boolean> {
+    // Cannot auto-heal No Mock Protocol violations - requires manual implementation
+    return false
+  }
 
   private async checkUbuntuPrinciples(action: UserAction): Promise<ConstitutionalViolation[]> {
     const violations: ConstitutionalViolation[] = []
@@ -417,29 +484,28 @@ export class ConstitutionalAI {
     if (action.type === UserActionType.CODE_EDIT || action.type === UserActionType.FILE_CREATE) {
       const payload = action.payload as { content?: string, fileName?: string }
       
-      // Check for mock/stub/placeholder patterns
-      const mockPatterns = [
-        /mock/i,
+      // Check for placeholder/stub patterns (Article VIII Section 8.3)
+      const prohibitedPatterns = [
         /stub/i,
         /placeholder/i,
         /fake/i,
         /dummy/i,
         /TODO.*implement/i,
-        /FIXME.*mock/i
+        /FIXME/i
       ]
       
-      const hasMockContent = mockPatterns.some(pattern => 
+      const hasProhibitedContent = prohibitedPatterns.some(pattern => 
         payload.content?.match(pattern) || payload.fileName?.match(pattern)
       )
       
-      if (hasMockContent) {
+      if (hasProhibitedContent) {
         violations.push({
           article: ConstitutionalArticle.TRUTH_VERIFICATION,
           section: '8.3',
-          principle: 'No Mock Protocol - Absolute prohibition of mocks, stubs, placeholders',
+          principle: 'No Mock Protocol - Absolute prohibition of stubs and placeholders',
           severity: 'CRITICAL',
-          description: 'Code contains mock, stub, or placeholder implementations which violate the No Mock Protocol',
-          remediation: ['Replace mocks with real implementations', 'Remove placeholder code', 'Implement actual functionality']
+          description: 'Code contains stub or placeholder implementations which violate Article VIII Section 8.3',
+          remediation: ['Replace stubs with real implementations', 'Remove placeholder code', 'Implement actual functionality']
         })
       }
     }

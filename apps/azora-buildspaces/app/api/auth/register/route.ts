@@ -1,13 +1,6 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/db";
-import crypto from "crypto";
-
-// Helper to hash password using Node.js crypto (since bcryptjs install failed)
-function hashPassword(password: string): string {
-    const salt = crypto.randomBytes(16).toString("hex");
-    const hash = crypto.pbkdf2Sync(password, salt, 1000, 64, "sha512").toString("hex");
-    return `${salt}:${hash}`;
-}
+import { prisma } from "@/lib/database/client";
+import { hashPassword } from "@/lib/auth/utils";
 
 export async function POST(req: Request) {
     try {
@@ -32,7 +25,7 @@ export async function POST(req: Request) {
             );
         }
 
-        // Hash password
+        // Hash password using the proper utility function
         const hashedPassword = hashPassword(password);
 
         // Create user with hashed password

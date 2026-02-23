@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/db'
+import { prisma } from '@/lib/database/client'
 import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+import { authOptions } from '@/lib/auth/config'
 import crypto from 'crypto'
 
 /**
@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
 
     // Group by specId to create session-like structure
     const sessionMap = new Map()
-    executions.forEach(exec => {
+    executions.forEach((exec: any) => {
       const specId = exec.specId || 'default-session'
       if (!sessionMap.has(specId)) {
         sessionMap.set(specId, {

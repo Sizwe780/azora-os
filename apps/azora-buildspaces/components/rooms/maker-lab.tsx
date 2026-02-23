@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -9,17 +9,19 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { 
-    Database, 
-    Server, 
-    Shield, 
-    CreditCard, 
-    Mail, 
-    HardDrive, 
-    AlertTriangle, 
-    FileText, 
-    Settings, 
-    Share2, 
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Progress } from "@/components/ui/progress";
+import {
+    Database,
+    Server,
+    Shield,
+    CreditCard,
+    Mail,
+    HardDrive,
+    AlertTriangle,
+    FileText,
+    Settings,
+    Share2,
     Play,
     Download,
     Upload,
@@ -27,7 +29,22 @@ import {
     Globe,
     Lock,
     Zap,
-    Sparkles
+    Sparkles,
+    Cpu,
+    Radio,
+    Wifi,
+    Bluetooth,
+    Usb,
+    Battery,
+    Thermometer,
+    Activity,
+    CircuitBoard,
+    Microchip,
+    Wrench,
+    TestTube,
+    BarChart3,
+    Eye,
+    Smartphone
 } from "lucide-react";
 
 import DatabaseDesigner from "./maker-lab/DatabaseDesigner";
@@ -35,206 +52,239 @@ import APIEndpointGenerator from "./maker-lab/APIEndpointGenerator";
 import AuthTemplateGenerator from "./maker-lab/AuthTemplateGenerator";
 import DeploymentConfig from "./maker-lab/DeploymentConfig";
 import { SparkInterface } from "./maker-lab/spark-interface";
+import CircuitSimulator from "./maker-lab/CircuitSimulator";
+import FirmwareEditor from "./maker-lab/FirmwareEditor";
+import ComponentViewer from "./maker-lab/ComponentViewer";
 
 export default function MakerLab() {
-    const [activeView, setActiveView] = useState("spark");
-    const [projectName, setProjectName] = useState("My Full-Stack App");
+    const [activeView, setActiveView] = useState("overview");
+    const [projectName, setProjectName] = useState("IoT Smart Device");
     const [projectDescription, setProjectDescription] = useState("");
+    const [selectedBoard, setSelectedBoard] = useState("esp32");
+    const [isSimulating, setIsSimulating] = useState(false);
+    const [simulationData, setSimulationData] = useState<any>(null);
+
+    const boards = [
+        { id: "esp32", name: "ESP32", description: "WiFi & Bluetooth SoC" },
+        { id: "esp8266", name: "ESP8266", description: "WiFi SoC" },
+        { id: "arduino", name: "Arduino Uno", description: "Classic microcontroller board" },
+        { id: "raspberry", name: "Raspberry Pi", description: "Single-board computer" },
+        { id: "particle", name: "Particle Photon", description: "IoT development board" }
+    ]
+
+    const startSimulation = async () => {
+        setIsSimulating(true)
+        try {
+            const resp = await fetch("/api/maker-lab/simulate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ board: selectedBoard, project: projectName }),
+            })
+            if (resp.ok) {
+                const data = await resp.json()
+                setSimulationData(data)
+            } else {
+                console.error("Simulation request failed:", resp.status)
+            }
+        } catch (error) {
+            console.error('Simulation failed:', error)
+        } finally {
+            setIsSimulating(false)
+        }
+    }
 
     return (
         <div className="h-full flex flex-col bg-background">
-            {/* Toolbar */}
-            <div className="h-12 border-b flex items-center justify-between px-4 bg-muted/20">
-                <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-2 px-2 py-1 bg-orange-500/10 text-orange-500 rounded-md border border-orange-500/20">
-                        <Code className="w-4 h-4" />
+            {/* Enhanced Toolbar */}
+            <div className="h-14 border-b flex items-center justify-between px-4 bg-muted/20">
+                <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2 px-3 py-2 bg-orange-500/10 text-orange-500 rounded-lg border border-orange-500/20">
+                        <CircuitBoard className="w-5 h-5" />
                         <span className="text-sm font-medium">Maker Lab</span>
                     </div>
-                    <span className="text-muted-foreground text-sm">/</span>
-                    <span className="text-sm font-medium">Project: {projectName}</span>
+
+                    <span className="text-muted-foreground">/</span>
+
+                    <span className="text-sm font-medium">{projectName}</span>
+
+                    {/* Hardware Status */}
+                    <div className="flex items-center gap-2 ml-4">
+                        <div className={`w-2 h-2 rounded-full ${
+                            simulationData ? 'bg-green-500 animate-pulse' : 'bg-gray-500'
+                        }`} />
+                        <span className="text-xs text-muted-foreground">
+                            {simulationData ? 'Connected' : 'Disconnected'}
+                        </span>
+                    </div>
                 </div>
 
                 <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="sm" className="gap-2">
+                    {/* Board Selection */}
+                    <Select value={selectedBoard} onValueChange={setSelectedBoard}>
+                        <SelectTrigger className="w-40">
+                            <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {boards.map(board => (
+                                <SelectItem key={board.id} value={board.id}>
+                                    {board.name}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+
+                    {/* Action Buttons */}
+                    <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={startSimulation}
+                        disabled={isSimulating}
+                        className="gap-2"
+                    >
                         <Play className="w-4 h-4" />
+                        {isSimulating ? 'Testing...' : 'Test Hardware'}
+                    </Button>
+
+                    <Button size="sm" variant="outline" className="gap-2">
+                        <Download className="w-4 h-4" />
+                        Flash
+                    </Button>
+
+                    <Button size="sm" className="gap-2 bg-orange-500 hover:bg-orange-600">
+                        <Upload className="w-4 h-4" />
                         Deploy
                     </Button>
-                    <Button variant="ghost" size="sm" className="gap-2">
-                        <Share2 className="w-4 h-4" />
-                        Share
-                    </Button>
-                    <Button variant="ghost" size="sm">
-                        <Settings className="w-4 h-4" />
-                    </Button>
                 </div>
             </div>
 
-            {/* Project Configuration */}
-            <div className="border-b p-4 bg-muted/5">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <Label htmlFor="project-name">Project Name</Label>
-                        <Input
-                            id="project-name"
-                            value={projectName}
-                            onChange={(e) => setProjectName(e.target.value)}
-                            placeholder="Enter project name"
-                        />
-                    </div>
-                    <div>
-                        <Label htmlFor="project-desc">Description</Label>
-                        <Input
-                            id="project-desc"
-                            value={projectDescription}
-                            onChange={(e) => setProjectDescription(e.target.value)}
-                            placeholder="Project description"
-                        />
-                    </div>
-                </div>
-            </div>
-
-            {/* Main Workbench */}
+            {/* Main Content */}
             <div className="flex-1 overflow-hidden">
-                {activeView === "spark" ? (
-                    // Spark Engine takes full screen
-                    <SparkInterface />
-                ) : (
-                    <ResizablePanelGroup direction="horizontal">
+                <Tabs value={activeView} onValueChange={setActiveView} className="h-full">
+                    <TabsList className="grid w-full grid-cols-7 h-12 rounded-none border-b">
+                        <TabsTrigger value="overview" className="gap-2">
+                            <Eye className="w-4 h-4" />
+                            Overview
+                        </TabsTrigger>
+                        <TabsTrigger value="circuit" className="gap-2">
+                            <CircuitBoard className="w-4 h-4" />
+                            Circuit
+                        </TabsTrigger>
+                        <TabsTrigger value="firmware" className="gap-2">
+                            <Microchip className="w-4 h-4" />
+                            Firmware
+                        </TabsTrigger>
+                        <TabsTrigger value="sensors" className="gap-2">
+                            <Activity className="w-4 h-4" />
+                            Sensors
+                        </TabsTrigger>
+                        <TabsTrigger value="iot" className="gap-2">
+                            <Radio className="w-4 h-4" />
+                            IoT
+                        </TabsTrigger>
+                        <TabsTrigger value="testing" className="gap-2">
+                            <TestTube className="w-4 h-4" />
+                            Testing
+                        </TabsTrigger>
+                        <TabsTrigger value="deploy" className="gap-2">
+                            <Globe className="w-4 h-4" />
+                            Deploy
+                        </TabsTrigger>
+                    </TabsList>
 
-                        {/* Left Panel: Development Tools */}
-                        <ResizablePanel defaultSize={60} minSize={30}>
-                            <div className="h-full flex flex-col">
-                                <Tabs value={activeView} onValueChange={setActiveView} className="h-full flex flex-col">
-                                    <div className="border-b px-4 bg-muted/10">
-                                        <TabsList className="h-10 bg-transparent p-0">
-                                            <TabsTrigger
-                                                value="spark"
-                                                className="data-[state=active]:bg-background data-[state=active]:border-b-2 data-[state=active]:border-purple-500 rounded-none h-full px-4 gap-2"
-                                            >
-                                                <Sparkles className="w-4 h-4" />
-                                                Spark Engine
-                                            </TabsTrigger>
-                                            <TabsTrigger
-                                                value="database"
-                                                className="data-[state=active]:bg-background data-[state=active]:border-b-2 data-[state=active]:border-orange-500 rounded-none h-full px-4 gap-2"
-                                            >
-                                                <Database className="w-4 h-4" />
-                                                Database Designer
-                                            </TabsTrigger>
-                                            <TabsTrigger
-                                                value="api"
-                                                className="data-[state=active]:bg-background data-[state=active]:border-b-2 data-[state=active]:border-orange-500 rounded-none h-full px-4 gap-2"
-                                            >
-                                                <Server className="w-4 h-4" />
-                                                API Endpoints
-                                            </TabsTrigger>
-                                            <TabsTrigger
-                                                value="auth"
-                                                className="data-[state=active]:bg-background data-[state=active]:border-b-2 data-[state=active]:border-orange-500 rounded-none h-full px-4 gap-2"
-                                            >
-                                                <Shield className="w-4 h-4" />
-                                                Authentication
-                                            </TabsTrigger>
-                                            <TabsTrigger
-                                                value="deployment"
-                                                className="data-[state=active]:bg-background data-[state=active]:border-b-2 data-[state=active]:border-orange-500 rounded-none h-full px-4 gap-2"
-                                            >
-                                                <Globe className="w-4 h-4" />
-                                                Deployment
-                                            </TabsTrigger>
-                                        </TabsList>
-                                    </div>
-
-                                    <TabsContent value="database" className="flex-1 m-0 p-0 overflow-hidden relative">
-                                        <DatabaseDesigner projectName={projectName} />
-                                    </TabsContent>
-
-                                    <TabsContent value="api" className="flex-1 m-0 p-0 overflow-hidden relative">
-                                        <APIEndpointGenerator projectName={projectName} />
-                                    </TabsContent>
-
-                                    <TabsContent value="auth" className="flex-1 m-0 p-0 overflow-hidden relative">
-                                        <AuthTemplateGenerator projectName={projectName} />
-                                    </TabsContent>
-
-                                    <TabsContent value="deployment" className="flex-1 m-0 p-0 overflow-hidden relative">
-                                        <DeploymentConfig projectName={projectName} />
-                                    </TabsContent>
-                                </Tabs>
+                    <TabsContent value="overview" className="h-full m-0 p-4">
+                        <div className="grid grid-cols-3 gap-4 h-full">
+                            {/* Project Settings */}
+                            <div className="space-y-4">
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="text-lg">Project Configuration</CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="space-y-4">
+                                        <div>
+                                            <Label>Project Name</Label>
+                                            <Input
+                                                value={projectName}
+                                                onChange={(e) => setProjectName(e.target.value)}
+                                                placeholder="Enter project name"
+                                            />
+                                        </div>
+                                    </CardContent>
+                                </Card>
                             </div>
-                        </ResizablePanel>
 
-                        <ResizableHandle withHandle />
+                            {/* Quick Actions */}
+                            <div className="space-y-4">
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="text-lg">Quick Actions</CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="space-y-2">
+                                        <Button
+                                            className="w-full justify-start gap-2"
+                                            variant="outline"
+                                            onClick={() => setActiveView('circuit')}
+                                        >
+                                            <CircuitBoard className="w-4 h-4" />
+                                            Design Circuit
+                                        </Button>
 
-                        {/* Right Panel: Generated Code & Config */}
-                        <ResizablePanel defaultSize={40} minSize={20}>
-                            <div className="h-full flex flex-col border-l">
-                                <div className="h-10 border-b flex items-center px-4 bg-muted/10 gap-2">
-                                    <Code className="w-4 h-4 text-muted-foreground" />
-                                    <span className="text-sm font-medium">Generated Code</span>
-                                    <Badge variant="outline" className="ml-auto">Ready</Badge>
-                                </div>
-                                <div className="flex-1 overflow-hidden p-4">
-                                    <div className="space-y-4">
-                                        <Card>
-                                            <CardHeader className="pb-2">
-                                                <CardTitle className="text-sm flex items-center gap-2">
-                                                    <FileText className="w-4 h-4" />
-                                                    Project Structure
-                                                </CardTitle>
-                                            </CardHeader>
-                                            <CardContent className="text-xs font-mono">
-                                                <div className="space-y-1">
-                                                    <div>📁 {projectName}/</div>
-                                                    <div className="ml-4">📁 src/</div>
-                                                    <div className="ml-8">📁 components/</div>
-                                                    <div className="ml-8">📁 pages/</div>
-                                                    <div className="ml-8">📁 api/</div>
-                                                    <div className="ml-4">📁 prisma/</div>
-                                                    <div className="ml-8">📄 schema.prisma</div>
-                                                    <div className="ml-4">📄 package.json</div>
-                                                    <div className="ml-4">📄 next.config.js</div>
-                                                </div>
-                                            </CardContent>
-                                        </Card>
+                                        <Button
+                                            className="w-full justify-start gap-2"
+                                            variant="outline"
+                                            onClick={() => setActiveView('firmware')}
+                                        >
+                                            <Microchip className="w-4 h-4" />
+                                            Write Firmware
+                                        </Button>
 
-                                        <Card>
-                                            <CardHeader className="pb-2">
-                                                <CardTitle className="text-sm flex items-center gap-2">
-                                                    <Zap className="w-4 h-4" />
-                                                    Quick Actions
-                                                </CardTitle>
-                                            </CardHeader>
-                                            <CardContent className="space-y-2">
-                                                <Button size="sm" className="w-full justify-start" variant="outline">
-                                                    <Download className="w-4 h-4 mr-2" />
-                                                    Download Project
-                                                </Button>
-                                                <Button size="sm" className="w-full justify-start" variant="outline">
-                                                    <Play className="w-4 h-4 mr-2" />
-                                                    Start Development Server
-                                                </Button>
-                                                <Button size="sm" className="w-full justify-start" variant="outline">
-                                                    <Globe className="w-4 h-4 mr-2" />
-                                                    Deploy to Vercel
-                                                </Button>
-                                            </CardContent>
-                                        </Card>
-                                    </div>
-                                </div>
-                            </div>
-                        </ResizablePanel>
+                                        <Button
+                                            className="w-full justify-start gap-2"
+                                            variant="outline"
+                                            onClick={() => setActiveView('sensors')}
+                                        >
+                                            <Thermometer className="w-4 h-4" />
+                                            Configure Sensors
+                                        </Button>
 
-                    </ResizablePanelGroup>
-                )}
-                                        </CardContent>
-                                    </Card>
-                                </div>
+                                        <Button
+                                            className="w-full justify-start gap-2"
+                                            variant="outline"
+                                            onClick={() => setActiveView('testing')}
+                                        >
+                                            <TestTube className="w-4 h-4" />
+                                            Run Tests
+                                        </Button>
+                                    </CardContent>
+                                </Card>
+
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="text-lg">Connectivity</CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="space-y-3">
+                                        <div className="flex items-center gap-2">
+                                            <Wifi className="w-4 h-4 text-blue-500" />
+                                            <span className="text-sm">WiFi</span>
+                                            <Badge variant="outline" className="ml-auto">Enabled</Badge>
+                                        </div>
+
+                                        <div className="flex items-center gap-2">
+                                            <Bluetooth className="w-4 h-4 text-blue-600" />
+                                            <span className="text-sm">Bluetooth</span>
+                                            <Badge variant="outline" className="ml-auto">Enabled</Badge>
+                                        </div>
+
+                                        <div className="flex items-center gap-2">
+                                            <Usb className="w-4 h-4 text-gray-600" />
+                                            <span className="text-sm">USB</span>
+                                            <Badge variant="outline" className="ml-auto">Connected</Badge>
+                                        </div>
+                                    </CardContent>
+                                </Card>
                             </div>
                         </div>
-                    </ResizablePanel>
-
-                </ResizablePanelGroup>
+                    </TabsContent>
+                </Tabs>
             </div>
         </div>
     );

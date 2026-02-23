@@ -1,9 +1,48 @@
 #!/usr/bin/env node
 
-const { PrismaClient } = require('@prisma/client');
+// load environment variables from .env.local if present (manual parser)
+{
+  const path = require('path');
+  const fs = require('fs');
+  const envPath = path.resolve(__dirname, '../.env.local');
+  if (fs.existsSync(envPath)) {
+    const contents = fs.readFileSync(envPath, 'utf-8');
+    for (const line of contents.split(/\r?\n/)) {
+      const m = line.match(/^\s*([^#=\s]+)\s*=\s*(.*)\s*$/);
+      if (m) {
+        const key = m[1];
+        let val = m[2];
+        if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+          val = val.slice(1, -1);
+        }
+        if (!process.env[key]) {
+          process.env[key] = val;
+        }
+      }
+    }
+  }
+}
+
 const crypto = require('crypto');
 
-const prisma = new PrismaClient();
+// replicate the same pool+adapter configuration used by the app's database client
+// this keeps the script self-contained and avoids importing TS modules
+const { PrismaClient } = require('@prisma/client');
+const { Pool } = require('pg');
+const { PrismaPg } = require('@prisma/adapter-pg');
+
+// build pool with identical defaults from lib/database/client.ts
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  max: parseInt(process.env.DATABASE_POOL_SIZE || '20', 10),
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 10000,
+});
+pool.on('error', (err) => {
+  console.error('[DATABASE] Pool error:', err.message);
+});
+const adapter = new PrismaPg(pool);
+const prisma = new PrismaClient({ adapter, log: ['error'] });
 
 function hashPassword(password) {
   const salt = crypto.randomBytes(16).toString('hex');

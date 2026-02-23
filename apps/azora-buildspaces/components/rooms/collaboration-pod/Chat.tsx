@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Send, Smile, Paperclip, Hash, Users, Settings, Search } from "lucide-react";
+import { Send, Smile, Paperclip, Hash, Users, Settings, Search, Sparkles, FileText } from "lucide-react";
 import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
 
@@ -37,6 +37,8 @@ export default function Chat({ ydoc, provider }: ChatProps) {
     const [activeChannel, setActiveChannel] = useState("general");
     const [messageText, setMessageText] = useState("");
     const [messages, setMessages] = useState<Message[]>([]);
+    const [meetingSummary, setMeetingSummary] = useState<any>(null);
+    const [isSummarizing, setIsSummarizing] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
 
     // Get the shared array for the active channel
@@ -84,6 +86,35 @@ export default function Chat({ ydoc, provider }: ChatProps) {
     };
 
     const activeChannelData = CHANNELS.find(c => c.id === activeChannel);
+
+    const generateMeetingSummary = async () => {
+        if (messages.length === 0 || isSummarizing) return;
+        setIsSummarizing(true);
+        setMeetingSummary(null);
+
+        try {
+            const res = await fetch("/api/collaboration/meeting-summary", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    messages: messages.map(m => ({
+                        sender: m.user,
+                        content: m.message,
+                    })),
+                    participants: [...new Set(messages.map(m => m.user))],
+                }),
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                setMeetingSummary(data.summary);
+            }
+        } catch (error) {
+            console.error("Meeting summary failed:", error);
+        } finally {
+            setIsSummarizing(false);
+        }
+    };
 
     return (
         <div className="h-full flex bg-slate-900">
@@ -156,11 +187,65 @@ export default function Chat({ ydoc, provider }: ChatProps) {
                             24 members
                         </Badge>
                     </div>
-                    <Button variant="outline" size="sm">
-                        <Users className="w-4 h-4 mr-2" />
-                        Members
-                    </Button>
+                    <div className="flex items-center gap-2">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={generateMeetingSummary}
+                            disabled={isSummarizing || messages.length === 0}
+                            className="gap-1.5"
+                        >
+                            <Sparkles className="w-4 h-4" />
+                            {isSummarizing ? "Summarizing..." : "AI Summary"}
+                        </Button>
+                        <Button variant="outline" size="sm">
+                            <Users className="w-4 h-4 mr-2" />
+                            Members
+                        </Button>
+                    </div>
                 </div>
+
+                {/* Meeting Summary Panel */}
+                {meetingSummary && (
+                    <div className="mx-4 mt-2 p-4 bg-slate-800/80 rounded-lg border border-blue-500/20">
+                        <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-2">
+                                <FileText className="w-4 h-4 text-blue-400" />
+                                <h3 className="text-sm font-semibold text-white">{meetingSummary.title}</h3>
+                                <Badge variant="outline" className={`text-xs ${
+                                    meetingSummary.sentiment === 'positive' ? 'text-green-400 border-green-500/30' :
+                                    meetingSummary.sentiment === 'negative' ? 'text-red-400 border-red-500/30' :
+                                    'text-slate-400 border-slate-500/30'
+                                }`}>
+                                    {meetingSummary.sentiment}
+                                </Badge>
+                            </div>
+                            <Button variant="ghost" size="sm" onClick={() => setMeetingSummary(null)} className="text-slate-400 h-6 w-6 p-0">✕</Button>
+                        </div>
+                        <p className="text-sm text-slate-300 mb-3">{meetingSummary.summary}</p>
+                        {meetingSummary.actionItems?.length > 0 && (
+                            <div className="mb-2">
+                                <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Action Items</span>
+                                <div className="mt-1 space-y-1">
+                                    {meetingSummary.actionItems.map((item: any, i: number) => (
+                                        <div key={i} className="flex items-center gap-2 text-sm text-slate-300">
+                                            <Badge variant="outline" className={`text-[10px] ${
+                                                item.priority === 'high' ? 'text-red-400 border-red-500/30' :
+                                                item.priority === 'medium' ? 'text-yellow-400 border-yellow-500/30' :
+                                                'text-green-400 border-green-500/30'
+                                            }`}>{item.priority}</Badge>
+                                            <span>{item.task}</span>
+                                            <span className="text-slate-500 text-xs">→ {item.assignee}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                        {meetingSummary.nextSteps && (
+                            <p className="text-xs text-blue-400 mt-2">Next: {meetingSummary.nextSteps}</p>
+                        )}
+                    </div>
+                )}
 
                 {/* Messages */}
                 <ScrollArea className="flex-1 p-4">
@@ -221,71 +306,6 @@ export default function Chat({ ydoc, provider }: ChatProps) {
                             <Send className="w-5 h-5" />
                         </Button>
                     </form>
-                </div>
-            </div>
-        </div>
-    );
-}
-                                <Avatar className="w-10 h-10 mt-1">
-                                    <AvatarFallback className="text-sm bg-slate-600">
-                                        {msg.avatar}
-                                    </AvatarFallback>
-                                </Avatar>
-                                <div className="flex-1 min-w-0">
-                                    <div className="flex items-center gap-2 mb-1">
-                                        <span className="font-medium text-white">{msg.user}</span>
-                                        <span className="text-xs text-slate-400">{msg.time}</span>
-                                    </div>
-                                    <p className="text-slate-300 mb-2">{msg.message}</p>
-                                    {Object.keys(msg.reactions).length > 0 && (
-                                        <div className="flex gap-1">
-                                            {Object.entries(msg.reactions).map(([emoji, count]) => (
-                                                <button
-                                                    key={emoji}
-                                                    className="flex items-center gap-1 bg-slate-700 hover:bg-slate-600 px-2 py-1 rounded text-xs transition-colors"
-                                                >
-                                                    <span>{emoji}</span>
-                                                    <span className="text-slate-400">{count}</span>
-                                                </button>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </ScrollArea>
-
-                {/* Message Input */}
-                <div className="p-4 border-t border-white/10">
-                    <div className="flex gap-2">
-                        <div className="flex-1 relative">
-                            <Input
-                                value={message}
-                                onChange={(e) => setMessage(e.target.value)}
-                                placeholder={`Message #${activeChannelData?.name}`}
-                                className="pr-24 bg-slate-800 border-slate-600"
-                                onKeyPress={(e) => {
-                                    if (e.key === 'Enter' && !e.shiftKey) {
-                                        e.preventDefault();
-                                        // Handle send message
-                                        setMessage("");
-                                    }
-                                }}
-                            />
-                            <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex gap-1">
-                                <Button variant="ghost" size="sm" className="w-8 h-8 p-0">
-                                    <Paperclip className="w-4 h-4" />
-                                </Button>
-                                <Button variant="ghost" size="sm" className="w-8 h-8 p-0">
-                                    <Smile className="w-4 h-4" />
-                                </Button>
-                            </div>
-                        </div>
-                        <Button className="px-6">
-                            <Send className="w-4 h-4" />
-                        </Button>
-                    </div>
                 </div>
             </div>
         </div>

@@ -19,7 +19,7 @@ try {
 // available (node-fetch or openai shims), it will be used instead.
 if (typeof globalThis.fetch === 'undefined') {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  globalThis.fetch = async (_url: any, _opts?: any) => ({ ok: true, status: 200, json: async () => ({}), text: async () => '' })
+  globalThis.fetch = async (_url: any, _opts?: any) => ({ ok: true, status: 200, json: async () => ({}), text: async () => '' } as any)
 }
 
 if (typeof (globalThis as any).Request === 'undefined') {

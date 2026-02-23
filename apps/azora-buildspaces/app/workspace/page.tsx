@@ -1,39 +1,72 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
+import dynamic from 'next/dynamic'
 import { useSearchParams, useRouter } from "next/navigation"
 import { WorkspaceHeader } from "@/components/workspace/workspace-header"
 import { WorkspaceSidebar } from "@/components/workspace/workspace-sidebar"
-import { CodeChamber } from "@/components/rooms/code-chamber"
-import { SpecChamber } from "@/components/rooms/spec-chamber"
-import DesignStudio from "@/components/rooms/design-studio"
-import { CommandDesk } from "@/components/rooms/command-desk"
+
+// Room loading fallback
+const RoomLoader = () => (
+  <div className="flex h-full w-full items-center justify-center bg-[#0d1117]">
+    <div className="flex flex-col items-center gap-3">
+      <div className="h-6 w-6 animate-spin rounded-full border-2 border-emerald-500/40 border-t-emerald-400" />
+      <p className="text-sm text-gray-500">Loading room...</p>
+    </div>
+  </div>
+)
+
+// Dynamic imports for heavy room components
+const CodeChamber = dynamic(() => import("@/components/rooms/code-chamber").then(mod => mod.CodeChamber), { ssr: false, loading: RoomLoader })
+const SpecChamber = dynamic(() => import("@/components/rooms/spec-chamber").then(mod => mod.SpecChamber), { ssr: false, loading: RoomLoader })
+const DesignStudio = dynamic(() => import("@/components/rooms/design-studio"), { ssr: false, loading: RoomLoader })
+const CommandDesk = dynamic(() => import("@/components/rooms/command-desk").then(mod => mod.CommandDesk), { ssr: false, loading: RoomLoader })
+const KnowledgeOcean = dynamic(() => import("@/components/rooms/knowledge-ocean"), { ssr: false, loading: RoomLoader })
+const TaskBoard = dynamic(() => import("@/components/rooms/task-board").then(mod => mod.TaskBoard), { ssr: false, loading: RoomLoader })
+const AIStudio = dynamic(() => import("@/components/rooms/ai-studio"), { ssr: false, loading: RoomLoader })
+const MakerLab = dynamic(() => import("@/components/rooms/maker-lab"), { ssr: false, loading: RoomLoader })
+const InnovationTheater = dynamic(() => import("@/components/rooms/innovation-theater"), { ssr: false, loading: RoomLoader })
+const CollaborationPod = dynamic(() => import("@/components/rooms/collaboration-pod"), { ssr: false, loading: RoomLoader })
+const CollectibleShowcase = dynamic(() => import("@/components/rooms/collectible-showcase"), { ssr: false, loading: RoomLoader })
+const Marketplace = dynamic(() => import("@/components/rooms/marketplace"), { ssr: false, loading: RoomLoader })
+const DeepFocus = dynamic(() => import("@/components/rooms/deep-focus"), { ssr: false, loading: RoomLoader })
+
 import { TerminalPanel } from "@/components/workspace/panels/terminal-panel"
 import { PreviewPanel } from "@/components/workspace/panels/preview-panel"
-import { KnowledgeOcean } from "@/components/rooms/knowledge-ocean"
 import { RoomSelector } from "@/components/workspace/room-selector"
 import { StatusBar } from "@/components/workspace/status-bar"
 import { AIAssistantPanel } from "@/components/workspace/ai-assistant-panel"
-import { TaskBoard } from "@/components/rooms/task-board"
 import { Onboarding } from "@/components/workspace/onboarding"
-import AIStudio from "@/components/rooms/ai-studio"
-import MakerLab from "@/components/rooms/maker-lab"
-import InnovationTheater from "@/components/rooms/innovation-theater"
-import CollaborationPod from "@/components/rooms/collaboration-pod"
-import CollectibleShowcase from "@/components/rooms/collectible-showcase"
-import Marketplace from "@/components/rooms/marketplace"
-import DeepFocus from "@/components/rooms/deep-focus"
 import { AuthService, User } from "@/lib/services/auth-service"
 import { WorkspaceProvider, useWorkspace, RoomType } from "@/lib/contexts/workspace-context"
 
-export default function WorkspacePage() {
+function WorkspaceLoader() {
+  return (
+    <div className="flex h-screen w-full items-center justify-center bg-[#0d1117] text-white">
+      <div className="flex flex-col items-center gap-4">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-emerald-500 border-t-transparent" />
+        <p className="text-gray-400">Initializing workspace...</p>
+      </div>
+    </div>
+  )
+}
+
+function WorkspaceWithParams() {
   const searchParams = useSearchParams()
-  const roomParam = searchParams.get('room') as RoomType | null
+  const roomParam = searchParams?.get('room') as RoomType | null
 
   return (
     <WorkspaceProvider initialRoom={roomParam || undefined}>
       <WorkspaceContent />
     </WorkspaceProvider>
+  )
+}
+
+export default function WorkspacePage() {
+  return (
+    <Suspense fallback={<WorkspaceLoader />}>
+      <WorkspaceWithParams />
+    </Suspense>
   )
 }
 
@@ -53,13 +86,13 @@ function WorkspaceContent() {
       try {
         const currentUser = await authService.getCurrentUser()
         if (!currentUser) {
+          console.log('[Workspace] No user found, redirecting to login')
           router.push('/auth/login?callbackUrl=/workspace')
           return
         }
         setUser(currentUser)
       } catch (error) {
         console.error('Auth check failed:', error)
-        router.push('/auth/login')
       } finally {
         setLoading(false)
       }
@@ -80,9 +113,28 @@ function WorkspaceContent() {
 
   if (!user) return null
 
+  // Code Chamber is a self-contained IDE — it renders full-bleed with its own
+  // activity bar, sidebar, editor tabs, panel, and status bar. No outer chrome.
+  const isFullbleedRoom = activeRoom === "code-chamber"
+
+  const handleSave = () => {
+    // Dispatch a custom event that rooms can listen to
+    window.dispatchEvent(new CustomEvent("workspace:save"))
+  }
+
+  if (isFullbleedRoom) {
+    return (
+      <div className="flex h-screen w-full bg-[#0d1117] text-white overflow-hidden">
+        <RoomSelector activeRoom={activeRoom} onRoomChange={(room) => setActiveRoom(room)} />
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <CodeChamber />
+        </div>
+      </div>
+    )
+  }
+
   const renderActiveRoom = () => {
     switch (activeRoom) {
-      case "code-chamber": return <CodeChamber />
       case "spec-chamber": return <SpecChamber />
       case "design-studio": return <DesignStudio />
       case "ai-studio": return <AIStudio />
@@ -100,59 +152,64 @@ function WorkspaceContent() {
   }
 
   return (
-    <div className="flex h-screen w-full flex-col bg-[#0d1117] text-white overflow-hidden">
-      <WorkspaceHeader 
-        activeRoom={activeRoom} 
-        onRoomChange={setActiveRoom}
-        user={user}
-        onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
-        onToggleAI={() => setAiPanelOpen(!aiPanelOpen)}
-        onToggleTerminal={() => setTerminalOpen(!terminalOpen)}
-        onTogglePreview={() => setPreviewOpen(!previewOpen)}
-      />
+    <div className="flex h-screen w-full bg-[#0d1117] text-white overflow-hidden">
+      <RoomSelector activeRoom={activeRoom} onRoomChange={(room) => setActiveRoom(room)} />
       
-      <div className="flex flex-1 overflow-hidden">
-        <WorkspaceSidebar 
-          isOpen={sidebarOpen} 
-          onToggle={() => setSidebarOpen(!sidebarOpen)}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <WorkspaceHeader 
+          onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
+          onToggleAI={() => setAiPanelOpen(!aiPanelOpen)}
+          onToggleTerminal={() => setTerminalOpen(!terminalOpen)}
+          onTogglePreview={() => setPreviewOpen(!previewOpen)}
+          onToggleKnowledge={() => setActiveRoom("knowledge-ocean")}
+          onSave={handleSave}
+          previewOpen={previewOpen}
+          knowledgeOceanOpen={activeRoom === "knowledge-ocean"}
           activeRoom={activeRoom}
-          onRoomChange={setActiveRoom}
         />
         
-        <main className="flex-1 flex flex-col overflow-hidden relative">
-          <div className="flex-1 overflow-hidden">
-            {renderActiveRoom()}
-          </div>
+        <div className="flex flex-1 overflow-hidden">
+          {sidebarOpen && (
+            <WorkspaceSidebar 
+              activeFile=""
+              onFileSelect={() => {}}
+              activePanel="files"
+            />
+          )}
+          
+          <main className="flex-1 flex flex-col overflow-hidden relative">
+            <div className="flex-1 overflow-hidden">
+              {renderActiveRoom()}
+            </div>
 
-          {terminalOpen && (
-            <div className="h-64 border-t border-white/10 bg-[#0d1117]">
-              <TerminalPanel onClose={() => setTerminalOpen(false)} />
+            {terminalOpen && (
+              <div className="h-64 border-t border-white/10 bg-[#0d1117]">
+                <TerminalPanel onClose={() => setTerminalOpen(false)} />
+              </div>
+            )}
+          </main>
+
+          {previewOpen && (
+            <div className="w-96 border-l border-white/10 bg-[#0d1117]">
+              <PreviewPanel />
             </div>
           )}
-        </main>
 
-        {previewOpen && (
-          <div className="w-96 border-l border-white/10 bg-[#0d1117]">
-            <PreviewPanel />
-          </div>
-        )}
+          {aiPanelOpen && (
+            <div className="w-80 border-l border-white/10 bg-[#0d1117]">
+              <AIAssistantPanel />
+            </div>
+          )}
+        </div>
 
-        {aiPanelOpen && (
-          <div className="w-80 border-l border-white/10 bg-[#0d1117]">
-            <AIAssistantPanel 
-              isOpen={aiPanelOpen} 
-              onToggle={() => setAiPanelOpen(!aiPanelOpen)} 
-            />
-          </div>
-        )}
+        <StatusBar 
+          activeFile=""
+          agentCount={3}
+          activeAgents={1}
+        />
+        
+        <Onboarding />
       </div>
-
-      <StatusBar 
-        onTerminalToggle={() => setTerminalOpen(!terminalOpen)}
-        terminalOpen={terminalOpen}
-      />
-      
-      <Onboarding />
     </div>
   )
 }

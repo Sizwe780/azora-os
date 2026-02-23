@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, jest } from '@jest/globals'
+import { describe, it, expect, jest } from '@jest/globals'
 import { POST as deployPOST } from '@/app/api/deploy/route'
 import { POST as exportPOST } from '@/app/api/export/route'
 import { constitutionalAI } from '../constitutional-ai'
@@ -12,9 +12,8 @@ function makeReq(body = {}) {
 }
 
 describe('Deploy & Export API routes', () => {
-  beforeEach(() => jest.restoreAllMocks())
-
   it('should allow deploy when constitutional verification allows', async () => {
+    jest.restoreAllMocks()
     jest.spyOn(constitutionalAI, 'verifyAction').mockResolvedValue({ allowed: true, violations: [], explanation: 'ok', score: 100, auditId: 'a1' } as any)
     jest.spyOn(constitutionalAI, 'auditLog').mockResolvedValue()
 
@@ -27,6 +26,7 @@ describe('Deploy & Export API routes', () => {
   })
 
   it('should block export when verification disallows', async () => {
+    jest.restoreAllMocks()
     jest.spyOn(constitutionalAI, 'verifyAction').mockResolvedValue({ allowed: false, violations: [], explanation: 'blocked', score: 0, auditId: 'a2' } as any)
     jest.spyOn(constitutionalAI, 'auditLog').mockResolvedValue()
 

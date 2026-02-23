@@ -77,7 +77,7 @@ export function Footer() {
         </div>
 
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 md:flex-row">
-          <p className="text-sm text-gray-500">© 2025 Azora. All rights reserved.</p>
+          <p className="text-sm text-gray-500">© 2026 Azora. All rights reserved.</p>
           <div className="flex items-center gap-6">
             <Link href="https://azora.world" className="text-gray-400 hover:text-white transition-colors">
               <Twitter className="h-5 w-5" />

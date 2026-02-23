@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
 import { 
     Play, 
     Pause, 
@@ -17,7 +19,14 @@ import {
     Zap,
     Settings,
     Moon,
-    Sun
+    Sun,
+    Target,
+    TrendingUp,
+    Flame,
+    Calendar,
+    BarChart3,
+    Sparkles,
+    CheckCircle2,
 } from "lucide-react";
 import Editor from "@monaco-editor/react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -45,25 +54,115 @@ export default function DeepFocus() {
     const [isZenMode, setIsZenMode] = useState(false);
     const [activeSound, setActiveSound] = useState<string | null>(null);
     const [code, setCode] = useState("// Focus on your code here...\n\nfunction solveProblem() {\n  // Deep work in progress\n}");
+    const [completedSessions, setCompletedSessions] = useState(0);
+    const [totalFocusTime, setTotalFocusTime] = useState(0); // seconds
+    const [showAnalytics, setShowAnalytics] = useState(false);
+    const [dailyGoal, setDailyGoal] = useState(120); // minutes
+    const [todayMinutes, setTodayMinutes] = useState(0);
+    const [streak, setStreak] = useState(0);
+    const [distractions, setDistractions] = useState(0);
+    const [sessionLog, setSessionLog] = useState<{ date: string; minutes: number; mode: string }[]>([]);
+    const [aiInsights, setAiInsights] = useState<string[]>([]);
 
     const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+    // Load persisted data from localStorage
+    useEffect(() => {
+        try {
+            const saved = localStorage.getItem("azora-deep-focus")
+            if (saved) {
+                const data = JSON.parse(saved)
+                setCompletedSessions(data.completedSessions || 0)
+                setTotalFocusTime(data.totalFocusTime || 0)
+                if (data.mode) setMode(data.mode)
+                if (data.code) setCode(data.code)
+                if (data.sessionLog) setSessionLog(data.sessionLog)
+                if (data.dailyGoal) setDailyGoal(data.dailyGoal)
+                // Calculate today's minutes and streak from session log
+                const today = new Date().toISOString().split('T')[0]
+                const todayLogs = (data.sessionLog || []).filter((s: any) => s.date === today)
+                setTodayMinutes(todayLogs.reduce((sum: number, s: any) => sum + (s.minutes || 0), 0))
+                // Calculate streak
+                let s = 0
+                for (let d = 0; d < 365; d++) {
+                    const checkDate = new Date()
+                    checkDate.setDate(checkDate.getDate() - d)
+                    const dateStr = checkDate.toISOString().split('T')[0]
+                    const hasSession = (data.sessionLog || []).some((log: any) => log.date === dateStr)
+                    if (hasSession) s++
+                    else break
+                }
+                setStreak(s)
+            }
+        } catch { /* ignore */ }
+    }, [])
+
+    // Save to localStorage on session completion
+    const persistState = useCallback(() => {
+        try {
+            localStorage.setItem("azora-deep-focus", JSON.stringify({
+                completedSessions,
+                totalFocusTime,
+                mode,
+                code,
+                sessionLog,
+                dailyGoal,
+                lastSession: new Date().toISOString(),
+            }))
+        } catch { /* ignore */ }
+    }, [completedSessions, totalFocusTime, mode, code, sessionLog, dailyGoal])
+
+    useEffect(() => {
+        persistState()
+    }, [completedSessions, totalFocusTime, persistState])
 
     useEffect(() => {
         if (isActive && timeLeft > 0) {
             timerRef.current = setInterval(() => {
                 setTimeLeft((prev) => prev - 1);
+                setTotalFocusTime((prev) => prev + 1);
             }, 1000);
         } else if (timeLeft === 0) {
             setIsActive(false);
             if (timerRef.current) clearInterval(timerRef.current);
-            // Play notification sound
+            // Session completed
+            if (mode === 'pomodoro' || mode === 'deep') {
+                setCompletedSessions((prev) => prev + 1);
+                const sessionMinutes = FOCUS_MODES.find(m => m.id === mode)?.duration ? Math.round((FOCUS_MODES.find(m => m.id === mode)?.duration || 0) / 60) : 25
+                setTodayMinutes(prev => prev + sessionMinutes)
+                setSessionLog(prev => [...prev, {
+                    date: new Date().toISOString().split('T')[0],
+                    minutes: sessionMinutes,
+                    mode,
+                }])
+                // Log to analytics API
+                fetch('/api/deep-focus/analytics', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'log-session', data: { duration: sessionMinutes, mode, completed: true } }),
+                }).catch(() => {})
+                // Emit cross-room event for achievement tracking
+                fetch('/api/collectibles/achievements', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ event: 'focus-complete', room: 'deep-focus', data: { mode } }),
+                }).catch(() => {})
+                // Check if we've hit the flow state (10h+)
+                if (totalFocusTime >= 36000) {
+                    fetch('/api/collectibles/achievements', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ event: 'focus-streak', room: 'deep-focus', data: { totalHours: Math.floor(totalFocusTime / 3600) } }),
+                    }).catch(() => {})
+                }
+            }
         } else {
             if (timerRef.current) clearInterval(timerRef.current);
         }
         return () => {
             if (timerRef.current) clearInterval(timerRef.current);
         };
-    }, [isActive, timeLeft]);
+    }, [isActive, timeLeft, mode]);
 
     const formatTime = (seconds: number) => {
         const mins = Math.floor(seconds / 60);
@@ -116,8 +215,29 @@ export default function DeepFocus() {
                 <div className="flex items-center gap-4"> 
                     <div className="flex items-center gap-2 bg-muted/30 px-3 py-1 rounded-full"> 
                         <Zap className="w-3.5 h-3.5 text-yellow-500" /> 
-                        <span className="text-xs font-medium">Focus Streak: 3h 12m</span> 
-                    </div> 
+                        <span className="text-xs font-medium">
+                            {completedSessions} sessions · {Math.floor(totalFocusTime / 3600)}h {Math.floor((totalFocusTime % 3600) / 60)}m
+                        </span> 
+                    </div>
+                    {streak > 0 && (
+                        <div className="flex items-center gap-1.5 bg-orange-500/10 px-3 py-1 rounded-full">
+                            <Flame className="w-3.5 h-3.5 text-orange-500" />
+                            <span className="text-xs font-medium text-orange-400">{streak} day streak</span>
+                        </div>
+                    )}
+                    <div className="flex items-center gap-2">
+                        <Progress value={Math.min(100, Math.round(todayMinutes / dailyGoal * 100))} className="w-20 h-1.5" />
+                        <span className="text-[10px] text-muted-foreground">{todayMinutes}/{dailyGoal}m</span>
+                    </div>
+                    <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={() => setShowAnalytics(!showAnalytics)}
+                        className={`gap-1.5 ${showAnalytics ? 'bg-blue-500/10 text-blue-400' : ''}`}
+                    > 
+                        <BarChart3 className="w-4 h-4" /> 
+                        Stats
+                    </Button>
                     <Button 
                         variant="ghost" 
                         size="sm" 
@@ -225,6 +345,53 @@ export default function DeepFocus() {
                                             </button> 
                                         ))} 
                                     </div> 
+                                </div>
+
+                                {/* Daily Goal */}
+                                <div className="w-full space-y-2 pt-2">
+                                    <div className="flex items-center justify-between">
+                                        <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                                            <Target className="w-3 h-3" />
+                                            Daily Goal
+                                        </h3>
+                                        <span className="text-xs text-muted-foreground">{todayMinutes}/{dailyGoal}m</span>
+                                    </div>
+                                    <Progress value={Math.min(100, Math.round(todayMinutes / dailyGoal * 100))} className="h-2" />
+                                    {todayMinutes >= dailyGoal && (
+                                        <div className="flex items-center gap-1.5 text-emerald-400 text-xs">
+                                            <CheckCircle2 className="w-3 h-3" />
+                                            <span>Goal achieved! 🎉</span>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Mini Streak Calendar (last 7 days) */}
+                                <div className="w-full space-y-2 pt-2">
+                                    <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                                        <Calendar className="w-3 h-3" />
+                                        This Week
+                                    </h3>
+                                    <div className="flex gap-1 justify-center">
+                                        {Array.from({ length: 7 }, (_, i) => {
+                                            const d = new Date()
+                                            d.setDate(d.getDate() - (6 - i))
+                                            const dateStr = d.toISOString().split('T')[0]
+                                            const dayMinutes = sessionLog
+                                                .filter(s => s.date === dateStr)
+                                                .reduce((sum, s) => sum + s.minutes, 0)
+                                            const intensity = dayMinutes === 0 ? 0 : dayMinutes < 30 ? 1 : dayMinutes < 60 ? 2 : dayMinutes < 120 ? 3 : 4
+                                            const colors = ['bg-muted/20', 'bg-emerald-900', 'bg-emerald-700', 'bg-emerald-500', 'bg-emerald-400']
+                                            const dayNames = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
+                                            return (
+                                                <div key={i} className="flex flex-col items-center gap-1">
+                                                    <span className="text-[9px] text-muted-foreground">{dayNames[d.getDay()]}</span>
+                                                    <div className={`w-6 h-6 rounded-sm ${colors[intensity]} flex items-center justify-center`} title={`${dateStr}: ${dayMinutes}m`}>
+                                                        {dayMinutes > 0 && <span className="text-[8px] text-white font-mono">{dayMinutes}</span>}
+                                                    </div>
+                                                </div>
+                                            )
+                                        })}
+                                    </div>
                                 </div> 
                             </div> 
                         </motion.div> 
@@ -232,7 +399,77 @@ export default function DeepFocus() {
                 </AnimatePresence> 
 
                 {/* Right: Minimalist Editor */} 
-                <div className="flex-1 relative flex flex-col"> 
+                <div className="flex-1 relative flex flex-col">
+                    {/* Analytics Panel */}
+                    <AnimatePresence>
+                        {showAnalytics && !isZenMode && (
+                            <motion.div
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: 'auto', opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }}
+                                className="border-b bg-muted/5 overflow-hidden"
+                            >
+                                <div className="p-4 grid grid-cols-4 gap-4">
+                                    <div className="bg-muted/10 rounded-lg p-3 border">
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <Flame className="w-4 h-4 text-orange-500" />
+                                            <span className="text-xs font-semibold text-muted-foreground">Streak</span>
+                                        </div>
+                                        <div className="text-2xl font-bold">{streak} <span className="text-sm font-normal text-muted-foreground">days</span></div>
+                                    </div>
+                                    <div className="bg-muted/10 rounded-lg p-3 border">
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <TrendingUp className="w-4 h-4 text-emerald-500" />
+                                            <span className="text-xs font-semibold text-muted-foreground">Total Focus</span>
+                                        </div>
+                                        <div className="text-2xl font-bold">{Math.floor(totalFocusTime / 3600)}h <span className="text-sm font-normal text-muted-foreground">{Math.floor((totalFocusTime % 3600) / 60)}m</span></div>
+                                    </div>
+                                    <div className="bg-muted/10 rounded-lg p-3 border">
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <CheckCircle2 className="w-4 h-4 text-blue-500" />
+                                            <span className="text-xs font-semibold text-muted-foreground">Sessions</span>
+                                        </div>
+                                        <div className="text-2xl font-bold">{completedSessions}</div>
+                                    </div>
+                                    <div className="bg-muted/10 rounded-lg p-3 border">
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <Target className="w-4 h-4 text-purple-500" />
+                                            <span className="text-xs font-semibold text-muted-foreground">Avg Session</span>
+                                        </div>
+                                        <div className="text-2xl font-bold">{completedSessions > 0 ? Math.round(totalFocusTime / completedSessions / 60) : 0}<span className="text-sm font-normal text-muted-foreground">m</span></div>
+                                    </div>
+                                </div>
+                                {/* 30-day activity chart */}
+                                <div className="px-4 pb-4">
+                                    <h4 className="text-xs font-semibold text-muted-foreground mb-2">Last 30 Days</h4>
+                                    <div className="flex items-end gap-[2px] h-16">
+                                        {Array.from({ length: 30 }, (_, i) => {
+                                            const d = new Date()
+                                            d.setDate(d.getDate() - (29 - i))
+                                            const dateStr = d.toISOString().split('T')[0]
+                                            const dayMinutes = sessionLog
+                                                .filter(s => s.date === dateStr)
+                                                .reduce((sum, s) => sum + s.minutes, 0)
+                                            const maxMinutes = Math.max(1, ...sessionLog.map(s => s.minutes))
+                                            const height = dayMinutes > 0 ? Math.max(4, (dayMinutes / Math.max(maxMinutes, dailyGoal)) * 64) : 2
+                                            return (
+                                                <div
+                                                    key={i}
+                                                    className={`flex-1 rounded-t-sm transition-all ${dayMinutes >= dailyGoal ? 'bg-emerald-500' : dayMinutes > 0 ? 'bg-blue-500/60' : 'bg-muted/20'}`}
+                                                    style={{ height: `${height}px` }}
+                                                    title={`${dateStr}: ${dayMinutes}m`}
+                                                />
+                                            )
+                                        })}
+                                    </div>
+                                    <div className="flex justify-between mt-1">
+                                        <span className="text-[9px] text-muted-foreground">30d ago</span>
+                                        <span className="text-[9px] text-muted-foreground">Today</span>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence> 
                     {isZenMode && ( 
                         <div className="absolute top-8 left-1/2 -translate-x-1/2 z-20 opacity-20 hover:opacity-100 transition-opacity"> 
                             <div className="text-6xl font-mono font-bold tracking-tighter text-white"> 

@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
 
     // Load existing schema
     const schemaPath = path.join(process.cwd(), 'data', 'schemas', `${project}.json`)
-    let schema = { tables: [], project }
+    let schema: { tables: TableSchema[], project: string } = { tables: [], project }
 
     try {
       const schemaData = await fs.readFile(schemaPath, 'utf-8')

@@ -2,11 +2,11 @@
 
 // Mock next-auth's getServerSession to simulate session states
 jest.mock('next-auth', () => ({ getServerSession: jest.fn() }))
-jest.mock('@/lib/db', () => ({ prisma: { user: { findUnique: jest.fn() } } }))
+jest.mock('@/lib/database/client', () => ({ prisma: { user: { findUnique: jest.fn() } } }))
 
 import { GET } from '@/app/api/user/profile/route'
 import { getServerSession } from 'next-auth'
-import { prisma } from '@/lib/db'
+import { prisma } from '@/lib/database/client'
 
 describe('GET /api/user/profile', () => {
   afterEach(() => {

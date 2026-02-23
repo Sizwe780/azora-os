@@ -123,7 +123,7 @@ export function SpecEditor() {
   // Generate YAML preview in real-time
   useEffect(() => {
     try {
-      const yamlString = yaml.dump(spec, { indent: 2, lineWidth: 80 })
+      const yamlString = yaml.dump(spec)
       setYamlPreview(yamlString)
     } catch (error) {
       setYamlPreview('# Error generating YAML')
@@ -177,7 +177,7 @@ export function SpecEditor() {
     setIsSaving(true)
     try {
       // Save to VFS: specs/[id].yaml
-      const yamlContent = yaml.dump(spec, { indent: 2, lineWidth: 80 })
+      const yamlContent = yaml.dump(spec)
       await fileSystem.writeFile(`/specs/${spec.id}.yaml`, yamlContent)
 
       setSaveSuccess(true)

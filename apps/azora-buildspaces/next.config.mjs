@@ -1,34 +1,42 @@
+/**
+ * Next.js Configuration for Azora Buildspaces
+ * 
+ * Constitutional Compliance:
+ * - Article VII: Security & Protection - Implements security headers
+ * - Article VIII: Truth Verification - Ensures secure data transmission
+ * - No Mock Protocol: Production-ready configuration
+ */
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
-  images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'github.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'avatars.githubusercontent.com',
-      }
-    ],
-  },
+  // Security Headers
   async headers() {
     return [
       {
-        source: '/(.*)',
+        // Apply security headers to all routes
+        source: '/:path*',
         headers: [
-          {
-            key: 'X-DNS-Prefetch-Control',
-            value: 'on'
-          },
           {
             key: 'Strict-Transport-Security',
             value: 'max-age=63072000; includeSubDomains; preload'
           },
           {
+            key: 'Content-Security-Policy',
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' data: https:",
+              "font-src 'self' data:",
+              "connect-src 'self'",
+              "frame-ancestors 'none'",
+              "base-uri 'self'",
+              "form-action 'self'"
+            ].join('; ')
+          },
+          {
             key: 'X-Frame-Options',
-            value: 'SAMEORIGIN'
+            value: 'DENY'
           },
           {
             key: 'X-Content-Type-Options',
@@ -43,15 +51,37 @@ const nextConfig = {
             value: 'strict-origin-when-cross-origin'
           },
           {
-            key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=(), interest-cohort=()'
+            key: 'X-DNS-Prefetch-Control',
+            value: 'on'
           },
-        ],
-      },
-    ];
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=()'
+          }
+        ]
+      }
+    ]
   },
-  // Enable source maps in production for easier debugging with Sentry/Loki
-  productionBrowserSourceMaps: true,
-};
 
-export default nextConfig;
+  // Compiler options
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production' ? {
+      exclude: ['error', 'warn']
+    } : false
+  },
+
+  // Experimental features
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '2mb'
+    }
+  },
+
+  // Environment variables
+  env: {
+    BUILDSPACES_VERSION: '1.0.0',
+    CONSTITUTIONAL_AI_ENABLED: 'true'
+  }
+}
+
+export default nextConfig

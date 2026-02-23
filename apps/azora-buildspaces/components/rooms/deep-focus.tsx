@@ -1,3 +1,3 @@
 "use client"
 
-export { default } from "./deep-focus";
+export { default } from "./deep-focus/DeepFocus";

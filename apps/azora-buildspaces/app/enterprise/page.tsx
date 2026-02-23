@@ -1,113 +1,82 @@
 import { Navbar } from "@/components/features/navbar"
 import { Footer } from "@/components/features/footer"
-import { Building2, ShieldCheck, Zap, Users, BarChart3, Headphones } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Building2, Shield, Users, Lock, BarChart3, Headphones, Globe, Server } from "lucide-react"
 import Link from "next/link"
 
 export default function EnterprisePage() {
   return (
     <div className="min-h-screen bg-[#0d1117] text-white">
       <Navbar />
-      <main className="py-24 px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl">
-          <div className="text-center mb-20">
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent">
-              Azora for Enterprise
+      <main>
+        {/* Hero */}
+        <section className="relative py-24 lg:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-amber-500/5 to-transparent" />
+          <div className="relative mx-auto max-w-4xl text-center">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-bold uppercase tracking-wider mb-6">
+              <Building2 className="h-3.5 w-3.5" />
+              Enterprise
+            </div>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+              Built for
+              <span className="bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent"> Organizations</span>
             </h1>
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              Scale your AI operations with confidence. Azora provides the security, 
-              governance, and performance required by the world's largest organizations.
+            <p className="text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">
+              Scale your development with Constitutional AI, enterprise security, compliance,
+              and dedicated support for your entire organization.
             </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
-            <div className="p-8 rounded-2xl bg-white/5 border border-white/10">
-              <ShieldCheck className="h-12 w-12 text-emerald-400 mb-6" />
-              <h3 className="text-2xl font-bold mb-4">Advanced Governance</h3>
-              <p className="text-gray-400 leading-relaxed">
-                Custom constitutional guardrails, granular RBAC, and full audit logs 
-                ensure your AI agents operate within your corporate policies.
-              </p>
-            </div>
-            <div className="p-8 rounded-2xl bg-white/5 border border-white/10">
-              <Zap className="h-12 w-12 text-emerald-400 mb-6" />
-              <h3 className="text-2xl font-bold mb-4">Dedicated Compute</h3>
-              <p className="text-gray-400 leading-relaxed">
-                Isolated infrastructure and dedicated model endpoints for 
-                maximum performance, reliability, and data privacy.
-              </p>
-            </div>
-            <div className="p-8 rounded-2xl bg-white/5 border border-white/10">
-              <Headphones className="h-12 w-12 text-emerald-400 mb-6" />
-              <h3 className="text-2xl font-bold mb-4">Concierge Support</h3>
-              <p className="text-gray-400 leading-relaxed">
-                24/7 priority support with a dedicated account manager and 
-                solution architects to help you scale.
-              </p>
+            <div className="flex flex-wrap justify-center gap-4 mt-8">
+              <Link href="/contact" className="inline-flex items-center gap-2 px-8 py-3.5 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-xl shadow-lg shadow-amber-500/20 transition-all">
+                Contact Sales
+              </Link>
+              <Link href="/pricing" className="inline-flex items-center px-8 py-3.5 bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.05] rounded-xl transition-all">
+                View Pricing →
+              </Link>
             </div>
           </div>
+        </section>
 
-          <div className="bg-gradient-to-br from-emerald-500/10 to-blue-500/10 rounded-3xl p-12 border border-white/10 mb-24">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              <div>
-                <h2 className="text-4xl font-bold mb-6">Built for Scale</h2>
-                <ul className="space-y-4">
-                  {[
-                    "Single Sign-On (SSO) & SAML integration",
-                    "Custom Data Processing Agreements (DPA)",
-                    "On-premise & Private Cloud deployment options",
-                    "Unlimited workspace members and AI agents",
-                    "Advanced analytics and ROI tracking",
-                    "Custom agent training and fine-tuning"
-                  ].map((feature) => (
-                    <li key={feature} className="flex items-center gap-3">
-                      <div className="h-2 w-2 rounded-full bg-emerald-400" />
-                      <span className="text-gray-300">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-6 rounded-2xl bg-black/40 border border-white/5 text-center">
-                  <Users className="h-8 w-8 text-emerald-400 mx-auto mb-2" />
-                  <div className="text-2xl font-bold">Unlimited</div>
-                  <div className="text-xs text-gray-500 uppercase tracking-wider">Users</div>
+        {/* Features Grid */}
+        <section className="py-20 px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-6xl">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+              {[
+                { icon: Lock, title: "SSO & SAML", description: "Single sign-on with SAML 2.0, OIDC, and Active Directory integration." },
+                { icon: Shield, title: "Compliance", description: "SOC 2 Type II, GDPR, HIPAA compliance with full audit trails." },
+                { icon: Server, title: "Self-Hosted", description: "Deploy on your own infrastructure — AWS, Azure, GCP, or on-premise." },
+                { icon: Headphones, title: "Dedicated Support", description: "24/7 dedicated support team with guaranteed SLA response times." },
+                { icon: Users, title: "Team Management", description: "Role-based access control, team workspaces, and admin dashboards." },
+                { icon: BarChart3, title: "Analytics", description: "Organization-wide developer productivity metrics and insights." },
+                { icon: Globe, title: "Custom LLMs", description: "Bring your own models or use our curated selection with cost controls." },
+                { icon: Building2, title: "Custom Training", description: "Train agents on your codebase, internal docs, and coding standards." },
+              ].map((feature, i) => (
+                <div key={i} className="p-6 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:border-white/[0.12] transition-all duration-300">
+                  <div className="p-2.5 rounded-lg bg-amber-500/10 w-fit mb-4">
+                    <feature.icon className="h-5 w-5 text-amber-400" />
+                  </div>
+                  <h3 className="font-semibold mb-2">{feature.title}</h3>
+                  <p className="text-sm text-gray-400 leading-relaxed">{feature.description}</p>
                 </div>
-                <div className="p-6 rounded-2xl bg-black/40 border border-white/5 text-center">
-                  <BarChart3 className="h-8 w-8 text-emerald-400 mx-auto mb-2" />
-                  <div className="text-2xl font-bold">99.99%</div>
-                  <div className="text-xs text-gray-500 uppercase tracking-wider">Uptime SLA</div>
-                </div>
-                <div className="p-6 rounded-2xl bg-black/40 border border-white/5 text-center">
-                  <Building2 className="h-8 w-8 text-emerald-400 mx-auto mb-2" />
-                  <div className="text-2xl font-bold">Global</div>
-                  <div className="text-xs text-gray-500 uppercase tracking-wider">Deployments</div>
-                </div>
-                <div className="p-6 rounded-2xl bg-black/40 border border-white/5 text-center">
-                  <ShieldCheck className="h-8 w-8 text-emerald-400 mx-auto mb-2" />
-                  <div className="text-2xl font-bold">SOC 2</div>
-                  <div className="text-xs text-gray-500 uppercase tracking-wider">Compliant</div>
-                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* CTA */}
+        <section className="py-24 px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-3xl">
+            <div className="relative rounded-2xl overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 to-orange-500/10" />
+              <div className="absolute inset-0 bg-[#0d1117]/70 backdrop-blur-sm" />
+              <div className="relative border border-amber-500/20 rounded-2xl p-12 text-center">
+                <h2 className="text-3xl font-bold mb-4">Let&apos;s Talk</h2>
+                <p className="text-gray-400 mb-8">Schedule a demo and see how BuildSpaces can transform your team&apos;s development workflow.</p>
+                <Link href="/contact" className="inline-flex items-center gap-2 px-8 py-3 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-xl shadow-lg shadow-amber-500/20 transition-all">
+                  Schedule a Demo
+                </Link>
               </div>
             </div>
           </div>
-
-          <div className="text-center">
-            <h2 className="text-3xl font-bold mb-8">Ready to transform your organization?</h2>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Button size="lg" asChild>
-                <Link href="/contact">Contact Sales</Link>
-              </Button>
-              <Button variant="outline" size="lg" asChild>
-                <Link href="/pricing">View Pricing Tiers</Link>
-              </Button>
-            </div>
-          </div>
-
-          <div className="mt-20 text-center">
-            <Link href="/" className="text-emerald-400 hover:underline">Back to home</Link>
-          </div>
-        </div>
+        </section>
       </main>
       <Footer />
     </div>

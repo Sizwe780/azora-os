@@ -7,7 +7,7 @@ import Link from 'next/link'
 
 export default function DemoKnowledgeOceanPage() {
     return (
-        <div className="min-h-screen bg-background flex flex-col">
+        <div className="min-h-screen bg-[#0d1117] flex flex-col">
             {/* Demo Mode Banner */}
             <div className="bg-gradient-to-r from-blue-500/20 via-primary/20 to-blue-500/20 border-b border-blue-500/30">
                 <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
@@ -36,7 +36,7 @@ export default function DemoKnowledgeOceanPage() {
 
             {/* Main Demo Content */}
             <div className="flex-1 p-4">
-                <KnowledgeOcean onSwitchToCommand={() => { }} />
+                <KnowledgeOcean />
             </div>
 
             {/* Demo Footer */}

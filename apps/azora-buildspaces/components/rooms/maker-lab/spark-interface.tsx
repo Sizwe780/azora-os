@@ -64,7 +64,7 @@ export function SparkInterface() {
       }, 500)
 
       // Generate the project
-      const result = await generator.generate(prompt, mode, historyManager.getState())
+      const result = await generator.generate(prompt, mode, [historyManager.getState()])
       
       clearInterval(logsInterval)
       setLogs(result.logs)

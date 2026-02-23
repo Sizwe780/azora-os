@@ -1,3 +1,3 @@
 "use client"
 
-export { default } from "./collaboration-pod";
+export { default } from "./collaboration-pod/CollaborationPod";

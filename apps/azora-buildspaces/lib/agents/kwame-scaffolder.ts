@@ -12,7 +12,12 @@
  */
 
 import { fileSystem } from '@/lib/workspace/file-system'
-import { AppState } from './history-manager'
+export interface ScaffoldAppState {
+  files: Record<string, string>
+  dependencies: Record<string, string>
+  devDependencies: Record<string, string>
+  scripts: Record<string, string>
+}
 
 export interface ScaffoldConfig {
   template: 'nextjs' | 'react-vite' | 'html-js' | 'express-api'
@@ -48,7 +53,7 @@ export class KwameScaffolder {
    */
   async scaffoldMicroApp(
     prompt: string,
-    history: AppState[]
+    history: any[]
   ): Promise<{
     success: boolean
     analysis: PromptAnalysis
@@ -99,7 +104,7 @@ export class KwameScaffolder {
    */
   private async analyzePrompt(
     prompt: string,
-    history: AppState[]
+    history: any[]
   ): Promise<PromptAnalysis> {
     const lowerPrompt = prompt.toLowerCase()
 

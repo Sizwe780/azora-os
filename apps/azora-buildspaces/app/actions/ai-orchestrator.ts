@@ -17,7 +17,7 @@ Be helpful, concise, and coordinate with the appropriate AI agents when complex 
       model: openai("gpt-4o-mini"),
       system: systemPrompt,
       prompt: message,
-      maxTokens: 500,
+      maxOutputTokens: 500,
     })
 
     return text

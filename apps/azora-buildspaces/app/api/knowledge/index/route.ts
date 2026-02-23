@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { initializeKnowledgeEngine } from '@/lib/knowledge/indexer'
-import { prisma } from '@/lib/db'
+import { prisma } from '@/lib/database/client'
 import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+import { authOptions } from '@/lib/auth/config'
 import crypto from 'crypto'
 
 export async function POST(request: NextRequest) {

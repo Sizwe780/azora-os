@@ -7,7 +7,7 @@ import Link from 'next/link'
 
 export default function DemoSpecChamberPage() {
     return (
-        <div className="min-h-screen bg-background flex flex-col">
+        <div className="min-h-screen bg-[#0d1117] flex flex-col">
             {/* Demo Mode Banner */}
             <div className="bg-gradient-to-r from-cyan-500/20 via-primary/20 to-cyan-500/20 border-b border-cyan-500/30">
                 <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">

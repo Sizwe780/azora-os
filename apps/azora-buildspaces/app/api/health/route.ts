@@ -1,141 +1,126 @@
 /**
  * Health Check Endpoint
  * 
- * Constitutional Compliance:
- * - Truth Mandate: Returns accurate system health metrics
- * - Transparency: Exposes operational status for monitoring
- * - Auditability: Logs health check results
+ * Provides system health status including database connectivity and Prisma client availability.
+ * Returns appropriate HTTP status codes for monitoring and alerting systems.
+ * 
+ * Requirements: 6.1, 6.2, 6.3
  */
 
-import { NextResponse } from "next/server"
+import { NextResponse } from 'next/server'
+import { getDatabaseStatus, PRISMA_AVAILABLE } from '@/lib/database/client'
 
-export const runtime = "nodejs"
-export const dynamic = "force-dynamic"
+export const dynamic = 'force-dynamic'
 
-interface HealthCheckResult {
-  ok: boolean
-  status: "healthy" | "degraded" | "unhealthy"
-  timestamp: number
-  uptime: number
-  version: string
+interface HealthCheckResponse {
+  status: 'healthy' | 'degraded' | 'unhealthy'
+  timestamp: string
   checks: {
-    memory: {
-      used: number
-      total: number
-      percentage: number
+    database: {
+      status: 'pass' | 'fail' | 'warn'
+      configured: boolean
+      connected: boolean
+      clientGenerated: boolean
+      message: string
+      error?: string
     }
-    database?: {
-      status: "connected" | "disconnected" | "unavailable"
-      latency?: number
+    prisma: {
+      status: 'pass' | 'fail'
+      available: boolean
+      message: string
     }
   }
-  constitutional_alignment: number
 }
 
+/**
+ * GET /api/health
+ * 
+ * Returns the current health status of the application.
+ * 
+ * Status Codes:
+ * - 200: System is healthy (all checks pass)
+ * - 207: System is degraded (some checks fail but core functionality works)
+ * - 503: System is unhealthy (critical checks fail)
+ */
 export async function GET() {
-  const startTime = Date.now()
-  
   try {
-    // Memory check
-    const memUsage = process.memoryUsage()
-    const memPercentage = (memUsage.heapUsed / memUsage.heapTotal) * 100
-    
-    // Database check (optional)
-    let dbStatus: "connected" | "disconnected" | "unavailable" = "unavailable"
-    let dbLatency: number | undefined
-    
-    if (process.env.DATABASE_URL) {
-      try {
-        const dbCheckStart = Date.now()
-        const maybePrisma = await import("@prisma/client")
+    // Check Prisma client availability
+    const prismaCheck = {
+      status: PRISMA_AVAILABLE ? ('pass' as const) : ('fail' as const),
+      available: PRISMA_AVAILABLE,
+      message: PRISMA_AVAILABLE
+        ? 'Prisma client is available'
+        : 'Prisma client not generated. Run: pnpm prisma:generate',
+    }
 
-        // Defensive: verify PrismaClient exists and is constructible
-        if (!maybePrisma || typeof maybePrisma.PrismaClient !== "function") {
-          dbStatus = "unavailable"
-          console.warn("[Health] Prisma client not available; skipping DB check")
-        } else {
-          const { PrismaClient } = maybePrisma
-          const prisma = new PrismaClient()
-          try {
-            await prisma.$queryRaw`SELECT 1`
-            dbLatency = Date.now() - dbCheckStart
-            dbStatus = "connected"
-          } catch (error) {
-            dbStatus = "disconnected"
-            console.error("[Health] Database query failed:", error)
-          } finally {
-            await prisma.$disconnect()
-          }
-        }
-      } catch (error) {
-        // Import or construction failed (e.g., generated client missing)
-        dbStatus = "unavailable"
-        console.error("[Health] Database client unavailable:", error)
-      }
+    // Check database connectivity
+    const dbStatus = await getDatabaseStatus()
+    const databaseCheck = {
+      status: dbStatus.connected
+        ? ('pass' as const)
+        : dbStatus.configured && dbStatus.clientGenerated
+          ? ('warn' as const)
+          : ('fail' as const),
+      configured: dbStatus.configured,
+      connected: dbStatus.connected,
+      clientGenerated: dbStatus.clientGenerated,
+      message: dbStatus.message,
+      ...(dbStatus.error && { error: dbStatus.error }),
     }
-    
-    // Determine overall status
-    let status: "healthy" | "degraded" | "unhealthy" = "healthy"
-    let ok = true
-    
-    // Treat a disconnected DB as unhealthy; an unavailable client is degraded
-    if (memPercentage > 90 || dbStatus === "disconnected") {
-      status = "unhealthy"
-      ok = false
-    } else if (memPercentage > 75 || dbStatus === "unavailable") {
-      status = "degraded"
+
+    // Determine overall system status
+    let overallStatus: 'healthy' | 'degraded' | 'unhealthy'
+    let httpStatus: number
+
+    if (databaseCheck.status === 'pass' && prismaCheck.status === 'pass') {
+      // All checks pass - system is healthy
+      overallStatus = 'healthy'
+      httpStatus = 200
+    } else if (databaseCheck.status === 'warn' || prismaCheck.status === 'fail') {
+      // Database configured but not connected, or Prisma not available
+      // System can still function in degraded mode
+      overallStatus = 'degraded'
+      httpStatus = 207 // Multi-Status
+    } else {
+      // Critical failures - system cannot function properly
+      overallStatus = 'unhealthy'
+      httpStatus = 503 // Service Unavailable
     }
-    
-    const result: HealthCheckResult = {
-      ok,
-      status,
-      timestamp: Date.now(),
-      uptime: process.uptime(),
-      version: process.env.npm_package_version || "0.1.0",
+
+    const response: HealthCheckResponse = {
+      status: overallStatus,
+      timestamp: new Date().toISOString(),
       checks: {
-        memory: {
-          used: memUsage.heapUsed,
-          total: memUsage.heapTotal,
-          percentage: Math.round(memPercentage * 100) / 100,
-        },
+        database: databaseCheck,
+        prisma: prismaCheck,
       },
-      constitutional_alignment: 0.99, // High alignment score
     }
-    
-    // Add database status if configured
-    if (process.env.DATABASE_URL) {
-      result.checks.database = {
-        status: dbStatus,
-        latency: dbLatency,
-      }
-    }
-    
-    const responseStatus = status === "unhealthy" ? 503 : 200
-    
-    return NextResponse.json(result, {
-      status: responseStatus,
-      headers: {
-        "Cache-Control": "no-store, no-cache, must-revalidate",
-        "X-Response-Time": `${Date.now() - startTime}ms`,
-        "X-Constitutional-Alignment": "0.99",
-      },
-    })
+
+    return NextResponse.json(response, { status: httpStatus })
   } catch (error) {
-    console.error("[Health] Check failed:", error)
-    return NextResponse.json(
-      {
-        ok: false,
-        status: "unhealthy",
-        timestamp: Date.now(),
-        error: error instanceof Error ? error.message : "Unknown error",
-      },
-      {
-        status: 503,
-        headers: {
-          "X-Response-Time": `${Date.now() - startTime}ms`,
+    // Unexpected error during health check
+    console.error('[HEALTH] Health check failed with unexpected error:', error)
+
+    const errorResponse: HealthCheckResponse = {
+      status: 'unhealthy',
+      timestamp: new Date().toISOString(),
+      checks: {
+        database: {
+          status: 'fail',
+          configured: false,
+          connected: false,
+          clientGenerated: false,
+          message: 'Health check failed',
+          error: error instanceof Error ? error.message : 'Unknown error',
         },
-      }
-    )
+        prisma: {
+          status: 'fail',
+          available: false,
+          message: 'Health check failed',
+        },
+      },
+    }
+
+    return NextResponse.json(errorResponse, { status: 503 })
   }
 }
-
