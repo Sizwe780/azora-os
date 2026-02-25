@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import {
   RefreshCw,
   ExternalLink,
@@ -10,35 +10,50 @@ import {
   Globe,
   Loader2,
   Maximize2,
-  QrCode,
   Wifi,
+  WifiOff,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
 
 type DeviceMode = "mobile" | "tablet" | "desktop"
 
+const PREVIEW_URLS = [
+  process.env.NEXT_PUBLIC_PREVIEW_URL,
+  "http://localhost:3000",
+].filter(Boolean) as string[]
+
 export function PreviewPanel() {
   const [deviceMode, setDeviceMode] = useState<DeviceMode>("desktop")
   const [isLoading, setIsLoading] = useState(true)
-  const [url, setUrl] = useState("localhost:3000")
-  const [isConnected, setIsConnected] = useState(true)
+  const [previewUrl, setPreviewUrl] = useState(PREVIEW_URLS[0])
+  const [inputUrl, setInputUrl] = useState(PREVIEW_URLS[0])
+  const [iframeError, setIframeError] = useState(false)
+  const iframeRef = useRef<HTMLIFrameElement>(null)
 
-  const deviceWidths = {
+  const deviceWidths: Record<DeviceMode, number | string> = {
     mobile: 375,
     tablet: 768,
     desktop: "100%",
   }
 
-  useEffect(() => {
-    // Simulate initial load
-    const timer = setTimeout(() => setIsLoading(false), 1500)
-    return () => clearTimeout(timer)
-  }, [])
-
-  const handleRefresh = () => {
+  const handleRefresh = useCallback(() => {
     setIsLoading(true)
-    setTimeout(() => setIsLoading(false), 800)
+    setIframeError(false)
+    if (iframeRef.current) {
+      iframeRef.current.src = previewUrl
+    }
+  }, [previewUrl])
+
+  const handleOpenExternal = () => {
+    window.open(previewUrl, "_blank", "noopener,noreferrer")
+  }
+
+  const handleUrlSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    setPreviewUrl(inputUrl)
+    setIframeError(false)
+    setIsLoading(true)
   }
 
   return (
@@ -52,6 +67,7 @@ export function PreviewPanel() {
               size="icon"
               className={`h-6 w-6 ${deviceMode === "mobile" ? "bg-primary/20 text-primary" : ""}`}
               onClick={() => setDeviceMode("mobile")}
+              title="Mobile view"
             >
               <Smartphone className="w-3.5 h-3.5" />
             </Button>
@@ -60,6 +76,7 @@ export function PreviewPanel() {
               size="icon"
               className={`h-6 w-6 ${deviceMode === "tablet" ? "bg-primary/20 text-primary" : ""}`}
               onClick={() => setDeviceMode("tablet")}
+              title="Tablet view"
             >
               <Tablet className="w-3.5 h-3.5" />
             </Button>
@@ -68,6 +85,7 @@ export function PreviewPanel() {
               size="icon"
               className={`h-6 w-6 ${deviceMode === "desktop" ? "bg-primary/20 text-primary" : ""}`}
               onClick={() => setDeviceMode("desktop")}
+              title="Desktop view"
             >
               <Monitor className="w-3.5 h-3.5" />
             </Button>
@@ -75,25 +93,24 @@ export function PreviewPanel() {
         </div>
 
         {/* URL Bar */}
-        <div className="flex-1 max-w-xs mx-2">
-          <div className="flex items-center gap-2 px-2 py-1 rounded-lg bg-background border border-border text-xs">
-            <div className={`w-2 h-2 rounded-full ${isConnected ? "bg-primary" : "bg-destructive"}`} />
-            <Globe className="w-3 h-3 text-muted-foreground" />
-            <span className="text-muted-foreground truncate">{url}</span>
+        <form className="flex-1 max-w-xs mx-2" onSubmit={handleUrlSubmit}>
+          <div className="flex items-center gap-2 px-2 py-1 rounded-lg bg-background border border-border text-xs cursor-text hover:border-primary/50 transition-colors">
+            <Globe className="w-3 h-3 text-muted-foreground shrink-0" />
+            <input
+              type="text"
+              value={inputUrl}
+              onChange={(e) => setInputUrl(e.target.value)}
+              className="flex-1 bg-transparent text-muted-foreground outline-none min-w-0 text-xs"
+              placeholder="http://localhost:3000"
+            />
           </div>
-        </div>
+        </form>
 
         <div className="flex items-center gap-0.5">
-          <Button variant="ghost" size="icon" className="h-6 w-6" onClick={handleRefresh}>
+          <Button variant="ghost" size="icon" className="h-6 w-6" onClick={handleRefresh} title="Refresh">
             <RefreshCw className={`w-3 h-3 ${isLoading ? "animate-spin" : ""}`} />
           </Button>
-          <Button variant="ghost" size="icon" className="h-6 w-6">
-            <QrCode className="w-3 h-3" />
-          </Button>
-          <Button variant="ghost" size="icon" className="h-6 w-6">
-            <Maximize2 className="w-3 h-3" />
-          </Button>
-          <Button variant="ghost" size="icon" className="h-6 w-6">
+          <Button variant="ghost" size="icon" className="h-6 w-6" onClick={handleOpenExternal} title="Open in new tab">
             <ExternalLink className="w-3 h-3" />
           </Button>
         </div>
@@ -103,74 +120,53 @@ export function PreviewPanel() {
       <div className="flex-1 bg-[#1a1a1a] flex items-center justify-center p-4 overflow-auto">
         <motion.div
           layout
-          className="bg-white rounded-lg shadow-2xl overflow-hidden transition-all duration-300 relative"
+          className="bg-white rounded-lg shadow-2xl overflow-hidden transition-all duration-300 relative h-full"
           style={{
             width: deviceWidths[deviceMode],
             maxWidth: "100%",
-            height: deviceMode === "desktop" ? "100%" : "auto",
-            aspectRatio: deviceMode !== "desktop" ? "9/16" : undefined,
             maxHeight: "100%",
           }}
         >
-          {/* Device Frame for mobile/tablet */}
+          {/* Device notch for mobile/tablet */}
           {deviceMode !== "desktop" && (
-            <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-20 h-1 bg-gray-800 rounded-full" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-1 bg-gray-800 rounded-b-full z-10" />
           )}
 
-          {isLoading ? (
-            <div className="w-full h-full flex flex-col items-center justify-center bg-gray-50 gap-3">
-              <Loader2 className="w-8 h-8 animate-spin text-primary" />
-              <span className="text-sm text-gray-500">Loading preview...</span>
-            </div>
+          {!iframeError ? (
+            <>
+              {isLoading && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-50 z-10 gap-3">
+                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                  <span className="text-sm text-gray-500">Connecting to dev server...</span>
+                </div>
+              )}
+              <iframe
+                ref={iframeRef}
+                src={previewUrl}
+                className="w-full h-full border-0"
+                title="Live preview"
+                onLoad={() => setIsLoading(false)}
+                onError={() => { setIframeError(true); setIsLoading(false) }}
+                sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+              />
+            </>
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-gray-50 to-gray-100 overflow-auto">
-              {/* Simulated App Preview */}
-              <div className="min-h-full">
-                {/* Nav */}
-                <div className="h-14 bg-white border-b border-gray-200 flex items-center justify-between px-4">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500" />
-                    <span className="font-semibold text-gray-900">BuildSpaces</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="h-4 w-16 bg-gray-200 rounded" />
-                    <div className="h-4 w-16 bg-gray-200 rounded" />
-                    <div className="h-8 w-20 bg-emerald-500 rounded-lg" />
-                  </div>
-                </div>
-
-                {/* Hero */}
-                <div className="px-4 py-12 text-center">
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-600 text-xs mb-4">
-                    <div className="w-3 h-3 rounded-full bg-emerald-400" />
-                    AI-Powered
-                  </div>
-                  <h1 className="text-2xl font-bold text-gray-900 mb-3">Build with AI Agents</h1>
-                  <p className="text-gray-500 text-sm max-w-xs mx-auto mb-6">
-                    Transform your vision into production-ready code
-                  </p>
-                  <div className="flex items-center justify-center gap-2">
-                    <button className="px-4 py-2 bg-emerald-500 text-white text-sm rounded-lg">Get Started</button>
-                    <button className="px-4 py-2 border border-gray-300 text-gray-700 text-sm rounded-lg">
-                      Watch Demo
-                    </button>
-                  </div>
-                </div>
-
-                {/* Features Grid */}
-                <div className="px-4 pb-8">
-                  <div className="grid grid-cols-2 gap-3">
-                    {[1, 2, 3, 4].map((i) => (
-                      <div key={i} className="p-4 bg-white rounded-xl border border-gray-200">
-                        <div className="w-8 h-8 rounded-lg bg-emerald-100 mb-2" />
-                        <div className="h-3 w-20 bg-gray-200 rounded mb-2" />
-                        <div className="h-2 w-full bg-gray-100 rounded" />
-                        <div className="h-2 w-2/3 bg-gray-100 rounded mt-1" />
-                      </div>
-                    ))}
-                  </div>
-                </div>
+            <div className="w-full h-full flex flex-col items-center justify-center bg-gray-50 gap-4 p-6 text-center">
+              <WifiOff className="w-12 h-12 text-gray-300" />
+              <div>
+                <p className="text-sm font-medium text-gray-700">Dev server not reachable</p>
+                <p className="text-xs text-gray-500 mt-1">
+                  Start your dev server at <code className="bg-gray-100 px-1 rounded">{previewUrl}</code>
+                </p>
               </div>
+              <Button size="sm" variant="outline" onClick={handleRefresh} className="gap-1.5">
+                <RefreshCw className="w-3.5 h-3.5" />
+                Retry
+              </Button>
+              <Button size="sm" variant="outline" onClick={handleOpenExternal} className="gap-1.5">
+                <ExternalLink className="w-3.5 h-3.5" />
+                Open in browser
+              </Button>
             </div>
           )}
         </motion.div>
@@ -180,12 +176,16 @@ export function PreviewPanel() {
       <div className="h-6 border-t border-border bg-muted/30 flex items-center justify-between px-3 text-[10px] text-muted-foreground">
         <div className="flex items-center gap-3">
           <span className="flex items-center gap-1">
-            <Wifi className={`w-3 h-3 ${isConnected ? "text-primary" : "text-destructive"}`} />
-            {isConnected ? "Hot reload active" : "Disconnected"}
+            {!iframeError ? (
+              <Wifi className="w-3 h-3 text-primary" />
+            ) : (
+              <WifiOff className="w-3 h-3 text-destructive" />
+            )}
+            {!iframeError ? "Live preview" : "Disconnected"}
           </span>
-          <span>{deviceMode === "desktop" ? "100%" : deviceWidths[deviceMode] + "px"}</span>
+          <span>{deviceMode !== "desktop" ? `${deviceWidths[deviceMode]}px` : "Responsive"}</span>
         </div>
-        <span>Updated: just now</span>
+        <span>{previewUrl}</span>
       </div>
     </div>
   )

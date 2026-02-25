@@ -37,6 +37,7 @@ import { RoomSelector } from "@/components/workspace/room-selector"
 import { StatusBar } from "@/components/workspace/status-bar"
 import { AIAssistantPanel } from "@/components/workspace/ai-assistant-panel"
 import { Onboarding } from "@/components/workspace/onboarding"
+import { CommandPalette } from "@/components/workspace/layout/command-palette"
 import { AuthService, User } from "@/lib/services/auth-service"
 import { WorkspaceProvider, useWorkspace, RoomType } from "@/lib/contexts/workspace-context"
 
@@ -76,6 +77,7 @@ function WorkspaceContent() {
   const [aiPanelOpen, setAiPanelOpen] = useState(false)
   const [terminalOpen, setTerminalOpen] = useState(false)
   const [previewOpen, setPreviewOpen] = useState(false)
+  const [commandPaletteOpen, setCommandPaletteOpen] = useState(false)
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const [authService] = useState(() => AuthService.getInstance())
@@ -99,6 +101,73 @@ function WorkspaceContent() {
     }
     checkAuth()
   }, [authService, router])
+
+  // Global keyboard shortcuts for workspace
+  useEffect(() => {
+    const ROOM_SHORTCUTS: Record<string, RoomType> = {
+      '1': 'code-chamber',
+      '2': 'ai-studio',
+      '3': 'design-studio',
+      '4': 'command-desk',
+      '5': 'spec-chamber',
+      '6': 'task-board',
+      '7': 'knowledge-ocean',
+      '8': 'collaboration-pod',
+      '9': 'innovation-theater',
+      '0': 'deep-focus',
+    }
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Command Palette: Ctrl+Shift+P or Ctrl+K
+      if ((e.key === 'P' && e.ctrlKey && e.shiftKey) || (e.key === 'k' && e.ctrlKey)) {
+        e.preventDefault()
+        setCommandPaletteOpen(true)
+      }
+      // Toggle terminal: Ctrl+`
+      if (e.key === '`' && e.ctrlKey) {
+        e.preventDefault()
+        setTerminalOpen((v) => !v)
+      }
+      // Toggle AI panel: Ctrl+Shift+A
+      if (e.key === 'A' && e.ctrlKey && e.shiftKey) {
+        e.preventDefault()
+        setAiPanelOpen((v) => !v)
+      }
+      // Save: Ctrl+S
+      if (e.key === 's' && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault()
+        window.dispatchEvent(new CustomEvent('workspace:save'))
+      }
+      // Room shortcuts: Ctrl+1 through Ctrl+0
+      if (e.ctrlKey && !e.shiftKey && !e.altKey && ROOM_SHORTCUTS[e.key]) {
+        e.preventDefault()
+        setActiveRoom(ROOM_SHORTCUTS[e.key])
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [setActiveRoom])
+
+  // Listen for command palette events
+  useEffect(() => {
+    const onToggleTerminal = () => setTerminalOpen((v) => !v)
+    const onTogglePreview = () => setPreviewOpen((v) => !v)
+    const onToggleAI = () => setAiPanelOpen((v) => !v)
+    const onGotoRoom = (e: Event) => {
+      const room = (e as CustomEvent).detail as RoomType
+      if (room) setActiveRoom(room)
+    }
+    window.addEventListener('workspace:toggle-terminal', onToggleTerminal)
+    window.addEventListener('workspace:toggle-preview', onTogglePreview)
+    window.addEventListener('workspace:toggle-ai', onToggleAI)
+    window.addEventListener('workspace:goto-room', onGotoRoom)
+    return () => {
+      window.removeEventListener('workspace:toggle-terminal', onToggleTerminal)
+      window.removeEventListener('workspace:toggle-preview', onTogglePreview)
+      window.removeEventListener('workspace:toggle-ai', onToggleAI)
+      window.removeEventListener('workspace:goto-room', onGotoRoom)
+    }
+  }, [setActiveRoom])
 
   if (loading) {
     return (
@@ -163,6 +232,7 @@ function WorkspaceContent() {
           onTogglePreview={() => setPreviewOpen(!previewOpen)}
           onToggleKnowledge={() => setActiveRoom("knowledge-ocean")}
           onSave={handleSave}
+          onOpenCommandPalette={() => setCommandPaletteOpen(true)}
           previewOpen={previewOpen}
           knowledgeOceanOpen={activeRoom === "knowledge-ocean"}
           activeRoom={activeRoom}
@@ -209,6 +279,11 @@ function WorkspaceContent() {
         />
         
         <Onboarding />
+
+        <CommandPalette
+          open={commandPaletteOpen}
+          onOpenChange={setCommandPaletteOpen}
+        />
       </div>
     </div>
   )
