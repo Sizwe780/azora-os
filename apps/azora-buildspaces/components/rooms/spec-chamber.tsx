@@ -165,6 +165,52 @@ export function SpecChamber() {
   const [isSaved, setIsSaved] = useState(true)
   const [selectedSpec, setSelectedSpec] = useState<string | null>(null)
 
+  // Upgrade 1: AI Complete loading state
+  const [isAiCompleting, setIsAiCompleting] = useState(false)
+
+  // Upgrade 2: Acceptance Criteria
+  const [acceptanceCriteria, setAcceptanceCriteria] = useState<
+    { id: string; text: string; checked: boolean }[]
+  >([])
+  const [newCriteriaText, setNewCriteriaText] = useState("")
+
+  // Upgrade 3: Stakeholder Sign-Off
+  const [stakeholders, setStakeholders] = useState<
+    { id: string; name: string; status: "pending" | "approved" | "rejected" }[]
+  >([
+    { id: "sl-1", name: "Tech Lead", status: "pending" },
+    { id: "sl-2", name: "Product Manager", status: "pending" },
+    { id: "sl-3", name: "QA Lead", status: "pending" },
+  ])
+
+  // Upgrade 4: Version History (pre-populated)
+  const [versionHistory] = useState([
+    {
+      version: "v1.2",
+      author: "Alice Chen",
+      timestamp: "2024-01-14T09:15:00Z",
+      description: "Updated security considerations",
+      content:
+        "name: MyComponent\nversion: 1.2\ndescription: Updated component with security fixes\nrequirements:\n  - Secure data handling\n  - Input sanitization\n  - CSRF protection\n",
+    },
+    {
+      version: "v1.1",
+      author: "Bob Smith",
+      timestamp: "2024-01-12T14:30:00Z",
+      description: "Added error handling requirements",
+      content:
+        "name: MyComponent\nversion: 1.1\ndescription: Component with error handling\nrequirements:\n  - Error boundary support\n  - Fallback UI\n  - Retry mechanism\n",
+    },
+    {
+      version: "v1.0",
+      author: "Alice Chen",
+      timestamp: "2024-01-10T10:00:00Z",
+      description: "Initial spec draft",
+      content:
+        "name: MyComponent\nversion: 1.0\ndescription: Initial component specification\nrequirements:\n  - Basic rendering\n  - Props validation\n",
+    },
+  ])
+
   // Load specs on mount
   useEffect(() => {
     loadSpecs()
@@ -310,6 +356,73 @@ export function SpecChamber() {
     }
   }, [aiQuery, isAiGenerating, activeType, content])
 
+  // Upgrade 1: AI-Powered Spec Completion
+  const handleAiComplete = useCallback(async () => {
+    setIsAiCompleting(true)
+    try {
+      const resp = await fetch("/api/agents/invoke", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "generate-code", context: "Complete this spec section: " + content }),
+      })
+      if (resp.ok) {
+        const data = await resp.json()
+        const completion = data.result || data.output || data.response || ""
+        if (completion) {
+          setContent((prev) => prev + "\n" + completion)
+          setIsSaved(false)
+        }
+      }
+    } catch (error) {
+      console.error("AI completion failed:", error)
+    } finally {
+      setIsAiCompleting(false)
+    }
+  }, [content])
+
+  // Upgrade 5: Export as Markdown
+  const handleExportMarkdown = useCallback(() => {
+    const title = `${activeType.charAt(0).toUpperCase() + activeType.slice(1)} Specification`
+    const criteriaSection =
+      acceptanceCriteria.length > 0
+        ? `\n## Acceptance Criteria\n\n${acceptanceCriteria.map((c) => `- [${c.checked ? "x" : " "}] ${c.text}`).join("\n")}\n`
+        : ""
+    const signOffSection = `\n## Sign-Off\n\n| Stakeholder | Status |\n|---|---|\n${stakeholders
+      .map((s) => `| ${s.name} | ${s.status.charAt(0).toUpperCase() + s.status.slice(1)} |`)
+      .join("\n")}\n`
+    const md = `# ${title}\n\n${content}\n${criteriaSection}${signOffSection}`
+    const blob = new Blob([md], { type: "text/markdown" })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = `spec-${title.toLowerCase().replace(/\s+/g, "-")}.md`
+    a.click()
+    URL.revokeObjectURL(url)
+  }, [activeType, content, acceptanceCriteria, stakeholders])
+
+  // Upgrade 2: Acceptance Criteria helpers
+  const addCriteria = useCallback(() => {
+    if (!newCriteriaText.trim()) return
+    setAcceptanceCriteria((prev) => [
+      ...prev,
+      { id: `ac-${Date.now()}`, text: newCriteriaText.trim(), checked: false },
+    ])
+    setNewCriteriaText("")
+  }, [newCriteriaText])
+
+  const toggleCriteria = useCallback((id: string) => {
+    setAcceptanceCriteria((prev) => prev.map((c) => (c.id === id ? { ...c, checked: !c.checked } : c)))
+  }, [])
+
+  const removeCriteria = useCallback((id: string) => {
+    setAcceptanceCriteria((prev) => prev.filter((c) => c.id !== id))
+  }, [])
+
+  // Upgrade 3: Stakeholder sign-off helper
+  const updateStakeholder = useCallback((id: string, status: "pending" | "approved" | "rejected") => {
+    setStakeholders((prev) => prev.map((s) => (s.id === id ? { ...s, status } : s)))
+  }, [])
+
   return (
     <div className="h-full flex flex-col bg-zinc-950 text-zinc-100">
       {/* ── Header ── */}
@@ -360,7 +473,7 @@ export function SpecChamber() {
             <Save className="w-3.5 h-3.5" />
             Save
           </Button>
-          <Button variant="ghost" size="sm" onClick={handleExport} className="h-8 px-2 text-zinc-400">
+          <Button variant="ghost" size="sm" onClick={handleExportMarkdown} className="h-8 px-2 text-zinc-400" title="Export as Markdown">
             <Download className="w-3.5 h-3.5" />
           </Button>
           <Button
@@ -520,12 +633,42 @@ export function SpecChamber() {
                   <Layers className="w-3.5 h-3.5" />
                   Visual Builder
                 </TabsTrigger>
+                <TabsTrigger value="criteria" className="gap-1.5 text-xs h-7 data-[state=active]:bg-zinc-700">
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  Criteria
+                </TabsTrigger>
+                <TabsTrigger value="signoff" className="gap-1.5 text-xs h-7 data-[state=active]:bg-zinc-700">
+                  <Users className="w-3.5 h-3.5" />
+                  Sign-Off
+                </TabsTrigger>
+                <TabsTrigger value="history" className="gap-1.5 text-xs h-7 data-[state=active]:bg-zinc-700">
+                  <GitBranch className="w-3.5 h-3.5" />
+                  History
+                </TabsTrigger>
               </TabsList>
 
-              <div className="flex items-center gap-2 text-[11px] text-zinc-600">
-                <span>YAML</span>
-                <span>•</span>
-                <span>{content.split("\n").length} lines</span>
+              <div className="flex items-center gap-2">
+                {activeTab === "editor" && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleAiComplete}
+                    disabled={isAiCompleting}
+                    className="gap-1.5 text-xs h-7 border-zinc-700 text-zinc-400 hover:text-purple-400 hover:border-purple-700"
+                  >
+                    {isAiCompleting ? (
+                      <RefreshCw className="w-3 h-3 animate-spin" />
+                    ) : (
+                      <Sparkles className="w-3 h-3" />
+                    )}
+                    AI Complete
+                  </Button>
+                )}
+                <div className="flex items-center gap-2 text-[11px] text-zinc-600">
+                  <span>YAML</span>
+                  <span>•</span>
+                  <span>{content.split("\n").length} lines</span>
+                </div>
               </div>
             </div>
 
@@ -584,6 +727,167 @@ export function SpecChamber() {
 
             <TabsContent value="visual" className="flex-1 m-0">
               <VisualBuilder />
+            </TabsContent>
+
+            {/* Upgrade 2: Acceptance Criteria Checklist */}
+            <TabsContent value="criteria" className="flex-1 m-0 p-6 overflow-y-auto">
+              <div className="max-w-2xl mx-auto space-y-4">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-lg font-semibold text-zinc-200">Acceptance Criteria</h2>
+                  {acceptanceCriteria.length > 0 && (
+                    <Badge variant="outline" className="text-xs border-zinc-700">
+                      {acceptanceCriteria.filter((c) => c.checked).length}/{acceptanceCriteria.length} complete
+                    </Badge>
+                  )}
+                </div>
+                {acceptanceCriteria.length > 0 && (
+                  <Progress
+                    value={(acceptanceCriteria.filter((c) => c.checked).length / acceptanceCriteria.length) * 100}
+                    className="h-1.5"
+                  />
+                )}
+                <div className="flex gap-2">
+                  <Input
+                    value={newCriteriaText}
+                    onChange={(e) => setNewCriteriaText(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && addCriteria()}
+                    placeholder="Add acceptance criterion…"
+                    className="bg-zinc-800 border-zinc-700 text-sm text-zinc-300"
+                  />
+                  <Button size="sm" onClick={addCriteria} className="bg-zinc-700 hover:bg-zinc-600 gap-1.5">
+                    <Plus className="w-3.5 h-3.5" />
+                    Add
+                  </Button>
+                </div>
+                <div className="space-y-2">
+                  {acceptanceCriteria.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-zinc-900 border border-zinc-800"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={item.checked}
+                        onChange={() => toggleCriteria(item.id)}
+                        className="w-4 h-4 accent-purple-500 cursor-pointer flex-shrink-0"
+                      />
+                      <span
+                        className={`flex-1 text-sm ${item.checked ? "line-through text-zinc-500" : "text-zinc-300"}`}
+                      >
+                        {item.text}
+                      </span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeCriteria(item.id)}
+                        className="h-6 w-6 p-0 text-zinc-600 hover:text-red-400"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </Button>
+                    </div>
+                  ))}
+                  {acceptanceCriteria.length === 0 && (
+                    <p className="text-[11px] text-zinc-600 text-center py-6">
+                      No acceptance criteria added yet. Add your first criterion above.
+                    </p>
+                  )}
+                </div>
+              </div>
+            </TabsContent>
+
+            {/* Upgrade 3: Stakeholder Sign-Off */}
+            <TabsContent value="signoff" className="flex-1 m-0 p-6 overflow-y-auto">
+              <div className="max-w-2xl mx-auto space-y-4">
+                <h2 className="text-lg font-semibold text-zinc-200">Stakeholder Sign-Off</h2>
+                <div className="space-y-3">
+                  {stakeholders.map((stakeholder) => (
+                    <div
+                      key={stakeholder.id}
+                      className="flex items-center justify-between px-4 py-3 rounded-lg bg-zinc-900 border border-zinc-800"
+                    >
+                      <div className="flex items-center gap-3">
+                        <Users className="w-4 h-4 text-zinc-500" />
+                        <span className="text-sm text-zinc-200">{stakeholder.name}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge
+                          variant="outline"
+                          className={`text-xs ${
+                            stakeholder.status === "approved"
+                              ? "border-emerald-600 text-emerald-400"
+                              : stakeholder.status === "rejected"
+                              ? "border-red-600 text-red-400"
+                              : "border-zinc-700 text-zinc-500"
+                          }`}
+                        >
+                          {stakeholder.status.charAt(0).toUpperCase() + stakeholder.status.slice(1)}
+                        </Badge>
+                        <Button
+                          size="sm"
+                          onClick={() => updateStakeholder(stakeholder.id, "approved")}
+                          disabled={stakeholder.status === "approved"}
+                          className="h-7 px-2 text-xs bg-emerald-700 hover:bg-emerald-600 disabled:opacity-40"
+                        >
+                          Approve
+                        </Button>
+                        <Button
+                          size="sm"
+                          onClick={() => updateStakeholder(stakeholder.id, "rejected")}
+                          disabled={stakeholder.status === "rejected"}
+                          variant="outline"
+                          className="h-7 px-2 text-xs border-zinc-700 text-zinc-400 hover:text-red-400 hover:border-red-700"
+                        >
+                          Request Changes
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </TabsContent>
+
+            {/* Upgrade 4: Version History */}
+            <TabsContent value="history" className="flex-1 m-0 p-6 overflow-y-auto">
+              <div className="max-w-2xl mx-auto space-y-4">
+                <h2 className="text-lg font-semibold text-zinc-200">Version History</h2>
+                <div className="space-y-3">
+                  {versionHistory.map((entry) => (
+                    <div
+                      key={entry.version}
+                      className="flex items-start justify-between px-4 py-3 rounded-lg bg-zinc-900 border border-zinc-800"
+                    >
+                      <div className="flex items-start gap-3">
+                        <GitBranch className="w-4 h-4 text-purple-400 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-medium text-zinc-200">{entry.version}</span>
+                            <Badge variant="outline" className="text-[10px] h-4 border-zinc-700 text-zinc-500">
+                              {entry.author}
+                            </Badge>
+                          </div>
+                          <p className="text-xs text-zinc-400 mt-0.5">{entry.description}</p>
+                          <p className="text-[10px] text-zinc-600 mt-1">
+                            <Clock className="w-3 h-3 inline mr-1" />
+                            {new Date(entry.timestamp).toLocaleString()}
+                          </p>
+                        </div>
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setContent(entry.content)
+                          setIsSaved(false)
+                          setActiveTab("editor")
+                        }}
+                        className="h-7 px-2 text-xs border-zinc-700 text-zinc-400 hover:text-zinc-200 flex-shrink-0"
+                      >
+                        Restore
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </TabsContent>
           </Tabs>
         </div>

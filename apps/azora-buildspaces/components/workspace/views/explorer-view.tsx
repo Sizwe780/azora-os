@@ -1,8 +1,8 @@
 "use client"
 
 import { useFileSystem } from "@/lib/stores/file-system"
-import { ChevronRight, ChevronDown, File, Folder, FolderOpen, Plus, MoreVertical, GitBranch, FileText, Settings, Image, Code, Database } from "lucide-react"
-import { useState } from "react"
+import { ChevronRight, ChevronDown, File, Folder, FolderOpen, Plus, MoreVertical, GitBranch, FileText, Settings, Image, Code, Database, Upload, FolderInput } from "lucide-react"
+import { useState, useRef, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
@@ -63,6 +63,22 @@ const getGitStatusColor = (status?: string) => {
 export function ExplorerView() {
     const { fileMap, openFile, activeFileId, createFile, createDirectory, deleteNode, rootId } = useFileSystem()
     const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set([rootId || '']))
+    const fileInputRef = useRef<HTMLInputElement>(null)
+
+    const handleUploadFiles = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files
+        if (!files || files.length === 0) return
+        for (const file of Array.from(files)) {
+            const text = await file.text()
+            await createFile(rootId || null, file.name, text)
+        }
+        // Reset input so same file can be re-uploaded
+        if (fileInputRef.current) fileInputRef.current.value = ""
+    }, [createFile, rootId])
+
+    const handleOpenFromDisk = () => {
+        fileInputRef.current?.click()
+    }
 
     const toggleFolder = (folderId: string) => {
         const newExpanded = new Set(expandedFolders)
@@ -185,26 +201,46 @@ export function ExplorerView() {
 
     return (
         <div className="flex flex-col h-full">
+            {/* Hidden file input for upload */}
+            <input
+                ref={fileInputRef}
+                type="file"
+                multiple
+                className="hidden"
+                onChange={handleUploadFiles}
+                aria-label="Upload files"
+            />
+
             {/* Header */}
             <div className="p-2 text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center justify-between">
                 <span>Explorer</span>
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="w-6 h-6">
-                            <Plus className="w-4 h-4" />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => createFile(rootId || null, 'new-file.txt')}>
-                            <File className="w-4 h-4 mr-2" />
-                            New File
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => createDirectory(rootId || null, 'new-folder')}>
-                            <Folder className="w-4 h-4 mr-2" />
-                            New Folder
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                <div className="flex items-center gap-0.5">
+                    <Button variant="ghost" size="icon" className="w-6 h-6" onClick={handleOpenFromDisk} title="Upload files">
+                        <Upload className="w-3.5 h-3.5" />
+                    </Button>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" className="w-6 h-6">
+                                <Plus className="w-4 h-4" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => createFile(rootId || null, 'new-file.txt')}>
+                                <File className="w-4 h-4 mr-2" />
+                                New File
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => createDirectory(rootId || null, 'new-folder')}>
+                                <Folder className="w-4 h-4 mr-2" />
+                                New Folder
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={handleOpenFromDisk}>
+                                <Upload className="w-4 h-4 mr-2" />
+                                Upload Files
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
             </div>
 
             {/* Git Status Summary */}

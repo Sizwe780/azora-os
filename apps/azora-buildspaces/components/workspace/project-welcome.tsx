@@ -1,12 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef, useCallback } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Sparkles, Plus, FolderOpen, GitBranch } from "lucide-react"
+import { Sparkles, Plus, FolderOpen, GitBranch, Upload } from "lucide-react"
 import { projectTemplates, ProjectTemplate } from "@/lib/templates/project-templates"
+import { useFileSystem } from "@/lib/stores/file-system"
 
 const makeId = () => Math.random().toString(36).slice(2, 9) // helper to generate ids without Date.now during render
 
@@ -16,6 +17,8 @@ interface ProjectWelcomeProps {
 
 export function ProjectWelcome({ onProjectSelect }: ProjectWelcomeProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const { createFile, rootId } = useFileSystem()
 
   const categories = [
     { id: 'all', name: 'All Projects', count: projectTemplates.length },
@@ -30,13 +33,33 @@ export function ProjectWelcome({ onProjectSelect }: ProjectWelcomeProps) {
     : projectTemplates.filter(t => t.category === selectedCategory)
 
   const handleTemplateSelect = (template: ProjectTemplate) => {
-    // For now, just load a mock project. In a real implementation,
-    // this would create a new project with the template files
     onProjectSelect(`project-${template.id}-${makeId()}`)
   }
 
+  const handleOpenFiles = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (!files || files.length === 0) return
+    const projectId = `uploaded-${makeId()}`
+    for (const file of Array.from(files)) {
+      const text = await file.text()
+      await createFile(rootId || null, file.name, text)
+    }
+    onProjectSelect(projectId)
+    if (fileInputRef.current) fileInputRef.current.value = ""
+  }, [createFile, rootId, onProjectSelect])
+
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+      {/* Hidden file input */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        multiple
+        className="hidden"
+        onChange={handleOpenFiles}
+        aria-label="Open project files"
+      />
+
       {/* Header */}
       <div className="flex items-center justify-between p-6 border-b bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm">
         <div className="flex items-center gap-3">
@@ -45,18 +68,18 @@ export function ProjectWelcome({ onProjectSelect }: ProjectWelcomeProps) {
           </div>
           <div>
             <h1 className="text-xl font-semibold">Welcome to Code Chamber</h1>
-            <p className="text-sm text-muted-foreground">Choose a template to get started</p>
+            <p className="text-sm text-muted-foreground">Choose a template or open existing files</p>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" className="gap-2">
+          <Button variant="outline" size="sm" className="gap-2" onClick={() => fileInputRef.current?.click()}>
             <FolderOpen className="w-4 h-4" />
-            Open Project
+            Open Files
           </Button>
-          <Button variant="outline" size="sm" className="gap-2">
+          <Button variant="outline" size="sm" className="gap-2" onClick={() => window.dispatchEvent(new CustomEvent('workspace:clone-repo'))}>
             <GitBranch className="w-4 h-4" />
-            Clone Repository
+            Clone Repo
           </Button>
         </div>
       </div>

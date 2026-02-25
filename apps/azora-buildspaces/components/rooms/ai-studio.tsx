@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -41,6 +41,8 @@ import {
   Terminal,
   FileText,
   Workflow,
+  Copy,
+  GitCompare,
 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 
@@ -79,6 +81,24 @@ const NODE_TYPES = [
   { type: "transform", label: "Transform", icon: Layers, color: "text-pink-400 border-pink-500/30 bg-pink-500/10" },
 ] as const
 
+/* ─── model comparison data ─── */
+const MODEL_COMPARISON_DATA: Record<string, { latency: string; cost: string; context: string; strengths: string[] }> = {
+  "GPT-4o":      { latency: "620ms", cost: "$0.005", context: "128K", strengths: ["Reasoning", "Code", "Vision"] },
+  "Claude 3.5":  { latency: "580ms", cost: "$0.003", context: "200K", strengths: ["Writing", "Analysis", "Safety"] },
+  "Gemini Pro":  { latency: "490ms", cost: "$0.002", context: "1M",   strengths: ["Multimodal", "Speed", "Long ctx"] },
+  "Llama 3":     { latency: "310ms", cost: "$0.001", context: "128K", strengths: ["Open source", "Fast", "Cost"] },
+  "Mistral":     { latency: "280ms", cost: "$0.0007", context: "32K", strengths: ["Speed", "Efficiency", "EU"] },
+}
+const MODEL_NAMES = Object.keys(MODEL_COMPARISON_DATA)
+
+/* ─── log level helper ─── */
+function getLogLevel(text: string): "ERROR" | "WARN" | "INFO" {
+  const lower = text.toLowerCase()
+  if (lower.includes("error") || lower.includes("failed") || lower.includes("fail")) return "ERROR"
+  if (lower.includes("warn") || lower.includes("stopped") || lower.includes("retry")) return "WARN"
+  return "INFO"
+}
+
 /* ═══════════════════════════════════════════════ */
 /*                 AI STUDIO                       */
 /* ═══════════════════════════════════════════════ */
@@ -95,6 +115,11 @@ export default function AIStudio() {
   const [isLoading, setIsLoading] = useState(true)
   const [naturalPrompt, setNaturalPrompt] = useState("")
   const [isBuildingFromPrompt, setIsBuildingFromPrompt] = useState(false)
+  const [compareModel1, setCompareModel1] = useState("GPT-4o")
+  const [compareModel2, setCompareModel2] = useState("Claude 3.5")
+  const [liveMetrics, setLiveMetrics] = useState({ successRate: 0, avgLatency: 0, tokensPerMin: 0 })
+  const logsEndRef = useRef<HTMLDivElement>(null)
+  const importFileRef = useRef<HTMLInputElement>(null)
 
   /* ── load workflow ── */
   useEffect(() => {
@@ -119,6 +144,46 @@ export default function AIStudio() {
     }
     loadWorkflow()
   }, [])
+
+  /* ── auto-scroll logs ── */
+  useEffect(() => {
+    logsEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }, [logs])
+
+  /* ── metrics polling every 10s ── */
+  useEffect(() => {
+    const fetchLiveMetrics = async () => {
+      try {
+        const resp = await fetch("/api/agents/metrics")
+        if (resp.ok) {
+          const data = await resp.json()
+          setLiveMetrics({
+            successRate: data.successRate ?? liveMetrics.successRate,
+            avgLatency: data.avgLatency ?? liveMetrics.avgLatency,
+            tokensPerMin: data.tokensPerMin ?? liveMetrics.tokensPerMin,
+          })
+        }
+      } catch { /* silent */ }
+    }
+    fetchLiveMetrics()
+    const id = setInterval(fetchLiveMetrics, 10_000)
+    return () => clearInterval(id)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  /* ── keyboard shortcut: Delete key ── */
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if ((e.key === "Delete" || e.key === "Backspace") && selectedNode) {
+        const active = document.activeElement
+        if (active && (active.tagName === "INPUT" || active.tagName === "TEXTAREA" || active.tagName === "SELECT")) return
+        removeNode(selectedNode.id)
+      }
+    }
+    window.addEventListener("keydown", onKeyDown)
+    return () => window.removeEventListener("keydown", onKeyDown)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedNode])
 
   /* ── run workflow ── */
   const runWorkflow = async () => {
@@ -184,6 +249,18 @@ export default function AIStudio() {
   const removeNode = (id: string) => {
     setNodes((prev) => prev.filter((n) => n.id !== id))
     if (selectedNode?.id === id) setSelectedNode(null)
+  }
+
+  const duplicateNode = (node: AgentNode) => {
+    const copy: AgentNode = {
+      ...node,
+      id: `node-${Date.now()}`,
+      name: `${node.name} (copy)`,
+      status: "idle",
+      config: { ...node.config, _offsetX: String((parseInt(node.config._offsetX || "0") + 20)), _offsetY: String((parseInt(node.config._offsetY || "0") + 20)) },
+    }
+    setNodes((prev) => [...prev, copy])
+    setSelectedNode(copy)
   }
 
   const updateNodeConfig = (id: string, key: string, value: string) => {
@@ -311,6 +388,34 @@ export default function AIStudio() {
             <Download className="w-3.5 h-3.5" />
             Export
           </Button>
+
+          <Button variant="ghost" size="sm" className="gap-1.5 text-xs" onClick={() => importFileRef.current?.click()}>
+            <Upload className="w-3.5 h-3.5" />
+            Import
+          </Button>
+          <input
+            ref={importFileRef}
+            type="file"
+            accept=".json"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0]
+              if (!file) return
+              const reader = new FileReader()
+              reader.onload = (ev) => {
+                try {
+                  const parsed = JSON.parse(ev.target?.result as string)
+                  if (parsed.nodes) setNodes(parsed.nodes)
+                  if (parsed.name) setWorkflowName(parsed.name)
+                  setLogs(prev => [...prev, `[${new Date().toLocaleTimeString()}] Workflow imported: ${parsed.name || file.name}`])
+                } catch {
+                  setLogs(prev => [...prev, `[${new Date().toLocaleTimeString()}] Import failed: invalid JSON`])
+                }
+              }
+              reader.readAsText(file)
+              e.target.value = ""
+            }}
+          />
         </div>
       </div>
 
@@ -391,7 +496,7 @@ export default function AIStudio() {
           <ResizablePanel defaultSize={52} minSize={35}>
             <div className="h-full flex flex-col">
               <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full flex flex-col">
-                <TabsList className="grid w-full grid-cols-3 h-10 rounded-none border-b border-zinc-800 bg-zinc-900/30">
+                <TabsList className="grid w-full grid-cols-4 h-10 rounded-none border-b border-zinc-800 bg-zinc-900/30">
                   <TabsTrigger value="workflow" className="gap-1.5 text-xs">
                     <Workflow className="w-3.5 h-3.5" />
                     Workflow
@@ -403,6 +508,10 @@ export default function AIStudio() {
                   <TabsTrigger value="logs" className="gap-1.5 text-xs">
                     <Terminal className="w-3.5 h-3.5" />
                     Logs
+                  </TabsTrigger>
+                  <TabsTrigger value="compare" className="gap-1.5 text-xs">
+                    <GitCompare className="w-3.5 h-3.5" />
+                    Compare
                   </TabsTrigger>
                 </TabsList>
 
@@ -517,17 +626,109 @@ export default function AIStudio() {
                 </TabsContent>
 
                 {/* Logs */}
-                <TabsContent value="logs" className="flex-1 m-0 overflow-auto">
-                  <div className="p-4 font-mono text-xs space-y-1">
-                    {logs.length === 0 ? (
-                      <p className="text-zinc-700">No logs yet. Run a workflow to see output.</p>
-                    ) : (
-                      logs.map((log, i) => (
-                        <p key={i} className="text-zinc-500">
-                          {log}
-                        </p>
-                      ))
-                    )}
+                <TabsContent value="logs" className="flex-1 m-0 flex flex-col overflow-hidden">
+                  <div className="flex items-center justify-between px-4 py-2 border-b border-zinc-800 bg-zinc-900/30">
+                    <span className="text-[10px] font-semibold text-zinc-600 uppercase tracking-wider">{logs.length} entries</span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-6 text-[10px] gap-1 text-zinc-600 hover:text-red-400"
+                      onClick={() => setLogs([])}
+                    >
+                      <Trash2 className="w-3 h-3" />
+                      Clear
+                    </Button>
+                  </div>
+                  <ScrollArea className="flex-1">
+                    <div className="p-4 font-mono text-xs space-y-1.5">
+                      {logs.length === 0 ? (
+                        <p className="text-zinc-700">No logs yet. Run a workflow to see output.</p>
+                      ) : (
+                        logs.map((log, i) => {
+                          const level = getLogLevel(log)
+                          return (
+                            <div key={i} className="flex items-start gap-2">
+                              <span className={`shrink-0 text-[9px] font-bold px-1.5 py-0.5 rounded ${
+                                level === "ERROR" ? "bg-red-500/20 text-red-400" :
+                                level === "WARN"  ? "bg-amber-500/20 text-amber-400" :
+                                "bg-blue-500/20 text-blue-400"
+                              }`}>{level}</span>
+                              <span className={`${
+                                level === "ERROR" ? "text-red-400" :
+                                level === "WARN"  ? "text-amber-400" :
+                                "text-zinc-400"
+                              }`}>{log}</span>
+                            </div>
+                          )
+                        })
+                      )}
+                      <div ref={logsEndRef} />
+                    </div>
+                  </ScrollArea>
+                </TabsContent>
+
+                {/* Model Compare */}
+                <TabsContent value="compare" className="flex-1 m-0 overflow-auto">
+                  <div className="p-4 space-y-4">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="text-[10px] font-semibold text-zinc-600 uppercase tracking-wider">Model A</label>
+                        <select
+                          className="w-full h-8 text-xs bg-zinc-900 border border-zinc-700/50 rounded-md px-2 mt-1 text-zinc-300"
+                          value={compareModel1}
+                          onChange={(e) => setCompareModel1(e.target.value)}
+                        >
+                          {MODEL_NAMES.map((m) => <option key={m} value={m}>{m}</option>)}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-semibold text-zinc-600 uppercase tracking-wider">Model B</label>
+                        <select
+                          className="w-full h-8 text-xs bg-zinc-900 border border-zinc-700/50 rounded-md px-2 mt-1 text-zinc-300"
+                          value={compareModel2}
+                          onChange={(e) => setCompareModel2(e.target.value)}
+                        >
+                          {MODEL_NAMES.map((m) => <option key={m} value={m}>{m}</option>)}
+                        </select>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      {[compareModel1, compareModel2].map((modelName, idx) => {
+                        const m = MODEL_COMPARISON_DATA[modelName]
+                        return (
+                          <Card key={idx} className={`border ${idx === 0 ? "border-blue-500/30 bg-blue-500/5" : "border-purple-500/30 bg-purple-500/5"}`}>
+                            <CardHeader className="p-3 pb-1">
+                              <CardTitle className="text-xs font-bold text-zinc-200">{modelName}</CardTitle>
+                              <Badge variant="outline" className={`text-[9px] w-fit ${idx === 0 ? "border-blue-500/30 text-blue-400" : "border-purple-500/30 text-purple-400"}`}>
+                                Model {idx === 0 ? "A" : "B"}
+                              </Badge>
+                            </CardHeader>
+                            <CardContent className="p-3 pt-2 space-y-2">
+                              <div className="flex justify-between text-[10px]">
+                                <span className="text-zinc-600">Latency</span>
+                                <span className="text-zinc-300 font-mono">{m.latency}</span>
+                              </div>
+                              <div className="flex justify-between text-[10px]">
+                                <span className="text-zinc-600">Cost/1K</span>
+                                <span className="text-zinc-300 font-mono">{m.cost}</span>
+                              </div>
+                              <div className="flex justify-between text-[10px]">
+                                <span className="text-zinc-600">Context</span>
+                                <span className="text-zinc-300 font-mono">{m.context}</span>
+                              </div>
+                              <div className="pt-1">
+                                <span className="text-[10px] text-zinc-600">Strengths</span>
+                                <div className="flex flex-wrap gap-1 mt-1">
+                                  {m.strengths.map((s) => (
+                                    <Badge key={s} variant="outline" className="text-[9px] border-zinc-700 text-zinc-500">{s}</Badge>
+                                  ))}
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        )
+                      })}
+                    </div>
                   </div>
                 </TabsContent>
               </Tabs>
@@ -643,15 +844,26 @@ export default function AIStudio() {
                             </div>
                           )}
 
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="w-full text-xs text-red-400 border-red-500/20 hover:bg-red-500/10"
-                            onClick={() => removeNode(selectedNode.id)}
-                          >
-                            <Trash2 className="w-3 h-3 mr-1.5" />
-                            Remove Node
-                          </Button>
+                          <div className="flex gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="flex-1 text-xs text-zinc-400 border-zinc-700 hover:bg-zinc-800"
+                              onClick={() => duplicateNode(selectedNode)}
+                            >
+                              <Copy className="w-3 h-3 mr-1.5" />
+                              Duplicate
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="flex-1 text-xs text-red-400 border-red-500/20 hover:bg-red-500/10"
+                              onClick={() => removeNode(selectedNode.id)}
+                            >
+                              <Trash2 className="w-3 h-3 mr-1.5" />
+                              Delete
+                            </Button>
+                          </div>
                         </div>
                       ) : (
                         <div className="text-center py-12">
@@ -667,6 +879,29 @@ export default function AIStudio() {
                 <TabsContent value="metrics" className="flex-1 m-0 overflow-auto">
                   <ScrollArea className="h-full">
                     <div className="p-4 space-y-4">
+                      {/* Live metrics sparkline bars */}
+                      <div>
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-[10px] font-semibold text-zinc-600 uppercase tracking-wider">Live Metrics</span>
+                          <span className="text-[9px] text-zinc-700">polls every 10s</span>
+                        </div>
+                        <div className="space-y-3">
+                          {[
+                            { label: "Success Rate", value: liveMetrics.successRate, max: 100, unit: "%", color: "bg-emerald-500" },
+                            { label: "Avg Latency (ms)", value: Math.min(liveMetrics.avgLatency, 2000), max: 2000, unit: "ms", color: "bg-blue-500" },
+                            { label: "Tokens/min", value: Math.min(liveMetrics.tokensPerMin, 10000), max: 10000, unit: "", color: "bg-purple-500" },
+                          ].map((stat) => (
+                            <div key={stat.label}>
+                              <div className="flex justify-between items-center mb-1">
+                                <span className="text-[10px] text-zinc-500">{stat.label}</span>
+                                <span className="text-[10px] font-mono text-zinc-300">{stat.label === "Avg Latency (ms)" ? liveMetrics.avgLatency : stat.label === "Tokens/min" ? liveMetrics.tokensPerMin : liveMetrics.successRate}{stat.unit}</span>
+                              </div>
+                              <Progress value={(stat.value / stat.max) * 100} className="h-1.5" />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
                       <div>
                         <span className="text-[10px] font-semibold text-zinc-600 uppercase tracking-wider">Performance</span>
                         <div className="grid grid-cols-2 gap-3 mt-2">

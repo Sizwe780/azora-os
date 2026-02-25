@@ -1,10 +1,8 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
-import { Search, File, Settings, Terminal, GitBranch, Package, Zap, Command } from "lucide-react"
-import { Command as CommandPrimitive } from "cmdk"
+import { useState } from "react"
+import { File, Settings, Terminal, GitBranch, Package, Zap, Command, Play, Cloud, Eye, BookOpen, Bot } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import {
     CommandDialog,
     CommandEmpty,
@@ -14,6 +12,7 @@ import {
     CommandList,
     CommandSeparator,
 } from "@/components/ui/command"
+import { useRouter } from "next/navigation"
 
 interface CommandPaletteProps {
     open: boolean
@@ -31,50 +30,102 @@ interface CommandItem {
 
 export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
     const [value, setValue] = useState("")
+    const router = useRouter()
+
+    const dispatch = (event: string, detail?: unknown) => {
+        window.dispatchEvent(new CustomEvent(event, { detail }))
+    }
 
     const commands: CommandItem[] = [
         // File Operations
         {
-            id: "file.new",
-            title: "New File",
-            description: "Create a new file",
-            icon: File,
-            shortcut: "Ctrl+N",
-            action: () => console.log("New file")
-        },
-        {
-            id: "file.open",
-            title: "Open File",
-            description: "Open an existing file",
-            icon: File,
-            shortcut: "Ctrl+O",
-            action: () => console.log("Open file")
-        },
-        {
             id: "file.save",
-            title: "Save File",
+            title: "File: Save",
             description: "Save the current file",
             icon: File,
             shortcut: "Ctrl+S",
-            action: () => console.log("Save file")
+            action: () => dispatch("workspace:save"),
+        },
+        {
+            id: "file.new",
+            title: "File: New File",
+            description: "Create a new file in the explorer",
+            icon: File,
+            shortcut: "Ctrl+N",
+            action: () => dispatch("workspace:new-file"),
+        },
+        {
+            id: "file.upload",
+            title: "File: Upload Files",
+            description: "Upload files from your computer",
+            icon: File,
+            action: () => dispatch("workspace:upload-files"),
         },
 
         // View Operations
         {
-            id: "view.commandPalette",
-            title: "Show Command Palette",
-            description: "Open the command palette",
-            icon: Command,
-            shortcut: "Ctrl+Shift+P",
-            action: () => onOpenChange(false)
-        },
-        {
             id: "view.terminal",
-            title: "Toggle Terminal",
-            description: "Show or hide the terminal",
+            title: "View: Toggle Terminal",
+            description: "Show or hide the integrated terminal",
             icon: Terminal,
             shortcut: "Ctrl+`",
-            action: () => console.log("Toggle terminal")
+            action: () => dispatch("workspace:toggle-terminal"),
+        },
+        {
+            id: "view.preview",
+            title: "View: Toggle Preview",
+            description: "Show or hide the live preview",
+            icon: Eye,
+            action: () => dispatch("workspace:toggle-preview"),
+        },
+        {
+            id: "view.ai",
+            title: "View: Toggle AI Assistant",
+            description: "Show or hide the Elara AI assistant",
+            icon: Bot,
+            shortcut: "Ctrl+Shift+A",
+            action: () => dispatch("workspace:toggle-ai"),
+        },
+        {
+            id: "view.knowledge",
+            title: "View: Knowledge Ocean",
+            description: "Open the knowledge base",
+            icon: BookOpen,
+            action: () => dispatch("workspace:goto-room", "knowledge-ocean"),
+        },
+
+        // Rooms
+        {
+            id: "room.code-chamber",
+            title: "Go to: Code Chamber",
+            description: "Switch to the code editor",
+            icon: Command,
+            shortcut: "Ctrl+1",
+            action: () => dispatch("workspace:goto-room", "code-chamber"),
+        },
+        {
+            id: "room.design-studio",
+            title: "Go to: Design Studio",
+            description: "Switch to the design tool",
+            icon: Command,
+            shortcut: "Ctrl+3",
+            action: () => dispatch("workspace:goto-room", "design-studio"),
+        },
+        {
+            id: "room.ai-studio",
+            title: "Go to: AI Studio",
+            description: "Switch to the AI studio",
+            icon: Command,
+            shortcut: "Ctrl+2",
+            action: () => dispatch("workspace:goto-room", "ai-studio"),
+        },
+        {
+            id: "room.task-board",
+            title: "Go to: Task Board",
+            description: "Switch to the task board",
+            icon: Command,
+            shortcut: "Ctrl+6",
+            action: () => dispatch("workspace:goto-room", "task-board"),
         },
 
         // Git Operations
@@ -83,80 +134,101 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
             title: "Git: Commit",
             description: "Commit staged changes",
             icon: GitBranch,
-            shortcut: "Ctrl+Enter",
-            action: () => console.log("Git commit")
+            action: () => dispatch("workspace:git-commit"),
         },
         {
             id: "git.push",
             title: "Git: Push",
             description: "Push commits to remote",
             icon: GitBranch,
-            action: () => console.log("Git push")
+            action: () => dispatch("workspace:git-push"),
+        },
+        {
+            id: "git.pull",
+            title: "Git: Pull",
+            description: "Pull latest changes",
+            icon: GitBranch,
+            action: () => dispatch("workspace:git-pull"),
         },
 
         // Development
         {
             id: "dev.run",
-            title: "Run Project",
+            title: "Run: Start Dev Server",
             description: "Start the development server",
-            icon: Zap,
+            icon: Play,
             shortcut: "F5",
-            action: () => console.log("Run project")
+            action: () => dispatch("workspace:toggle-terminal"),
         },
         {
-            id: "dev.debug",
-            title: "Start Debugging",
-            description: "Start debugging session",
-            icon: Zap,
-            shortcut: "F5",
-            action: () => console.log("Start debugging")
-        },
-
-        // Package Management
-        {
-            id: "package.install",
-            title: "Install Dependencies",
-            description: "Install npm/yarn dependencies",
-            icon: Package,
-            action: () => console.log("Install dependencies")
+            id: "dev.deploy",
+            title: "Deploy: Push to Cloud",
+            description: "Deploy the project to cloud",
+            icon: Cloud,
+            action: () => dispatch("workspace:deploy"),
         },
 
         // Settings
         {
             id: "settings.open",
-            title: "Open Settings",
-            description: "Open user settings",
+            title: "Preferences: Open Settings",
+            description: "Open workspace settings",
             icon: Settings,
-            action: () => console.log("Open settings")
-        }
+            action: () => router.push("/settings"),
+        },
     ]
 
-    const filteredCommands = commands.filter(cmd =>
-        cmd.title.toLowerCase().includes(value.toLowerCase()) ||
-        (cmd.description && cmd.description.toLowerCase().includes(value.toLowerCase()))
-    )
+    const filteredCommands = value
+        ? commands.filter(cmd =>
+            cmd.title.toLowerCase().includes(value.toLowerCase()) ||
+            (cmd.description && cmd.description.toLowerCase().includes(value.toLowerCase()))
+          )
+        : commands
 
     const handleSelect = (cmd: CommandItem) => {
         cmd.action()
         onOpenChange(false)
+        setValue("")
     }
 
-    useEffect(() => {
-        const down = (e: KeyboardEvent) => {
-            if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
-                if (e.key === "k" && e.shiftKey && (e.metaKey || e.ctrlKey)) {
-                    e.preventDefault()
-                    onOpenChange(!open)
-                }
-            }
-        }
+    const groups = [
+        { heading: "Files", prefix: "file." },
+        { heading: "View", prefix: "view." },
+        { heading: "Rooms", prefix: "room." },
+        { heading: "Git", prefix: "git." },
+        { heading: "Run & Deploy", prefix: "dev." },
+        { heading: "Settings", prefix: "settings." },
+    ]
 
-        document.addEventListener("keydown", down)
-        return () => document.removeEventListener("keydown", down)
-    }, [onOpenChange, open])
+    const renderItem = (cmd: CommandItem) => (
+        <CommandItem
+            key={cmd.id}
+            value={cmd.title}
+            onSelect={() => handleSelect(cmd)}
+            className="flex items-center gap-3 px-3 py-2"
+        >
+            {cmd.icon && <cmd.icon className="w-4 h-4 shrink-0 text-muted-foreground" />}
+            <div className="flex-1 min-w-0">
+                <div className="font-medium text-sm">{cmd.title}</div>
+                {cmd.description && (
+                    <div className="text-xs text-muted-foreground truncate">{cmd.description}</div>
+                )}
+            </div>
+            {cmd.shortcut && (
+                <Badge variant="outline" className="text-xs shrink-0">
+                    {cmd.shortcut}
+                </Badge>
+            )}
+        </CommandItem>
+    )
+
+    const handleOpenChange = (v: boolean) => {
+        onOpenChange(v)
+        if (!v) setValue("")
+    }
 
     return (
-        <CommandDialog open={open} onOpenChange={onOpenChange}>
+        <CommandDialog open={open} onOpenChange={handleOpenChange}>
             <CommandInput
                 placeholder="Type a command or search..."
                 value={value}
@@ -164,149 +236,18 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
             />
             <CommandList>
                 <CommandEmpty>No results found.</CommandEmpty>
-
-                {/* File Operations */}
-                <CommandGroup heading="File">
-                    {filteredCommands
-                        .filter(cmd => cmd.id.startsWith('file.'))
-                        .map((cmd) => (
-                            <CommandItem
-                                key={cmd.id}
-                                value={cmd.title}
-                                onSelect={() => handleSelect(cmd)}
-                                className="flex items-center gap-3 px-3 py-2"
-                            >
-                                {cmd.icon && <cmd.icon className="w-4 h-4" />}
-                                <div className="flex-1">
-                                    <div className="font-medium">{cmd.title}</div>
-                                    {cmd.description && (
-                                        <div className="text-xs text-muted-foreground">{cmd.description}</div>
-                                    )}
-                                </div>
-                                {cmd.shortcut && (
-                                    <Badge variant="outline" className="text-xs">
-                                        {cmd.shortcut}
-                                    </Badge>
-                                )}
-                            </CommandItem>
-                        ))}
-                </CommandGroup>
-
-                <CommandSeparator />
-
-                {/* View Operations */}
-                <CommandGroup heading="View">
-                    {filteredCommands
-                        .filter(cmd => cmd.id.startsWith('view.'))
-                        .map((cmd) => (
-                            <CommandItem
-                                key={cmd.id}
-                                value={cmd.title}
-                                onSelect={() => handleSelect(cmd)}
-                                className="flex items-center gap-3 px-3 py-2"
-                            >
-                                {cmd.icon && <cmd.icon className="w-4 h-4" />}
-                                <div className="flex-1">
-                                    <div className="font-medium">{cmd.title}</div>
-                                    {cmd.description && (
-                                        <div className="text-xs text-muted-foreground">{cmd.description}</div>
-                                    )}
-                                </div>
-                                {cmd.shortcut && (
-                                    <Badge variant="outline" className="text-xs">
-                                        {cmd.shortcut}
-                                    </Badge>
-                                )}
-                            </CommandItem>
-                        ))}
-                </CommandGroup>
-
-                <CommandSeparator />
-
-                {/* Git Operations */}
-                <CommandGroup heading="Git">
-                    {filteredCommands
-                        .filter(cmd => cmd.id.startsWith('git.'))
-                        .map((cmd) => (
-                            <CommandItem
-                                key={cmd.id}
-                                value={cmd.title}
-                                onSelect={() => handleSelect(cmd)}
-                                className="flex items-center gap-3 px-3 py-2"
-                            >
-                                {cmd.icon && <cmd.icon className="w-4 h-4" />}
-                                <div className="flex-1">
-                                    <div className="font-medium">{cmd.title}</div>
-                                    {cmd.description && (
-                                        <div className="text-xs text-muted-foreground">{cmd.description}</div>
-                                    )}
-                                </div>
-                                {cmd.shortcut && (
-                                    <Badge variant="outline" className="text-xs">
-                                        {cmd.shortcut}
-                                    </Badge>
-                                )}
-                            </CommandItem>
-                        ))}
-                </CommandGroup>
-
-                <CommandSeparator />
-
-                {/* Development */}
-                <CommandGroup heading="Development">
-                    {filteredCommands
-                        .filter(cmd => cmd.id.startsWith('dev.'))
-                        .map((cmd) => (
-                            <CommandItem
-                                key={cmd.id}
-                                value={cmd.title}
-                                onSelect={() => handleSelect(cmd)}
-                                className="flex items-center gap-3 px-3 py-2"
-                            >
-                                {cmd.icon && <cmd.icon className="w-4 h-4" />}
-                                <div className="flex-1">
-                                    <div className="font-medium">{cmd.title}</div>
-                                    {cmd.description && (
-                                        <div className="text-xs text-muted-foreground">{cmd.description}</div>
-                                    )}
-                                </div>
-                                {cmd.shortcut && (
-                                    <Badge variant="outline" className="text-xs">
-                                        {cmd.shortcut}
-                                    </Badge>
-                                )}
-                            </CommandItem>
-                        ))}
-                </CommandGroup>
-
-                <CommandSeparator />
-
-                {/* Other Commands */}
-                <CommandGroup heading="Other">
-                    {filteredCommands
-                        .filter(cmd => !cmd.id.includes('.'))
-                        .map((cmd) => (
-                            <CommandItem
-                                key={cmd.id}
-                                value={cmd.title}
-                                onSelect={() => handleSelect(cmd)}
-                                className="flex items-center gap-3 px-3 py-2"
-                            >
-                                {cmd.icon && <cmd.icon className="w-4 h-4" />}
-                                <div className="flex-1">
-                                    <div className="font-medium">{cmd.title}</div>
-                                    {cmd.description && (
-                                        <div className="text-xs text-muted-foreground">{cmd.description}</div>
-                                    )}
-                                </div>
-                                {cmd.shortcut && (
-                                    <Badge variant="outline" className="text-xs">
-                                        {cmd.shortcut}
-                                    </Badge>
-                                )}
-                            </CommandItem>
-                        ))}
-                </CommandGroup>
+                {groups.map((group, idx) => {
+                    const items = filteredCommands.filter(cmd => cmd.id.startsWith(group.prefix))
+                    if (items.length === 0) return null
+                    return (
+                        <div key={group.prefix}>
+                            {idx > 0 && <CommandSeparator />}
+                            <CommandGroup heading={group.heading}>
+                                {items.map(renderItem)}
+                            </CommandGroup>
+                        </div>
+                    )
+                })}
             </CommandList>
         </CommandDialog>
     )
