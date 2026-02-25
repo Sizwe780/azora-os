@@ -5,6 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { 
     Play, 
     Pause, 
@@ -27,15 +31,23 @@ import {
     BarChart3,
     Sparkles,
     CheckCircle2,
+    CloudRain,
+    TreePine,
+    Waves,
+    Wind,
+    Headphones,
+    Keyboard,
 } from "lucide-react";
 import Editor from "@monaco-editor/react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const AMBIENT_SOUNDS = [
-    { id: 'rain', name: 'Rainfall', icon: '🌧️', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' }, // Placeholder
-    { id: 'forest', name: 'Forest', icon: '🌲', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-    { id: 'cafe', name: 'Cafe', icon: '☕', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-    { id: 'waves', name: 'Waves', icon: '🌊', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3' },
+    { id: 'rain', name: 'Rain', Icon: CloudRain, url: 'https://assets.mixkit.co/sfx/preview/mixkit-light-rain-loop-2393.mp3' },
+    { id: 'forest', name: 'Forest', Icon: TreePine, url: '' },
+    { id: 'cafe', name: 'Cafe', Icon: Coffee, url: '' },
+    { id: 'ocean', name: 'Ocean', Icon: Waves, url: '' },
+    { id: 'whitenoise', name: 'White Noise', Icon: Wind, url: '' },
+    { id: 'binaural', name: 'Binaural', Icon: Headphones, url: '' },
 ];
 
 const FOCUS_MODES = [
@@ -63,8 +75,13 @@ export default function DeepFocus() {
     const [distractions, setDistractions] = useState(0);
     const [sessionLog, setSessionLog] = useState<{ date: string; minutes: number; mode: string }[]>([]);
     const [aiInsights, setAiInsights] = useState<string[]>([]);
+    const [breakCount, setBreakCount] = useState(0);
+    const [longestSession, setLongestSession] = useState(0); // minutes
+    const [dailyGoalText, setDailyGoalText] = useState('');
+    const [dailyGoalInput, setDailyGoalInput] = useState('');
 
     const timerRef = useRef<NodeJS.Timeout | null>(null);
+    const audioRef = useRef<HTMLAudioElement | null>(null);
 
     // Load persisted data from localStorage
     useEffect(() => {
@@ -94,6 +111,14 @@ export default function DeepFocus() {
                 }
                 setStreak(s)
             }
+            // Load deep-focus-stats
+            const statsRaw = localStorage.getItem("deep-focus-stats")
+            if (statsRaw) {
+                const stats = JSON.parse(statsRaw)
+                if (stats.breakCount) setBreakCount(stats.breakCount)
+                if (stats.longestSession) setLongestSession(stats.longestSession)
+                if (stats.dailyGoalText) { setDailyGoalText(stats.dailyGoalText); setDailyGoalInput(stats.dailyGoalText) }
+            }
         } catch { /* ignore */ }
     }, [])
 
@@ -109,8 +134,17 @@ export default function DeepFocus() {
                 dailyGoal,
                 lastSession: new Date().toISOString(),
             }))
+            const today = new Date().toISOString().split('T')[0]
+            const sessionsToday = sessionLog.filter(s => s.date === today).length
+            localStorage.setItem("deep-focus-stats", JSON.stringify({
+                sessionsToday,
+                totalFocusTime,
+                longestSession,
+                breakCount,
+                dailyGoalText,
+            }))
         } catch { /* ignore */ }
-    }, [completedSessions, totalFocusTime, mode, code, sessionLog, dailyGoal])
+    }, [completedSessions, totalFocusTime, mode, code, sessionLog, dailyGoal, longestSession, breakCount, dailyGoalText])
 
     useEffect(() => {
         persistState()
@@ -125,11 +159,16 @@ export default function DeepFocus() {
         } else if (timeLeft === 0) {
             setIsActive(false);
             if (timerRef.current) clearInterval(timerRef.current);
+            // Track break completions
+            if (mode === 'short' || mode === 'long') {
+                setBreakCount(prev => prev + 1);
+            }
             // Session completed
             if (mode === 'pomodoro' || mode === 'deep') {
                 setCompletedSessions((prev) => prev + 1);
                 const sessionMinutes = FOCUS_MODES.find(m => m.id === mode)?.duration ? Math.round((FOCUS_MODES.find(m => m.id === mode)?.duration || 0) / 60) : 25
                 setTodayMinutes(prev => prev + sessionMinutes)
+                setLongestSession(prev => Math.max(prev, sessionMinutes))
                 setSessionLog(prev => [...prev, {
                     date: new Date().toISOString().split('T')[0],
                     minutes: sessionMinutes,
@@ -184,6 +223,37 @@ export default function DeepFocus() {
         const m = FOCUS_MODES.find(f => f.id === newMode);
         setTimeLeft(m?.duration || 25 * 60);
     };
+
+    // Audio playback — play only when a sound with a URL is selected
+    useEffect(() => {
+        const sound = AMBIENT_SOUNDS.find(s => s.id === activeSound)
+        if (sound && sound.url) {
+            if (!audioRef.current) {
+                audioRef.current = new Audio(sound.url)
+                audioRef.current.loop = true
+            } else {
+                audioRef.current.src = sound.url
+            }
+            audioRef.current.volume = isMuted ? 0 : volume / 100
+            audioRef.current.play().catch(() => {})
+        } else {
+            audioRef.current?.pause()
+        }
+        return () => { audioRef.current?.pause() }
+    }, [activeSound, isMuted, volume])
+
+    // Keyboard shortcuts: Space = toggle, R = reset, B = start break
+    useEffect(() => {
+        const onKey = (e: KeyboardEvent) => {
+            const tag = (e.target as HTMLElement).tagName
+            if (tag === 'INPUT' || tag === 'TEXTAREA') return
+            if (e.code === 'Space') { e.preventDefault(); setIsActive(a => !a) }
+            if (e.key === 'r' || e.key === 'R') { setIsActive(false); const cm = FOCUS_MODES.find(m => m.id === mode); setTimeLeft(cm?.duration || 25 * 60) }
+            if (e.key === 'b' || e.key === 'B') { switchMode('short') }
+        }
+        window.addEventListener('keydown', onKey)
+        return () => window.removeEventListener('keydown', onKey)
+    }, [mode])
 
     return (
         <div className={`h-full flex flex-col transition-colors duration-700 ${isZenMode ? 'bg-slate-950' : 'bg-background'}`}> 
@@ -262,6 +332,10 @@ export default function DeepFocus() {
                         > 
                             <div className="p-8 flex flex-col items-center justify-center flex-1 space-y-8"> 
                                 {/* Timer Circle */} 
+                                <div className="flex flex-col items-center gap-1">
+                                    <span className="text-xs font-semibold uppercase tracking-widest text-primary/70">
+                                        {FOCUS_MODES.find(m => m.id === mode)?.name || 'Focus'}
+                                    </span>
                                 <div className="relative w-48 h-48 flex items-center justify-center"> 
                                     <svg className="w-full h-full -rotate-90"> 
                                         <circle 
@@ -294,7 +368,8 @@ export default function DeepFocus() {
                                             {isActive ? 'Focusing' : 'Paused'} 
                                         </span> 
                                     </div> 
-                                </div> 
+                                </div>
+                                </div>
 
                                 {/* Controls */} 
                                 <div className="flex items-center gap-4"> 
@@ -329,19 +404,25 @@ export default function DeepFocus() {
                                         <Music className="w-3 h-3" /> 
                                         Ambient Soundscape 
                                     </h3> 
-                                    <div className="grid grid-cols-2 gap-2"> 
-                                        {AMBIENT_SOUNDS.map((sound) => ( 
+                                    <div className="grid grid-cols-3 gap-2"> 
+                                        {AMBIENT_SOUNDS.map(({ id, name, Icon }) => ( 
                                             <button 
-                                                key={sound.id} 
-                                                onClick={() => setActiveSound(activeSound === sound.id ? null : sound.id)} 
-                                                className={`p-3 rounded-xl border text-left transition-all ${
-                                                    activeSound === sound.id  
+                                                key={id} 
+                                                onClick={() => setActiveSound(activeSound === id ? null : id)} 
+                                                className={`p-2 rounded-xl border text-left transition-all relative ${
+                                                    activeSound === id  
                                                     ? 'bg-primary/10 border-primary text-primary'  
                                                     : 'bg-background hover:border-primary/30' 
                                                 }`} 
                                             > 
-                                                <div className="text-xl mb-1">{sound.icon}</div> 
-                                                <div className="text-[10px] font-medium">{sound.name}</div> 
+                                                {activeSound === id && (
+                                                    <span className="absolute top-1.5 right-1.5 flex h-2 w-2">
+                                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                                                        <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
+                                                    </span>
+                                                )}
+                                                <Icon className="w-4 h-4 mb-1" /> 
+                                                <div className="text-[10px] font-medium leading-tight">{name}</div> 
                                             </button> 
                                         ))} 
                                     </div> 
@@ -356,6 +437,21 @@ export default function DeepFocus() {
                                         </h3>
                                         <span className="text-xs text-muted-foreground">{todayMinutes}/{dailyGoal}m</span>
                                     </div>
+                                    {dailyGoalText && (
+                                        <p className="text-xs text-primary/80 truncate">{dailyGoalText}</p>
+                                    )}
+                                    <form
+                                        onSubmit={e => { e.preventDefault(); setDailyGoalText(dailyGoalInput) }}
+                                        className="flex gap-1"
+                                    >
+                                        <Input
+                                            value={dailyGoalInput}
+                                            onChange={e => setDailyGoalInput(e.target.value)}
+                                            placeholder="Set today's goal…"
+                                            className="h-7 text-xs"
+                                        />
+                                        <Button type="submit" size="sm" variant="outline" className="h-7 px-2 text-xs shrink-0">Set</Button>
+                                    </form>
                                     <Progress value={Math.min(100, Math.round(todayMinutes / dailyGoal * 100))} className="h-2" />
                                     {todayMinutes >= dailyGoal && (
                                         <div className="flex items-center gap-1.5 text-emerald-400 text-xs">
@@ -392,7 +488,46 @@ export default function DeepFocus() {
                                             )
                                         })}
                                     </div>
-                                </div> 
+                                </div>
+
+                                {/* Session Statistics */}
+                                <div className="w-full space-y-2 pt-2">
+                                    <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                                        <BarChart3 className="w-3 h-3" />
+                                        Session Stats
+                                    </h3>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <div className="bg-muted/10 rounded-lg p-2 border">
+                                            <div className="text-[10px] text-muted-foreground mb-0.5">Today</div>
+                                            <div className="text-sm font-bold">{sessionLog.filter(s => s.date === new Date().toISOString().split('T')[0]).length} <span className="text-[10px] font-normal text-muted-foreground">sessions</span></div>
+                                        </div>
+                                        <div className="bg-muted/10 rounded-lg p-2 border">
+                                            <div className="text-[10px] text-muted-foreground mb-0.5">Total Focus</div>
+                                            <div className="text-sm font-bold">{String(Math.floor(totalFocusTime / 3600)).padStart(2,'0')}:{String(Math.floor((totalFocusTime % 3600) / 60)).padStart(2,'0')}</div>
+                                        </div>
+                                        <div className="bg-muted/10 rounded-lg p-2 border">
+                                            <div className="text-[10px] text-muted-foreground mb-0.5">Longest</div>
+                                            <div className="text-sm font-bold">{longestSession}<span className="text-[10px] font-normal text-muted-foreground">m</span></div>
+                                        </div>
+                                        <div className="bg-muted/10 rounded-lg p-2 border">
+                                            <div className="text-[10px] text-muted-foreground mb-0.5">Breaks</div>
+                                            <div className="text-sm font-bold">{breakCount}</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Keyboard Shortcuts Legend */}
+                                <div className="w-full pt-2 pb-4">
+                                    <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2 mb-2">
+                                        <Keyboard className="w-3 h-3" />
+                                        Shortcuts
+                                    </h3>
+                                    <div className="flex flex-wrap gap-2 text-[10px] text-muted-foreground">
+                                        <span className="flex items-center gap-1"><kbd className="px-1.5 py-0.5 rounded bg-muted border text-[9px] font-mono">Space</kbd> toggle</span>
+                                        <span className="flex items-center gap-1"><kbd className="px-1.5 py-0.5 rounded bg-muted border text-[9px] font-mono">R</kbd> reset</span>
+                                        <span className="flex items-center gap-1"><kbd className="px-1.5 py-0.5 rounded bg-muted border text-[9px] font-mono">B</kbd> break</span>
+                                    </div>
+                                </div>
                             </div> 
                         </motion.div> 
                     )} 
@@ -422,7 +557,7 @@ export default function DeepFocus() {
                                             <TrendingUp className="w-4 h-4 text-emerald-500" />
                                             <span className="text-xs font-semibold text-muted-foreground">Total Focus</span>
                                         </div>
-                                        <div className="text-2xl font-bold">{Math.floor(totalFocusTime / 3600)}h <span className="text-sm font-normal text-muted-foreground">{Math.floor((totalFocusTime % 3600) / 60)}m</span></div>
+                                        <div className="text-2xl font-bold font-mono">{String(Math.floor(totalFocusTime / 3600)).padStart(2,'0')}:{String(Math.floor((totalFocusTime % 3600) / 60)).padStart(2,'0')}</div>
                                     </div>
                                     <div className="bg-muted/10 rounded-lg p-3 border">
                                         <div className="flex items-center gap-2 mb-1">
@@ -434,9 +569,23 @@ export default function DeepFocus() {
                                     <div className="bg-muted/10 rounded-lg p-3 border">
                                         <div className="flex items-center gap-2 mb-1">
                                             <Target className="w-4 h-4 text-purple-500" />
-                                            <span className="text-xs font-semibold text-muted-foreground">Avg Session</span>
+                                            <span className="text-xs font-semibold text-muted-foreground">Longest</span>
                                         </div>
-                                        <div className="text-2xl font-bold">{completedSessions > 0 ? Math.round(totalFocusTime / completedSessions / 60) : 0}<span className="text-sm font-normal text-muted-foreground">m</span></div>
+                                        <div className="text-2xl font-bold">{longestSession}<span className="text-sm font-normal text-muted-foreground">m</span></div>
+                                    </div>
+                                    <div className="bg-muted/10 rounded-lg p-3 border col-span-2">
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <Calendar className="w-4 h-4 text-sky-500" />
+                                            <span className="text-xs font-semibold text-muted-foreground">Sessions Today</span>
+                                        </div>
+                                        <div className="text-2xl font-bold">{sessionLog.filter(s => s.date === new Date().toISOString().split('T')[0]).length}</div>
+                                    </div>
+                                    <div className="bg-muted/10 rounded-lg p-3 border col-span-2">
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <Coffee className="w-4 h-4 text-amber-500" />
+                                            <span className="text-xs font-semibold text-muted-foreground">Break Count</span>
+                                        </div>
+                                        <div className="text-2xl font-bold">{breakCount}</div>
                                     </div>
                                 </div>
                                 {/* 30-day activity chart */}
@@ -512,13 +661,13 @@ export default function DeepFocus() {
                             </button> 
                             <div className="w-px h-4 bg-white/10" /> 
                             <div className="flex gap-4"> 
-                                {AMBIENT_SOUNDS.map(s => ( 
+                                {AMBIENT_SOUNDS.map(({ id, Icon }) => ( 
                                     <button  
-                                        key={s.id} 
-                                        onClick={() => setActiveSound(activeSound === s.id ? null : s.id)} 
-                                        className={`text-xl grayscale hover:grayscale-0 transition-all ${activeSound === s.id ? 'grayscale-0 scale-110' : 'opacity-50'}`} 
+                                        key={id} 
+                                        onClick={() => setActiveSound(activeSound === id ? null : id)} 
+                                        className={`transition-all ${activeSound === id ? 'text-primary scale-110' : 'text-white/50 hover:text-white'}`} 
                                     > 
-                                        {s.icon} 
+                                        <Icon className="w-5 h-5" />
                                     </button> 
                                 ))} 
                             </div> 
