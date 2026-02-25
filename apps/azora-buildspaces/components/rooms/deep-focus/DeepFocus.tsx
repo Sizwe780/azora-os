@@ -7,8 +7,6 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { 
     Play, 
     Pause, 
@@ -208,6 +206,11 @@ export default function DeepFocus() {
         const secs = seconds % 60;
         return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     };
+
+    const formatHHMM = (seconds: number) =>
+        `${String(Math.floor(seconds / 3600)).padStart(2, '0')}:${String(Math.floor((seconds % 3600) / 60)).padStart(2, '0')}`;
+
+    const todayStr = new Date().toISOString().split('T')[0];
 
     const toggleTimer = () => setIsActive(!isActive);
     
@@ -499,11 +502,11 @@ export default function DeepFocus() {
                                     <div className="grid grid-cols-2 gap-2">
                                         <div className="bg-muted/10 rounded-lg p-2 border">
                                             <div className="text-[10px] text-muted-foreground mb-0.5">Today</div>
-                                            <div className="text-sm font-bold">{sessionLog.filter(s => s.date === new Date().toISOString().split('T')[0]).length} <span className="text-[10px] font-normal text-muted-foreground">sessions</span></div>
+                                            <div className="text-sm font-bold">{sessionLog.filter(s => s.date === todayStr).length} <span className="text-[10px] font-normal text-muted-foreground">sessions</span></div>
                                         </div>
                                         <div className="bg-muted/10 rounded-lg p-2 border">
                                             <div className="text-[10px] text-muted-foreground mb-0.5">Total Focus</div>
-                                            <div className="text-sm font-bold">{String(Math.floor(totalFocusTime / 3600)).padStart(2,'0')}:{String(Math.floor((totalFocusTime % 3600) / 60)).padStart(2,'0')}</div>
+                                            <div className="text-sm font-bold">{formatHHMM(totalFocusTime)}</div>
                                         </div>
                                         <div className="bg-muted/10 rounded-lg p-2 border">
                                             <div className="text-[10px] text-muted-foreground mb-0.5">Longest</div>
@@ -557,7 +560,7 @@ export default function DeepFocus() {
                                             <TrendingUp className="w-4 h-4 text-emerald-500" />
                                             <span className="text-xs font-semibold text-muted-foreground">Total Focus</span>
                                         </div>
-                                        <div className="text-2xl font-bold font-mono">{String(Math.floor(totalFocusTime / 3600)).padStart(2,'0')}:{String(Math.floor((totalFocusTime % 3600) / 60)).padStart(2,'0')}</div>
+                                        <div className="text-2xl font-bold font-mono">{formatHHMM(totalFocusTime)}</div>
                                     </div>
                                     <div className="bg-muted/10 rounded-lg p-3 border">
                                         <div className="flex items-center gap-2 mb-1">
@@ -578,7 +581,7 @@ export default function DeepFocus() {
                                             <Calendar className="w-4 h-4 text-sky-500" />
                                             <span className="text-xs font-semibold text-muted-foreground">Sessions Today</span>
                                         </div>
-                                        <div className="text-2xl font-bold">{sessionLog.filter(s => s.date === new Date().toISOString().split('T')[0]).length}</div>
+                                        <div className="text-2xl font-bold">{sessionLog.filter(s => s.date === todayStr).length}</div>
                                     </div>
                                     <div className="bg-muted/10 rounded-lg p-3 border col-span-2">
                                         <div className="flex items-center gap-2 mb-1">
