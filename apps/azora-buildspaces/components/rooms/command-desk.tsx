@@ -39,6 +39,9 @@ import {
   ExternalLink,
   Search,
   Download,
+  Pin,
+  PinOff,
+  Rocket,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { motion, AnimatePresence } from "framer-motion"
@@ -49,6 +52,13 @@ import { useWorkspace, Task } from "@/lib/contexts/workspace-context"
 import { useRoomEvents } from "@/lib/hooks/use-room-events"
 
 /* ───────── types ───────── */
+interface CommandHistoryItem {
+  id: string
+  command: string
+  timestamp: Date
+  status: 'success' | 'error'
+}
+
 interface Message {
   id: string
   role: "user" | "assistant" | "system"
@@ -92,6 +102,15 @@ const QUICK_ACTIONS = [
   { icon: TerminalIcon, label: "CLI Command", prompt: "What's the terminal command to " },
   { icon: GitBranch, label: "Git Help", prompt: "Help me with git: " },
   { icon: Lightbulb, label: "Explain", prompt: "Explain how " },
+]
+
+/* ───────── script templates ───────── */
+const SCRIPT_TEMPLATES = [
+  { label: "npm install", command: "npm install" },
+  { label: "npm run build", command: "npm run build" },
+  { label: "git status", command: "git status" },
+  { label: "docker ps", command: "docker ps" },
+  { label: "npm run test", command: "npm run test" },
 ]
 
 /* ───────── slash commands ───────── */
@@ -249,6 +268,14 @@ function ThinkingIndicator({ agent }: { agent?: string }) {
   )
 }
 
+/* ───────── output line syntax highlighting ───────── */
+function getOutputLineClass(line: string): string {
+  if (/^(error|Error|ERROR)/.test(line) || /error:/i.test(line.slice(0, 20))) return "text-red-400"
+  if (/^(warning|Warning|WARN)/i.test(line)) return "text-amber-400"
+  if (/^(success|Success|SUCCESS|✓)/i.test(line) || line.startsWith("✓")) return "text-emerald-400"
+  return "text-zinc-300"
+}
+
 /* ───────── message bubble ───────── */
 function MessageBubble({ message, onRate }: { message: Message; onRate: (id: string, rating: "up" | "down") => void }) {
   const isUser = message.role === "user"
@@ -304,8 +331,10 @@ function MessageBubble({ message, onRate }: { message: Message; onRate: (id: str
 
           {/* Text */}
           {text && (
-            <div className="text-[14px] leading-[1.7] text-zinc-300 whitespace-pre-wrap">
-              {text}
+            <div className="text-[14px] leading-[1.7] whitespace-pre-wrap">
+              {text.split("\n").map((line, i) => (
+                <span key={i} className={`block ${getOutputLineClass(line)}`}>{line || "\u00a0"}</span>
+              ))}
             </div>
           )}
 
@@ -390,6 +419,15 @@ export function CommandDesk() {
   const [showModelPicker, setShowModelPicker] = useState(false)
   const [showHistory, setShowHistory] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
+  // Pinned commands (upgrade 1)
+  const [pinnedCommands, setPinnedCommands] = useState<Set<string>>(new Set())
+  // Command history (upgrade 2)
+  const [commandHistory, setCommandHistory] = useState<CommandHistoryItem[]>([])
+  const [historySearch, setHistorySearch] = useState("")
+  const [sidebarTab, setSidebarTab] = useState<'chats' | 'history'>('chats')
+  // Deploy button (upgrade 5)
+  const [isDeploying, setIsDeploying] = useState(false)
+  const [deployToast, setDeployToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
 
@@ -470,6 +508,11 @@ export function CommandDesk() {
 
     setMessages((prev) => [...prev, userMsg])
     const currentInput = contentToSend
+    // Track command history (upgrade 2)
+    const historyId = crypto.randomUUID()
+    setCommandHistory((prev) => [{
+      id: historyId, command: input.trim(), timestamp: new Date(), status: 'success' as const,
+    }, ...prev].slice(0, 50))
     setInput("")
     setIsLoading(true)
     setIsStreaming(true)
@@ -582,6 +625,7 @@ export function CommandDesk() {
               : m
           )
         )
+        setCommandHistory((prev) => prev.map((h) => h.id === historyId ? { ...h, status: 'error' as const } : h))
       }
     } finally {
       setIsLoading(false)
@@ -620,6 +664,25 @@ export function CommandDesk() {
   const handleStop = () => {
     setIsLoading(false)
     setIsStreaming(false)
+  }
+
+  // Deploy handler (upgrade 5)
+  const handleDeploy = async () => {
+    setIsDeploying(true)
+    try {
+      const res = await fetch("/api/deploy/trigger", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ environment: "production" }),
+      })
+      if (!res.ok) throw new Error("Deploy failed")
+      setDeployToast({ message: "Deployment triggered! ✓", type: "success" })
+    } catch {
+      setDeployToast({ message: "Deploy failed", type: "error" })
+    } finally {
+      setIsDeploying(false)
+      setTimeout(() => setDeployToast(null), 4000)
+    }
   }
 
   // Export conversation (industry-leading: ChatGPT, Claude all have this)
@@ -671,6 +734,24 @@ export function CommandDesk() {
   /* ─── render ─── */
   return (
     <div className="flex h-full bg-zinc-950">
+      {/* Deploy Toast (upgrade 5) */}
+      <AnimatePresence>
+        {deployToast && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className={`fixed top-4 right-4 z-50 px-4 py-2.5 rounded-lg text-sm font-medium shadow-lg ${
+              deployToast.type === "success"
+                ? "bg-emerald-900/90 border border-emerald-700 text-emerald-200"
+                : "bg-red-900/90 border border-red-700 text-red-200"
+            }`}
+          >
+            {deployToast.message}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* ── History Sidebar ── */}
       <AnimatePresence>
         {showHistory && (
@@ -680,35 +761,114 @@ export function CommandDesk() {
             exit={{ width: 0, opacity: 0 }}
             className="border-r border-zinc-800 bg-zinc-900/50 flex flex-col overflow-hidden"
           >
-            <div className="p-4 border-b border-zinc-800">
+            <div className="p-3 border-b border-zinc-800 space-y-2">
               <Button onClick={handleNewChat} className="w-full gap-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-200" size="sm">
                 <Plus className="w-4 h-4" />
                 New Chat
               </Button>
+              {/* Sidebar tabs (upgrade 2) */}
+              <div className="flex gap-1">
+                <button
+                  onClick={() => setSidebarTab("chats")}
+                  className={`flex-1 text-xs py-1.5 rounded-md transition-colors ${sidebarTab === "chats" ? "bg-zinc-700 text-zinc-200" : "text-zinc-500 hover:text-zinc-300"}`}
+                >
+                  Chats
+                </button>
+                <button
+                  onClick={() => setSidebarTab("history")}
+                  className={`flex-1 text-xs py-1.5 rounded-md transition-colors ${sidebarTab === "history" ? "bg-zinc-700 text-zinc-200" : "text-zinc-500 hover:text-zinc-300"}`}
+                >
+                  History
+                </button>
+              </div>
             </div>
-            <ScrollArea className="flex-1">
-              <div className="p-2 space-y-1">
-                {sessions.map((session) => (
+
+            {/* Chats tab */}
+            {sidebarTab === "chats" && (
+              <ScrollArea className="flex-1">
+                <div className="p-2 space-y-1">
+                  {sessions.map((session) => (
+                    <button
+                      key={session.id}
+                      onClick={() => {
+                        setSessionId(session.id)
+                        setShowHistory(false)
+                      }}
+                      className={`w-full text-left p-3 rounded-lg text-sm transition-colors hover:bg-zinc-800/50 ${
+                        sessionId === session.id ? "bg-zinc-800/70 text-white" : "text-zinc-400"
+                      }`}
+                    >
+                      <div className="font-medium truncate text-zinc-300">{session.title || "Untitled Chat"}</div>
+                      <div className="text-[11px] text-zinc-600 mt-1 truncate">{session.lastMessage}</div>
+                      <div className="text-[10px] text-zinc-700 mt-1">{session.messageCount} messages</div>
+                    </button>
+                  ))}
+                  {sessions.length === 0 && (
+                    <div className="text-center py-8 text-zinc-600 text-sm">No chat history yet</div>
+                  )}
+                </div>
+              </ScrollArea>
+            )}
+
+            {/* History tab (upgrade 2) */}
+            {sidebarTab === "history" && (
+              <div className="flex-1 flex flex-col overflow-hidden">
+                <div className="p-2">
+                  <div className="relative">
+                    <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-500" />
+                    <input
+                      value={historySearch}
+                      onChange={(e) => setHistorySearch(e.target.value)}
+                      placeholder="Search history..."
+                      className="w-full pl-8 pr-3 py-1.5 text-xs bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-300 placeholder:text-zinc-600 focus:outline-none focus:border-zinc-500"
+                    />
+                  </div>
+                </div>
+                <ScrollArea className="flex-1">
+                  <div className="p-2 space-y-1">
+                    {commandHistory
+                      .filter((h) => !historySearch || h.command.toLowerCase().includes(historySearch.toLowerCase()))
+                      .map((item) => (
+                        <button
+                          key={item.id}
+                          onClick={() => setInput(item.command)}
+                          className="w-full text-left p-2.5 rounded-lg text-xs transition-colors hover:bg-zinc-800/50"
+                        >
+                          <div className="flex items-center gap-2">
+                            <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${item.status === "success" ? "bg-emerald-500" : "bg-red-500"}`} />
+                            <span className="text-zinc-300 truncate flex-1">{item.command}</span>
+                          </div>
+                          <div className="text-zinc-600 mt-1 pl-3.5">
+                            {item.timestamp.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                          </div>
+                        </button>
+                      ))}
+                    {commandHistory.length === 0 && (
+                      <div className="text-center py-8 text-zinc-600 text-sm">No command history yet</div>
+                    )}
+                  </div>
+                </ScrollArea>
+              </div>
+            )}
+
+            {/* Templates section (upgrade 4) */}
+            <div className="border-t border-zinc-800 p-3">
+              <div className="flex items-center gap-1.5 mb-2">
+                <Wand2 className="w-3.5 h-3.5 text-purple-400" />
+                <span className="text-[11px] uppercase tracking-wider text-zinc-500 font-medium">Templates</span>
+              </div>
+              <div className="space-y-0.5">
+                {SCRIPT_TEMPLATES.map((tpl) => (
                   <button
-                    key={session.id}
-                    onClick={() => {
-                      setSessionId(session.id)
-                      setShowHistory(false)
-                    }}
-                    className={`w-full text-left p-3 rounded-lg text-sm transition-colors hover:bg-zinc-800/50 ${
-                      sessionId === session.id ? "bg-zinc-800/70 text-white" : "text-zinc-400"
-                    }`}
+                    key={tpl.label}
+                    onClick={() => setInput(tpl.command)}
+                    className="w-full text-left px-2.5 py-1.5 rounded-md text-xs text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50 transition-colors font-mono"
                   >
-                    <div className="font-medium truncate text-zinc-300">{session.title || "Untitled Chat"}</div>
-                    <div className="text-[11px] text-zinc-600 mt-1 truncate">{session.lastMessage}</div>
-                    <div className="text-[10px] text-zinc-700 mt-1">{session.messageCount} messages</div>
+                    {tpl.label}
                   </button>
                 ))}
-                {sessions.length === 0 && (
-                  <div className="text-center py-8 text-zinc-600 text-sm">No chat history yet</div>
-                )}
               </div>
-            </ScrollArea>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -784,6 +944,16 @@ export function CommandDesk() {
           </div>
 
           <div className="flex items-center gap-1">
+            {/* Deploy Button (upgrade 5) */}
+            <Button
+              onClick={handleDeploy}
+              disabled={isDeploying}
+              size="sm"
+              className="h-7 px-3 gap-1.5 bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-medium rounded-lg disabled:opacity-50 mr-2"
+            >
+              {isDeploying ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Rocket className="w-3.5 h-3.5" />}
+              Deploy
+            </Button>
             {/* Token count display */}
             {estimatedTokens > 0 && (
               <span className="text-[10px] text-zinc-600 font-mono mr-2">
@@ -888,20 +1058,71 @@ export function CommandDesk() {
                     exit={{ opacity: 0, y: 4 }}
                     className="absolute bottom-full left-0 right-0 mb-2 bg-zinc-900 border border-zinc-700 rounded-xl shadow-2xl z-50 p-2 max-h-64 overflow-y-auto"
                   >
+                    {/* Pinned commands section (upgrade 1) */}
+                    {(() => {
+                      const pinned = SLASH_COMMANDS.filter(
+                        (c) => pinnedCommands.has(c.name) && c.name.startsWith(input.trim())
+                      )
+                      return pinned.length > 0 ? (
+                        <div>
+                          <div className="px-2 py-1 text-[10px] uppercase tracking-wider text-purple-400 font-medium">Pinned</div>
+                          {pinned.map((cmd) => (
+                            <div key={`pinned-${cmd.name}`} className="flex items-center group/cmd rounded-lg hover:bg-zinc-800/50">
+                              <button
+                                onClick={() => setInput(cmd.name + " ")}
+                                className="flex-1 flex items-center gap-3 p-2.5 text-left text-zinc-400"
+                              >
+                                <cmd.icon className="w-4 h-4 text-purple-400 flex-shrink-0" />
+                                <div className="flex-1 min-w-0">
+                                  <div className="text-sm font-medium text-zinc-200">{cmd.name}</div>
+                                  <div className="text-[11px] text-zinc-500">{cmd.description}</div>
+                                </div>
+                              </button>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  setPinnedCommands((prev) => { const n = new Set(prev); n.delete(cmd.name); return n })
+                                }}
+                                className="p-2 text-purple-400 hover:text-zinc-300 opacity-0 group-hover/cmd:opacity-100 transition-opacity"
+                                title="Unpin"
+                              >
+                                <PinOff className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          ))}
+                          <div className="border-t border-zinc-700/50 my-1" />
+                        </div>
+                      ) : null
+                    })()}
                     {SLASH_COMMANDS.filter((cmd) =>
                       cmd.name.startsWith(input.trim())
                     ).map((cmd) => (
-                      <button
-                        key={cmd.name}
-                        onClick={() => setInput(cmd.name + " ")}
-                        className="w-full flex items-center gap-3 p-2.5 rounded-lg text-left transition-colors hover:bg-zinc-800/50 text-zinc-400"
-                      >
-                        <cmd.icon className="w-4 h-4 text-purple-400 flex-shrink-0" />
-                        <div className="flex-1 min-w-0">
-                          <div className="text-sm font-medium text-zinc-200">{cmd.name}</div>
-                          <div className="text-[11px] text-zinc-500">{cmd.description}</div>
-                        </div>
-                      </button>
+                      <div key={cmd.name} className="flex items-center group/cmd rounded-lg hover:bg-zinc-800/50">
+                        <button
+                          onClick={() => setInput(cmd.name + " ")}
+                          className="flex-1 flex items-center gap-3 p-2.5 text-left text-zinc-400"
+                        >
+                          <cmd.icon className="w-4 h-4 text-purple-400 flex-shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <div className="text-sm font-medium text-zinc-200">{cmd.name}</div>
+                            <div className="text-[11px] text-zinc-500">{cmd.description}</div>
+                          </div>
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setPinnedCommands((prev) => {
+                              const n = new Set(prev)
+                              n.has(cmd.name) ? n.delete(cmd.name) : n.add(cmd.name)
+                              return n
+                            })
+                          }}
+                          className={`p-2 transition-opacity ${pinnedCommands.has(cmd.name) ? "text-purple-400 opacity-100" : "text-zinc-500 hover:text-zinc-300 opacity-0 group-hover/cmd:opacity-100"}`}
+                          title={pinnedCommands.has(cmd.name) ? "Unpin" : "Pin"}
+                        >
+                          {pinnedCommands.has(cmd.name) ? <PinOff className="w-3.5 h-3.5" /> : <Pin className="w-3.5 h-3.5" />}
+                        </button>
+                      </div>
                     ))}
                     {SLASH_COMMANDS.filter((cmd) => cmd.name.startsWith(input.trim())).length === 0 && (
                       <div className="text-center py-3 text-zinc-600 text-xs">No matching commands</div>
