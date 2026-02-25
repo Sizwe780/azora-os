@@ -222,8 +222,13 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
         </CommandItem>
     )
 
+    const handleOpenChange = (v: boolean) => {
+        onOpenChange(v)
+        if (!v) setValue("")
+    }
+
     return (
-        <CommandDialog open={open} onOpenChange={(v) => { onOpenChange(v); if (!v) setValue("") }}>
+        <CommandDialog open={open} onOpenChange={handleOpenChange}>
             <CommandInput
                 placeholder="Type a command or search..."
                 value={value}

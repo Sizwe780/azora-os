@@ -118,8 +118,8 @@ function WorkspaceContent() {
     }
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Command Palette: Ctrl+Shift+P or Ctrl+K
-      if ((e.key === 'P' && e.ctrlKey && e.shiftKey) || (e.key === 'k' && e.ctrlKey)) {
+      // Command Palette: Ctrl+Shift+P or Ctrl+K (without shift)
+      if ((e.key === 'P' && e.ctrlKey && e.shiftKey) || (e.key === 'k' && e.ctrlKey && !e.shiftKey)) {
         e.preventDefault()
         setCommandPaletteOpen(true)
       }

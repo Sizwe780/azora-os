@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { GitBranch, AlertCircle, CheckCircle2, Bell, Wifi, Cpu, Bot, Sparkles } from "lucide-react"
 import { motion } from "framer-motion"
 
@@ -10,8 +11,17 @@ interface StatusBarProps {
 }
 
 export function StatusBar({ activeFile, agentCount, activeAgents }: StatusBarProps) {
+  const [cpuUsage, setCpuUsage] = useState(45)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCpuUsage(prev => Math.max(20, Math.min(90, prev + (Math.random() - 0.5) * 8)))
+    }, 5000)
+    return () => clearInterval(interval)
+  }, [])
+
   return (
-    <div className="h-6 bg-primary/5 border-t border-border flex items-center justify-between px-3 text-xs shrink-0">
+    <div className="h-6 bg-primary/5 border-t border-border flex items-center justify-between px-3 text-xs shrink-0 select-none">
       {/* Left Section */}
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-1.5 text-primary">
@@ -58,7 +68,7 @@ export function StatusBar({ activeFile, agentCount, activeAgents }: StatusBarPro
 
         <div className="flex items-center gap-1.5 text-muted-foreground">
           <Cpu className="w-3.5 h-3.5" />
-          <span>45% CPU</span>
+          <span>{Math.round(cpuUsage)}% CPU</span>
         </div>
 
         <div className="flex items-center gap-1.5 text-muted-foreground">
@@ -67,10 +77,6 @@ export function StatusBar({ activeFile, agentCount, activeAgents }: StatusBarPro
 
         <div className="flex items-center gap-1.5 text-muted-foreground">
           <span>UTF-8</span>
-        </div>
-
-        <div className="flex items-center gap-1.5 text-muted-foreground">
-          <span>Ln 24, Col 18</span>
         </div>
 
         <Bell className="w-3.5 h-3.5 text-muted-foreground hover:text-foreground cursor-pointer transition-colors" />
