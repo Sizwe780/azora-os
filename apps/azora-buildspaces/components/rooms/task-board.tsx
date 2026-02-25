@@ -47,9 +47,10 @@ import { Textarea } from "@/components/ui/textarea"
 import { Progress } from "@/components/ui/progress"
 import { useWorkspace, Task } from "@/lib/contexts/workspace-context"
 import { useRoomEvents } from "@/lib/hooks/use-room-events"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
 /* ─── types ─── */
-type ViewMode = "board" | "list" | "timeline"
+type ViewMode = "board" | "list" | "timeline" | "sprint"
 type GroupBy = "status" | "priority" | "assignee" | "label"
 
 interface TaskLabel {
@@ -66,7 +67,9 @@ const LABELS: TaskLabel[] = [
   { name: "Documentation", color: "bg-yellow-500" },
 ]
 
-const PRIORITY_CONFIG = {
+const MS_PER_DAY = 86400000
+
+
   urgent: { icon: AlertCircle, color: "text-red-500", bg: "bg-red-500/10", label: "Urgent", order: 0 },
   high: { icon: ArrowUp, color: "text-orange-500", bg: "bg-orange-500/10", label: "High", order: 1 },
   medium: { icon: Minus, color: "text-yellow-500", bg: "bg-yellow-500/10", label: "Medium", order: 2 },
@@ -99,6 +102,15 @@ function TaskCard({
   const priority = PRIORITY_CONFIG[task.priority as keyof typeof PRIORITY_CONFIG] || PRIORITY_CONFIG.medium
   const StatusIcon = status.icon
   const PriorityIcon = priority.icon
+
+  // Due date badge computation
+  const dueDateBadge = task.dueDate ? (() => {
+    const due = new Date(task.dueDate)
+    const diffDays = (due.getTime() - Date.now()) / MS_PER_DAY
+    if (diffDays < 0) return { label: "Overdue", cls: "border-red-500/30 text-red-400 bg-red-500/10" }
+    if (diffDays <= 2) return { label: due.toLocaleDateString("en", { month: "short", day: "numeric" }), cls: "border-amber-500/30 text-amber-400 bg-amber-500/10" }
+    return { label: due.toLocaleDateString("en", { month: "short", day: "numeric" }), cls: "border-emerald-500/30 text-emerald-400 bg-emerald-500/10" }
+  })() : null
 
   return (
     <motion.div
@@ -161,6 +173,11 @@ function TaskCard({
                 </span>
               </div>
             </div>
+          )}
+          {dueDateBadge && (
+            <Badge variant="outline" className={`text-[10px] h-5 px-1.5 ${dueDateBadge.cls}`}>
+              📅 {dueDateBadge.label}
+            </Badge>
           )}
         </div>
 
@@ -423,6 +440,139 @@ function TaskDetailPanel({
   )
 }
 
+/* ─── task detail dialog ─── */
+function TaskDetailDialog({
+  task,
+  onClose,
+  onSave,
+}: {
+  task: Task | null
+  onClose: () => void
+  onSave: (id: string, data: Partial<Task>) => void
+}) {
+  const [title, setTitle] = useState(task?.title || "")
+  const [description, setDescription] = useState(task?.description || "")
+  const [priority, setPriority] = useState<Task["priority"]>(task?.priority || "medium")
+  const [status, setStatus] = useState(task?.status || "todo")
+  const [assignee, setAssignee] = useState(task?.assignee || "")
+  const [dueDate, setDueDate] = useState(task?.dueDate || "")
+
+  useEffect(() => {
+    if (task) {
+      setTitle(task.title)
+      setDescription(task.description || "")
+      setPriority(task.priority)
+      setStatus(task.status)
+      setAssignee(task.assignee || "")
+      setDueDate(task.dueDate || "")
+    }
+  }, [task?.id]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleSave = () => {
+    if (!task || !title.trim()) return
+    onSave(task.id, {
+      title: title.trim(),
+      description: description.trim(),
+      priority,
+      status: status as Task["status"],
+      assignee: assignee.trim() || undefined,
+      dueDate: dueDate || undefined,
+    })
+    onClose()
+  }
+
+  return (
+    <Dialog open={!!task} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="bg-zinc-900 border-zinc-700 text-zinc-100 max-w-lg">
+        <DialogHeader>
+          <DialogTitle className="text-zinc-100 text-base flex items-center gap-2">
+            <span className="text-xs font-mono text-zinc-500">{task?.id.slice(0, 8).toUpperCase()}</span>
+            Task Details
+          </DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4 py-1">
+          <div>
+            <label className="text-xs text-zinc-500 mb-1 block">Title</label>
+            <Input
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="bg-zinc-800 border-zinc-700 text-zinc-100 placeholder:text-zinc-600"
+              placeholder="Task title"
+            />
+          </div>
+          <div>
+            <label className="text-xs text-zinc-500 mb-1 block">Description</label>
+            <Textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Add description..."
+              className="bg-zinc-800 border-zinc-700 text-zinc-300 placeholder:text-zinc-600 resize-none min-h-[80px]"
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-xs text-zinc-500 mb-1 block">Status</label>
+              <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-md px-2 py-1.5 text-sm text-zinc-300"
+              >
+                {Object.entries(STATUS_CONFIG).map(([key, val]) => (
+                  <option key={key} value={key}>{val.label}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="text-xs text-zinc-500 mb-1 block">Priority</label>
+              <select
+                value={priority}
+                onChange={(e) => setPriority(e.target.value as Task["priority"])}
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-md px-2 py-1.5 text-sm text-zinc-300"
+              >
+                <option value="urgent">🔴 Urgent</option>
+                <option value="high">🟠 High</option>
+                <option value="medium">🟡 Medium</option>
+                <option value="low">🔵 Low</option>
+                <option value="none">— None</option>
+              </select>
+            </div>
+            <div>
+              <label className="text-xs text-zinc-500 mb-1 block">Assignee</label>
+              <Input
+                value={assignee}
+                onChange={(e) => setAssignee(e.target.value)}
+                placeholder="Enter name..."
+                className="bg-zinc-800 border-zinc-700 text-zinc-300 placeholder:text-zinc-600 h-9"
+              />
+            </div>
+            <div>
+              <label className="text-xs text-zinc-500 mb-1 block">Due Date</label>
+              <Input
+                type="date"
+                value={dueDate}
+                onChange={(e) => setDueDate(e.target.value)}
+                className="bg-zinc-800 border-zinc-700 text-zinc-300 h-9"
+              />
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center justify-end gap-2 pt-3 border-t border-zinc-800">
+          <Button variant="ghost" onClick={onClose} className="text-zinc-400">
+            Cancel
+          </Button>
+          <Button
+            onClick={handleSave}
+            disabled={!title.trim()}
+            className="bg-blue-600 hover:bg-blue-700 text-white"
+          >
+            Save Changes
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
 /* ═══════════════════════════════════════════════ */
 /*                  TASK BOARD                     */
 /* ═══════════════════════════════════════════════ */
@@ -437,6 +587,7 @@ export function TaskBoard() {
   const [createDefaultStatus, setCreateDefaultStatus] = useState<string | undefined>()
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
   const [showFilters, setShowFilters] = useState(false)
+  const [detailDialogTask, setDetailDialogTask] = useState<Task | null>(null)
 
   // AI features
   const [isAiPrioritizing, setIsAiPrioritizing] = useState(false)
@@ -596,6 +747,7 @@ export function TaskBoard() {
 
   const handleTaskClick = (task: Task) => {
     setSelectedTask(task)
+    setDetailDialogTask(task)
   }
 
   const handleUpdateTask = (id: string, data: Partial<Task>) => {
@@ -646,6 +798,19 @@ export function TaskBoard() {
               />
             </div>
 
+            {/* Priority Filter Dropdown */}
+            <select
+              value={filterPriority}
+              onChange={(e) => setFilterPriority(e.target.value)}
+              className="h-8 bg-zinc-900 border border-zinc-700 rounded-md px-2 text-xs text-zinc-300 cursor-pointer"
+            >
+              <option value="all">All Priorities</option>
+              <option value="urgent">🔴 Urgent</option>
+              <option value="high">🟠 High</option>
+              <option value="medium">🟡 Medium</option>
+              <option value="low">🔵 Low</option>
+            </select>
+
             {/* Filters */}
             <Button
               variant="ghost"
@@ -674,6 +839,15 @@ export function TaskBoard() {
                 className={`h-7 px-2 ${viewMode === "list" ? "bg-zinc-800 text-white" : "text-zinc-500"}`}
               >
                 <List className="w-3.5 h-3.5" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setViewMode("sprint")}
+                title="Sprint View"
+                className={`h-7 px-2 ${viewMode === "sprint" ? "bg-zinc-800 text-white" : "text-zinc-500"}`}
+              >
+                <Zap className="w-3.5 h-3.5" />
               </Button>
             </div>
 
@@ -866,19 +1040,41 @@ export function TaskBoard() {
                       </Button>
                     </div>
 
-                    {/* Column Content */}
+                    {/* Column Content — swimlane-grouped by priority */}
                     <ScrollArea className="flex-1 px-3 pb-3">
-                      <div className="space-y-2">
-                        <AnimatePresence>
-                          {column.tasks.map((task) => (
-                            <TaskCard
-                              key={task.id}
-                              task={task}
-                              onUpdate={handleUpdateTask}
-                              onClick={handleTaskClick}
-                            />
-                          ))}
-                        </AnimatePresence>
+                      <div className="space-y-1">
+                        {["urgent", "high", "medium", "low", "none"].map((prio) => {
+                          const swimTasks = column.tasks.filter(
+                            (t) => (t.priority || "none") === prio
+                          )
+                          if (swimTasks.length === 0) return null
+                          const pconf = PRIORITY_CONFIG[prio as keyof typeof PRIORITY_CONFIG]
+                          const swimLabel =
+                            prio === "urgent" ? "🔴 Urgent" :
+                            prio === "high" ? "🟠 High" :
+                            prio === "medium" ? "🟡 Medium" :
+                            prio === "low" ? "🔵 Low" : "— None"
+                          return (
+                            <div key={prio} className="mb-1">
+                              <div className={`text-[10px] font-medium ${pconf.color} opacity-60 px-0.5 pt-2 pb-1`}>
+                                {swimLabel} Priority
+                              </div>
+                              <div className="space-y-2">
+                                <AnimatePresence>
+                                  {swimTasks.map((task) => (
+                                    <TaskCard
+                                      key={task.id}
+                                      task={task}
+                                      onUpdate={handleUpdateTask}
+                                      onClick={handleTaskClick}
+                                      compact
+                                    />
+                                  ))}
+                                </AnimatePresence>
+                              </div>
+                            </div>
+                          )
+                        })}
 
                         {column.tasks.length === 0 && (
                           <button
@@ -895,6 +1091,108 @@ export function TaskBoard() {
                 )
               })}
             </div>
+          ) : viewMode === "sprint" ? (
+            /* ── Sprint View ── */
+            <ScrollArea className="h-full">
+              <div className="px-6 py-4">
+                {/* Sprint progress bar */}
+                <div className="mb-6 bg-zinc-900/50 border border-zinc-800 rounded-xl p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <h2 className="text-sm font-semibold text-zinc-200 flex items-center gap-2">
+                      <Zap className="w-4 h-4 text-blue-400" />
+                      Sprint Progress
+                    </h2>
+                    <span className="text-xs text-zinc-400">{completedTasks}/{totalTasks} tasks done</span>
+                  </div>
+                  <Progress value={progressPercent} className="h-2.5" />
+                  <div className="flex items-center justify-between mt-1.5">
+                    <span className="text-[11px] text-zinc-600">0%</span>
+                    <span className="text-[11px] text-blue-400 font-semibold">{progressPercent}% complete</span>
+                    <span className="text-[11px] text-zinc-600">100%</span>
+                  </div>
+                </div>
+
+                {/* Tasks grouped by status */}
+                {Object.entries(STATUS_CONFIG).map(([statusKey, statusVal]) => {
+                  const statusTasks = filteredTasks.filter(
+                    (t) =>
+                      t.status === statusKey ||
+                      (statusKey === "todo" && t.status === "pending") ||
+                      (statusKey === "in-progress" && t.status === "active") ||
+                      (statusKey === "done" && t.status === "complete")
+                  )
+                  if (statusTasks.length === 0) return null
+                  const StatusIcon = statusVal.icon
+                  return (
+                    <div key={statusKey} className="mb-5">
+                      <div className="flex items-center gap-2 mb-2">
+                        <StatusIcon className={`w-4 h-4 ${statusVal.color}`} />
+                        <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+                          {statusVal.label}
+                        </span>
+                        <span className="text-[10px] text-zinc-600 bg-zinc-800 px-1.5 py-0.5 rounded">
+                          {statusTasks.length}
+                        </span>
+                      </div>
+                      <div className="space-y-1.5 pl-2 border-l border-zinc-800">
+                        {statusTasks.map((task) => {
+                          const p = PRIORITY_CONFIG[task.priority as keyof typeof PRIORITY_CONFIG] || PRIORITY_CONFIG.medium
+                          const PIcon = p.icon
+                          const sprintDueBadge = task.dueDate ? (() => {
+                            const due = new Date(task.dueDate)
+                            const diffDays = (due.getTime() - Date.now()) / MS_PER_DAY
+                            return {
+                              label: due.toLocaleDateString("en", { month: "short", day: "numeric" }),
+                              cls: diffDays < 0 ? "text-red-400" : diffDays <= 2 ? "text-amber-400" : "text-emerald-400",
+                            }
+                          })() : null
+                          return (
+                            <motion.div
+                              key={task.id}
+                              layout
+                              onClick={() => handleTaskClick(task)}
+                              className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-zinc-800/40 cursor-pointer group transition-colors"
+                            >
+                              <PIcon className={`w-3.5 h-3.5 ${p.color} flex-shrink-0`} />
+                              <span className="text-sm text-zinc-200 flex-1 group-hover:text-white truncate">
+                                {task.title}
+                              </span>
+                              {sprintDueBadge && (
+                                <span className={`text-[10px] ${sprintDueBadge.cls} flex-shrink-0`}>
+                                  📅 {sprintDueBadge.label}
+                                </span>
+                              )}
+                              {task.assignee && (
+                                <div className="w-5 h-5 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center flex-shrink-0">
+                                  <span className="text-[8px] font-bold text-white">
+                                    {task.assignee.charAt(0).toUpperCase()}
+                                  </span>
+                                </div>
+                              )}
+                            </motion.div>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )
+                })}
+
+                {filteredTasks.length === 0 && (
+                  <div className="text-center py-16">
+                    <Target className="w-10 h-10 text-zinc-700 mx-auto mb-3" />
+                    <p className="text-zinc-500 text-sm mb-1">No tasks found</p>
+                    <Button
+                      onClick={() => setShowCreateModal(true)}
+                      size="sm"
+                      className="gap-1.5 bg-blue-600 hover:bg-blue-700 mt-4"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      New Task
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </ScrollArea>
           ) : (
             /* ── List View ── */
             <ScrollArea className="h-full">
@@ -1013,6 +1311,17 @@ export function TaskBoard() {
           defaultStatus={createDefaultStatus}
         />
       </AnimatePresence>
+
+      {/* Task Detail Dialog */}
+      <TaskDetailDialog
+        task={detailDialogTask}
+        onClose={() => setDetailDialogTask(null)}
+        onSave={(id, data) => {
+          handleUpdateTask(id, data)
+          setSelectedTask((prev) => (prev && prev.id === id ? { ...prev, ...data } : prev))
+          setDetailDialogTask(null)
+        }}
+      />
     </div>
   )
 }
