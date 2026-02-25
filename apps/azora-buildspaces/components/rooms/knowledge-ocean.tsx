@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback, useMemo } from "react"
+import { useState, useEffect, useCallback, useMemo, useRef } from "react"
 import {
   Search,
   FileText,
@@ -34,6 +34,10 @@ import {
   Check,
   Copy,
   ExternalLink,
+  MoreHorizontal,
+  Plus,
+  Download,
+  Tag,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -43,6 +47,21 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Card, CardContent } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { motion, AnimatePresence } from "framer-motion"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 
 /* ─── types ─── */
 interface KnowledgeItem {
@@ -56,6 +75,23 @@ interface KnowledgeItem {
   language?: string
   size?: number
   lastModified?: string
+  tags?: string[]
+}
+
+/* ─── highlight helper ─── */
+function highlightText(text: string, query: string): React.ReactNode {
+  if (!query.trim()) return text
+  const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "gi")
+  const parts = text.split(regex)
+  return parts.map((part, i) =>
+    regex.test(part) ? (
+      <mark key={i} className="bg-yellow-400/30 text-yellow-200 rounded-sm px-0.5">
+        {part}
+      </mark>
+    ) : (
+      part
+    )
+  )
 }
 
 interface IndexStats {
@@ -90,7 +126,15 @@ const TABS = [
 ]
 
 /* ─── knowledge item card ─── */
-function KnowledgeCard({ item }: { item: KnowledgeItem }) {
+function KnowledgeCard({
+  item,
+  searchQuery = "",
+  onDelete,
+}: {
+  item: KnowledgeItem
+  searchQuery?: string
+  onDelete?: (id: string) => void
+}) {
   const config = TYPE_CONFIG[item.type] || TYPE_CONFIG.file
   const Icon = config.icon
   const [copied, setCopied] = useState(false)
@@ -101,6 +145,31 @@ function KnowledgeCard({ item }: { item: KnowledgeItem }) {
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     }
+  }
+
+  const copyLink = () => {
+    const mockUrl = `https://azora.app/knowledge/${encodeURIComponent(item.id)}`
+    navigator.clipboard.writeText(mockUrl)
+  }
+
+  const exportMarkdown = () => {
+    const content = [
+      `# ${item.title}`,
+      "",
+      item.description || "",
+      "",
+      item.path ? `**Path:** \`${item.path}\`` : "",
+      item.tags?.length ? `**Tags:** ${item.tags.join(", ")}` : "",
+    ]
+      .filter((l) => l !== undefined)
+      .join("\n")
+    const blob = new Blob([content], { type: "text/markdown" })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = `${item.title.replace(/\s+/g, "-").toLowerCase()}.md`
+    a.click()
+    URL.revokeObjectURL(url)
   }
 
   return (
@@ -117,7 +186,7 @@ function KnowledgeCard({ item }: { item: KnowledgeItem }) {
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-0.5">
             <h4 className="text-sm font-medium text-zinc-200 truncate group-hover:text-white transition-colors">
-              {item.title}
+              {highlightText(item.title, searchQuery)}
             </h4>
             <Badge variant="outline" className={`text-[9px] h-4 px-1 border-zinc-700/50 ${config.color}`}>
               {config.label}
@@ -142,30 +211,62 @@ function KnowledgeCard({ item }: { item: KnowledgeItem }) {
           )}
 
           {item.description && (
-            <p className="text-xs text-zinc-500 mt-1 line-clamp-2 leading-relaxed">{item.description}</p>
+            <p className="text-xs text-zinc-500 mt-1 line-clamp-2 leading-relaxed">
+              {highlightText(item.description, searchQuery)}
+            </p>
           )}
 
-          {item.language && (
-            <div className="flex items-center gap-2 mt-1.5">
+          <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+            {item.language && (
               <Badge variant="outline" className="text-[9px] h-4 px-1.5 border-zinc-800 text-zinc-500">
                 {item.language}
               </Badge>
-              {item.size != null && (
-                <span className="text-[10px] text-zinc-600">
-                  {item.size > 1024 ? `${(item.size / 1024).toFixed(1)} KB` : `${item.size} B`}
-                </span>
-              )}
-            </div>
-          )}
+            )}
+            {item.size != null && (
+              <span className="text-[10px] text-zinc-600">
+                {item.size > 1024 ? `${(item.size / 1024).toFixed(1)} KB` : `${item.size} B`}
+              </span>
+            )}
+            {item.tags?.map((tag) => (
+              <Badge key={tag} variant="outline" className="text-[9px] h-4 px-1.5 border-blue-800/50 text-blue-400/80 bg-blue-500/5">
+                #{tag}
+              </Badge>
+            ))}
+          </div>
         </div>
 
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-7 px-2 opacity-0 group-hover:opacity-100 transition-opacity text-zinc-500 hover:text-white"
-        >
-          <ArrowUpRight className="w-3.5 h-3.5" />
-        </Button>
+        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-7 px-2 text-zinc-500 hover:text-white"
+          >
+            <ArrowUpRight className="w-3.5 h-3.5" />
+          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-zinc-500 hover:text-white">
+                <MoreHorizontal className="w-3.5 h-3.5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="bg-zinc-900 border-zinc-800 text-zinc-200 text-xs w-44">
+              <DropdownMenuItem onClick={copyLink} className="gap-2 cursor-pointer hover:bg-zinc-800">
+                <Copy className="w-3.5 h-3.5" /> Copy Link
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={exportMarkdown} className="gap-2 cursor-pointer hover:bg-zinc-800">
+                <Download className="w-3.5 h-3.5" /> Export as Markdown
+              </DropdownMenuItem>
+              {onDelete && (
+                <DropdownMenuItem
+                  onClick={() => onDelete(item.id)}
+                  className="gap-2 cursor-pointer text-red-400 hover:bg-zinc-800 hover:text-red-300"
+                >
+                  <Trash2 className="w-3.5 h-3.5" /> Delete
+                </DropdownMenuItem>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
     </motion.div>
   )
@@ -196,6 +297,15 @@ export default function KnowledgeOcean() {
     totalDocs: 0,
     lastScan: null,
   })
+
+  // New document dialog state
+  const [showNewDocDialog, setShowNewDocDialog] = useState(false)
+  const [newDocTitle, setNewDocTitle] = useState("")
+  const [newDocContent, setNewDocContent] = useState("")
+  const [newDocTags, setNewDocTags] = useState("")
+
+  // Active tag filter
+  const [activeTagFilter, setActiveTagFilter] = useState<string | null>(null)
 
   // Scan project files using Knowledge Engine
   const scanProjectFiles = useCallback(async () => {
@@ -360,6 +470,34 @@ export default function KnowledgeOcean() {
     }
   }, [ragQuestion, isAskingRag])
 
+  // Save new document
+  const saveNewDocument = useCallback(() => {
+    if (!newDocTitle.trim()) return
+    const tags = newDocTags
+      .split(",")
+      .map((t) => t.trim())
+      .filter(Boolean)
+    const newItem: KnowledgeItem = {
+      id: `doc-${Date.now()}`,
+      title: newDocTitle.trim(),
+      type: "doc",
+      description: newDocContent.trim() || undefined,
+      size: newDocContent.length,
+      tags,
+      lastModified: new Date().toISOString(),
+    }
+    setKnowledgeItems((prev) => [newItem, ...prev])
+    setNewDocTitle("")
+    setNewDocContent("")
+    setNewDocTags("")
+    setShowNewDocDialog(false)
+  }, [newDocTitle, newDocContent, newDocTags])
+
+  // Delete item from state
+  const deleteItem = useCallback((id: string) => {
+    setKnowledgeItems((prev) => prev.filter((item) => item.id !== id))
+  }, [])
+
   useEffect(() => {
     scanProjectFiles()
   }, [scanProjectFiles])
@@ -371,7 +509,7 @@ export default function KnowledgeOcean() {
     return () => clearTimeout(timer)
   }, [searchQuery, performSearch])
 
-  // Filter by tab
+  // Filter by tab + tag
   const filteredItems = useMemo(() => {
     let items = knowledgeItems
 
@@ -396,13 +534,88 @@ export default function KnowledgeOcean() {
       )
     }
 
+    if (activeTagFilter) {
+      items = items.filter((item) => item.tags?.includes(activeTagFilter))
+    }
+
     return items
-  }, [knowledgeItems, activeTab, searchQuery, searchMode])
+  }, [knowledgeItems, activeTab, searchQuery, searchMode, activeTagFilter])
+
+  // All unique tags across all items
+  const allTags = useMemo(() => {
+    const tagSet = new Set<string>()
+    knowledgeItems.forEach((item) => item.tags?.forEach((t) => tagSet.add(t)))
+    return Array.from(tagSet).sort()
+  }, [knowledgeItems])
+
+  // Storage used derived from content lengths (in KB)
+  const storageUsedKB = useMemo(() => {
+    return (knowledgeItems.reduce((acc, item) => acc + (item.size || (item.description?.length ?? 0)), 0) / 1024).toFixed(1)
+  }, [knowledgeItems])
 
   const totalIndexed = knowledgeItems.length
 
   return (
     <div className="h-full flex flex-col bg-zinc-950 text-zinc-100">
+      {/* ── New Document Dialog ── */}
+      <Dialog open={showNewDocDialog} onOpenChange={setShowNewDocDialog}>
+        <DialogContent className="bg-zinc-900 border-zinc-800 text-zinc-100 sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="text-base font-semibold flex items-center gap-2">
+              <FileText className="w-4 h-4 text-blue-400" />
+              New Document
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div className="space-y-1.5">
+              <Label className="text-xs text-zinc-400">Title</Label>
+              <Input
+                value={newDocTitle}
+                onChange={(e) => setNewDocTitle(e.target.value)}
+                placeholder="Document title"
+                className="h-9 bg-zinc-950/50 border-zinc-700/50 text-sm"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs text-zinc-400">Content (Markdown)</Label>
+              <Textarea
+                value={newDocContent}
+                onChange={(e) => setNewDocContent(e.target.value)}
+                placeholder="Write markdown content..."
+                className="min-h-[120px] bg-zinc-950/50 border-zinc-700/50 text-sm resize-none"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs text-zinc-400">Tags (comma-separated)</Label>
+              <Input
+                value={newDocTags}
+                onChange={(e) => setNewDocTags(e.target.value)}
+                placeholder="e.g. auth, api, frontend"
+                className="h-9 bg-zinc-950/50 border-zinc-700/50 text-sm"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowNewDocDialog(false)}
+              className="text-zinc-400 hover:text-zinc-200"
+            >
+              Cancel
+            </Button>
+            <Button
+              size="sm"
+              onClick={saveNewDocument}
+              disabled={!newDocTitle.trim()}
+              className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+            >
+              Save Document
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* ── Header ── */}
       <div className="h-14 border-b border-zinc-800 flex items-center justify-between px-6 bg-zinc-900/30 backdrop-blur-sm">
         <div className="flex items-center gap-3">
@@ -446,6 +659,16 @@ export default function KnowledgeOcean() {
           >
             <Sparkles className="w-3.5 h-3.5" />
             Ask AI
+          </Button>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowNewDocDialog(true)}
+            className="h-8 gap-1.5 border-zinc-700 text-zinc-300 hover:text-white"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            New Doc
           </Button>
 
           <Button
@@ -583,26 +806,57 @@ export default function KnowledgeOcean() {
         )}
       </AnimatePresence>
 
-      {/* ── Stats Bar ── */}
-      <div className="px-6 py-2 border-b border-zinc-800/30 flex items-center gap-4 text-[11px] text-zinc-600">
-        <span className="flex items-center gap-1">
-          <FileText className="w-3 h-3" /> {stats.totalFiles} files
-        </span>
-        <span className="flex items-center gap-1">
-          <Code2 className="w-3 h-3" /> {stats.totalFunctions} functions
-        </span>
-        <span className="flex items-center gap-1">
-          <Layers className="w-3 h-3" /> {stats.totalComponents} components
-        </span>
-        <span className="flex items-center gap-1">
-          <Globe className="w-3 h-3" /> {stats.totalApis} APIs
-        </span>
-        {stats.lastScan && (
-          <span className="ml-auto flex items-center gap-1">
-            <Clock className="w-3 h-3" /> {stats.lastScan.toLocaleTimeString()}
-          </span>
-        )}
+      {/* ── Index Statistics Dashboard ── */}
+      <div className="px-6 py-3 border-b border-zinc-800/30 grid grid-cols-4 gap-3">
+        <div className="rounded-lg bg-zinc-900/50 border border-zinc-800/50 px-3 py-2">
+          <div className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">Total Documents</div>
+          <div className="text-lg font-semibold text-zinc-200">{totalIndexed}</div>
+        </div>
+        <div className="rounded-lg bg-zinc-900/50 border border-zinc-800/50 px-3 py-2">
+          <div className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">Total Indexed</div>
+          <div className="text-lg font-semibold text-zinc-200">
+            {stats.totalFiles + stats.totalFunctions + stats.totalComponents + stats.totalApis + stats.totalDocs}
+          </div>
+        </div>
+        <div className="rounded-lg bg-zinc-900/50 border border-zinc-800/50 px-3 py-2">
+          <div className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">Storage Used</div>
+          <div className="text-lg font-semibold text-zinc-200">{storageUsedKB} KB</div>
+        </div>
+        <div className="rounded-lg bg-zinc-900/50 border border-zinc-800/50 px-3 py-2">
+          <div className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">Last Indexed</div>
+          <div className="text-sm font-medium text-zinc-200 truncate">
+            {stats.lastScan ? stats.lastScan.toLocaleTimeString() : "—"}
+          </div>
+        </div>
       </div>
+
+      {/* ── Tag Filter Bar ── */}
+      {allTags.length > 0 && (
+        <div className="px-6 py-2 border-b border-zinc-800/30 flex items-center gap-2 flex-wrap">
+          <Tag className="w-3 h-3 text-zinc-600 flex-shrink-0" />
+          {allTags.map((tag) => (
+            <button
+              key={tag}
+              onClick={() => setActiveTagFilter(activeTagFilter === tag ? null : tag)}
+              className={`text-[10px] px-2 py-0.5 rounded-full border transition-colors ${
+                activeTagFilter === tag
+                  ? "bg-blue-500/20 border-blue-500/50 text-blue-300"
+                  : "bg-zinc-800/30 border-zinc-700/50 text-zinc-500 hover:text-zinc-300 hover:border-zinc-600"
+              }`}
+            >
+              #{tag}
+            </button>
+          ))}
+          {activeTagFilter && (
+            <button
+              onClick={() => setActiveTagFilter(null)}
+              className="text-[10px] text-zinc-600 hover:text-zinc-400 flex items-center gap-0.5 ml-1 transition-colors"
+            >
+              <X className="w-3 h-3" /> Clear
+            </button>
+          )}
+        </div>
+      )}
 
       {/* ── Tabs + Content ── */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
@@ -646,7 +900,7 @@ export default function KnowledgeOcean() {
               ) : filteredItems.length > 0 ? (
                 <div>
                   {filteredItems.map((item) => (
-                    <KnowledgeCard key={item.id} item={item} />
+                    <KnowledgeCard key={item.id} item={item} searchQuery={searchQuery} onDelete={deleteItem} />
                   ))}
                 </div>
               ) : (
