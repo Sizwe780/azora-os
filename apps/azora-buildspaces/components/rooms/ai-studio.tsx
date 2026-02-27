@@ -118,6 +118,7 @@ export default function AIStudio() {
   const [compareModel1, setCompareModel1] = useState("GPT-4o")
   const [compareModel2, setCompareModel2] = useState("Claude 3.5")
   const [liveMetrics, setLiveMetrics] = useState({ successRate: 0, avgLatency: 0, tokensPerMin: 0 })
+  const [availableTools, setAvailableTools] = useState<{name:string;description?:string}[]>([])
   const logsEndRef = useRef<HTMLDivElement>(null)
   const importFileRef = useRef<HTMLInputElement>(null)
 
@@ -143,6 +144,16 @@ export default function AIStudio() {
       }
     }
     loadWorkflow()
+  }, [])
+
+  /* ── fetch tool list for skill discovery ── */
+  useEffect(() => {
+    fetch('/api/tools')
+      .then(res => res.json())
+      .then(data => {
+        if (data.tools) setAvailableTools(data.tools)
+      })
+      .catch(() => {})
   }, [])
 
   /* ── auto-scroll logs ── */
@@ -823,12 +834,27 @@ export default function AIStudio() {
                           {selectedNode.type === "tool" && (
                             <div>
                               <label className="text-[10px] font-semibold text-zinc-600 uppercase tracking-wider">Tool Name</label>
-                              <Input
-                                className="h-8 text-xs bg-zinc-900/60 border-zinc-700/50 mt-1"
-                                placeholder="e.g. web_search, code_interpreter"
-                                value={selectedNode.config.toolName || ""}
-                                onChange={(e) => updateNodeConfig(selectedNode.id, "toolName", e.target.value)}
-                              />
+                              {availableTools.length > 0 ? (
+                                <select
+                                  className="w-full h-8 text-xs bg-zinc-900 border border-zinc-700/50 rounded-md px-2 mt-1 text-zinc-300"
+                                  value={selectedNode.config.toolName || ""}
+                                  onChange={(e) => updateNodeConfig(selectedNode.id, "toolName", e.target.value)}
+                                >
+                                  <option value="">Select tool</option>
+                                  {availableTools.map((t) => (
+                                    <option key={t.name} value={t.name} title={t.description || ''}>
+                                      {t.name}
+                                    </option>
+                                  ))}
+                                </select>
+                              ) : (
+                                <Input
+                                  className="h-8 text-xs bg-zinc-900/60 border-zinc-700/50 mt-1"
+                                  placeholder="e.g. web_search, code_interpreter"
+                                  value={selectedNode.config.toolName || ""}
+                                  onChange={(e) => updateNodeConfig(selectedNode.id, "toolName", e.target.value)}
+                                />
+                              )}
                             </div>
                           )}
 

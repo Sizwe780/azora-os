@@ -13,11 +13,12 @@ import { getDatabaseStatus, PRISMA_AVAILABLE } from '@/lib/database/client'
 export const dynamic = 'force-dynamic'
 
 interface HealthCheckResponse {
+  ok: boolean
   status: 'healthy' | 'degraded' | 'unhealthy'
   timestamp: string
   checks: {
     database: {
-      status: 'pass' | 'fail' | 'warn'
+      status: 'pass' | 'fail' | 'warn' | 'unavailable'
       configured: boolean
       connected: boolean
       clientGenerated: boolean
@@ -60,7 +61,9 @@ export async function GET() {
         ? ('pass' as const)
         : dbStatus.configured && dbStatus.clientGenerated
           ? ('warn' as const)
-          : ('fail' as const),
+          : !dbStatus.clientGenerated
+            ? ('unavailable' as const)
+            : ('fail' as const),
       configured: dbStatus.configured,
       connected: dbStatus.connected,
       clientGenerated: dbStatus.clientGenerated,
@@ -80,7 +83,7 @@ export async function GET() {
       // Database configured but not connected, or Prisma not available
       // System can still function in degraded mode
       overallStatus = 'degraded'
-      httpStatus = 207 // Multi-Status
+      httpStatus = 200 // Use 200 for degraded as per tests
     } else {
       // Critical failures - system cannot function properly
       overallStatus = 'unhealthy'
@@ -88,6 +91,7 @@ export async function GET() {
     }
 
     const response: HealthCheckResponse = {
+      ok: overallStatus !== 'unhealthy',
       status: overallStatus,
       timestamp: new Date().toISOString(),
       checks: {

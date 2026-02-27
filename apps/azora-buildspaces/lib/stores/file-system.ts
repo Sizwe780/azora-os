@@ -40,6 +40,11 @@ interface FileSystemState {
 // Helper to generate IDs
 const generateId = () => Math.random().toString(36).substr(2, 9)
 
+interface FileSnapshotEntry {
+    path: string
+    content: string
+}
+
 // Helper to create mock file system from template
 const createMockFileSystem = () => {
     const template = projectTemplates?.[0]; // Default to Next.js template
@@ -126,6 +131,68 @@ const createMockFileSystem = () => {
     return { rootId, fileMap };
 }
 
+const buildFileMapFromSnapshot = (files: FileSnapshotEntry[]) => {
+    const rootId = 'root'
+    const fileMap: Record<string, FileNode> = {
+        [rootId]: {
+            id: rootId,
+            name: 'root',
+            type: 'directory',
+            path: '',
+            children: [],
+            isOpen: true,
+            parentId: null,
+        },
+    }
+
+    for (const file of files) {
+        const normalized = file.path.startsWith('/') ? file.path.slice(1) : file.path
+        const parts = normalized.split('/').filter(Boolean)
+        const fileName = parts.pop()
+        if (!fileName) continue
+
+        let currentId = rootId
+        let currentPath = ''
+
+        for (const part of parts) {
+            const parentNode = fileMap[currentId]
+            let childId = parentNode.children?.find(
+                (id) => fileMap[id]?.name === part && fileMap[id]?.type === 'directory'
+            )
+            if (!childId) {
+                childId = generateId()
+                const newPath = currentPath ? `${currentPath}/${part}` : part
+                fileMap[childId] = {
+                    id: childId,
+                    name: part,
+                    type: 'directory',
+                    path: newPath,
+                    children: [],
+                    parentId: currentId,
+                    isOpen: false,
+                }
+                parentNode.children = [...(parentNode.children || []), childId]
+            }
+            currentId = childId
+            currentPath = fileMap[currentId].path
+        }
+
+        const fileId = generateId()
+        const fileNode: FileNode = {
+            id: fileId,
+            name: fileName,
+            type: 'file',
+            path: currentPath ? `${currentPath}/${fileName}` : fileName,
+            content: file.content,
+            parentId: currentId,
+        }
+        fileMap[fileId] = fileNode
+        fileMap[currentId].children = [...(fileMap[currentId].children || []), fileId]
+    }
+
+    return { rootId, fileMap }
+}
+
 export const useFileSystem = create<FileSystemState>((set, get) => ({
     rootId: null,
     activeFileId: null,
@@ -136,6 +203,16 @@ export const useFileSystem = create<FileSystemState>((set, get) => ({
     loadProject: async (_projectId: string) => {
         set({ isLoading: true })
         try {
+            // 1) Try Firestore snapshot
+            const snapshotRes = await fetch(`/api/projects/${_projectId}/snapshot`)
+            if (snapshotRes.ok) {
+                const snapshot = await snapshotRes.json()
+                if (snapshot?.files && snapshot.files.length > 0) {
+                    const { rootId, fileMap } = buildFileMapFromSnapshot(snapshot.files)
+                    set({ fileMap, rootId, isLoading: false })
+                    return
+                }
+            }
             // Fetch real file tree from orchestrator
             const res = await fetch('http://localhost:3001/fs/tree');
             if (!res.ok) throw new Error('Failed to load project');

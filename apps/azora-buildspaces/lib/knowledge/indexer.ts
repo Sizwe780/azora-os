@@ -208,8 +208,8 @@ export class KnowledgeIndexer {
     }
 
     // Extract arrow functions / const functions
-    // Note: Basic pattern for MVP. Future: Support single-param arrows like 'const func = x => x'
-    const arrowFunctionRegex = /^\s*(?:export\s+)?const\s+(\w+)\s*=\s*(?:async\s*)?\([^)]*\)\s*=>/gm
+    // Note: Improved pattern to support return types like ': string =>'
+    const arrowFunctionRegex = /^\s*(?:export\s+)?const\s+(\w+)\s*=\s*(?:async\s*)?\([^)]*\)(?:\s*:\s*[^{]+)?\s*=>/gm
     while ((match = arrowFunctionRegex.exec(content)) !== null) {
       const funcName = match[1]
       const lineStart = content.substring(0, match.index).split('\n').length

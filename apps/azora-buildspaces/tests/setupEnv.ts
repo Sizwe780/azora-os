@@ -1,5 +1,6 @@
 // Shims that must run before any modules are imported by tests
 import 'openai/shims/node'
+import 'fake-indexeddb/auto'
 
 // Provide a test DATABASE_URL so Prisma client initialization paths can run
 // in unit tests. Uses a file SQLite DB in workspace (no DB server required).

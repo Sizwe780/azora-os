@@ -76,3 +76,19 @@ global.ResizeObserver = class ResizeObserver {
 // Set test environment variables
 process.env.NEXT_PUBLIC_APP_NAME = 'Azora OS'
 process.env.NEXT_PUBLIC_APP_URL = 'http://localhost:3000'
+
+// --------------------------------------------------
+// Polyfills needed by various browser-like libraries (indexedDB, structuredClone)
+// See: 2026 standard test environment for Citadel
+try {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const { indexedDB, IDBKeyRange } = require('fake-indexeddb')
+  global.indexedDB = indexedDB
+  global.IDBKeyRange = IDBKeyRange
+} catch (e) {
+  // if fake-indexeddb isn't installed, tests needing indexedDB will fail
+}
+
+if (typeof global.structuredClone !== 'function') {
+  global.structuredClone = (obj) => JSON.parse(JSON.stringify(obj))
+}

@@ -5,6 +5,15 @@ import { constitutionalAI } from '../constitutional-ai'
 describe('FileSystemService git push gating', () => {
   beforeEach(async () => {
     jest.restoreAllMocks()
+
+    // Mock fetch for FileSystem operations
+    global.fetch = jest.fn().mockImplementation(() =>
+      Promise.resolve({
+        ok: true,
+        text: () => Promise.resolve('ok'),
+        json: () => Promise.resolve({ status: 'ok', branch: 'main' }),
+      })
+    ) as jest.Mock
   })
 
   it('should allow git push when verification allows', async () => {

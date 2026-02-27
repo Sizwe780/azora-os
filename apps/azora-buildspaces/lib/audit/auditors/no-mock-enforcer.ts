@@ -56,7 +56,7 @@ export class NoMockProtocolEnforcer implements IAuditor {
   private readonly buildspacesPath: string
   private readonly patterns: MockPattern[]
   
-  constructor(buildspacesPath: string = 'apps/azora-buildspaces') {
+  constructor(buildspacesPath: string = process.cwd()) {
     this.buildspacesPath = buildspacesPath
     this.patterns = this.initializePatterns()
   }

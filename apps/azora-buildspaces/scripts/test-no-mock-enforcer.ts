@@ -9,7 +9,14 @@ import { NoMockProtocolEnforcer } from '../lib/audit/auditors/no-mock-enforcer'
 async function main() {
   console.log('🧪 Testing No Mock Protocol Enforcer\n')
   
-  const enforcer = new NoMockProtocolEnforcer()
+    // Determine root of the BuildSpaces app (not the entire mono-repo).
+    // The script lives in apps/azora-buildspaces/scripts, so one level up
+    // is the correct codebase to scan. A PROJECT_ROOT env var can override.
+    const path = require('path')
+    const rootDir = process.env.PROJECT_ROOT || path.resolve(__dirname, '..')
+  
+  console.log(`Scanning root: ${rootDir}`)
+  const enforcer = new NoMockProtocolEnforcer(rootDir)
   
   console.log('Running audit...\n')
   const result = await enforcer.audit()

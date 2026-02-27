@@ -16,6 +16,21 @@ import { authOptions } from '@/lib/auth/config'
 import { verifyPassword } from '@/lib/auth/utils'
 import crypto from 'crypto'
 
+// Setup global mock for providers.ts
+const mockPrisma = {
+  user: {
+    findUnique: jest.fn(),
+    findFirst: jest.fn(),
+    create: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
+  },
+  $connect: jest.fn(),
+  $disconnect: jest.fn(),
+}
+// @ts-ignore
+global.prisma = mockPrisma
+
 // Helper to hash password (same method used in register route)
 function hashPassword(password: string): string {
   const salt = crypto.randomBytes(16).toString('hex')
@@ -29,9 +44,26 @@ describe('Authentication Flow End-to-End', () => {
       const credentialProvider = authOptions.providers.find((p: any) => p.id === 'credentials')
       expect(credentialProvider).toBeDefined()
 
+      // Set environment variables for test
+      // @ts-ignore
+      process.env.DEV_AUTH_EMAIL = 'admin@azora.world'
+      // @ts-ignore
+      process.env.DEV_AUTH_PASSWORD = 'Azora2026!'
+      
+      const pwd = 'Azora2026!'; 
+      // @ts-ignore
+      const hashed = hashPassword(pwd);
+
+      (global.prisma.user.findUnique as jest.Mock).mockResolvedValue({
+         id: 'dev-admin',
+         name: 'Dev Admin',
+         email: 'admin@azora.world',
+         password: hashed
+      })
+
       const result = await (credentialProvider as any).options.authorize({
         email: 'admin@azora.world',
-        password: 'Azora2026!'
+        password: pwd
       })
 
       expect(result).toBeDefined()
@@ -41,29 +73,18 @@ describe('Authentication Flow End-to-End', () => {
     })
 
     it('should authenticate with database credentials when password matches', async () => {
-      // Mock database client
-      const mockPrisma = {
-        user: {
-          findUnique: jest.fn()
-        }
-      }
-
       const password = 'TestPassword123!'
-      const hashedPassword = hashPassword(password)
+      // @ts-ignore
+      const hashedPassword = hashPassword(password);
 
-      mockPrisma.user.findUnique.mockResolvedValue({
-        id: 'test-user-id',
-        name: 'Test User',
-        email: 'test@example.com',
-        password: hashedPassword,
+      // Configure global mock
+      (global.prisma.user.findUnique as jest.Mock).mockResolvedValue({
+        id: 'test-user-id', 
+        name: 'Test User', 
+        email: 'test@example.com', 
+        password: hashedPassword, 
         role: 'STUDENT'
       })
-
-      // Mock the database module
-      jest.mock('@/lib/database/client', () => ({
-        prisma: mockPrisma,
-        PRISMA_AVAILABLE: true
-      }))
 
       const credentialProvider = authOptions.providers.find((p: any) => p.id === 'credentials')
       
@@ -74,6 +95,21 @@ describe('Authentication Flow End-to-End', () => {
 
     it('should return user object with required fields on successful login', async () => {
       const credentialProvider = authOptions.providers.find((p: any) => p.id === 'credentials')
+      
+      if (!credentialProvider) {
+        throw new Error('Credential provider not found')
+      }
+
+      // The previous test passes, so we know this works for "dev-admin" when PRISMA_AVAILABLE is false 
+      // or "user not found" in global mock.
+      // But we need to ensure the mock is reset or configured for this test too.
+      (global.prisma.user.findUnique as jest.Mock).mockResolvedValue({
+         id: 'dev-admin',
+         name: 'Dev Admin',
+         email: 'admin@azora.world',
+         // @ts-ignore
+         password: hashPassword('Azora2026!')
+      })
       
       const result = await (credentialProvider as any).options.authorize({
         email: 'admin@azora.world',

@@ -8,6 +8,17 @@ import { KnowledgeIndexer } from '../../../lib/knowledge/indexer'
 // Mock the indexer
 jest.mock('../../../lib/knowledge/indexer', () => {
   const mockChunks = [
+
+    {
+      id: 'auth.ts:function:authenticate',
+      path: '/src/auth.ts',
+      fileName: 'auth.ts',
+      type: 'function',
+      name: 'authenticate',
+      content: 'async function authenticate() { // authentication handled here }',
+      language: 'typescript',
+      relevanceScore: 0.95
+    },
     {
       id: 'auth.ts:function:login',
       path: '/src/auth.ts',

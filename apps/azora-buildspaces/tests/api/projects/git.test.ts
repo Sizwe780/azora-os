@@ -8,6 +8,18 @@ ns.NextResponse = { json: (body: any) => body }
 const { POST: commitRoute } = require('@/app/api/projects/[projectId]/git/commit/route')
 const { GET: statusRoute } = require('@/app/api/projects/[projectId]/git/status/route')
 
+// Mock next-auth/next getServerSession
+jest.mock('next-auth/next', () => ({
+  getServerSession: () => Promise.resolve({
+    user: {
+      name: 'Test User',
+      email: 'test@example.com',
+      image: 'https://example.com/avatar.jpg'
+    },
+    expires: '2099-01-01T00:00:00.000Z'
+  })
+}))
+
 import fs from 'fs'
 import os from 'os'
 import path from 'path'
@@ -18,6 +30,7 @@ describe('project git endpoints', () => {
   let origCwd: string
 
   beforeEach(() => {
+    jest.setTimeout(15000)
     origCwd = process.cwd()
     tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'buildspaces-test-'))
     process.chdir(tmpDir)
@@ -36,7 +49,7 @@ describe('project git endpoints', () => {
     const file = path.join(tmpDir, 'README.md')
     fs.writeFileSync(file, '# test')
 
-    const res = await commitRoute({ json: async () => ({ message: 'test commit' }) }, { params: { projectId: 'p1' } } as any)
+    const res = await commitRoute({ json: async () => ({ message: 'test commit' }) }, { params: Promise.resolve({ projectId: 'p1' }) } as any)
     const json = res.json ? await res.json() : (res.body || res)
 
     if (!json || !json.success) {
@@ -53,7 +66,7 @@ describe('project git endpoints', () => {
     execSync('git add .', { cwd: tmpDir })
     execSync('git commit -m "init"', { cwd: tmpDir })
 
-    const res = await statusRoute({ url: `http://localhost/?projectId=p1` } as any, { params: { projectId: 'p1' } } as any)
+    const res = await statusRoute({ url: `http://localhost/?projectId=p1` } as any, { params: Promise.resolve({ projectId: 'p1' }) } as any)
     const json = res.json ? await res.json() : (res.body || res)
 
     expect(json.branch).toBeDefined()

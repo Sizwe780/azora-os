@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useMemo, useState, useCallback } from "react"
-import { usePathname } from "next/navigation"
+import { usePathname, useSearchParams } from "next/navigation"
 import { useFileSystem } from "@/lib/stores/file-system"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { Button } from "@/components/ui/button"
@@ -408,10 +408,12 @@ function AISidebar() {
                         if (fileId && change.content !== null) {
                             writeFile(fileId, change.content)
                             changeLog += `- Updated \`${change.path}\`\n`
-                        } else if (change.content === null) {
-                            changeLog += `- Deleted \`${change.path}\`\n`
-                        } else {
-                            changeLog += `- Created \`${change.path}\` (Note: File creation via AI is mocked in this demo)\n`
+                            } else if (change.content === null) {
+                                changeLog += `- Deleted \`${change.path}\`\n`
+                            } else {
+                                // The backend now returns actual file creations and the
+                                // editor will create the file in the virtual filesystem.
+                                changeLog += `- Created \`${change.path}\`\n`
                         }
                     })
                     setMessages(prev => [...prev, { role: "assistant", content: changeLog }])
@@ -578,11 +580,24 @@ function WelcomeTab({ onProjectSelect }: { onProjectSelect: (id: string) => void
 // ═══════════════════════════════════════════════════════════════════════
 export function CodeChamber({ id }: CodeChamberProps) {
     const pathname = usePathname()
+    const searchParams = useSearchParams()
     const projectId = useMemo(() => {
         if (id && id.trim().length > 0) return id
+        const queryProject = searchParams?.get('projectId') || searchParams?.get('project')
+        if (queryProject) return queryProject
+        if (typeof window !== 'undefined') {
+            const stored = localStorage.getItem('citadel-active-project')
+            if (stored) return stored
+        }
         const parts = pathname?.split("/").filter(Boolean) ?? []
         return parts[parts.length - 1] || "default"
-    }, [id, pathname])
+    }, [id, pathname, searchParams])
+
+    useEffect(() => {
+        if (typeof window !== 'undefined' && projectId) {
+            localStorage.setItem('citadel-active-project', projectId)
+        }
+    }, [projectId])
 
     const { rootId, activeFileId, openFiles, fileMap, loadProject, openFile, closeFile, setActiveFile, readFile, writeFile } = useFileSystem()
 

@@ -62,6 +62,17 @@ console.log(`  DATABASE_POOL_SIZE: ${env.DATABASE_POOL_SIZE}`)
 console.log(`  USE_POSTGRES: ${env.USE_POSTGRES}`)
 console.log()
 
+// Display Firebase configuration
+console.log('Firebase Configuration:')
+const firebaseConfigured = !!process.env.FIREBASE_SERVICE_ACCOUNT_JSON
+console.log(`  FIREBASE_SERVICE_ACCOUNT_JSON: ${firebaseConfigured ? '✓ configured' : '✗ not configured'}`)
+if (env.NODE_ENV === 'production' && !firebaseConfigured) {
+  console.error('  ❌ CRITICAL: FIREBASE_SERVICE_ACCOUNT_JSON is REQUIRED in production!')
+  console.error('     Phase 7 persistence will not function without this variable.')
+  process.exit(1)
+}
+console.log()
+
 // Display Redis configuration
 console.log('Redis Configuration:')
 console.log(`  USE_REDIS: ${env.USE_REDIS}`)

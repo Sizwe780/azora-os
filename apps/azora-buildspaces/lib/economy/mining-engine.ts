@@ -242,17 +242,22 @@ export class MiningEngine {
    * Get user's current balance
    */
   async getBalance(userId: string): Promise<number> {
-    const wallet = await prisma.wallet.findUnique({
-      where: { 
-        userId_currency: {
-          userId,
-          currency: 'AZR'
-        }
-      },
-      select: { balance: true }
-    })
+    try {
+      const wallet = await prisma.wallet.findUnique({
+        where: { 
+          userId_currency: {
+            userId,
+            currency: 'AZR'
+          }
+        },
+        select: { balance: true }
+      })
 
-    return wallet ? Number(wallet.balance) : 0
+      return wallet ? Number(wallet.balance) : 0
+    } catch (error) {
+      console.error('Mining Engine Error:', error)
+      return 0
+    }
   }
 
   /**
@@ -369,6 +374,40 @@ export class MiningEngine {
       totalTransactions,
       averageBalance: totalWallets > 0 ? totalCirculation / totalWallets : 0
     }
+  }
+
+  /**
+   * Verify work quality and award tokens
+   * Combines automated checks with token distribution
+   */
+  async verifyAndAward(userId: string, rewardType: RewardType, content: string): Promise<MiningResult> {
+    // Basic quality checks
+    if (!content || content.length < 10) {
+      return {
+        success: false,
+        amount: 0,
+        newBalance: 0,
+        error: 'Work does not meet quality standards' 
+      }
+    }
+    
+    // Check for spam (simple heuristic)
+    if (content.split(' ').length > 20 && new Set(content.split(' ')).size < 5) {
+      return {
+        success: false,
+        amount: 0,
+        newBalance: 0,
+        error: 'Work does not meet quality standards'
+      }
+    }
+
+    // Award tokens
+    return this.awardTokens({
+      userId,
+      amount: REWARD_RATES[rewardType] || 1,
+      rewardType,
+      description: 'Automated verification reward'
+    })
   }
 }
 

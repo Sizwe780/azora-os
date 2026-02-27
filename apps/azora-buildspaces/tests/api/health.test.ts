@@ -1,5 +1,4 @@
 /** @jest-environment node */
-import { GET } from "../../app/api/health/route"
 
 describe("GET /api/health", () => {
   const OLD_ENV = process.env
@@ -22,6 +21,7 @@ describe("GET /api/health", () => {
       throw new Error("Cannot find module '@prisma/client'. Did you run prisma generate?")
     })
 
+    const { GET } = require("../../app/api/health/route")
     const res = await GET()
     const json = await res.json()
 

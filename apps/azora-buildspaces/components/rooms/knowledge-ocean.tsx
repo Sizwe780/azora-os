@@ -148,8 +148,12 @@ function KnowledgeCard({
   }
 
   const copyLink = () => {
-    const mockUrl = `https://azora.app/knowledge/${encodeURIComponent(item.id)}`
-    navigator.clipboard.writeText(mockUrl)
+    // construct a real shareable URL using the current origin; the
+    // knowledge explorer page handles deep linking by ID.
+    const url = `${window.location.origin}/knowledge/${encodeURIComponent(item.id)}`
+    navigator.clipboard.writeText(url)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
   }
 
   const exportMarkdown = () => {

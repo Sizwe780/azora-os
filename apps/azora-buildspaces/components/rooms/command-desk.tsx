@@ -46,9 +46,11 @@ import {
 import { Button } from "@/components/ui/button"
 import { motion, AnimatePresence } from "framer-motion"
 import { Textarea } from "@/components/ui/textarea"
+import ReasoningTrace from "@/components/shared/ReasoningTrace"
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useWorkspace, Task } from "@/lib/contexts/workspace-context"
+import { useCitadelStore } from "@/lib/store/use-citadel-store"
 import { useRoomEvents } from "@/lib/hooks/use-room-events"
 
 /* ───────── types ───────── */
@@ -84,6 +86,15 @@ interface ChatSession {
   lastMessage: string
   timestamp: Date
   messageCount: number
+}
+
+interface RecentExecution {
+  id: string
+  projectId?: string
+  status?: string
+  lastStep?: string
+  lastStepType?: string
+  updatedAt?: string
 }
 
 /* ───────── models ───────── */
@@ -407,14 +418,16 @@ function MessageBubble({ message, onRate }: { message: Message; onRate: (id: str
 /*                COMMAND DESK                     */
 /* ═══════════════════════════════════════════════ */
 export function CommandDesk() {
-  const { tasks, setTasks } = useWorkspace()
+  const { tasks, setTasks, setActiveRoom } = useWorkspace()
   const { emit, ROOM_EVENTS } = useRoomEvents('command-desk')
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [isStreaming, setIsStreaming] = useState(false)
   const [sessionId, setSessionId] = useState<string | null>(null)
+  const [executionId, setExecutionId] = useState<string | null>(null)
   const [sessions, setSessions] = useState<ChatSession[]>([])
+  const [recentSessions, setRecentSessions] = useState<RecentExecution[]>([])
   const [selectedModel, setSelectedModel] = useState(MODELS[0])
   const [showModelPicker, setShowModelPicker] = useState(false)
   const [showHistory, setShowHistory] = useState(false)
@@ -452,6 +465,7 @@ export function CommandDesk() {
         if (!res.ok) throw new Error("Failed to create session")
         const session = await res.json()
         setSessionId(session.id)
+        setExecutionId(session.id)
 
         const msgRes = await fetch(`/api/chat/sessions/${session.id}/messages`)
         if (msgRes.ok) {
@@ -475,14 +489,75 @@ export function CommandDesk() {
             }))
           )
         }
+
+        const execRes = await fetch('/api/agents/sessions')
+        if (execRes.ok) {
+          const data = await execRes.json()
+          setRecentSessions(data.sessions || [])
+        }
+
+        if (typeof window !== 'undefined') {
+          const lastExecution = localStorage.getItem('citadel-last-execution')
+          if (lastExecution) {
+            const resumeRes = await fetch(`/api/agents/sessions/${lastExecution}`)
+            if (resumeRes.ok) {
+              const resumeData = await resumeRes.json()
+              const record = resumeData.record
+              if (record?.trace) {
+                const store = useCitadelStore.getState()
+                store.clearTrace()
+                record.trace.forEach((step: any, idx: number) => {
+                  store.addStep({
+                    id: `${lastExecution}-${idx}`,
+                    type: step.type,
+                    text: step.content,
+                    timestamp: step.timestamp,
+                  })
+                })
+                store.markSynced(new Date().toISOString())
+              }
+            }
+          }
+        }
       } catch (error) {
         console.error("Failed to initialize session:", error)
         // Generate a local session ID fallback
         setSessionId(`local-${Date.now()}`)
+        setExecutionId(`local-${Date.now()}`)
       }
     }
     initSession()
   }, [])
+
+  const handleResumeExecution = useCallback(async (execution: RecentExecution) => {
+    try {
+      const res = await fetch(`/api/agents/sessions/${execution.id}`)
+      if (!res.ok) throw new Error('Failed to load session')
+      const data = await res.json()
+      const record = data.record
+      if (record?.trace) {
+        const store = useCitadelStore.getState()
+        store.clearTrace()
+        record.trace.forEach((step: any, idx: number) => {
+          store.addStep({
+            id: `${execution.id}-${idx}`,
+            type: step.type,
+            text: step.content,
+            timestamp: step.timestamp,
+          })
+        })
+        store.markSynced(new Date().toISOString())
+      }
+      if (execution.projectId && typeof window !== 'undefined') {
+        localStorage.setItem('citadel-active-project', execution.projectId)
+      }
+      setExecutionId(execution.id)
+      setShowHistory(false)
+      setActiveRoom('code-chamber')
+    } catch (error) {
+      console.error('Failed to resume execution', error)
+    }
+  }, [setActiveRoom])
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return
@@ -536,52 +611,72 @@ export function CommandDesk() {
         content: m.content,
       }))
 
-      const res = await fetch("/api/command-desk/stream", {
+      const execId = executionId || sessionId || `exec-${Date.now()}`
+      if (execId !== executionId) {
+        setExecutionId(execId)
+      }
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('citadel-last-execution', execId)
+      }
+
+      const res = await fetch("/api/agents/stream", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           messages: [...recentHistory, { role: "user", content: currentInput }],
           model: selectedModel.id,
+          executionId: execId,
+          projectId: (typeof window !== 'undefined' && localStorage.getItem('citadel-active-project')) || 'default',
         }),
       })
 
       if (!res.ok || !res.body) throw new Error("Streaming failed")
 
-      // Stream the response token by token
+      // Parse SSE-style stream emitted by orchestrator
       const reader = res.body.getReader()
       const decoder = new TextDecoder()
-      let fullContent = ""
+      let buffer = ''
+
+      // also push trace steps into global store
+      const { addStep } = useCitadelStore.getState()
 
       while (true) {
         const { done, value } = await reader.read()
         if (done) break
 
-        const chunk = decoder.decode(value, { stream: true })
-        // Parse SSE data stream format: lines starting with "0:" contain text tokens
-        const lines = chunk.split("\n")
-        for (const line of lines) {
-          if (line.startsWith("0:")) {
-            try {
-              const text = JSON.parse(line.slice(2))
-              fullContent += text
-              setMessages((prev) =>
-                prev.map((m) =>
-                  m.id === assistantId ? { ...m, content: fullContent } : m
-                )
-              )
-            } catch { /* skip non-JSON lines */ }
+        buffer += decoder.decode(value, { stream: true })
+        // split on double newline to get complete events
+        const parts = buffer.split('\n\n')
+        buffer = parts.pop() || ''
+        for (const part of parts) {
+          const [header, dataLine] = part.split('\n')
+          if (!dataLine) continue
+          const eventMatch = header.match(/^event: (\w+)/)
+          const event = eventMatch ? eventMatch[1] : ''
+          const data = dataLine.replace(/^data: /, '')
+          try {
+            const parsed = JSON.parse(data)
+            if (event === 'step') {
+              addStep(parsed)
+            } else if (event === 'done') {
+              // final result could contain assistant message text
+              fullContent = parsed?.nodeResults ? JSON.stringify(parsed.nodeResults) : ''
+            } else if (event === 'error') {
+              console.error('Stream error', parsed)
+            }
+          } catch (e) {
+            // ignore parse errors
           }
         }
-      }
-
-      // Ensure final content is set
-      if (fullContent) {
+        // update assistant content continuously (optional)
         setMessages((prev) =>
           prev.map((m) =>
             m.id === assistantId ? { ...m, content: fullContent } : m
           )
         )
       }
+
+      // final message already set via loop
     } catch (error) {
       console.error("Streaming failed, falling back:", error)
       // Fallback to non-streaming endpoint
@@ -806,6 +901,41 @@ export function CommandDesk() {
                   {sessions.length === 0 && (
                     <div className="text-center py-8 text-zinc-600 text-sm">No chat history yet</div>
                   )}
+
+                  <div className="pt-4">
+                    <div className="text-[11px] uppercase tracking-wider text-zinc-600 font-medium mb-2">Recent Sessions</div>
+                    <div className="space-y-2">
+                      {recentSessions.map((execution) => (
+                        <div key={execution.id} className="rounded-lg border border-zinc-800/60 bg-zinc-900/60 p-2">
+                          <div className="flex items-center justify-between">
+                            <div className="min-w-0">
+                              <div className="text-xs text-zinc-300 truncate">
+                                {execution.lastStep || 'Session activity'}
+                              </div>
+                              <div className="text-[10px] text-zinc-600 mt-1">
+                                {execution.projectId || 'default'} • {execution.status || 'running'}
+                              </div>
+                            </div>
+                            <Button
+                              size="sm"
+                              className="h-7 px-2 text-[11px] bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30"
+                              onClick={() => handleResumeExecution(execution)}
+                            >
+                              Resume
+                            </Button>
+                          </div>
+                          {execution.updatedAt && (
+                            <div className="text-[10px] text-zinc-700 mt-1">
+                              {new Date(execution.updatedAt).toLocaleString()}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                      {recentSessions.length === 0 && (
+                        <div className="text-center py-4 text-zinc-600 text-xs">No recent sessions yet</div>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </ScrollArea>
             )}
@@ -1068,6 +1198,10 @@ export function CommandDesk() {
                           <div className="px-2 py-1 text-[10px] uppercase tracking-wider text-purple-400 font-medium">Pinned</div>
                           {pinned.map((cmd) => (
                             <div key={`pinned-${cmd.name}`} className="flex items-center group/cmd rounded-lg hover:bg-zinc-800/50">
+                  {/* ── Reasoning Trace Panel ── */}
+                  <div className="w-80 border-l border-zinc-800">
+                    <ReasoningTrace skeleton="message" />
+                  </div>
                               <button
                                 onClick={() => setInput(cmd.name + " ")}
                                 className="flex-1 flex items-center gap-3 p-2.5 text-left text-zinc-400"

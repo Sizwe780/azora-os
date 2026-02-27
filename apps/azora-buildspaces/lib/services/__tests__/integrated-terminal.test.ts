@@ -12,7 +12,13 @@ describe('IntegratedTerminal constitutional gating', () => {
     const sessionId = `sess_${Date.now()}`
 
     // Create session
-    await integratedTerminal.createSession({ id: sessionId, containerId: 'cont1', userId, shell: 'bash' })
+    await integratedTerminal.createSession({ 
+      id: sessionId, 
+      containerId: 'cont1', 
+      userId, 
+      shell: 'bash',
+      dimensions: { rows: 24, cols: 80 }
+    })
 
     // Mock verification to allow
     jest.spyOn(constitutionalAI, 'verifyAction').mockResolvedValue({
@@ -33,7 +39,13 @@ describe('IntegratedTerminal constitutional gating', () => {
     const userId = 'test_user2'
     const sessionId = `sess_${Date.now()}`
 
-    await integratedTerminal.createSession({ id: sessionId, containerId: 'cont2', userId, shell: 'bash' })
+    await integratedTerminal.createSession({ 
+      id: sessionId, 
+      containerId: 'cont2', 
+      userId, 
+      shell: 'bash',
+      dimensions: { rows: 24, cols: 80 }
+    })
 
     jest.spyOn(constitutionalAI, 'verifyAction').mockResolvedValue({
       allowed: false,

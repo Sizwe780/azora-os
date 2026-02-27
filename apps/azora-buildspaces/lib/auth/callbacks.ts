@@ -19,10 +19,14 @@ export const authCallbacks: Partial<CallbacksOptions> = {
    * Requirement 2.2: Persist user ID to token for session access
    * Requirement 7.5: Log authentication events for security auditing
    */
-  async jwt({ token, user, account, profile, trigger }: any) {
+  async jwt(params: any) {
+    const { token, user, account, profile, trigger } = params;
     // On sign in, persist user id to token
-    if (user?.id) {
+    if (user) {
       token.id = user.id
+      token.sub = user.id // Ensure sub is set
+      token.email = user.email
+      token.name = user.name
       console.log('[AUTH] JWT token created for user:', user.id)
     }
     
@@ -51,10 +55,23 @@ export const authCallbacks: Partial<CallbacksOptions> = {
    * Session callback - called when session is checked
    * Requirement 2.2: Add user ID from token to session
    */
-  async session({ session, token, user }: any) {
-    // Add user id from token to session
-    if (session?.user && token?.id) {
-      session.user.id = token.id
+  // @ts-ignore
+  async session({ session, token, user }) {
+    // Add user id from token to session (JWT strategy)
+    if (session?.user && token?.sub) {
+      session.user.id = token.sub
+    }
+    // Also check for id directly on token if set manually
+    else if (session?.user && token?.id) {
+       session.user.id = token.id
+    }
+
+    // Persist email and name if available in token
+    if (session?.user && token?.email) {
+      session.user.email = token.email
+    }
+    if (session?.user && token?.name) {
+      session.user.name = token.name
     }
     
     // Add user id from database user (when using database sessions)

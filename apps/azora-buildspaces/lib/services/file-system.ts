@@ -420,6 +420,18 @@ export class FileSystemService extends EventEmitter {
    * Push to remote
    */
   async gitPush(containerId: string, path: string, remote = 'origin', branch?: string, userId?: string): Promise<void> {
+    // Constitutional Guard: Check if user is allowed to push
+    const verification = await constitutionalAI.verifyAction({
+      type: 'git_push',
+      resource: `${remote}:${branch || 'main'}`,
+      userId: userId || 'system',
+      metadata: { path, containerId }
+    })
+
+    if (!verification.allowed) {
+      throw new Error(`Constitutional Violation: ${verification.explanation}. Violations: ${verification.violations.map(v => v.description).join(', ')}`)
+    }
+
     try {
       const response = await fetch('/api/fs', {
         method: 'POST',

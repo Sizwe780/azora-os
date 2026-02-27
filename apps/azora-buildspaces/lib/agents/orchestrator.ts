@@ -15,6 +15,7 @@ import { runCommand } from '@/lib/runtime/command-runner'
 import { sendSlackMessage, formatWorkflowStatus } from '@/lib/runtime/slack-integration'
 import { deploy } from '@/lib/runtime/deployment'
 import { auditLogger, AuditEventType, AuditSeverity } from '@/lib/audit-logger'
+import { syncTraceToFirestore, PersistenceStep } from '@/lib/agents/persistence'
 
 export type NodeType = 'trigger' | 'agent' | 'action'
 export type TriggerType = 'on_commit' | 'on_save' | 'on_schedule' | 'manual'
@@ -80,6 +81,8 @@ export interface ExecutionContext {
   triggerData: any
   nodeOutputs: Map<string, any> // nodeId -> output
   approvals: Map<string, boolean> // nodeId -> approved
+  executionId?: string // optional Firestore document id for persistence
+  stepIndex?: number
 }
 
 export interface ExecutionResult {
@@ -89,6 +92,14 @@ export interface ExecutionResult {
   requiresApproval?: string[] // nodeIds that need approval
 }
 
+export interface TraceStep {
+  id: string
+  type: 'thought' | 'action' | 'observation' | 'result'
+  text: string
+  timestamp: string
+  synced?: boolean
+}
+
 /**
  * Workflow Orchestrator
  * Manages and executes agent workflows
@@ -96,9 +107,18 @@ export interface ExecutionResult {
 export class WorkflowOrchestrator {
   private workflows: Map<string, Workflow> = new Map()
   private workflowsPath = '.azora/workflows'
+  private stepCallback?: (step: TraceStep) => void
 
   constructor() {
     this.loadWorkflows()
+  }
+
+  /**
+   * Register a callback that will be invoked each time the orchestrator
+   * emits a reasoning trace step (action/observation/etc).
+   */
+  onStep(callback: (step: TraceStep) => void) {
+    this.stepCallback = callback
   }
 
   /**
@@ -178,7 +198,8 @@ export class WorkflowOrchestrator {
   async executeWorkflow(
     workflowId: string,
     triggerData?: any,
-    approvals?: Map<string, boolean>
+    approvals?: Map<string, boolean>,
+    executionId?: string
   ): Promise<ExecutionResult> {
     const workflow = this.workflows.get(workflowId)
     if (!workflow) {
@@ -204,6 +225,8 @@ export class WorkflowOrchestrator {
       triggerData: triggerData || {},
       nodeOutputs: new Map(),
       approvals: approvals || new Map(),
+      executionId,
+      stepIndex: 0,
     }
 
     try {
@@ -255,6 +278,33 @@ export class WorkflowOrchestrator {
   ): Promise<any> {
     console.log(`[Orchestrator] Executing node: ${node.id} (${node.type})`)
 
+    const emit = (type: TraceStep['type'], text: string) => {
+      const step: TraceStep = { id: node.id, type, text, timestamp: new Date().toISOString(), synced: !!context.executionId }
+      if (this.stepCallback) {
+        this.stepCallback(step)
+      }
+      maybePersist(step)
+    }
+
+    // helper to persist trace step if executionId present
+    const maybePersist = async (step: TraceStep) => {
+      if (context.executionId) {
+        const pstep: PersistenceStep = {
+          timestamp: step.timestamp,
+          type: step.type,
+          content: step.text,
+          metadata: { tokensUsed: 0, model: '' },
+        }
+        await syncTraceToFirestore(context.executionId, pstep, undefined, context.stepIndex ?? 0)
+        context.stepIndex = (context.stepIndex ?? 0) + 1
+      }
+    }
+
+    // when we begin processing an agent or action node we emit an "action"
+    // step. the UI uses this to display a ghost loader until the next
+    // observation/result step arrives.
+    const startAction = (desc: string) => emit('action', `Starting ${desc}`)
+
     // Check if node requires approval
     if (node.type === 'agent' || node.type === 'action') {
       const data = node.data as AgentNodeData | ActionNodeData
@@ -265,15 +315,30 @@ export class WorkflowOrchestrator {
 
     let output: any
 
+    // NOTE: persistence handled by maybePersist above
+
     switch (node.type) {
       case 'trigger':
+        emit('thought', `Trigger node ${node.id}`)
         output = await this.executeTriggerNode(node, context)
+        emit('observation', `Trigger output: ${JSON.stringify(output)}`)
         break
       case 'agent':
+        emit('thought', `Agent node ${node.id} (${(node.data as AgentNodeData).agentType})`)
+        // persist thought
+        await maybePersist('thought', `Agent node ${node.id}`)
+        startAction(`agent ${(node.data as AgentNodeData).agentType}`)
         output = await this.executeAgentNode(node, context)
+        emit('observation', `Agent output: ${JSON.stringify(output)}`)
+        await maybePersist('observation', JSON.stringify(output))
         break
       case 'action':
+        emit('thought', `Action node ${node.id} (${(node.data as ActionNodeData).actionType})`)
+        await maybePersist('thought', `Action node ${node.id}`)
+        startAction(`action ${(node.data as ActionNodeData).actionType}`)
         output = await this.executeActionNode(node, context)
+        emit('observation', `Action result: ${JSON.stringify(output)}`)
+        await maybePersist('observation', JSON.stringify(output))
         break
       default:
         throw new Error(`Unknown node type: ${node.type}`)
@@ -334,40 +399,31 @@ export class WorkflowOrchestrator {
       
       let output: any
 
-      switch (data.agentType) {
-        case 'nia':
-          // Nia validates specifications
-          output = await nia.validateSpec(inputStr)
-          break
-
-        case 'themba':
-          // Themba analyzes code quality
-          output = await themba.analyzeCode(inputStr)
-          break
-
-        case 'sankofa':
-        case 'kwame':
-        case 'elara':
-        default:
-          // Use AI Family service for other agents
-          const aiClient = AIFamilyServiceClient.getInstance()
-          const response = await aiClient.chat({
-            agent: data.agentType as any,
-            message: `${data.systemPrompt}\n\nInput Data:\n${inputStr}`,
-            context: {
-              roomType: 'orchestrator',
-              history: [],
-            },
-          })
-          
-          output = {
-            agent: data.agentType,
-            input,
-            output: response.response,
-            systemPrompt: data.systemPrompt,
-            suggestions: response.suggestions,
-          }
-          break
+      // Use if-else instead of switch to avoid potential parsing/syntax issues in tests
+      if (data.agentType === 'nia') {
+        output = await nia.validateSpec(inputStr)
+      } else if (data.agentType === 'themba') {
+        output = await themba.analyzeCode(inputStr)
+      } else {
+        // Default case for 'sankofa', 'kwame', 'elara', and others
+        // Use AI Family service
+        const aiClient = AIFamilyServiceClient.getInstance()
+        const response = await aiClient.chat({
+          agent: data.agentType as any,
+          message: `${data.systemPrompt}\n\nInput Data:\n${inputStr}`,
+          context: {
+            roomType: 'orchestrator',
+            history: [],
+          },
+        })
+        
+        output = {
+          agent: data.agentType,
+          input,
+          output: response.response,
+          systemPrompt: data.systemPrompt,
+          suggestions: response.suggestions,
+        }
       }
 
       console.log(`[Orchestrator] Agent output:`, output)
@@ -420,6 +476,39 @@ export class WorkflowOrchestrator {
     let result: any
 
     try {
+      // report the action being executed
+      if (this.stepCallback) {
+        this.stepCallback({
+          id: node.id,
+          type: 'action',
+          text: `Performing action ${data.actionType}`,
+          timestamp: new Date().toISOString(),
+        })
+      }
+      // delegate to the tool registry for any actions that have been
+      // registered as tools.  this keeps async side effects in one place
+      // and allows the LLM to list available capabilities (skill
+      // discovery) across both AI Studio and workflow orchestrator.
+      const { executeTool, getTool } = await import('@/lib/agents/tools')
+      const maybeTool = getTool(data.actionType)
+      if (maybeTool) {
+        const toolResult = await executeTool(data.actionType, input || '', data.config as any)
+        if (typeof toolResult === 'string') {
+          result = { success: true, output: toolResult }
+        } else {
+          result = { success: toolResult.status === 'success', ...toolResult }
+        }
+        // log side effect
+        console.log(`[Orchestrator] 🔧 Action (${data.actionType}) via tool registry`, result)
+        // audit
+        await auditLogger.info(
+          AuditEventType.CODE_EXECUTED,
+          { action: data.actionType, success: result.success }
+        )
+        return result
+      }
+
+      // fallback to manual handling of non-tool actions
       switch (data.actionType) {
         case 'write_file':
           if (data.config.filePath && data.config.content) {
@@ -531,6 +620,14 @@ export class WorkflowOrchestrator {
           throw new Error(`Unknown action type: ${data.actionType}`)
       }
     } catch (error) {
+        if (this.stepCallback) {
+          this.stepCallback({
+            id: node.id,
+            type: 'observation',
+            text: `Action ${data.actionType} failed: ${error instanceof Error ? error.message : String(error)}`,
+            timestamp: new Date().toISOString(),
+          })
+        }
       result = {
         success: false,
         error: error instanceof Error ? error.message : String(error),

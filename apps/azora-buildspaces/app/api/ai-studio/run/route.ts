@@ -1,6 +1,20 @@
 import { NextResponse } from "next/server"
 import { generateText } from "ai"
 import { openai } from "@ai-sdk/openai"
+import { executeTool, getTool } from "@/lib/agents/tools"
+import { runCommand } from "@/lib/runtime/command-runner"
+import { fileSystem } from "@/lib/workspace/file-system"
+
+// The AI Studio "run" endpoint used to contain a bunch of hard-coded
+// behaviour (previously mocked tool execution/transform logic).  It's now
+// backed by a pluggable tool registry so new capabilities can be added
+// dynamically without editing this file.
+//
+// To comply with the Zero-Mock Policy we now perform real actions where
+// possible and fall back to a documented TODO for more advanced tooling.
+// This keeps the editor interactive while making sure users see genuine
+// side effects (running commands, writing files, etc.) rather than fake
+// responses.
 
 export async function POST(req: Request) {
   try {
@@ -38,13 +52,37 @@ export async function POST(req: Request) {
           currentInput = text
           nodeResults[node.id] = { status: "success", output: text }
         } else if (node.type === "tool") {
-          // Mock tool execution
-          currentInput = `[Tool Executed: ${node.config.toolName || "Unknown"}] ${currentInput}`
-          nodeResults[node.id] = { status: "success", output: currentInput }
+          const toolName = node.config.toolName || ""
+          try {
+            const result = await executeTool(toolName, currentInput, node.config)
+            if (typeof result === 'string') {
+              currentInput = result
+              nodeResults[node.id] = { status: 'success', output: currentInput }
+            } else {
+              currentInput = result.output || ''
+              nodeResults[node.id] = { status: result.status, output: currentInput }
+            }
+          } catch (err) {
+            currentInput = `[Tool error: ${(err as Error).message}] ${currentInput}`
+            nodeResults[node.id] = { status: 'error', output: currentInput }
+          }
         } else if (node.type === "transform") {
-          // Mock transform
-          currentInput = currentInput.toUpperCase()
-          nodeResults[node.id] = { status: "success", output: currentInput }
+          // transform nodes are now implemented via the tool registry (see
+          // lib/agents/tools).  this keeps the execution model uniform and
+          // allows the LLM to discover "transform" as just another skill.
+          try {
+            const result = await executeTool('transform', currentInput, node.config)
+            if (typeof result === 'string') {
+              currentInput = result
+              nodeResults[node.id] = { status: 'success', output: currentInput }
+            } else {
+              currentInput = result.output || ''
+              nodeResults[node.id] = { status: result.status, output: currentInput }
+            }
+          } catch (err) {
+            currentInput = `[Transform error: ${(err as Error).message}] ${currentInput}`
+            nodeResults[node.id] = { status: 'error', output: currentInput }
+          }
         } else if (node.type === "output") {
           nodeResults[node.id] = { status: "success", output: currentInput }
         } else {
