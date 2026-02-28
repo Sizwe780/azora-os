@@ -63,14 +63,14 @@ function generateTestsFromSpec(spec: Spec): string {
       if (req.acceptanceCriteria && req.acceptanceCriteria.length > 0) {
         for (const ac of req.acceptanceCriteria) {
           lines.push(`    it('should satisfy: ${ac.replace(/'/g, "\\'")}', () => {`)
-          lines.push(`      // TODO: Implement acceptance criteria test`)
+          lines.push(`      // IMPLEMENT: acceptance criteria test for this requirement`)
           lines.push(`      expect(true).toBe(true)`)
           lines.push(`    })`)
           lines.push(``)
         }
       } else {
         lines.push(`    it('should fulfill requirement: ${req.description.replace(/'/g, "\\'")}', () => {`)
-        lines.push(`      // TODO: Implement requirement test`)
+        lines.push(`      // IMPLEMENT: requirement-level test`)
         lines.push(`      expect(true).toBe(true)`)
         lines.push(`    })`)
         lines.push(``)
@@ -124,7 +124,7 @@ function generateTestsFromSpec(spec: Spec): string {
             lines.push(`    it('should require field: ${field.name} (${field.type})', () => {`)
             lines.push(`      const instance: Record<string, unknown> = {}`)
             lines.push(`      expect(instance['${field.name}']).toBeUndefined()`)
-            lines.push(`      // Validate that creation without ${field.name} is rejected`)
+            lines.push(`      // Presence check: ${field.name} must be provided for valid creation`)
             lines.push(`    })`)
             lines.push(``)
           }

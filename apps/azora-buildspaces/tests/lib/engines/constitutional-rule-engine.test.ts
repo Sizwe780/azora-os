@@ -68,6 +68,15 @@ describe('ConstitutionalRuleEngine', () => {
       expect(truth!.section).toBe('8.3')
     })
 
+    it('should detect standalone TODO comments', () => {
+      const action = makeAction({
+        type: UserActionType.CODE_EDIT,
+        payload: { content: '// TODO: add validation later' },
+      })
+      const violations = engine.evaluate(action)
+      expect(violations.some((v) => v.article === ConstitutionalArticle.TRUTH_VERIFICATION)).toBe(true)
+    })
+
     it('should detect deployment without audit', () => {
       const action = makeAction({
         type: UserActionType.PROJECT_DEPLOY,

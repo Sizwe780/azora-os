@@ -186,7 +186,7 @@ const BUILT_IN_RULES: ConstitutionalRule[] = [
         action.type === UserActionType.FILE_CREATE
       ) {
         const p = action.payload as { content?: string; fileName?: string }
-        const patterns = [/stub/i, /placeholder/i, /fake/i, /dummy/i, /TODO.*implement/i, /FIXME/i]
+        const patterns = [/stub/i, /placeholder/i, /fake/i, /dummy/i, /TODO/i, /FIXME/i]
         const matches = patterns.filter(
           (pat) => p.content?.match(pat) || p.fileName?.match(pat),
         )
