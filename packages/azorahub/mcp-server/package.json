@@ -53,7 +53,7 @@
     "@azorahub/api-client": "workspace:*",
     "axios": "^1.6.0",
     "commander": "^11.0.0",
-    "dotenv": "^16.3.0",
+    "dotenv": "^17.2.3",
     "winston": "^3.11.0",
     "node-cache": "^5.1.2",
     "rate-limiter-flexible": "^4.0.0",

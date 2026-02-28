@@ -15,7 +15,7 @@
     "probot": "^12.2.0",
     "@octokit/rest": "^19.0.0",
     "@octokit/graphql": "^5.0.0",
-    "dotenv": "^16.3.0",
+    "dotenv": "^17.2.3",
     "winston": "^3.11.0",
     "express": "^4.18.0",
     "axios": "^1.6.0"
