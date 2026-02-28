@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
 
     // Auto-clean after 5 minutes to prevent memory leak
     const timer = setTimeout(() => cancelledRuns.delete(runId), 300_000)
-    if (typeof timer === 'object' && 'unref' in timer) timer.unref()
+    timer.unref?.()
 
     return NextResponse.json({
       success: true,

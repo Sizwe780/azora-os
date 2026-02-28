@@ -60,12 +60,20 @@ export async function POST(req: NextRequest) {
       }
 
       // Heuristic: edits to the same line range conflict.
-      // Each user's changes should include lineStart/lineEnd for precise detection.
-      const aStart = userA.lineStart ?? 0
-      const aEnd = userA.lineEnd ?? Infinity
-      const bStart = userB.lineStart ?? 0
-      const bEnd = userB.lineEnd ?? Infinity
-      const hasOverlap = aStart <= bEnd && bStart <= aEnd
+      // When line ranges aren't provided, different changes to the same file = conflict.
+      const hasLineRanges = userA.lineStart !== undefined || userB.lineStart !== undefined
+      let hasOverlap: boolean
+
+      if (hasLineRanges) {
+        const aStart = userA.lineStart ?? 0
+        const aEnd = userA.lineEnd ?? Infinity
+        const bStart = userB.lineStart ?? 0
+        const bEnd = userB.lineEnd ?? Infinity
+        hasOverlap = aStart <= bEnd && bStart <= aEnd
+      } else {
+        // Without line ranges, any concurrent edit to the same file is a potential conflict
+        hasOverlap = true
+      }
 
       if (!hasOverlap) {
         return NextResponse.json({ conflict: false, message: 'No conflict detected' })
