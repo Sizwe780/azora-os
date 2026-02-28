@@ -13,6 +13,9 @@ import { z } from 'zod'
  *
  * Industry parity: VS Code Problems panel + SonarQube
  */
+
+/** Maximum characters of source code sent to the LLM for analysis */
+const MAX_CODE_INPUT_LENGTH = 6000
 export async function POST(req: NextRequest) {
   try {
     const { code, language, filename } = await req.json()
@@ -48,7 +51,7 @@ export async function POST(req: NextRequest) {
 
 File: ${filename || 'untitled'}
 \`\`\`${language || 'typescript'}
-${code.slice(0, 6000)}
+${code.slice(0, MAX_CODE_INPUT_LENGTH)}
 \`\`\`
 
 Find: bugs, type errors, unused variables, security issues, style problems, accessibility issues.

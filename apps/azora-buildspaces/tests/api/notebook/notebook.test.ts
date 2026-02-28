@@ -56,22 +56,23 @@ describe('Notebook Cells (/api/notebook/cells)', () => {
   })
 
   it('PUT should update cell source', async () => {
+    const putNbId = `nb_put_${Date.now()}`
     // Create a cell first
     const createRes = await cellsPOST(makePostRequest({
-      notebookId: `nb_put_${Date.now()}`,
+      notebookId: putNbId,
       source: 'old code',
     }))
     const createData = await createRes.json()
     const cellId = createData.cell.id
 
     const res = await cellsPUT(makePostRequest({
-      notebookId: `nb_put_${Date.now()}`,
+      notebookId: putNbId,
       cellId,
       source: 'new code',
     }))
     const data = await res.json()
-    // May be 404 due to different nbId, or success if same
-    expect([200, 404]).toContain(res.status)
+    expect(data.success).toBe(true)
+    expect(data.cell.source).toBe('new code')
   })
 
   it('PUT should return 400 without cellId', async () => {

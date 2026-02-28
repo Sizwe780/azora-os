@@ -12,6 +12,9 @@ import { z } from 'zod'
  *
  * Industry parity: Mintlify Doc Writer + GitHub Copilot /doc
  */
+
+/** Maximum characters of source code sent to the LLM for analysis */
+const MAX_CODE_INPUT_LENGTH = 6000
 export async function POST(req: NextRequest) {
   try {
     const { code, language, style } = await req.json()
@@ -47,7 +50,7 @@ export async function POST(req: NextRequest) {
       prompt: `Generate ${docStyle} documentation for the following ${language || 'typescript'} code.
 
 \`\`\`${language || 'typescript'}
-${code.slice(0, 6000)}
+${code.slice(0, MAX_CODE_INPUT_LENGTH)}
 \`\`\`
 
 Generate:

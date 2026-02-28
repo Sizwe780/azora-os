@@ -13,6 +13,9 @@ import { z } from 'zod'
  *
  * Industry parity: GitHub Copilot Chat /explain + Sourcegraph Cody
  */
+
+/** Maximum characters of source code sent to the LLM for analysis */
+const MAX_CODE_INPUT_LENGTH = 6000
 export async function POST(req: NextRequest) {
   try {
     const { code, language, question } = await req.json()
@@ -45,7 +48,7 @@ export async function POST(req: NextRequest) {
 
 ${question ? `User question: ${question}\n` : ''}
 \`\`\`${language || ''}
-${code.slice(0, 6000)}
+${code.slice(0, MAX_CODE_INPUT_LENGTH)}
 \`\`\`
 
 Explain what this code does, how it works, and what concepts it uses.

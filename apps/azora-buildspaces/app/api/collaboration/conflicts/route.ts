@@ -59,8 +59,13 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: 'fileId, userA, and userB are required' }, { status: 400 })
       }
 
-      // Simple heuristic: edits to the same line range conflict
-      const hasOverlap = true // In production, this checks line ranges
+      // Heuristic: edits to the same line range conflict.
+      // Each user's changes should include lineStart/lineEnd for precise detection.
+      const aStart = userA.lineStart ?? 0
+      const aEnd = userA.lineEnd ?? Infinity
+      const bStart = userB.lineStart ?? 0
+      const bEnd = userB.lineEnd ?? Infinity
+      const hasOverlap = aStart <= bEnd && bStart <= aEnd
 
       if (!hasOverlap) {
         return NextResponse.json({ conflict: false, message: 'No conflict detected' })

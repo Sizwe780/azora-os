@@ -25,6 +25,9 @@ interface UserPresence {
 // In-memory presence store (roomId → Map<userId, presence>)
 const presenceStore = new Map<string, Map<string, UserPresence>>()
 
+// Stale presence timeout (2 minutes)
+const PRESENCE_TIMEOUT_MS = 120_000
+
 // Colour palette for collaborators
 const COLORS = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8', '#F7DC6F']
 
@@ -35,7 +38,7 @@ export async function GET(req: NextRequest) {
   // Clean up stale users (last seen > 2 minutes ago)
   const now = Date.now()
   for (const [uid, p] of room.entries()) {
-    if (now - new Date(p.lastSeen).getTime() > 120_000) {
+    if (now - new Date(p.lastSeen).getTime() > PRESENCE_TIMEOUT_MS) {
       room.delete(uid)
     }
   }

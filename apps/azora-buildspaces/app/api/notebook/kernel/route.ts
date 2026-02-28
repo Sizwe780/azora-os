@@ -94,32 +94,35 @@ export async function POST(req: NextRequest) {
       kernel.executionCount += 1
       const startTime = Date.now()
 
-      // Simple sandboxed execution for safe expressions
+      // Sandboxed execution using Function constructor (safer than eval)
       let output: string
       let outputType: 'text' | 'error' = 'text'
 
       try {
-        // Only evaluate simple expressions (no require, no fs, etc.)
         const safeCode = code.trim()
-        if (
-          safeCode.includes('require') ||
-          safeCode.includes('import') ||
-          safeCode.includes('process') ||
-          safeCode.includes('__dirname') ||
-          safeCode.includes('child_process')
-        ) {
+        // Block access to Node.js internals and module system
+        const BLOCKED_TOKENS = [
+          'require', 'import', 'process', '__dirname', '__filename',
+          'child_process', 'globalThis', 'global.', 'Buffer',
+        ]
+        const isRestricted = BLOCKED_TOKENS.some((t) => safeCode.includes(t))
+
+        if (isRestricted) {
           output = `[Security] Restricted operation. Use the Code Chamber for full execution.`
           outputType = 'error'
         } else {
-          // eslint-disable-next-line no-eval
-          const result = eval(safeCode)
+          // Use Function constructor instead of eval for slightly better isolation.
+          // In production, this should be replaced with isolated-vm or QuickJS WASM.
+          const fn = new Function(`"use strict"; return (${safeCode})`)
+          const result = fn()
           output = result !== undefined ? String(result) : '(no output)'
           // Track variable assignments (basic heuristic)
           const assignMatch = safeCode.match(/^(?:const|let|var)\s+(\w+)\s*=/)
           if (assignMatch) {
+            const serialized = JSON.stringify(result)
             kernel.variables[assignMatch[1]] = {
               type: typeof result,
-              value: JSON.stringify(result)?.slice(0, 200) || String(result),
+              value: (serialized ?? String(result)).slice(0, 200),
             }
           }
         }
