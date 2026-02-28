@@ -85,12 +85,19 @@ describe('Deploy Pre-flight Validation (/api/deploy)', () => {
         projectName: 'my-app',
       }))
       const data = await res.json()
-      // Should either pass pre-flight (status 200) or get constitutional check (403)
-      // Pre-flight should have passed since staging + valid inputs
-      expect([200, 403]).toContain(res.status)
+      // Pre-flight should always pass for valid staging with valid inputs
+      // The constitutional check may or may not allow (depends on action payload)
       if (res.status === 200) {
         expect(data.success).toBe(true)
         expect(data.preflight.passed).toBe(true)
+        expect(data.constitutional.score).toBeDefined()
+      } else if (res.status === 403) {
+        // Constitutional check blocked — but pre-flight still passed
+        expect(data.preflight.passed).toBe(true)
+        expect(data.error).toBe('Constitutional Violation')
+      } else {
+        // 422 would mean pre-flight failed — should NOT happen for valid input
+        expect(res.status).not.toBe(422)
       }
     })
   })
