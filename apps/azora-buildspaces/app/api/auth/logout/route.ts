@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
+import { logAuthEvent } from '@/lib/auth-audit';
 
 /**
  * POST /api/auth/logout
@@ -9,7 +10,7 @@ import { authOptions } from '@/lib/auth/config';
  * Logs the logout event for constitutional audit trail.
  * 
  * Constitutional Alignment:
- * - Transparency: Logs all auth events
+ * - Transparency: Logs all auth events via centralized audit logger
  * - User Sovereignty: User controls their session
  */
 export async function POST(req: Request) {
@@ -28,16 +29,15 @@ export async function POST(req: Request) {
     const userId = (session.user as any).id || session.user.email;
     const userEmail = session.user.email || 'unknown';
 
-    console.log(`[AUTH] User logout: ${userEmail} (${userId})`);
-
-    // TODO: When ConstitutionalAuditLog is integrated:
-    // await logAuthEvent({
-    //   action: 'AUTH_LOGOUT',
-    //   userId,
-    //   ipAddress: req.headers.get('x-forwarded-for') || 'unknown',
-    //   success: true,
-    //   metadata: { email: userEmail }
-    // });
+    await logAuthEvent({
+      action: 'LOGOUT',
+      userId,
+      userEmail,
+      ipAddress: req.headers.get('x-forwarded-for') || 'unknown',
+      userAgent: req.headers.get('user-agent') || undefined,
+      success: true,
+      metadata: { email: userEmail },
+    });
 
     return NextResponse.json({
       success: true,
