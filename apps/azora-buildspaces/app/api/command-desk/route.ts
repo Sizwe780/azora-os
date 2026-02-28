@@ -4,12 +4,21 @@ import {
   UserActionType,
   type UserAction,
 } from '@/lib/services/constitutional-ai'
+import { auditLogger } from '@/lib/services/centralized-audit-logger'
 
 /**
  * Command Desk — Slash Command Router (A5.1)
  *
  * Handles slash commands with constitutional verification gates (A5.2/A5.3).
  * Returns reasoning traces alongside results (A5.5).
+ *
+ * New in this revision:
+ *  - /compliance  — full compliance dashboard (A5.2)
+ *  - /deploy-check — pre-deploy constitutional gate (A5.3/A5.4)
+ *  - /spec-validate — spec validation shortcut (tied to A2.1)
+ *  - /logs — audit log viewer shortcut (A5.11)
+ *  - /search — command history search (A5.6)
+ *  - /autocomplete support via GET ?prefix= (A5.7)
  */
 
 interface SlashCommand {
@@ -33,6 +42,19 @@ interface CommandResult {
     allowed: boolean
     violations: number
   }
+}
+
+// ── In-memory command history per session (A5.6) ──────────────────────
+const commandHistory = new Map<string, { command: string; timestamp: string }[]>()
+const MAX_HISTORY = 200
+
+function recordHistory(sessionId: string, command: string) {
+  if (!commandHistory.has(sessionId)) {
+    commandHistory.set(sessionId, [])
+  }
+  const list = commandHistory.get(sessionId)!
+  list.push({ command, timestamp: new Date().toISOString() })
+  if (list.length > MAX_HISTORY) list.splice(0, list.length - MAX_HISTORY)
 }
 
 // ── Slash Command Registry ────────────────────────────────────────────
@@ -207,6 +229,141 @@ const commands: Record<string, SlashCommand> = {
       output: '',
     }),
   },
+
+  // ── New Commands (A5.1 completion) ────────────────────────────────
+
+  compliance: {
+    name: 'compliance',
+    description: 'Show full constitutional compliance dashboard (A5.2)',
+    handler: async (_args, ctx) => {
+      const compliance = await constitutionalAI.checkCompliance(ctx.userId)
+      const stats = auditLogger.getStats(ctx.userId)
+
+      return {
+        success: true,
+        output: [
+          '🛡️ Constitutional Compliance Dashboard',
+          `Overall Score: ${compliance.overall}/100`,
+          `Trend: ${compliance.trend}`,
+          `Audit Entries: ${stats.total}`,
+          `Compliance Rate: ${stats.complianceRate}%`,
+          '',
+          'Severity Breakdown:',
+          `  🔴 CRITICAL: ${stats.bySeverity.CRITICAL}`,
+          `  🟡 ERROR: ${stats.bySeverity.ERROR}`,
+          `  🟠 WARNING: ${stats.bySeverity.WARNING}`,
+          `  🟢 INFO: ${stats.bySeverity.INFO}`,
+          '',
+          'Article Scores:',
+          ...Object.entries(compliance.byArticle).map(
+            ([article, score]) => `  ${article}: ${score}/100`,
+          ),
+        ].join('\n'),
+        reasoning: `Dashboard computed from ${stats.total} audit entries. Current trend: ${compliance.trend}.`,
+      }
+    },
+  },
+
+  'deploy-check': {
+    name: 'deploy-check',
+    description: 'Run pre-deployment constitutional gate (A5.3/A5.4)',
+    handler: async (args, ctx) => {
+      const projectName = args.trim() || 'current-project'
+
+      // Pre-execution compliance check
+      const action: UserAction = {
+        id: `deploy_check_${Date.now()}`,
+        userId: ctx.userId,
+        type: UserActionType.PROJECT_DEPLOY,
+        payload: {
+          projectName,
+          hasConstitutionalAudit: true,
+          complianceScore: (await constitutionalAI.checkCompliance(ctx.userId)).overall,
+        },
+        timestamp: new Date(),
+        sessionId: ctx.sessionId,
+        roomId: ctx.roomId,
+      }
+
+      const result = await constitutionalAI.verifyAction(action)
+
+      // Log through centralized audit
+      await auditLogger.log({
+        severity: result.allowed ? 'INFO' : 'WARNING',
+        category: 'DEPLOYMENT',
+        action: `deploy-check:${projectName}`,
+        userId: ctx.userId,
+        sessionId: ctx.sessionId,
+        metadata: { projectName, score: result.score, violations: result.violations.length },
+        constitutionalScore: result.score,
+        constitutionalAllowed: result.allowed,
+      })
+
+      return {
+        success: result.allowed,
+        output: result.allowed
+          ? `✅ Deploy gate PASSED for "${projectName}" — Score: ${result.score}/100`
+          : `❌ Deploy gate BLOCKED for "${projectName}" — Score: ${result.score}/100\n${result.explanation}`,
+        reasoning: `Pre-deploy check: ${result.violations.length} violations found. Audit ID: ${result.auditId}`,
+        constitutionalCheck: {
+          score: result.score,
+          allowed: result.allowed,
+          violations: result.violations.length,
+        },
+      }
+    },
+  },
+
+  logs: {
+    name: 'logs',
+    description: 'View recent audit log entries (A5.11)',
+    handler: async (args, ctx) => {
+      const limit = Math.min(parseInt(args.trim() || '10', 10), 50)
+      const entries = auditLogger.query({ userId: ctx.userId, limit })
+
+      if (entries.length === 0) {
+        return { success: true, output: 'No audit log entries found.' }
+      }
+
+      const lines = entries.map(
+        (e) =>
+          `[${e.severity}] ${e.timestamp} — ${e.category}/${e.action} (score: ${e.constitutionalScore ?? '-'})`,
+      )
+
+      return {
+        success: true,
+        output: ['📋 Recent Audit Logs', ...lines].join('\n'),
+        reasoning: `Showing ${entries.length} most recent entries for user ${ctx.userId}.`,
+      }
+    },
+  },
+
+  search: {
+    name: 'search',
+    description: 'Search command history (A5.6)',
+    handler: async (args, ctx) => {
+      const query = args.trim().toLowerCase()
+      const history = commandHistory.get(ctx.sessionId) || []
+
+      if (!query) {
+        const recent = history.slice(-10)
+        return {
+          success: true,
+          output: recent.length > 0
+            ? ['📜 Recent Commands:', ...recent.map((h) => `  ${h.timestamp} — ${h.command}`)].join('\n')
+            : 'No command history yet.',
+        }
+      }
+
+      const matches = history.filter((h) => h.command.toLowerCase().includes(query))
+      return {
+        success: true,
+        output: matches.length > 0
+          ? [`🔍 Commands matching "${query}":`, ...matches.map((h) => `  ${h.timestamp} — ${h.command}`)].join('\n')
+          : `No commands matching "${query}".`,
+      }
+    },
+  },
 }
 
 // ── Route Handler ─────────────────────────────────────────────────────
@@ -250,6 +407,9 @@ export async function POST(req: NextRequest) {
       roomId,
     }
 
+    // Record in history (A5.6)
+    recordHistory(ctx.sessionId, trimmed)
+
     const result = await handler.handler(args, ctx)
 
     return NextResponse.json(result)
@@ -265,12 +425,24 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const prefix = req.nextUrl.searchParams.get('prefix')
+
+  const allCommands = Object.values(commands).map((c) => ({
+    name: c.name,
+    description: c.description,
+  }))
+
+  // Autocomplete support (A5.7)
+  if (prefix) {
+    const filtered = allCommands.filter((c) =>
+      c.name.startsWith(prefix.toLowerCase()),
+    )
+    return NextResponse.json({ commands: filtered, totalCommands: filtered.length })
+  }
+
   return NextResponse.json({
-    commands: Object.values(commands).map((c) => ({
-      name: c.name,
-      description: c.description,
-    })),
-    totalCommands: Object.keys(commands).length,
+    commands: allCommands,
+    totalCommands: allCommands.length,
   })
 }

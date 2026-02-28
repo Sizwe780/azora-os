@@ -99,6 +99,80 @@ const PROVIDER_ENDPOINTS: Record<AIProvider, string> = {
  */
 export const FAILOVER_CHAIN: AIProvider[] = ['openai', 'anthropic', 'groq', 'ollama'];
 
+/**
+ * Per-provider request timeout in milliseconds.
+ * Can be overridden via AI_PROVIDER_TIMEOUT_MS env var.
+ */
+const PROVIDER_TIMEOUT_MS = parseInt(process.env.AI_PROVIDER_TIMEOUT_MS || '15000', 10);
+
+/**
+ * Circuit breaker state for each provider (B6 enhancement).
+ * After `CIRCUIT_THRESHOLD` consecutive failures the provider is marked OPEN
+ * and skipped for `CIRCUIT_RESET_MS` before being retried (HALF_OPEN).
+ */
+interface CircuitState {
+    failures: number;
+    state: 'CLOSED' | 'OPEN' | 'HALF_OPEN';
+    lastFailure: number;
+}
+
+const CIRCUIT_THRESHOLD = 3;
+const CIRCUIT_RESET_MS = parseInt(process.env.AI_CIRCUIT_RESET_MS || '60000', 10);
+
+const circuitBreakers = new Map<AIProvider, CircuitState>();
+
+function getCircuit(provider: AIProvider): CircuitState {
+    if (!circuitBreakers.has(provider)) {
+        circuitBreakers.set(provider, { failures: 0, state: 'CLOSED', lastFailure: 0 });
+    }
+    return circuitBreakers.get(provider)!;
+}
+
+function recordSuccess(provider: AIProvider): void {
+    const circuit = getCircuit(provider);
+    circuit.failures = 0;
+    circuit.state = 'CLOSED';
+}
+
+function recordFailure(provider: AIProvider): void {
+    const circuit = getCircuit(provider);
+    circuit.failures += 1;
+    circuit.lastFailure = Date.now();
+    if (circuit.failures >= CIRCUIT_THRESHOLD) {
+        circuit.state = 'OPEN';
+    }
+}
+
+function isProviderAvailable(provider: AIProvider): boolean {
+    const circuit = getCircuit(provider);
+    if (circuit.state === 'CLOSED') return true;
+    if (circuit.state === 'OPEN') {
+        // Check if enough time has passed to attempt a retry (HALF_OPEN)
+        if (Date.now() - circuit.lastFailure >= CIRCUIT_RESET_MS) {
+            circuit.state = 'HALF_OPEN';
+            return true;
+        }
+        return false;
+    }
+    // HALF_OPEN — allow one attempt
+    return true;
+}
+
+/** Expose circuit breaker state for monitoring / health endpoint. */
+export function getProviderHealth(): Record<AIProvider, { state: string; failures: number }> {
+    const health: Record<string, { state: string; failures: number }> = {};
+    for (const p of FAILOVER_CHAIN) {
+        const c = getCircuit(p);
+        health[p] = { state: c.state, failures: c.failures };
+    }
+    return health as Record<AIProvider, { state: string; failures: number }>;
+}
+
+/** Reset a single provider's circuit breaker (useful in tests / admin). */
+export function resetCircuitBreaker(provider: AIProvider): void {
+    circuitBreakers.delete(provider);
+}
+
 class MultiModelAIRouter {
     private config: AIConfig;
     private conversationHistory: Map<string, AIMessage[]> = new Map();
@@ -161,6 +235,11 @@ class MultiModelAIRouter {
     /**
      * Send message with automatic provider failover (B6: Model Router with Failover)
      * Tries providers in order: preferred → OpenAI → Anthropic → Groq → Ollama
+     *
+     * Enhanced with:
+     *  - Circuit breaker (skips providers with repeated failures)
+     *  - Per-request timeout via AbortController
+     *  - Health telemetry for monitoring
      */
     async chatWithFailover(
         message: string,
@@ -188,11 +267,20 @@ class MultiModelAIRouter {
         }
 
         for (const provider of providerOrder) {
+            // Circuit breaker gate — skip providers that are OPEN
+            if (!isProviderAvailable(provider)) {
+                errors.push(`${provider}: circuit breaker OPEN`);
+                continue;
+            }
+
             try {
                 const originalProvider = this.config.provider;
                 this.config.provider = provider;
                 const response = await this.callProvider(messages);
                 this.config.provider = originalProvider;
+
+                // Record success in circuit breaker
+                recordSuccess(provider);
 
                 // Store in conversation history
                 if (conversationId) {
@@ -209,6 +297,7 @@ class MultiModelAIRouter {
                 const msg = error instanceof Error ? error.message : 'Unknown error';
                 errors.push(`${provider}: ${msg}`);
                 console.warn(`[AI Router] Provider ${provider} failed: ${msg}`);
+                recordFailure(provider);
             }
         }
 
@@ -330,6 +419,7 @@ class MultiModelAIRouter {
                 temperature: this.config.temperature,
                 max_tokens: this.config.maxTokens,
             }),
+            signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
         });
 
         if (!response.ok) {
@@ -379,6 +469,7 @@ class MultiModelAIRouter {
                 max_tokens: this.config.maxTokens,
                 temperature: this.config.temperature,
             }),
+            signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
         });
 
         if (!response.ok) {
@@ -422,6 +513,7 @@ class MultiModelAIRouter {
                 temperature: this.config.temperature,
                 max_tokens: this.config.maxTokens,
             }),
+            signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
         });
 
         if (!response.ok) {
@@ -465,6 +557,7 @@ class MultiModelAIRouter {
                 temperature: this.config.temperature,
                 max_tokens: this.config.maxTokens,
             }),
+            signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
         });
 
         if (!response.ok) {
@@ -507,6 +600,7 @@ class MultiModelAIRouter {
                     max_new_tokens: this.config.maxTokens,
                 },
             }),
+            signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
         });
 
         if (!response.ok) {
@@ -539,6 +633,7 @@ class MultiModelAIRouter {
                 messages,
                 stream: false,
             }),
+            signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
         });
 
         if (!response.ok) {

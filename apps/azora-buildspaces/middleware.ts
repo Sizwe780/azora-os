@@ -6,6 +6,32 @@ const WINDOW_MS = parseInt(process.env.RATE_LIMIT_WINDOW_MS || '60000', 10)
 const rateLimitWarning =
   "Rate limiting uses in-memory buckets and only protects a single instance. Configure a shared store (e.g., Redis) before scaling horizontally."
 
+/**
+ * Per-path rate limit tiers (C1 enhancement).
+ * More restrictive limits for sensitive endpoints.
+ */
+const PATH_RATE_LIMITS: { pattern: RegExp; limit: number }[] = [
+  { pattern: /^\/api\/auth\//, limit: 20 },
+  { pattern: /^\/api\/agents\/invoke/, limit: 30 },
+  { pattern: /^\/api\/specs\/generate/, limit: 20 },
+  { pattern: /^\/api\/constitutional\//, limit: 50 },
+]
+
+function getRateLimitForPath(pathname: string): number {
+  for (const tier of PATH_RATE_LIMITS) {
+    if (tier.pattern.test(pathname)) return tier.limit
+  }
+  return RATE_LIMIT
+}
+
+/**
+ * IP allowlist — IPs in this list bypass rate limiting entirely.
+ * Loaded from RATE_LIMIT_ALLOWLIST env var (comma-separated).
+ */
+const IP_ALLOWLIST = new Set(
+  (process.env.RATE_LIMIT_ALLOWLIST || '').split(',').map((s) => s.trim()).filter(Boolean),
+)
+
 type Bucket = { count: number; expiresAt: number }
 /**
  * Memory buckets only protect a single instance; production should wire a shared store (e.g., Redis).
@@ -76,7 +102,7 @@ async function isRateLimitedRedis(ip: string) {
   return count > RATE_LIMIT
 }
 
-function isRateLimitedMemory(ip: string) {
+function isRateLimitedMemory(ip: string, limit: number = RATE_LIMIT) {
   const now = Date.now()
   cleanupBuckets(now)
 
@@ -86,7 +112,7 @@ function isRateLimitedMemory(ip: string) {
     return false
   }
 
-  if (bucket.count >= RATE_LIMIT) {
+  if (bucket.count >= limit) {
     return true
   }
 
@@ -108,12 +134,22 @@ export async function middleware(req: NextRequest) {
 
   const ip = getIp(req)
 
+  // Allowlist bypass (C1)
+  if (IP_ALLOWLIST.has(ip)) {
+    const res = NextResponse.next()
+    return securityHeaders(res)
+  }
+
+  // Compute per-path limit (C1)
+  const pathLimit = getRateLimitForPath(req.nextUrl.pathname)
+
   // Prefer Redis-backed limiter if a REDIS_URL is configured
   if (process.env.REDIS_URL) {
     try {
       const limited = await isRateLimitedRedis(ip)
       if (limited === true) {
         const res = NextResponse.json({ error: "Rate limit exceeded" }, { status: 429 })
+        res.headers.set('Retry-After', String(Math.ceil(WINDOW_MS / 1000)))
         return securityHeaders(res)
       }
     } catch (err) {
@@ -121,8 +157,9 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  if (isRateLimitedMemory(ip)) {
+  if (isRateLimitedMemory(ip, pathLimit)) {
     const res = NextResponse.json({ error: "Rate limit exceeded" }, { status: 429 })
+    res.headers.set('Retry-After', String(Math.ceil(WINDOW_MS / 1000)))
     return securityHeaders(res)
   }
 
