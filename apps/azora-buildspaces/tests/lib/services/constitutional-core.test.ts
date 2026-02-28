@@ -1,20 +1,18 @@
 /** @jest-environment node */
 
 import { ConstitutionalCore, Constitution } from '@/lib/services/constitutional-core'
+import { resetSingleton } from '../../helpers/reset-singleton'
 
 describe('ConstitutionalCore', () => {
   let core: ConstitutionalCore
 
   beforeEach(() => {
-    // Reset singleton for test isolation
-    // @ts-ignore
-    ConstitutionalCore['instance'] = undefined as any
+    resetSingleton(ConstitutionalCore)
     core = ConstitutionalCore.getInstance()
   })
 
   afterEach(() => {
-    // @ts-ignore
-    ConstitutionalCore['instance'] = undefined as any
+    resetSingleton(ConstitutionalCore)
   })
 
   describe('getInstance', () => {

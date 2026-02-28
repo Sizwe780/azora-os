@@ -1,20 +1,18 @@
 /** @jest-environment node */
 
 import { AgentOrchestrator, type AgentTask } from '@/lib/services/agent-orchestrator'
+import { resetSingleton } from '../../helpers/reset-singleton'
 
 describe('AgentOrchestrator', () => {
   let orchestrator: AgentOrchestrator
 
   beforeEach(() => {
-    // Reset singleton for test isolation
-    // @ts-ignore
-    AgentOrchestrator['instance'] = undefined as any
+    resetSingleton(AgentOrchestrator)
     orchestrator = AgentOrchestrator.getInstance()
   })
 
   afterEach(() => {
-    // @ts-ignore
-    AgentOrchestrator['instance'] = undefined as any
+    resetSingleton(AgentOrchestrator)
   })
 
   describe('getInstance', () => {

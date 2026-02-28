@@ -1,20 +1,18 @@
 /** @jest-environment node */
 
 import { WorkspaceManager } from '@/lib/services/workspace-manager'
+import { resetSingleton } from '../../helpers/reset-singleton'
 
 describe('WorkspaceManager', () => {
   let manager: WorkspaceManager
 
   beforeEach(() => {
-    // Reset singleton for test isolation
-    // @ts-ignore
-    WorkspaceManager['instance'] = undefined as any
+    resetSingleton(WorkspaceManager)
     manager = WorkspaceManager.getInstance()
   })
 
   afterEach(() => {
-    // @ts-ignore
-    WorkspaceManager['instance'] = undefined as any
+    resetSingleton(WorkspaceManager)
   })
 
   describe('getInstance', () => {

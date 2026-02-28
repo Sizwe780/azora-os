@@ -1,20 +1,18 @@
 /** @jest-environment node */
 
 import { SecurityLayer } from '@/lib/services/security-layer'
+import { resetSingleton } from '../../helpers/reset-singleton'
 
 describe('SecurityLayer', () => {
   let layer: SecurityLayer
 
   beforeEach(() => {
-    // Reset the singleton so each test gets a fresh instance
-    // @ts-ignore - accessing private static for test isolation
-    SecurityLayer['instance'] = undefined as any
+    resetSingleton(SecurityLayer)
     layer = SecurityLayer.getInstance()
   })
 
   afterEach(() => {
-    // @ts-ignore
-    SecurityLayer['instance'] = undefined as any
+    resetSingleton(SecurityLayer)
   })
 
   describe('getInstance', () => {
@@ -104,8 +102,7 @@ describe('SecurityLayer', () => {
     it('should use AZORA_ENCRYPTION_KEY from env when available', () => {
       const testKey = 'a'.repeat(64) // 32 bytes hex
       process.env.AZORA_ENCRYPTION_KEY = testKey
-      // @ts-ignore
-      SecurityLayer['instance'] = undefined as any
+      resetSingleton(SecurityLayer)
       const envLayer = SecurityLayer.getInstance()
 
       const encrypted = envLayer.encrypt('env key test')
