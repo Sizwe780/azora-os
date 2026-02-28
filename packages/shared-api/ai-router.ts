@@ -93,6 +93,12 @@ const PROVIDER_ENDPOINTS: Record<AIProvider, string> = {
     ollama: 'http://localhost:11434/api/chat',
 };
 
+/**
+ * Provider failover chain (B6: Model Router with Failover)
+ * Tries providers in order until one succeeds: OpenAI → Anthropic → Groq → Ollama
+ */
+export const FAILOVER_CHAIN: AIProvider[] = ['openai', 'anthropic', 'groq', 'ollama'];
+
 class MultiModelAIRouter {
     private config: AIConfig;
     private conversationHistory: Map<string, AIMessage[]> = new Map();
@@ -150,6 +156,90 @@ class MultiModelAIRouter {
             console.error('AI Router Error:', error);
             throw new Error(`Failed to get AI response: ${error instanceof Error ? error.message : 'Unknown error'}`);
         }
+    }
+
+    /**
+     * Send message with automatic provider failover (B6: Model Router with Failover)
+     * Tries providers in order: preferred → OpenAI → Anthropic → Groq → Ollama
+     */
+    async chatWithFailover(
+        message: string,
+        agent: string = 'ELARA',
+        conversationId?: string
+    ): Promise<AIResponse> {
+        // Try Knowledge Ocean first
+        const knowledgeAnswer = await this.tryKnowledgeOcean(message, agent);
+        if (knowledgeAnswer) {
+            return {
+                content: knowledgeAnswer,
+                model: 'knowledge-ocean',
+                provider: this.config.provider,
+                usage: { promptTokens: 0, completionTokens: 0, totalTokens: 0 },
+            };
+        }
+
+        const messages = this.buildMessages(message, agent, conversationId);
+        const errors: string[] = [];
+
+        // Build provider order: preferred first, then failover chain
+        const providerOrder: AIProvider[] = [this.config.provider];
+        for (const p of FAILOVER_CHAIN) {
+            if (!providerOrder.includes(p)) providerOrder.push(p);
+        }
+
+        for (const provider of providerOrder) {
+            try {
+                const originalProvider = this.config.provider;
+                this.config.provider = provider;
+                const response = await this.callProvider(messages);
+                this.config.provider = originalProvider;
+
+                // Store in conversation history
+                if (conversationId) {
+                    this.addToHistory(conversationId, { role: 'user', content: message });
+                    this.addToHistory(conversationId, { role: 'assistant', content: response.content });
+                }
+
+                if (provider !== providerOrder[0]) {
+                    console.info(`[AI Router] Failover: ${providerOrder[0]} → ${provider} succeeded`);
+                }
+
+                return response;
+            } catch (error) {
+                const msg = error instanceof Error ? error.message : 'Unknown error';
+                errors.push(`${provider}: ${msg}`);
+                console.warn(`[AI Router] Provider ${provider} failed: ${msg}`);
+            }
+        }
+
+        throw new Error(`All AI providers failed. Errors: ${errors.join('; ')}`);
+    }
+
+    /**
+     * Check which providers have API keys configured
+     */
+    getProviderStatus(): Record<AIProvider, { available: boolean; model: string }> {
+        const providers: AIProvider[] = ['openai', 'anthropic', 'groq', 'together', 'huggingface', 'ollama'];
+        const status: Record<string, { available: boolean; model: string }> = {};
+
+        const envKeys: Record<AIProvider, string> = {
+            openai: 'OPENAI_API_KEY',
+            anthropic: 'ANTHROPIC_API_KEY',
+            groq: 'GROQ_API_KEY',
+            together: 'TOGETHER_API_KEY',
+            huggingface: 'HUGGINGFACE_API_KEY',
+            ollama: 'OLLAMA_URL',
+        };
+
+        for (const provider of providers) {
+            status[provider] = {
+                // Ollama runs locally and doesn't require an API key
+                available: provider === 'ollama' || !!process.env[envKeys[provider]],
+                model: DEFAULT_MODELS[provider],
+            };
+        }
+
+        return status as Record<AIProvider, { available: boolean; model: string }>;
     }
 
     /**
