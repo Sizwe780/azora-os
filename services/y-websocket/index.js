@@ -27,7 +27,7 @@ utils.setPersistence({
 })
 
 const port = process.env.PORT || 1234
-const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || 'http://localhost:3000').split(',')
+const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || 'http://localhost:3000').split(',').map(s => s.trim())
 
 const server = http.createServer((request, response) => {
   // Health check endpoint for k8s probes (A7.1)
@@ -81,8 +81,9 @@ function shutdown() {
     console.log('Server closed')
     process.exit(0)
   })
-  // Force exit after 10s
-  setTimeout(() => process.exit(1), 10000)
+  // Force exit after timeout
+  const SHUTDOWN_TIMEOUT_MS = 10000
+  setTimeout(() => process.exit(1), SHUTDOWN_TIMEOUT_MS)
 }
 
 process.on('SIGTERM', shutdown)
