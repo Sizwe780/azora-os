@@ -9,6 +9,8 @@ module.exports = {
     '^@azora/components/(.*)$': '<rootDir>/../../packages/azora-ui/src/$1',
     '^@prisma/client$': '<rootDir>/tests/__mocks__/prisma-client.js',
     '^@prisma/client/runtime/library$': '<rootDir>/tests/__mocks__/prisma-runtime-library.js',
+    '^next/server$': '<rootDir>/tests/__mocks__/next-server.js',
+    '^next-auth$': '<rootDir>/tests/__mocks__/next-auth.js',
   },
   setupFilesAfterEnv: ['<rootDir>/tests/setupTests.ts'],
   // Ensure essential shims run before modules are imported

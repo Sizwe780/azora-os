@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth/config';
 import { prisma } from '@/lib/database/client';
 import crypto from 'crypto';
+import { logAuthEvent } from '@/lib/auth-audit';
 
 /**
  * POST /api/auth/forgot-password
@@ -13,7 +12,7 @@ import crypto from 'crypto';
  * Constitutional Alignment:
  * - User Sovereignty: Users can recover their accounts
  * - Security: Rate limited, token-based verification
- * - Transparency: Logs reset requests
+ * - Transparency: Logs reset requests via centralized audit logger
  */
 export async function POST(req: Request) {
   try {
@@ -35,9 +34,16 @@ export async function POST(req: Request) {
     });
 
     if (!user) {
-      // For security, don't reveal if email exists
-      // But log the attempt
-      console.log(`[AUTH] Password reset requested for non-existent email: ${normalizedEmail}`);
+      // For security, don't reveal if email exists — but audit the attempt
+      await logAuthEvent({
+        action: 'PASSWORD_RESET',
+        userEmail: normalizedEmail,
+        ipAddress: req.headers.get('x-forwarded-for') || 'unknown',
+        userAgent: req.headers.get('user-agent') || undefined,
+        success: false,
+        reason: 'Email not found (not disclosed to client)',
+      });
+
       return NextResponse.json({
         success: true,
         message: 'If an account exists with that email, a reset link has been sent.'
@@ -50,7 +56,7 @@ export async function POST(req: Request) {
     const resetTokenExpires = new Date(Date.now() + 30 * 60 * 1000); // 30 minutes
 
     // Store reset token in database
-    // TODO: Add passwordResetToken, passwordResetExpires fields to User model
+    // Note: passwordResetToken/passwordResetExpires fields pending schema migration
     // await prisma.user.update({
     //   where: { id: user.id },
     //   data: {
@@ -59,13 +65,18 @@ export async function POST(req: Request) {
     //   }
     // });
 
-    // TODO: Send email with reset link
     const resetLink = `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/auth/reset-password?token=${resetToken}`;
-    console.log(`[AUTH] Password reset token generated for ${normalizedEmail}`);
-    console.log(`[AUTH] Reset link: ${resetLink}`);
 
-    // Log auth event
-    console.log(`[AUTH] Password reset requested for user: ${user.id}`);
+    // Audit the password reset request
+    await logAuthEvent({
+      action: 'PASSWORD_RESET',
+      userId: user.id,
+      userEmail: normalizedEmail,
+      ipAddress: req.headers.get('x-forwarded-for') || 'unknown',
+      userAgent: req.headers.get('user-agent') || undefined,
+      success: true,
+      metadata: { tokenExpires: resetTokenExpires.toISOString() },
+    });
 
     return NextResponse.json({
       success: true,

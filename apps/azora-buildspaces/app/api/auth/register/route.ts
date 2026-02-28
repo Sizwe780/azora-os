@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/database/client";
 import { hashPassword } from "@/lib/auth/utils";
+import { logAuthEvent } from "@/lib/auth-audit";
 
 export async function POST(req: Request) {
     try {
@@ -19,6 +20,15 @@ export async function POST(req: Request) {
         });
 
         if (existingUser) {
+            await logAuthEvent({
+                action: 'SIGNUP',
+                userEmail: email,
+                ipAddress: req.headers.get('x-forwarded-for') || 'unknown',
+                userAgent: req.headers.get('user-agent') || undefined,
+                success: false,
+                reason: 'User already exists',
+            });
+
             return NextResponse.json(
                 { error: "User already exists" },
                 { status: 400 }
@@ -35,6 +45,16 @@ export async function POST(req: Request) {
                 email,
                 password: hashedPassword,
             },
+        });
+
+        await logAuthEvent({
+            action: 'SIGNUP',
+            userId: user.id,
+            userEmail: email,
+            ipAddress: req.headers.get('x-forwarded-for') || 'unknown',
+            userAgent: req.headers.get('user-agent') || undefined,
+            success: true,
+            metadata: { country },
         });
 
         return NextResponse.json({ success: true, user: { id: user.id, email: user.email } });

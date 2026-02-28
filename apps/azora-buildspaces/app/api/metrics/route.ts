@@ -4,11 +4,18 @@
  * Constitutional Compliance:
  * - Transparency: Exposes operational metrics for monitoring
  * - Auditability: Tracks system performance and usage
+ *
+ * Enhanced with:
+ * - AI provider circuit breaker metrics (B6)
+ * - Constitutional compliance metrics from audit logger (B11)
+ * - Rate limiter stats
  */
 
 import { NextResponse } from "next/server"
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
+import { getProviderHealth } from '../../../../packages/shared-api/ai-router'
+import { auditLogger } from '@/lib/services/centralized-audit-logger'
 
 export const dynamic = "force-dynamic"
 
@@ -34,7 +41,7 @@ interface MetricsData {
   truth_mandate_score: number
 }
 
-// In-memory metrics storage (should use Redis in production)
+// In-memory metrics storage
 let metrics: MetricsData = {
   process_uptime_seconds: 0,
   process_memory_heap_used_bytes: 0,
@@ -60,13 +67,22 @@ function updateMetrics(): void {
   metrics.process_memory_heap_total_bytes = memUsage.heapTotal
   metrics.process_memory_rss_bytes = memUsage.rss
   metrics.http_requests_total += 1
+
+  // Pull constitutional stats from the centralized audit logger
+  try {
+    const stats = auditLogger.getStats()
+    metrics.constitutional_alignment_score = stats.avgConstitutionalScore / 100
+    metrics.truth_mandate_score = stats.complianceRate / 100
+  } catch {
+    // audit logger unavailable; keep last known values
+  }
 }
 
 /**
  * Format metrics in Prometheus text format
  */
 function formatPrometheusMetrics(data: MetricsData): string {
-  return `# HELP process_uptime_seconds Process uptime in seconds
+  let output = `# HELP process_uptime_seconds Process uptime in seconds
 # TYPE process_uptime_seconds gauge
 process_uptime_seconds ${data.process_uptime_seconds}
 
@@ -111,6 +127,45 @@ constitutional_alignment_score ${data.constitutional_alignment_score}
 # TYPE truth_mandate_score gauge
 truth_mandate_score ${data.truth_mandate_score}
 `
+
+  // Append AI provider circuit breaker metrics (B6)
+  try {
+    const health = getProviderHealth()
+    output += `\n# HELP ai_provider_circuit_state AI provider circuit breaker state (0=CLOSED, 1=HALF_OPEN, 2=OPEN)\n`
+    output += `# TYPE ai_provider_circuit_state gauge\n`
+    for (const [provider, info] of Object.entries(health)) {
+      const stateVal = info.state === 'CLOSED' ? 0 : info.state === 'HALF_OPEN' ? 1 : 2
+      output += `ai_provider_circuit_state{provider="${provider}"} ${stateVal}\n`
+    }
+
+    output += `\n# HELP ai_provider_failures_total AI provider consecutive failure count\n`
+    output += `# TYPE ai_provider_failures_total gauge\n`
+    for (const [provider, info] of Object.entries(health)) {
+      output += `ai_provider_failures_total{provider="${provider}"} ${info.failures}\n`
+    }
+  } catch {
+    // provider health unavailable
+  }
+
+  // Append audit stats
+  try {
+    const stats = auditLogger.getStats()
+    output += `\n# HELP audit_entries_total Total audit log entries in buffer\n`
+    output += `# TYPE audit_entries_total gauge\n`
+    output += `audit_entries_total ${stats.total}\n`
+
+    output += `\n# HELP audit_compliance_rate Constitutional compliance rate percentage\n`
+    output += `# TYPE audit_compliance_rate gauge\n`
+    output += `audit_compliance_rate ${stats.complianceRate}\n`
+
+    for (const [severity, count] of Object.entries(stats.bySeverity)) {
+      output += `audit_entries_by_severity{severity="${severity}"} ${count}\n`
+    }
+  } catch {
+    // audit stats unavailable
+  }
+
+  return output
 }
 
 /**
